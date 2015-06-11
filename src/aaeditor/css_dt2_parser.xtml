@@ -1,0 +1,366 @@
+<xtml ns="css_dt" light="false">
+
+<Type id="Mapper" descrition="global mapper xml to css"/>
+<Type id="Rule" description="Mapper Rule"/>
+<Type id="PropType" description="e.g., type of css prop value. Can be simple or complex. E.g., box-shadow"/>
+<Type id="SequenceValueProp" description="a property inside squenece value. It is inner property and not regular css property"/>
+<Type id="SequenceElem" description="a css property inside css shortcut "/>
+
+<!-- basic property types --> 
+
+<Component id="ByRegex" type="css_dt.PropType" execution="native">
+  <Param name="Regex"/>
+</Component>
+
+<Component id="Enum" type="css_dt.PropType" execution="native">
+  <Param name="Options"/>
+</Component>
+
+<Component id="Or" type="css_dt.PropType" execution="native">
+  <Param name="Type" type="css_dt.PropType[]"/>
+  <Param name="EditorIDs" description="comma separated ids, one of which set by the editor to tell the serializer which option was choosen"/>
+</Component>
+
+<Component id="Percent" type="css_dt.PropType">
+  <xtml t="css_dt.ByRegex" Regex="\s*[0-9\.]+\%"/>
+</Component>
+
+<Component id="FontFamily" type="css_dt.PropType">
+  <xtml t="css_dt.ByRegex" Regex="[ a-zA-Z0-9,_'&quot;\-]+"/>
+</Component>
+
+<Component id="Color" type="css_dt.PropType">
+  <xtml t="css_dt.Or">
+    <Type t="css_dt.Enum" Options="aliceblue,antiquewhite,aqua,aquamarine,azure,beige,bisque,black,blanchedalmond,blue,blueviolet,brown,burlywood,cadetblue,chartreuse,chocolate,coral,cornflowerblue,cornsilk,crimson,cyan,darkblue,darkcyan,darkgoldenrod,darkgray,darkgrey,darkgreen,darkkhaki,darkmagenta,darkolivegreen,darkorange,darkorchid,darkred,darksalmon,darkseagreen,darkslateblue,darkslategray,darkslategrey,darkturquoise,darkviolet,deeppink,deepskyblue,dimgray,dimgrey,dodgerblue,firebrick,floralwhite,forestgreen,fuchsia,gainsboro,ghostwhite,gold,goldenrod,gray,grey,green,greenyellow,honeydew,hotpink,indianred,indigo,ivory,khaki,lavender,lavenderblush,lawngreen,lemonchiffon,lightblue,lightcoral,lightcyan,lightgoldenrodyellow,lightgray,lightgrey,lightgreen,lightpink,lightsalmon,lightseagreen,lightskyblue,lightslategray,lightslategrey,lightsteelblue,lightyellow,lime,limegreen,linen,magenta,maroon,mediumaquamarine,mediumblue,mediumorchid,mediumpurple,mediumseagreen,mediumslateblue,mediumspringgreen,mediumturquoise,mediumvioletred,midnightblue,mintcream,mistyrose,moccasin,navajowhite,navy,oldlace,olive,olivedrab,orange,orangered,orchid,palegoldenrod,palegreen,paleturquoise,palevioletred,papayawhip,peachpuff,peru,pink,plum,powderblue,purple,red,rosybrown,royalblue,saddlebrown,salmon,sandybrown,seagreen,seashell,sienna,silver,skyblue,slateblue,slategray,slategrey,snow,springgreen,steelblue,tan,teal,thistle,tomato,turquoise,violet,wheat,white,whitesmoke,yellow,yellowgreen"/>
+    <Type t="css_dt.ByRegex" Regex="rgba?\s*\([^)]+\)"/>
+    <Type t="css_dt.ByRegex" Regex="hsla?\s*\([^)]+\)"/>
+    <Type t="css_dt.ByRegex" Regex="\#[0-9a-fA-F]+"/>
+  </xtml>
+</Component>
+
+<Component id="BackgroundImage" type="css_dt.PropType">
+  <xtml t="css_dt.Or" EditorIDs="image,gradient">
+    <Type t="css_dt.SequenceValue">
+        <Prop t="css_dt.SequenceValueFiller" Text="url("/>
+        <Prop t="css_dt.SequenceValueProp" Name="url">
+            <Type t="css_dt.ByRegex" Regex="[^\)]*"/>
+        </Prop>
+        <Prop t="css_dt.SequenceValueFiller" Text=")"/>
+    </Type>
+    <Type t="css_dt.BackgroundGradient"/>
+  </xtml>
+</Component>
+
+<Component id="BackgroundGradient" type="css_dt.PropType">
+  <xtml t="css_dt.SequenceValue" Separator="">
+      <Prop1 t="css_dt.SequenceValueProp" Name="Browser" Optional="true">
+        <Type t="css_dt.ByRegex" Regex="\-((webkit)|(moz)|o)\-" />
+      </Prop1>
+      <Prop t="css_dt.SequenceValueProp" Name="function">
+        <Type t="css_dt.ByRegex" Regex="((-webkit-linear)|(-webkit-radial))" />
+      </Prop>
+      <Prop t="css_dt.SequenceValueFiller" Text="-gradient("/>
+      <Prop t="css_dt.SequenceValueProp" Name="direction">
+        <Type t="css_dt.ByRegex" Regex="[0-9\-]+deg"/>
+        <Type1 t="css_dt.Or">
+          <Type t="css_dt.ByRegex" Regex="[0-9\-]+deg"/>
+          <Type t="css_dt.ByRegex" Regex="((left)|(right))?((top)|(bottom))?" />
+          <Type t="css_dt.ByRegex" Regex="((top)|(bottom))?((left)|(right))?" />
+        </Type1>
+      </Prop>
+      <Prop t="css_dt.SequenceValueFiller" Text=","/>
+      <Prop t="css_dt.SequenceValueProp" Name="Stops">
+        <Type t="css_dt.RepeatingValue" Tag="ColorStop">
+          <Type t="css_dt.SequenceValue">
+            <Prop t="css_dt.SequenceValueProp" Name="color"><Type t="css_dt.Color"/></Prop>
+            <Prop t="css_dt.SequenceValueProp" Name="pos"><Type t="css_dt.ByRegex" Regex="[0-9]+\%"/></Prop>
+          </Type>
+        </Type>
+      </Prop>
+      <Prop t="css_dt.SequenceValueFiller" Text=")"/>
+  </xtml>
+</Component>
+
+<Component id="ImagePosition" type="css_dt.PropType">
+  <xtml t="css_dt.Or">
+    <Type t="css_dt.ByRegex" Regex="((left)|(center)|(right))?(([ ]+)(top)|(center)|(bottom))?"/>
+    <Type t="css_dt.ByRegex" Regex="((top)|(center)|(bottom))?(([ ]+)(left)|(center)|(right))?"/>
+    <Type t="css_dt.ByRegex" Regex="(\-?[0-9\.]+(px|em|pt|%))|(left)|(center)|(right)([ ]+(\-?[0-9\.]+(px|em|pt|%))|(top)|(center)|(bottom))?"/>
+  </xtml>
+</Component>
+
+<Component id="Length" type="css_dt.PropType" execution="native">
+  <Param name="Prefix" Default=""/>
+  <Param name="Regex" Default="(\-?[0-9\.]+(px|em|pt|%))"/>
+  <Param name="Enum" Default="0,larger,smaller,xx-small,x-small,small,medium,large,x-large,xx-large"/>
+</Component>
+
+<!-- complex property types --> 
+<Component id="RepeatingValue" type="css_dt.PropType" execution="native">
+  <Param name="Type" type="css_dt.PropType"/>
+  <Param name="Tag" description="xml tag under the simplifier"/>
+  <Param name="Separator" Default=","/>
+</Component>
+
+<Component id="SequenceValue" type="css_dt.PropType" execution="native">
+  <Param name="Prop" type="css_dt.SequenceValueProp[]"/>
+  <Param name="Separator" Default=" "/>
+</Component>
+
+<Component id="SequenceValueProp" type="css_dt.SequenceValueProp" execution="native">
+  <Param name="Name" />
+  <Param name="Type" type="css_dt.PropType">
+    <Default t="css_dt.Length"/>
+  </Param>
+  <Param name="Optional" type="data.Boolean"/>
+</Component>
+
+<Component id="SequenceValueFiller" type="css_dt.SequenceValueProp" execution="native">
+  <Param name="Text" />
+  <Param name="Optional" type="data.Boolean"/>
+</Component>
+<!-- Property -->
+<Component id="Prop" type="css_dt.Rule" execution="native">
+  <Param name="Prop" />
+  <Param name="Type" type="css_dt.PropType" />
+</Component>
+
+<Component id="Props" type="css_dt.Rule" execution="native">
+  <Param name="Props" />
+  <Param name="Type" type="css_dt.PropType" />
+</Component>
+
+<Component id="SimplifyToBoolean" type="css_dt.Rule"  execution="native" description="define specific property value as boolean">
+  <Param name="Feature" />
+  <Param name="Prop" />
+  <Param name="Value" />
+</Component>
+
+<Component id="ExpandDirections" type="css_dt.Rule" execution="native">
+  <Param name="Prop"/>
+  <Param name="Expand" type="Enum" Default="Edges" Options="Corners,Edges"/>
+  <Param name="Type" type="css_dt.PropType">
+    <Default t="css_dt.Length"/>
+  </Param>
+</Component>
+
+<Component id="ExtractSequence" type="css_dt.Rule" execution="native" description="css shortcut">
+  <Param name="Prop"/>
+  <Param name="Elem" type="css_dt.SequenceElem[]"/>
+</Component>
+
+<Component id="SequenceElem" type="css_dt.SequenceElem" execution="native">
+  <Param name="Prop"/>
+  <Param name="Optional" type="data.Boolean"/>
+  <Param name="Type" type="css_dt.PropType" />
+</Component>
+
+<Component id="SequenceElems" type="css_dt.SequenceElem" execution="native">
+  <Param name="Prefix"/>
+  <Param name="Elem" type="css_dt.SequenceElem[]"/>
+  <Param name="AnyOrder" type="data.Boolean"/>
+</Component>
+ 
+<!-- Components -->
+ 
+<Component id="BorderGroup" type="css_dt.SequenceElem">
+  <Param name="Prefix"/>
+   <xtml t="css_dt.SequenceElems" Prefix="%$Prefix%">
+      <Elem t="css_dt.SequenceElem" Prop="width" ><Type t="css_dt.Length"/></Elem>
+      <Elem t="css_dt.SequenceElem" Prop="style" ><Type t="css_dt.Enum" Options="none,hidden,dotted,dashed,solid,double,groove,ridge,inset,outset" /></Elem>
+      <Elem t="css_dt.SequenceElem" Prop="color" Optional="true"><Type t="css_dt.Color"/></Elem>
+   </xtml>
+</Component>
+
+<Component id="CssXmlMapper" type="css_dt.Mapper" execution="native">
+  <Param name="Rule" type="css_dt.Rule[]"/>
+</Component>
+
+<Component id="Mapper" type="css_dt.Mapper" >
+   <xtml t="css_dt.CssXmlMapper">
+        <Rule t="css_dt.Props" Props="width,height,border-radius,top,left,right,bottom,line-height">
+          <Type t="css_dt.Length"/>
+        </Rule>
+        <Rule t="css_dt.Props" Props="cursor,overflow,text-transform,text-align,text-overflow,opacity,display,overflow,overflow-x,overflow-y">
+          <Type t="css_dt.ByRegex" Regex="[a-zA-Z0-9_\-\. ]+"/>
+        </Rule>
+        <Rule1 t="css_dt.SimplifyToBoolean" Prop="white-space" Value="nowrap" Feature="nowrap"/>
+        <Rule t="css_dt.Prop" Prop="text-decoration" >
+          <Type t="css_dt.Enum" Options="underline,line-through,overline"/>
+        </Rule>
+        <Rule t="css_dt.Prop" Prop="box-sizing" >
+          <Type t="css_dt.Enum" Options="content-box,border-box"/>
+        </Rule>
+        <Rule t="css_dt.Prop" Prop="position" >
+          <Type t="css_dt.Enum" Options="absolute,relative,fixed"/>
+        </Rule>
+        <Rule t="css_dt.Prop" Prop="white-space" >
+          <Type t="css_dt.Enum" Options="normal,nowrap"/>
+        </Rule>
+        <Rule t="css_dt.Prop" Prop="z-index" >
+          <Type t="css_dt.ByRegex" Regex="[0-9]+"/>
+        </Rule>
+        <Rule t="css_dt.Prop" Prop="float" >
+          <Type t="css_dt.Enum" Options="left,right"/>
+        </Rule>
+        <Rule t="css_dt.Prop" Prop="color" >
+          <Type t="css_dt.Color"/>
+        </Rule>
+        <Rule t="css_dt.ExtractSequence" Prop="font">
+            <Elem t="css_dt.SequenceElems" AnyOrder="true">
+              <Elem t="css_dt.SequenceElem" Prop="font-style" Optional="true">
+                <Type t="css_dt.Enum" Options="normal,italic,oblique"/>
+              </Elem>
+              <Elem t="css_dt.SequenceElem" Prop="font-weight" Optional="true">
+                <Type t="css_dt.Enum" Options="normal,bold,bolder,lighter,100,200,300,400,500,600,700,800,900"/>
+              </Elem>
+            </Elem>
+            <Elem t="css_dt.SequenceElem" Prop="font-size" >
+              <Type t="css_dt.Length"/>
+            </Elem>
+            <Elem t="css_dt.SequenceElem" Prop="font-family" >
+              <Type t="css_dt.FontFamily"/>
+            </Elem>
+        </Rule>
+        <Rule t="css_dt.ExtractSequence" Prop="background">
+          <Elem t="css_dt.SequenceElems" AnyOrder="true">
+            <Elem t="css_dt.SequenceElem" Prop="background-image" Optional="true">
+               <Type t="css_dt.BackgroundImage"/>
+            </Elem>
+            <Elem t="css_dt.SequenceElem" Prop="background-color" Optional="true">
+              <Type t="css_dt.Color"/>
+            </Elem>
+            <Elem t="css_dt.SequenceElem" Prop="background-repeat" Optional="true">
+              <Type t="css_dt.Enum" Options="repeat,repeat-x,repeat-y,no-repeat"/>
+            </Elem>
+            <Elem t="css_dt.SequenceElem" Prop="background-attachment" Optional="true">
+              <Type t="css_dt.Enum" Options="scroll,fixed"/>
+            </Elem>
+            <Elem t="css_dt.SequenceElem" Prop="background-position" Optional="true">
+              <Type t="css_dt.ImagePosition"/>
+            </Elem>
+          </Elem>
+        </Rule>
+
+        <Rule t="css_dt.ExpandDirections" Prop="padding"/>
+        <Rule t="css_dt.ExpandDirections" Prop="margin"/>
+        <Rule t="css_dt.ExtractSequence" Prop="border">
+          <Elem t="css_dt.BorderGroup" Prefix="border"/>
+        </Rule>
+        <Rule t="css_dt.ExtractSequence" Prop="border-top">
+          <Elem t="css_dt.BorderGroup" Prefix="border-top"/>
+        </Rule>
+        <Rule t="css_dt.ExtractSequence" Prop="border-left">
+          <Elem t="css_dt.BorderGroup" Prefix="border-left"/>
+        </Rule>
+        <Rule t="css_dt.ExtractSequence" Prop="border-right">
+          <Elem t="css_dt.BorderGroup" Prefix="border-right"/>
+        </Rule>
+        <Rule t="css_dt.ExtractSequence" Prop="border-bottom">
+          <Elem t="css_dt.BorderGroup" Prefix="border-bottom"/>
+        </Rule>
+
+        <Rule t="css_dt.Prop" Prop="text-shadow" >
+          <Type t="css_dt.RepeatingValue" Tag="textshadow">
+             <Type t="css_dt.SequenceValue">
+               <Prop t="css_dt.SequenceValueProp" Name="x"/>
+               <Prop t="css_dt.SequenceValueProp" Name="y"/>
+               <Prop t="css_dt.SequenceValueProp" Name="blur" Optional="true"/>
+               <Prop t="css_dt.SequenceValueProp" Name="color" Optional="true"><Type t="css_dt.Color"/></Prop>
+             </Type>
+          </Type>
+        </Rule>
+ 
+      <Rule t="css_dt.Prop" Prop="box-shadow" >
+        <Type t="css_dt.RepeatingValue" Tag="shadow">
+           <Type t="css_dt.SequenceValue">
+             <Prop t="css_dt.SequenceValueProp" Name="inset" Optional="true"><Type t="css_dt.Enum" Options="inset"/></Prop>
+             <Prop t="css_dt.SequenceValueProp" Name="x"/>
+             <Prop t="css_dt.SequenceValueProp" Name="y"/>
+             <Prop t="css_dt.SequenceValueProp" Name="blur" Optional="true"/>
+             <Prop t="css_dt.SequenceValueProp" Name="spread" Optional="true"/>
+             <Prop t="css_dt.SequenceValueProp" Name="color" Optional="true"><Type t="css_dt.Color"/></Prop>
+           </Type>
+         </Type>
+        </Rule>
+
+    </xtml>
+  </Component>
+  
+  <Component id="Css2Xml" type="data.Data" execution="native" description="returns xml with selectors and declarations">
+    <Param name="Css" Default="%%"/>
+    <Param name="Mapper" type="css_dt.Mapper">
+      <Default t="css_dt.Mapper"/>
+    </Param>
+    <NativeHelper name="ParseDeclaration" t="css_dt.Mapper" Css="%%"/>
+  </Component>
+ 
+  <Component id="Xml2Css" type="data.Data" execution="native" description="build a css declaration from the working elem attributes">
+    <Param name="Xml" Default="%%"/>
+    <Param name="LineSize" Default="50"/>
+    <Param name="Mapper" type="css_dt.Mapper">
+      <Default t="css_dt.Mapper"/>
+    </Param>
+  </Component>
+
+  <Component id="MapHLayout" type="field.FieldAspect">
+  <FieldAspect t="field_feature.Layout">
+  <Css><![CDATA[#wrapper { text-align:center; position:absolute; width: 30px; margin-left: 173px; }
+]]></Css>
+</FieldAspect>
+</Component>
+
+  <Component id="MapVLayout" type="field.FieldAspect">
+  <FieldAspect t="field_feature.Layout">
+  <Css><![CDATA[#wrapper { text-align:center; position:absolute; width: 30px; margin-top: 173px; }
+]]></Css>
+</FieldAspect>
+</Component>
+
+  <Component id="CssProperty" type="data.Data">
+      <Param name="Name" essential="true"/>
+      <xtml t="data.CreateIfDoesNotExist" Query="%P[@name = '{$Name}']/@value%">
+        <Create t="xml.ChangeXml">
+          <Change t="xml.AddChildren">
+            <Children t="xml.Xml" DynamicContent="true">
+              <P name="%$Name%" value=""/>
+            </Children>
+          </Change>
+        </Create>
+      </xtml>
+    </Component>
+
+  <Component id="CssOfFieldStyle" type="data.Data">
+      <Param name="PageID"/>
+      <Param name="FieldID"/>
+      <Param name="Selector" Default="#this"/>
+      <xtml t="data.Pipeline">
+        <Item value="%$_WidgetXml%"/>
+        <Item value="%bart_dev/db/bart_unit/bart_unit/Component[@id='{$Settings/@page}']/xtml%"/>
+        <Item t="xml.CDataValue">
+          <Element value="%.//Field[@ID='{$FieldID}']//Css%"/>
+        </Item>
+        <Item t="css_dt.Css2Xml"/>
+        <Item value="%Css[@selector = '{$Selector}']/Simplifiers%"/>
+      </xtml>
+    </Component>
+
+  <Component id="InjectCssToFieldStyle" type="action.Action">
+    <Param name="PageID" />  
+    <Param name="FieldID" />  
+    <Param name="CssXml" />  
+    <xtml t="xml.WriteCData">
+      <CDataText t="css_dt.Xml2Css" Xml="%$CssXml%" />  
+      <Element t="data.Pipeline">
+        <Item value="%$_WidgetXml%"/>  
+        <Item value="%bart_dev/db/bart_unit/bart_unit/Component[@id='{$PageID}']/xtml%" />  
+        <Item t="data.IfThenElse" Then="%.//Field[@ID='{$FieldID}']//Css%" Else="">
+            <If t="yesno.EqualsTo" To="xtml">
+              <Data t="xml.Tag"/>
+            </If>
+        </Item>  
+      </Element>
+    </xtml>
+  </Component>
+
+</xtml>

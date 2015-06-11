@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>jBart Studio</title>
+    <link rel="icon" href="images/studio/favicon_localhost.png" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" /> 
+    <script>
+      window.jBartStudio = true;
+    </script>
+
+    <script type="text/javascript" src="load-studio.js"></script>   
+
+
+<style>
+  html,body { height: 100%; margin: 0; } 
+  body.jbstudio_select *, body.jbstudio_select:hover { cursor: url('images/studio/cursor_select.png') , auto !important;}
+</style>
+<script type="text/javascript">
+  ajaxart.jbart_studio = true;
+  $(document).ready(function() {
+     ajaxart.ready(function() {
+        if (window.location.href.match(/\?widget=/) || window.location.href.match(/\?instance=/))
+          var script = ajaxart.parsexml('<Control t="gstudio.Main" />'); 
+        else
+          var script = ajaxart.parsexml('<Control t="gstudio.StudioWindowWithoutWidget" />'); 
+    	
+      	ajaxart.start("#ajaxart_top",null,script);
+	 })
+  });
+</script>    
+<style>
+.x-body, .x-column-header, .x-grid-item  {
+  font-family: arial !important;
+}
+</style>                                                     
+</head>
+
+<body style="background:#EBEBEB; ">
+  <div id="fb-root">
+    <div id="ajaxart_top"></div>
+    <div id="ajaxart_loading" style="display:none;position:absolute;left:100px;top:100px; font-size:140%; padding:30px 30px 30px 70px; background: url('images/loading.gif') no-repeat 5px 50%;">Loading jBart Studio</div>
+  </div>
+</body>
+
+
+</html>

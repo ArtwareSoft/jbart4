@@ -1,0 +1,31 @@
+<xtml ns="studio_sample" light="false">
+
+  <Component id="ReadOnlyTableSample" type="data.Data">
+  	<Param name="SampleConfig" description="Includes @multipleTitle,@singleTitle,@items,@fields"/>
+  	<xtml t="data.Pipeline">
+  		<Var name="ID_Itemlist" t="text.ToId" Text="%$SampleConfig/@multipleTitle%_table">
+        <UsedIDs t="gstudio_insert.UsedIDs" />
+      </Var> 
+  		<Var name="ID_Item" t="text.ToId" Text="%$SampleConfig/@singleTitle%">
+        <UsedIDs t="gstudio_insert.UsedIDs" />
+      </Var> 
+      <Var name="CreatedFieldXtml" t="xml.Xml" DynamicContent="true">
+        <Field t="field.ItemList" Title="%$SampleConfig/@multipleTitle%" ID="%$ID_Itemlist%">
+           <View t="itemlist_style.JBartTable" />
+           <FieldAspect t="field_aspect.ItemListContainer">
+              <Items t="itemlist.Items" Items="%$SampleConfig/@items%"/>
+           </FieldAspect>
+           <FieldAspect t="itemlist_aspect.ItemSelection" />
+           <FieldAspect t="itemlist_aspect.TableColumnDragAndDrop" />
+           <FieldAspect t="itemlist_aspect.ShowTextWhenNoItems" />
+        </Field>
+      </Var>
+      <Item t="xml.WithChanges" Xml="%$CreatedFieldXtml%">
+        <Change t="xml.AddChildren" >
+          <Children t="field_dt.NewBasicFields" ReadOnly="true" Names="%$SampleConfig/@fields%" />
+        </Change>
+      </Item>
+  	</xtml>
+  </Component>
+
+</xtml>

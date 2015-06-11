@@ -1,0 +1,246 @@
+<xtml ns="xtml_dt_usage" light="false">
+
+<Usage t="ui.ControlUsage" Of="xtml_dt.ParamsAsFields">
+      <Var name="Xtml" t="xml.Xml">
+        <Page t="bart.Page" ID="metadata" ContentType="metadata" Resource="MetaData">
+          <Control t="ui.List" >
+		         <Var name="Input" t="xml.Xml">
+		           <person name="homer"/>
+		         </Var>
+	          <Var name="Person" value="Homer" />
+		        <Var name="ListVariable" t="data.Pipeline">
+		        	<Item t="xml.Xml">
+			          <mypeople>
+			            <person name="Homer" lastName="Simpson"/>
+			            <person name="Marge" lastName="Simpson"/>
+			          </mypeople>
+		          </Item>
+		          <Item value="%*%" />
+		        </Var>
+		        <Data value="%$Input%" />
+            <Control t="ui.Section" Title="hello %@name%">
+              <Style t="ui.CollapsableSectionBox"/>
+            </Control>
+          </Control>
+        </Page>
+      </Var>
+      <Var name="Xtml2" t="xml.Xml">
+        <Control t="xtml_dt_usage.MySampleComponentEnums" ContentType="customer"/>
+      </Var>
+      <Control t="ui.Section">
+        <Control t="ui.Document">
+          <Item t="data_items.Items" Items="%$Xtml/Control/Control%"/>
+          <Fields t="xtml_dt.ParamsAsFields" Component="ui.Section" Params="Title,Style"/>
+        </Control>
+        <Control t="ui.Document">
+          <Item t="data_items.Items" Items="%$Xtml2%"/>
+          <Fields t="xtml_dt.ParamsAsFields" Component="xtml_dt_usage.MySampleComponentEnums"/>
+        </Control>
+        <Control t="ui.Document">
+          <Item t="data_items.Items">
+            <Items t="xml.Xml">
+              <FieldAspect t="field_aspect.Description"/>
+            </Items>
+          </Item>
+          <Fields t="xtml_dt.ParamsAsFields" Component="field_aspect.Description"/>
+        </Control>
+      </Control>
+      <ExpectedResult t="yesno.Contains">
+        <Text value="Title"/>
+        <Text value="Description"/>
+      </ExpectedResult>
+    </Usage>
+
+<Usage t="ui.ControlUsage" Of="xtml_dt.ParamsAsFields.SectionStyle" IsTest="false">
+  <Var name="Xtml" t="xml.Xml">
+    <Page t="bart.Page" ID="metadata" ContentType="metadata" Resource="MetaData">
+      <Control t="ui.List">
+        <Var name="Input" t="xml.Xml">
+          <person name="homer"/>
+        </Var>
+        <Var name="Person" value="Homer"/>
+        <Var name="ListVariable" t="data.Pipeline">
+          <Item t="xml.Xml">
+            <mypeople>
+              <person name="Homer" lastName="Simpson"/>
+              <person name="Marge" lastName="Simpson"/>
+            </mypeople>
+          </Item>
+          <Item value="%*%"/>
+        </Var>
+        <Data value="%$Input%"/>
+        <Control t="ui.Section" Title="hello %@name%">
+          <Style t="ui.CollapsableSectionBox"/>
+        </Control>
+      </Control>
+    </Page>
+  </Var>
+  <Var name="Xtml3" t="xml.Xml">
+    <Page t="bart.Page" ID="metadata" ContentType="metadata" Resource="MetaData">
+      <Field t="field.XmlGroup" Title="Details" ID="Details" ID__Manual="" Path="">
+        <FieldAspect t="field_aspect.Section" Underline="true" ExpandCollapse="" ExpandedByDefault="true" HideTitle="">
+          <Style t="style.ThickTitle1"/>
+        </FieldAspect>
+      </Field>
+    </Page>
+  </Var>
+  <Control t="ui.Section">
+    <Control t="ui.Document">
+      <Item t="data_items.Items" Items="%$Xtml3/Field/FieldAspect%"/>
+      <Fields t="xtml_dt.ParamsAsFields" Component="field_aspect.Section"/>
+    </Control>
+    <Control t="ui.Document">
+      <Item t="data_items.Items">
+        <Items t="xml.Xml">
+          <FieldAspect t="field_aspect.Description"/>
+        </Items>
+      </Item>
+      <Fields t="xtml_dt.ParamsAsFields" Component="field_aspect.Description"/>
+    </Control>
+  </Control>
+  <ExpectedResult t="yesno.Contains">
+    <Text value="Title"/>
+    <Text value="Description"/>
+  </ExpectedResult>
+</Usage>​
+<Usage t="ui.ControlUsage" Of="xtml_dt.ParamsAsFields.Primitive">
+      <Var name="Xtml" t="xml.Xml" DynamicContent="">
+        <Page t="bart.Page" ID="metadata" ContentType="metadata" Resource="MetaData">
+          <Control t="ui.List">
+            <Var name="Input" t="xml.Xml">
+              <person name="homer"/>
+            </Var>
+            <Var name="Person" value="Homer"/>
+            <Var name="ListVariable" t="data.Pipeline">
+              <Item t="xml.Xml">
+                <mypeople>
+                  <person name="Homer" lastName="Simpson"/>
+                  <person name="Marge" lastName="Simpson"/>
+                </mypeople>
+              </Item>
+              <Item value="%*%"/>
+            </Var>
+            <Data value="%$Input%"/>
+            <Control t="ui.Section">
+              <Title t="data.JavaScript" Code="function(item,context) { return 'Person'; }"/>
+              <Style t="ui.CollapsableSectionBox"/>
+            </Control>
+          </Control>
+        </Page>
+      </Var>
+      <Control t="ui.Document">
+        <Item t="data_items.Items" Items="%$Xtml/Control/Control%"/>
+        <Fields t="xtml_dt.ParamsAsFields" Component="ui.Section" Params="Title,CollaptionCookie"/>
+      </Control>
+      <ExpectedResult t="yesno.Contains">
+        <Text value="Title"/>
+      </ExpectedResult>
+    </Usage>
+    
+<Usage t="ui.ControlUsage" Of="xtml_dt.ParamsAsFields.Primitive.DefaultValue">
+      <Var name="Xtml" t="xml.Xml" DynamicContent="">
+        <Page t="bart.Page" ID="metadata" ContentType="metadata" Resource="MetaData">
+          <Control t="ui.List">
+            <Data t="text.Split"/>
+          </Control>
+        </Page>
+      </Var>
+      <Control t="ui.Document">
+        <Item t="data_items.Items" Items="%$Xtml/Control/Data%"/>
+        <Fields t="xtml_dt.ParamsAsFields" Component="text.Split" Params="Separator"/>
+      </Control>
+      <ExpectedResult t="yesno.Contains">
+        <Text value=","/>
+      </ExpectedResult>
+    </Usage>
+    
+<Usage t="ui.ControlUsage" Of="xtml_dt.PTSelectorField">
+  <Var name="Xtml" t="xml.Xml">
+    <Control t="ui.Section" Title="hello" />
+  </Var>
+  <Control t="ui.Document">
+    <Item t="data_items.Items" Items="%$Xtml%" />
+    <Fields t="xtml_dt.PTSelectorField" Type="ui.Control" /> 
+  </Control>
+  <ExpectedResult t="yesno.Contains">
+    <Text value="Section"/>
+    <Text value="Title"/>
+    <Text value="hello"/>
+  </ExpectedResult>
+</Usage>
+
+  <Component id="MySampleComponentEnums">
+    <Param name="Hobbies" type="dynamic_enum_multi">
+      <Options t="data.ListByCommas" List="swimming,tennis,rock climbing" />
+    </Param>
+    <Param name="Color" type="enum" Options="blue,yellow,red" />
+    <Param name="ContentType" type="dynamic_enum">
+      <Options t="data.ListByCommas" List="order,customer,contact" />
+      <OptionLabel t="text.Capitalize" Mode="capital each word" />
+    </Param>
+    <xtml t="ui.Text" Text="I like %$Hobbies%" />
+  </Component>
+
+<!-- Deprecated :-) -->
+
+  <Component id="SampleContext">
+    <xtml t="data.Struct">
+      <Item Name="Input">
+        <Value t="xml.Xml">
+          <person name="Homer" lastName="Simpson">
+            <child name="Bart" age="12" gender="male" />
+            <child name="Lisa" age="10" gender="female" />
+            <child name="Maggy" age="3" gender="female" />
+          </person>
+        </Value>
+      </Item>
+      <Item Name="context">
+        <Value t="xtml.ManualContext">
+          <Variables t="data.List">
+            <Item t="data.Struct">
+              <Item Name="Name" Value="Company" />
+              <Item Name="Value">
+                <Value t="xml.Xml">
+                  <company name="Microsoft">
+                    <contact name="John Gare" phone="137923" role="Manager" />
+                    <contact name="Jimm Hanoy" phone="712021" role="Secretary" />
+                  </company>
+                </Value>
+              </Item>
+            </Item>
+            <Item t="data.Struct">
+              <Item Name="Name" Value="Cities" />
+              <Item Name="Value">
+                <Value t="xml.Xml">
+                  <cities>
+                    <city name="New York" />
+                    <city name="London" />
+                    <city name="Paris" />
+                  </cities>
+                </Value>
+              </Item>
+            </Item>
+          </Variables>
+        </Value>
+      </Item>
+    </xtml>
+  </Component>
+
+<Usage t="ui.ControlUsage" Of="xtml_dt.Picklist.clear">
+      <Var name="Xtml" t="xml.Xml">
+        <Control t="ui.Section" Title="hello %@name%">
+          <Style t="ui.CollapsableSectionBox"/>
+        </Control>
+      </Var>
+      <Control t="ui.Document">
+        <Item t="data_items.Items" Items="%$Xtml%"/>
+        <Fields t="xtml_dt.ParamsAsFields" Component="ui.Section" Params="Title,Style"/>
+      </Control>
+      <RunOnControl t="action.RunActions">
+        <Action t="uiaction.FireEvent" Event="mousedown" RunOn=".fld_Style" />
+        <Action t="uiaction.Click" RunOn=".Clear" />
+      </RunOnControl>
+      <ExpectedResult t="yesno.NotContains" Text="Collapsable" />
+    </Usage>
+    
+</xtml>

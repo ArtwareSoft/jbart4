@@ -1,0 +1,216 @@
+<xtml package="true">
+
+<xtml ns="mobile" plugin="mobile">
+  
+  <Type id="ResultsPage" />
+  <Type id="SearchBoxStyle" style="true" customPT="mobile.CustomSearchBoxStyle" />
+
+  <Component id="IsMobilePhone" type="data.Boolean" execution="native" />
+  
+  <Component id="WidthOfMobilePhone" type="data.Boolean" execution="native" />
+
+  <Component id="CustomPage" title="ResultsPage" type="mobile.ResultsPage">
+    <Param name="Page" />
+    <xtml t="bart.PageByID" PageID="%$Page%" />
+  </Component>
+  
+  <Component id="DefaultSearchBoxStyle" type="mobile.SearchBoxStyle">
+    <xtml t="mobile.CustomSearchBoxStyle">
+      <Html>
+        <![CDATA[<div><input class="searchbox" placeholder="Search ..."></input>
+                      <span class="cancel_search"></span>
+                 </div>]]>
+      </Html>
+      <Css>
+        <![CDATA[ 
+                  #this .cancel_search { background: url(%$_Images%/cancel_search.png) no-repeat 0 0px;
+										width: 16px;
+										height: 16px;
+										display: inline-block;
+										vertical-align: top;
+										margin-top: 5px;
+										display:none; 
+										cursor:pointer;
+									}  
+									#this .searchbox { border-radius: 7px; border: 1px solid #CCC; padding: 3px 5px; color: #252525; width:100px; }
+									#this .searchbox:focus { width:250px; }
+									]]>
+      </Css>
+      <Javascript>
+        <![CDATA[ function(searchbox) { searchbox.applySearchBox('.searchbox');
+                                        searchbox.applyCancel('.cancel_search');
+         };]]>
+      </Javascript>
+    </xtml>
+  </Component>
+  
+  <Component id="GrowToFullWidth" type="mobile.SearchBoxStyle">
+  <xtml t="mobile.CustomSearchBoxStyle">
+    <Css>
+			<![CDATA[#this { padding:0; position:relative; } 
+			#this .cancel_search { 
+  color:#F8F8FF; font-weight:bold; font-size: 10.5px; height: 16px; 
+  border-radius: 4px; padding: 6px 12px 7px 12px; border: 1px solid #888; 
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#bbb), color-stop(100%,#555));  
+      display:none; 
+      cursor:pointer;
+      }  
+			.iphone #this .cancel_search { top:4px; }
+			#this .searchbox { -webkit-appearance: none; 
+			border: 1px solid #CCC; padding: 3px 10px; color: #252525; 
+			  width:95px; -webkit-box-shadow: inset 0 0 8px #ddd; font-size:12px;
+			  background1:white; border-radius: 13px;
+			height:20px; margin-top:1px; 
+			}
+			#this { margin:7px 0 0 5px; }
+			#this .searchbox { -webkit-transition: width 0.2s; }
+			]]>
+			    </Css>
+			    <Html>
+			<![CDATA[<div style1="position:relative;">
+			    <input class="searchbox" placeholder="Search ..." ></input>
+			    <span class="cancel_search">Cancel</span>
+			  <span class="focus_dummy" tabindex="0" />
+			</div>]]>
+			    </Html>
+			    <Javascript>
+			<![CDATA[ function(searchbox) {
+			   searchbox.applySearchBox('.searchbox');
+			   searchbox.applyCancel('.cancel_search');
+			   searchbox.OnFocus = function(input) {
+             jQuery(searchbox).find('.cancel_search').show();
+  			  input.style.width = aa_screen_size(true).width - 100 + 'px';
+			  };
+			   searchbox.OnCancel = function(input) {
+             jQuery(searchbox).find('.cancel_search').hide();
+			       input.style.width = '';
+			   };
+			};]]>
+			    </Javascript>
+  </xtml>
+  </Component>
+  
+  <Component id="CustomSearchBoxStyle" type="mobile.SearchBoxStyle">
+    <Param name="Html" codemirror="true" />
+    <Param name="Css" codemirror="true" />
+    <Param name="Javascript" codemirror="true" />
+    <Param name="DesignTime_Save">
+      <Field t="bart_dt.StyleSave" Type="button.Style" StylePT="ui.CustomStyle" />
+    </Param>
+    <ParamGenerator t="bart_dt.StyleGenerator" />
+    <xtml t="object.Object">
+      <TextProperty name="Html" value="%$Html%" />
+      <TextProperty name="Css" value="%$Css%" />
+      <TextProperty name="Javascript" value="%$Javascript%" />
+    </xtml> 
+  </Component>
+    
+   <Component id="MobileDefaultFeatures" type="bart.ApplicationFeature" execution="native" in_dt_tree="true">
+    <Param name="DisableScaling" type="data.Boolean" Default="true" />
+    <Param name="AutoHideAddressBar" type="data.Boolean" Default="true" />
+    <Param name="DisableTextAdjustionOnOrientation" type="data.Boolean" Default="true" />
+    <Param name="EliminateMarginsFromHtmlBody" type="data.Boolean" Default="true" Description="sets margin:0 and padding:0 to html body"/>
+   </Component>
+   
+  <Component id="MobileBottomPosition" type="field.FieldAspect" execution="native" desctiption="positions the field in the bottom of the screen. Handles iPhone issue that do not support position fixed.">
+    <Param name="PositionAbsoluteCss" Default="position:absolute; -webkit-transition:top 0.3s" />
+    <Param name="PositionFixedCss" Default="position:fixed; bottom:0px; " />
+  </Component>
+  
+  <Component id="MobileTopPosition" type="field.FieldAspect" execution="native" desctiption="positions the field in the top of the screen. Handles iPhone issue that do not support position fixed.">
+    <Param name="PositionFixedCss" Default="position:fixed; top:0px; " />
+    <Param name="PositionAbsoluteCss" Default="position:absolute; -webkit-transition:top 0.3s" />
+    <Param name="SimulatorCss" Default="position:absolute;" />
+    <Param name="UseAbsoluteWhenNoPositionFixed" type="data.Boolean" />
+  </Component>
+
+  <Component id="SimpleMobileVerticalScroll" type="scroll.Scroll" description="a simplified version of iscroll" execution="native" />
+
+  <Component id="HorizontalCurtain" type="field.Fields" description="An overlay page which opens and closes by horizontal touch" execution="native" >
+    <Param name="Field" type="field.Fields" light="false" script="true" essential="true"/>
+    <Param name="HandlersStyle" type="mobile_curtain.Style" script="true">
+      <Default t="mobile_curtain.GrayHandlers" />
+    </Param>
+    <Param name="StartAsOpen" type="data.Boolean" script="true" />
+    <Param name="ID" advanced="true" />
+    <Param name="OnClose" type="action.Action" script="true" advanced="true" />
+    <Param name="OnOpen" type="action.Action" script="true" advanced="true" />
+    <Param name="AutoMoveWithVerticalScroll" description="moves with vertical scroll to be always left to current scroll" type="data.Boolean" Default="true" />
+    <NativeHelper name="Page" t="field.ShowFieldControl" Item="%%">
+        <Field t="xtml.UseParam" Param="Field" />
+    </NativeHelper>
+  </Component>
+
+  <Component id="IsMobileCurtainOpen" type="data.Boolean" execution="native">
+    <Param name="CurtainId" />
+  </Component>
+
+  <Component id="SlideMobileCurtain" type="action.Action" execution="native" description="opens or closed mobile curtain">
+    <Param name="CurtainId" />
+    <Param name="SlideTo" type="enum" Options="open,close,toggle" Default="toggle"/>
+  </Component>
+
+  <Component id="MobileDetailsReplacingAll" type="uiaspect.OpenIn" execution="native">
+    <Param name="DetailsAnimation" type="animation.Animation" >
+      <Default t="animation.ComingFromRight" TransitionType="350ms" />
+    </Param>
+    <Param name="DetailsBackground" Default="white" />
+    <Param name="ListAnimation" type="animation.HideAnimation" >
+      <Default t="animation.GoingRight" TransitionType="350ms"/>
+    </Param>
+    <Param name="ListBackground" Default="white" />
+  </Component>
+
+</xtml>
+
+<xtml ns="mobile_curtain">
+
+  <Type id="Style" style="true" customPT="text_field.CustomStyle" />
+
+  <Component id="GrayHandlers" type="mobile_curtain.Style">
+      <xtml t="mobile_curtain.CustomStyle">
+        <Html>
+          <![CDATA[
+<div>
+  <img class="open_curtain" src="http://lh6.googleusercontent.com/-SC_mul3Mra0/T7tLTJbW0dI/AAAAAAAAIzw/lvUO2oUQWU4/s128/slide_to_left.png" width="23px" height="73px"/>
+  <img class="close_curtain" src="http://lh4.googleusercontent.com/-JcQypVc81wE/T7tLTFmA3WI/AAAAAAAAIzw/s1IfmJAWEw0/s128/slide_to_right2.png" width="23px" height="73px"/>
+</div>          
+          ]]>
+        </Html>
+        <Css>
+          <![CDATA[
+          .open_curtain { position:absolute; z-index:3; opacity:0.8; }
+          .close_curtain { position:absolute; z-index:3; opacity:0.8; } 
+          #cntr .aa_curtain { -webkit-transition: top 500ms; border:3px solid green;}
+          ]]>
+        </Css>
+        <Javascript>
+          <![CDATA[
+          function(curtain,context) {          
+            aa_addOnAttach(curtain, function() {
+                  var open_curtain = jQuery(curtain).find(".open_curtain")[0];
+                  var close_curtain = jQuery(curtain).find(".close_curtain")[0];
+                  var set_size = function() {
+                    open_curtain.style.top = close_curtain.style.top = aa_screen_size(true).height/2 - jQuery(open_curtain).height()/2 + "px";
+                    open_curtain.style.left = aa_screen_size(true).width - jQuery(open_curtain).width() + "px";
+                    close_curtain.style.left = aa_screen_size(true).width + "px";
+                  };
+                  set_size();
+                  window.addEventListener("resize", set_size);
+            });
+          }
+          ]]>
+        </Javascript>
+      </xtml>
+  </Component>
+
+  <Component id="CustomStyle" type="mobile_curtain.Style" customPT="true">
+    <Param name="Html" codemirror="true" light="false"/>
+    <Param name="Css" codemirror="true" light="false"/>
+    <Param name="Javascript" codemirror="true" light="false"/>
+    <ParamGenerator t="bart_dt.StyleGenerator" />
+    <xtml t="ui.CustomStyle" Html="%$Html%" Css="%$Css%" Javascript="%$Javascript%" />
+  </Component>
+
+</xtml>
+</xtml>

@@ -1,0 +1,94 @@
+<xtml ns="ui" jbart="true">
+
+  <Type id="SinglePage" />
+  <Type id="MultiplePage" />
+  <Type id="Page" />
+  <Type id="PageParams" />
+    
+  <Component id="CustomSinglePage" type="ui.SinglePage,ui.Page" light="false">
+    <Param name="Control" type="ui.Control" script="true"/>
+    <xtml t="object.Object">
+      <Method name="Control" t="xtml.UseParam" Param="Control" Input="%$_PageParams/DataItems/Items%" />
+    </xtml>
+  </Component>
+
+  <Component id="MultiplePage" type="ui.MultiplePage">
+    <Param name="FieldsFromList"/>
+    <Param name="Field" type="field.Fields[]" script="true"/>
+    <Param name="Operations" type="operation.Operations" script="true"/>
+    <Param name="Presentation" type="uiaspect.ItemListPresentation" script="true" >
+      <Default t="uiaspect.RichTable" />
+    </Param>
+    <Param name="Aspect" type="uiaspect.Aspect[]" script="true"/>
+    <Param name="ID"/>
+    <xtml t="object.Object">
+      <Property name="Fields" t="data.List">
+        <Item t="data.ItemsByIDs" List="%$_Cntr/Fields%" IDs="%$FieldsFromList%"/>
+        <Item t="xtml.UseParamArray" Param="Field"/>
+      </Property>
+      <Method name="Control" t="ui.ItemList" Items="%$_PageParams/DataItems%" ID="%$ID%" DataHolderCntr="true">
+        <Fields value="%$_This/Fields%" />
+        <Operations t="xtml.UseParam" Param="Operations"/>
+        <Presentation t="xtml.UseParam" Param="Presentation" />
+        <Aspect t="uiaspect.Permissions" WritableIf="false" Condition="%$_PageParams/ReadOnly%" />
+        <Aspect t="xtml.UseParamArray" Param="Aspect"/>
+        <Aspect t="object.RunMethod" Object="%$_PageParams%" Method="Aspect"/>
+      </Method>
+    </xtml>
+  </Component>
+
+  <Component id="ShowPage" type="ui.Control" category="page">
+    <Param name="Page" type="ui.Page"/>
+    <Param name="PageParams" type="ui.PageParams"/>
+    <xtml t="object.RunMethod" Object="%$Page%" Method="Control">
+      <Var name="_PageParams" value="%$PageParams%"/>
+    </xtml>
+  </Component>
+  
+    <Component id="OpenPage" type="action.Action" light="false">
+    <Param name="Page" type="dynamic_enum" Options="%$_AppContext/Pages/ID%" />
+    <Param name="ItemsToShow" description="E.g. %Items%" />
+    <Param name="SetResultPageFilters" advanced="true" type="data.Boolean"/>
+    <Param name="FilterField" advanced="true" description="field id in result page to be filtered by" />
+    <Param name="FilterValue" advanced="true" script="true" description="Value of the item in the original page to be filtered by" />
+    <Param name="OpenIn" type="uiaspect.OpenIn" script="true">
+      <Default t="uiaspect.DetailsInDialog" />
+    </Param>
+    <Param name="ReadOnly" type="data.Boolean" advanced="true" />
+    <xtml t="uiaspect.OpenPageFromDetails" >
+      <Page t="bart.PageByID" PageID="%$Page%" />
+      <OpenIn t="xtml.UseParam" Param="OpenIn" />
+      <PageParams t="ui.PageParams" ReadOnly="%$ReadOnly%" >
+        <DataItems t="data_items.Items" Items="%$ItemsToShow%">
+          <Condition t="yesno.NotEmpty" Data="%$ItemsToShow%"/>
+        </DataItems>
+        <UiPrefs t="xml.WithChanges" Condition="%$SetResultPageFilters%">
+          <Xml t="xml.Xml" />
+          <Change t="xml.SetAttribute" AttributeName="Filter_Field_%$FilterField%">
+            <Value t="xtml.UseParam" Param="FilterValue" />
+          </Change> 
+        </UiPrefs>
+      </PageParams>
+    </xtml>
+ </Component>
+    
+  
+  <Component id="ShowSinglePage" type="ui.Control" category="page" hidden="true">
+    <Param name="Page" type="ui.SinglePage"/>
+    <Param name="Item" type="data_items.Items"/>
+    <Param name="ReadOnly" type="data.Boolean" />
+    <xtml t="object.RunMethod" Object="%$Page%" Method="Control" >
+      <Var name="_PageParams" t="ui.PageParams" DataItems="%$Item%" ReadOnly="%$ReadOnly%" />
+    </xtml>
+  </Component>
+
+  <Component id="ShowMultiplePage" type="ui.Control" category="page" hidden="true">
+    <Param name="Page" type="ui.MultiplePage"/>
+    <Param name="Items" type="data_items.Items"/>
+    <Param name="ReadOnly" type="data.Boolean" />
+    <xtml t="object.RunMethod" Object="%$Page%" Method="Control">
+      <Var name="_PageParams" t="ui.PageParams" DataItems="%$Items%" ReadOnly="%$ReadOnly%" />
+    </xtml>
+  </Component>
+
+</xtml>

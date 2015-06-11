@@ -1,0 +1,1827 @@
+<xtml ns="css_dt" light="false">
+
+    <Component id="PositivePx" type="number.Format">
+      <xtml t="number.Format" Min="0" Max="" Symbol="px" DataString="%Value%%Symbol%" UseDynamicSymbol="true">
+        <DisplayString t="number.ByExpression" Expression="%Value%%Symbol%"/>
+      </xtml>
+    </Component>
+
+    <Component id="OffsetPx" type="number.Format">
+      <xtml t="number.Format" Min="" Max="" Symbol="px" DataString="%Value%%Symbol%" UseDynamicSymbol="true">
+        <DisplayString t="number.ByExpression" Expression="%Value%%Symbol%"/>
+      </xtml>
+    </Component>
+
+    <Component id="ColorLuminance" type="data.Data" execution="native">
+      <Param name="Color" essential="true"/>
+      <Param name="Luminance" description="0-1" essential="true"/>
+    </Component>
+
+    <Component id="LuminanceOfColors" type="data.Data" execution="native">
+      <Param name="BaseColor" essential="true"/>
+      <Param name="Color1" essential="true"/>
+      <Param name="Color2" essential="true"/>
+    </Component>
+
+    <Component id="RecalcGradient" type="action.Action">
+      <Param name="BackgroundImageElem"/>    
+      <xtml t="xml.ChangeXml" Xml="%%" Data="%$BackgroundImageElem%">
+        <Var name="BaseColor" value="%../background_color/@value%"/>    
+        <Var name="Color1" t="css_dt.ColorLuminance" Luminance="%@luminance%" Color="%$BaseColor%"/>    
+        <Var name="Color2" t="css_dt.ColorLuminance" Luminance="-%@luminance%" Color="%$BaseColor%"/>    
+        <Change t="xml.DeleteChildren"/>    
+        <Change t="xml.AddChildren" CloneChildren="true">
+          <Children t="xml.Xml" DynamicContent="true">
+            <ColorStop color="%$Color1%" pos="0\%"/>    
+          </Children>
+        </Change>
+        <Change t="xml.AddChildren" CloneChildren="true">
+          <Children t="xml.Xml" DynamicContent="true">
+            <ColorStop color="%$BaseColor%" pos="50\%"/>    
+          </Children>
+        </Change>
+        <Change t="xml.AddChildren" CloneChildren="true">
+          <Children t="xml.Xml" DynamicContent="true">
+            <ColorStop color="%$Color2%" pos="100\%"/>    
+          </Children>
+        </Change>
+      </xtml>
+    </Component>
+
+<Component id="CssEditor" type="section.Style">
+  <xtml t="ui.CustomStyle" base="section.Grey">
+    <Html><![CDATA[<div>
+  <div class="section_title_top">
+    <div class="section_title"/>
+  </div>
+  <div class="section_body"/>
+</div>]]></Html>
+    <Css><![CDATA[#this { width: 400px; }
+  #this >.section_title_top>.section_title {
+  padding-bottom: 3px;
+  color: #666;
+  font-weight: bold;
+  font-size: 11px;
+  font-family: "lucida grande",tahoma,verdana,arial,sans-serif;
+  text-transform:capitalize;
+}
+
+#this >.section_title_top {
+}
+]]></Css>
+    <Javascript><![CDATA[function(section) {  
+  section.setInnerHTML('.section_title',section.Title);  
+  section.addSectionBody('.section_body');
+}]]></Javascript>
+  </xtml>
+</Component>
+
+<Component id="MarginPadding" type="field.Fields">
+  <Param name="Type" type="enum" Options="padding,margin"/>
+  <xtml t="control.Layout" ID="%$Type%" Title="%$Type%">
+    <FieldAspect t="field_aspect.FieldData" FieldData="%{$Type}%"/>
+    <Style t="properties.TitlesAboveFields" HorizontalSpacing="15px" VerticalSpacing="8px"/>
+    <Field t="control.Layout" ID="Options" Title="Options">
+      <Layout t="layout.Vertical" Spacing=""/>
+      <Field t="fld.Field" FieldData="%!@type%" ID="type" Title="Type" gradientType="linear">
+        <FieldType t="fld_type.Picklist" AllowEmptyValue="false" AllowValueNotInOptions="">
+          <Options t="editable_picklist.OptionsByCommas" Options="separated,xy,unified"/>
+          <Style t="editable_picklist.RadioFadeRight">&#xa;              </Style>
+        </FieldType>
+        <FieldAspect t="field_feature.HandleEvent">
+          <Event t="field_feature.Update"/>
+          <Action t="operation.RunActions">
+            <Action t="field.RefreshField" FieldID="Options" Scope="screen" FireOnUpdate=""/>
+          </Action>
+        </FieldAspect>
+        <FieldAspect t="field_aspect.DefaultValue" Value="separated"/>
+      </Field>
+      <Field t="control.Layout" ID="Separated" Title="Separated">
+        <Layout t="layout.Vertical" Spacing="0"/>
+        <Field t="fld.Field" FieldData="%!@top%" ID="Top" Title="Top">
+          <FieldType t="fld_type.EditableNumber" NumberValidation="true">
+            <Style t="editable_number.Slider" Width="150px"/>
+            <Format t="css_dt.OffsetPx"/>
+          </FieldType>
+          <FieldAspect t="field_feature.Layout">
+            <Css><![CDATA[#this { margin-left: 96px; }
+#wrapper { }
+]]></Css>
+          </FieldAspect>
+        </Field>
+        <Field t="control.Layout" ID="Horizontal" Title="Horizontal">
+          <Layout t="layout.HorizontalCss3" Spacing="20px"/>
+          <Field t="fld.Field" ID="left" Title="Left" FieldData="%!@left%">
+            <FieldType t="fld_type.EditableNumber" NumberValidation="true">
+              <Style t="editable_number.Slider" Width="150px"/>
+              <Format t="css_dt.OffsetPx"/>
+            </FieldType>
+          </Field>
+          <Field t="fld.Field" FieldData="%!@right%" ID="Right" Title="Right">
+            <FieldType t="fld_type.EditableNumber" NumberValidation="true">
+              <Style t="editable_number.Slider" Width="150px"/>
+              <Format t="css_dt.OffsetPx"/>
+            </FieldType>
+          </Field>
+        </Field>
+        <Field t="fld.Field" ID="bottom" Title="Bottom" FieldData="%!@bottom%">
+          <FieldType t="fld_type.EditableNumber" NumberValidation="true">
+            <Style t="editable_number.Slider" Width="150px"/>
+            <Format t="css_dt.OffsetPx"/>
+          </FieldType>
+          <FieldAspect t="field_feature.Layout">
+            <Css><![CDATA[#this { margin-left: 96px; }
+#wrapper { }
+]]></Css>
+          </FieldAspect>
+        </Field>
+        <FieldAspect t="field_aspect.Hidden">
+          <OnCondition t="field_aspect.CheckConditionForEveryItem" DataForCondition="Item data" WhenHidden="Do not render">
+            <ShowCondition t="yesno.OR" Data="%@type%">
+              <Item t="yesno.EqualsTo" To="separated"/>
+              <Item t="yesno.IsEmpty"/>
+            </ShowCondition>
+          </OnCondition>
+        </FieldAspect>
+      </Field>
+      <Field t="control.Layout" ID="XY" Title="XY">
+        <Layout t="layout.Vertical" Spacing="0"/>
+        <Field t="fld.Field" FieldData="%!@y%" ID="Y" Title="Y">
+          <FieldType t="fld_type.EditableNumber" NumberValidation="true">
+            <Style t="editable_number.Slider" Width="150px"/>
+            <Format t="css_dt.OffsetPx"/>
+          </FieldType>
+          <FieldAspect t="field_feature.Layout">
+            <Css><![CDATA[#this { margin-left: 96px; }
+#wrapper { }
+]]></Css>
+          </FieldAspect>
+        </Field>
+        <Field t="fld.Field" FieldData="%!@x%" ID="X" Title="X">
+          <FieldType t="fld_type.EditableNumber" NumberValidation="true">
+            <Style t="editable_number.Slider" Width="150px"/>
+            <Format t="css_dt.OffsetPx"/>
+          </FieldType>
+        </Field>
+        <FieldAspect t="field_aspect.Hidden">
+          <OnCondition t="field_aspect.CheckConditionForEveryItem" ShowCondition="%@type% == 'xy'" DataForCondition="Item data" WhenHidden="Do not render"/>
+        </FieldAspect>
+      </Field>
+      <Field t="control.Layout" ID="Unified" Title="Unified">
+        <Layout t="layout.Vertical" Spacing="0"/>
+        <Field t="fld.Field" FieldData="%!@all%" ID="Top" Title="All">
+          <FieldType t="fld_type.EditableNumber" NumberValidation="true">
+            <Style t="editable_number.Slider" Width="150px"/>
+            <Format t="css_dt.OffsetPx"/>
+          </FieldType>
+        </Field>
+        <FieldAspect t="field_aspect.Hidden">
+          <OnCondition t="field_aspect.CheckConditionForEveryItem" DataForCondition="Item data" WhenHidden="Do not render" ShowCondition="%@type% == 'unified'"/>
+        </FieldAspect>
+      </Field>
+      <FieldAspect t="field_aspect.Hidden">
+        <OnCondition t="field_aspect.CheckConditionForEveryItem" DataForCondition="Item data" WhenHidden="Do not render" ShowCondition="%@error% == ''"/>
+      </FieldAspect>
+      <FieldAspect t="field_aspect.Title">
+        <Title t="data.Pipeline">
+          <Item t="xml.Tag"/>
+          <Item t="text.Capitalize"/>
+        </Title>
+      </FieldAspect>
+    </Field>
+    <Field t="control.Layout" ID="Group" Title="Error">
+      <Field t="control.Label" ID="error" Title="Error" Text="%@error%">
+        <Style t="ui.CustomCss" base="uitext.PlainText">
+          <Style t="uitext.PlainText"/>
+          <Css><![CDATA[#this { text-align:center; color:#B2B2B7; width: 300px; }
+]]></Css>
+        </Style>
+      </Field>
+      <Layout t="layout.Default"/>
+      <FieldAspect t="field_aspect.Hidden">
+        <OnCondition t="yesno.NotEmpty" Value="%@error%" CheckInnerText=""/>
+      </FieldAspect>
+      <FieldAspect t="field_aspect.Title">
+        <Title t="data.Pipeline">
+          <Item t="xml.Tag"/>
+          <Item t="text.Capitalize"/>
+        </Title>
+      </FieldAspect>
+    </Field>
+    <Layout t="layout.Default"/>
+    <SectionStyle t="css_dt.CssEditor"/>
+  </xtml>
+</Component>
+
+<Component id="EditorGroup" type="field.Fields">
+  <Param name="CssAsXml"/>
+  <Param name="Title" Default="Designer"/>
+  <Param name="ID"/>
+  <xtml t="control.Layout" ID="EditorGroup" Title="%$Title%">
+    <Layout t="ui.CustomCss" base="layout.Default">
+      <Style t="layout.Default"/>
+      <Css><![CDATA[#this {
+  width: 390px;
+  overflow-x: hidden;
+  font: Arial, Helvetica;
+}
+]]></Css>
+    </Layout>
+    <Field t="fld.Field" ID="selector" Title="Selector" FieldData="%$SelectorId%">
+      <FieldType t="fld_type.Picklist" AllowEmptyValue="" AllowValueNotInOptions="">
+        <Options t="editable_picklist.DynamicOptions" Options="%Css/@selector%" OptionCode="%%"/>
+        <Style t="editable_picklist.JBartPicklist" Width="150px"/>
+      </FieldType>
+      <FieldAspect t="field_feature.HandleEvent">
+        <Event t="field_feature.Update"/>
+        <Action t="field.RefreshField" FireOnUpdate="" FieldID="EditorTabs" Scope="screen"/>
+      </FieldAspect>
+      <FieldAspect t="field_feature.Layout">
+        <Css><![CDATA[#this { position:absolute; margin-top: -5px; margin-left: 230px; }
+#wrapper { }
+]]></Css>
+      </FieldAspect>
+    </Field>
+    <Field t="field.TabControl" RefreshTabsOnSelect="true" ID="EditorTabs">
+      <Field t="css_dt.LayoutGroup"/>
+      <Field t="css_dt.TextGroup"/>
+      <Field t="css_dt.ColorGroup"/>
+      <Field t="css_dt.EffectsGroup"/>
+      <Style t="ui.CustomCss" base="tabcontrol.Links">
+        <Style t="tabcontrol.Links"/>
+        <Css><![CDATA[#this >div>div.aatabs_tab { float: left; color:#002FA7; font-size: 11px; padding-top: 0; 
+  padding-right: 17px; padding-bottom: 0; padding-left: 0; 
+  margin-bottom: 7px; }
+#this >div>div>div.aatabs_tab_text { cursor: pointer; }
+#this >div>div.aa_selected_tab { font-weight:bold; text-decoration:underline; }
+#this >div>div { }
+#this >div>div>div.aatabs_tab_image { float: left; }
+#this >.aatabs_contents { padding-top: 5px; padding-right: 0; padding-bottom: 15px; 
+  padding-left: 0; border-top: 1px solid #ddd; clear: both; }
+.right2left #this >div>div.aatabs_tab { float: right; padding-top: 6px; 
+  padding-right: 6px; padding-bottom: 4px; 
+  padding-left: 15px; }
+.right2left #this >div>div>div.aatabs_tab_image { float: right; }
+.right2left #this >div>div>div.aatabs_tab_text { float: right; padding-top: 0; 
+  padding-right: 5px; 
+  padding-bottom: 0; padding-left: 0; }
+]]></Css>
+      </Style>
+      <FieldAspect t="field_aspect.FieldData" FieldData="%Css[@selector='{$SelectorId}']/Simplifiers%"/>
+      <FieldAspect t="field_aspect.RunAction">
+        <Action t="xml.RegisterModifyOnXml" SingletonId="jBStudioCssInner" Xml="%%">
+          <Action t="field.RefreshField" FireOnUpdate="" FieldID="jBStudioCssInner" Scope="screen"/>
+        </Action>
+      </FieldAspect>
+      <FieldAspect t="field_aspect.Variable" VarName="Selector" Value="%..%"/>
+      <Field t="control.Layout" ID="Debug" Title="Debug">
+        <Layout t="layout.Vertical" Spacing="0"/>
+        <Field t="fld.Field" Title="">
+          <FieldType t="fld_type.EditableText">
+            <Style t="editable_text.CodeMirror" Readonly="false" Autofocus="false" LineNumbers="false" LineWrapping="false" EnableFullScreen="true" Width="400px" Height="200px" Mode="javascript">&#xa;                </Style>
+          </FieldType>
+          <FieldData t="xml.XmlToText" PrettyPrint="true" Data="%..%"/>
+        </Field>
+        <FieldAspect t="field_aspect.Hidden">
+          <OnCondition t="field_aspect.CheckConditionForEveryItem" DataForCondition="Item data" WhenHidden="Do not render">
+            <ShowCondition t="data.JavaScript" Code="function(data,html_elem,context) { return window.location.href.indexOf('?widget=CssEditor') != -1; }"/>
+          </OnCondition>
+        </FieldAspect>
+      </Field>
+    </Field>
+    <FieldAspect t="field_aspect.FieldData" FieldData="%$CssAsXml%"/>
+    <FieldAspect t="field_aspect.Variable" VarName="SelectorId">
+      <Value t="data.WritableText" DefaultValue="%Css[1]/@selector%"/>
+    </FieldAspect>
+  </xtml>
+</Component>
+
+<Component id="LayoutGroup" type="field.Fields">
+  <xtml t="control.Layout" ID="LayoutGroup" Title="Layout">
+    <Layout t="layout.Default"/>
+    <Field t="control.PropertySheet" ID="Size" Title="Size">
+      <Style t="properties.TitlesAboveFields" HorizontalSpacing="15px" VerticalSpacing="8px"/>
+      <Field t="fld.Field" FieldData="%!width/@value%" ID="width" Title="Width">
+        <FieldType t="fld_type.EditableNumber" NumberValidation="false" AllowEmptyValue="true">
+          <Style t="ui.CustomCss" base="editable_number.Slider">
+            <Style t="editable_number.Slider" Width="120px"/>
+            <Css><![CDATA[#this { height: 30px; padding-top: 0px; padding-right: 0px; padding-bottom: 0px; 
+  padding-left: 12px; }
+.aa_slider_scale { position:relative; float: left; background-color:#aaa; width: 120px; 
+  height: 1px; border-radius: 3px; margin-top: 13px; margin-right: 6px; 
+  margin-bottom: 13px; margin-left: 6px; 
+  border-bottom: 1px solid #efefef; }
+.aa_slider_thumb { cursor: pointer; position: absolute; color:black; 
+  background-color:#efefef; width: 6px; height: 13px; 
+  border-radius: 2px; border: 1px solid #adadad; 
+  box-shadow:  inset 0 0 3px 0px          grey; top: -7px; left: 0px; }
+.aa_slider_thumb:hover { background-color:#eee; border-color: #777; }
+.aa_slider_scale:hover .aa_slider_text { color:black; }
+.aa_slider_thumb:focus { background-color:#383838; }
+.aa_slider_text { color:#aaa; font-size: 10px; margin-top: -12px; margin-right: 0px; 
+  margin-bottom: 0px; margin-left: -19px; }
+#this.empty_value { opacity: 0.5; -webkit-transition: opacity, 0.5s; }
+.aa_slider_text:hover { cursor: pointer; text-decoration:underline; }
+.aa_slider_input { position:absolute; width: 98px; height: 20px; border-radius: 6px; 
+  padding-top: 4px; padding-right: 4px; padding-bottom: 4px; 
+  padding-left: 18px; margin-top: -13px; margin-left: 24px; 
+  border: 1px solid #D1D1D1; 
+  box-shadow:  2px 2px 6px 1px       grey; }
+.aa_slider_thumb.aa_disabled { opacity: 0.5; }
+.aa_slider_text.aa_disabled { opacity: 0.5; }
+.aa_slider_scale.aa_disabled { opacity: 0.5; }
+]]></Css>
+          </Style>
+          <Unit t="css_dt.PositivePx"/>
+          <Format t="css_dt.PositivePx">&#xa;              </Format>
+        </FieldType>
+        <FieldAspect t="field_aspect.DisableByCondition" DisableText="%width/@error%">
+          <EnableCondition t="yesno.IsEmpty" Value="%width/@error%"/>
+        </FieldAspect>
+        <FieldAspect t="field_aspect.RefreshDependentFields" FieldsIds="Overflow_group" RefreshOn="every click" RefreshScope="screen"/>
+      </Field>
+      <Field t="fld.Field" FieldData="%!height/@value%" ID="height" Title="Height">
+        <FieldType t="fld_type.EditableNumber" NumberValidation="true">
+          <Style t="editable_number.Slider" Width="120px"/>
+          <Format t="css_dt.PositivePx">&#xa;              </Format>
+        </FieldType>
+        <FieldAspect t="field_aspect.DisableByCondition" DisableText="%height/@error%">
+          <EnableCondition t="yesno.IsEmpty" Value="%height/@error%"/>
+        </FieldAspect>
+        <FieldAspect t="field_aspect.RefreshDependentFields" FieldsIds="Overflow_group" RefreshOn="every click" RefreshScope="screen"/>
+      </Field>
+      <Field t="fld.Field" FieldData="%!float/@value%" ID="float" Title="Float">
+        <FieldType t="fld_type.Picklist" AllowEmptyValue="true" AllowValueNotInOptions="">
+          <Options t="editable_picklist.OptionsByCommas" Options="left,right"/>
+          <Style t="ui.CustomCss" base="editable_picklist.JBartPicklist">
+            <Style t="editable_picklist.JBartPicklist" Width="60px"/>
+            <Css><![CDATA[#this { display: inline-block; }
+.aa_picklist_div { cursor: arrow; overflow: hidden; text-overflow:ellipsis; 
+  position: relative; white-space:absolute; 
+  background:url(_jbartImages_/css/shadow2.png) repeat-x scroll 0 0 transparent; 
+  text-overflow:ellipsis; font-size: 11px; width: 60px; height: 14px; 
+  padding-top: 3px; padding-right: 3px; padding-bottom: 3px; 
+  padding-left: 3px; border: 1px solid #BDC7D8; }
+.aa_picklist_div>.aa_picklist_text { vertical-align:top; display: inline-block; }
+.aa_picklist_div>.aa_picklist_image { padding-right: 5px; display: inline-block; }
+.aa_picklist_div>.aa_picklist_drop_image { position: absolute; right: 20px; top: 6px; 
+  display: inline-block; }
+.aa_picklist_div:hover .aa_picklist_drop_image:before,
+.aa_picklist_div:hover .aa_picklist_drop_image:after,
+.aa_picklist_div.aa_opened_popup .aa_picklist_drop_image:before,
+.aa_picklist_div.aa_opened_popup .aa_picklist_drop_image:after { 
+  background:#528DD1; 
+  }
+.aa_picklist_drop_image:before, .aa_picklist_drop_image:after { position: absolute; 
+  background:#8EB5E2; 
+  width: 3px; 
+  height: 8px; 
+  border-radius: 2px 2px 0 0; 
+  content: ""; 
+  left: 10px; top: 0; 
+  -moz-border-radius: 2px 2px 0 0; 
+  -webkit-transform: rotate(-45deg); 
+  -moz-transform: rotate(-45deg); 
+  -ms-transform: rotate(-45deg); 
+  -o-transform: rotate(-45deg); 
+  transform: rotate(-45deg); 
+  -webkit-transform-origin: 0 100\%; 
+  -moz-transform-origin: 0 100\%; 
+  -ms-transform-origin: 0 100\%; 
+  -o-transform-origin: 0 100\%; 
+  transform-origin: 0 100\%; 
+  }
+.aa_picklist_drop_image:after { left: 8px; -webkit-transform: rotate(45deg); 
+  -moz-transform: rotate(45deg); 
+  -ms-transform: rotate(45deg); 
+  -o-transform: rotate(45deg); 
+  transform: rotate(45deg); 
+  -webkit-transform-origin: 100\% 100\%; 
+  -moz-transform-origin: 100\% 100\%; 
+  -ms-transform-origin: 100\% 100\%; 
+  -o-transform-origin: 100\% 100\%; 
+  transform-origin :100\% 100\%; }
+.aa_picklist.aa_error #this .aa_picklist_div { background:#fbebeb; 
+  border: 1px solid #feb2b2; }
+.aa_picklist_div>.aa_picklist_text.placeholder { color:#8B8B8B; font-style:italic; }
+#popup.aa_picklist_popup { background:white; padding-top: 0; padding-right: 0; 
+  padding-bottom: 2px; padding-left: 0; 
+  border: 1px solid gray; 
+  box-shadow:  2px 2px 7px 1px rgba(50,50,50,0.5); 
+  overflow-y: auto; overflow-x: hidden; font:12px times; 
+  min-height:50px; max-height:200px; }
+#popup.aa_picklist_popup:focus { outline: none; }
+.ie #popup.aa_picklist_popup { border: 1px solid black; }
+#popup.aa_picklist_popup.aa_hide_searchbox .aa_picklist_popup_input { 
+  display: none; 
+  }
+#popup.aa_picklist_popup .aa_picklist_popup_input { font-size: 11px; width: 100\%; 
+  height: 22px; padding-top: 3px; 
+  padding-right: 3px; 
+  padding-bottom: 3px; 
+  padding-left: 3px; 
+  border-bottom: 1px solid rgba(82, 168, 236, 0.8); 
+  box-sizing: border-box; 
+  outline: none; }
+#popup.aa_picklist_popup .aa_picklist_popup_input:focus { outline: 0; }
+#popup.aa_picklist_popup .aa_picklist_item { cursor: pointer; width: 100\%; 
+  height: 18px; clear: both; }
+#popup.aa_picklist_popup .aa_picklist_item:focus { outline: none; }
+#popup.aa_picklist_popup .aa_picklist_item_image { float:left; padding-top: 1px; 
+  padding-right: 5px; 
+  padding-bottom: 0; 
+  padding-left: 3px; }
+#popup.aa_picklist_popup .aa_picklist_item_image img { height: 14px; }
+#popup.aa_picklist_popup .aa_picklist_item.selected { background:#D9E8FB; }
+#popup.aa_picklist_popup .aa_picklist_item_text { cursor:pointer; 
+  white-space:absolute; 
+  padding-top: 2px; 
+  padding-right: 4px; 
+  padding-bottom: 2px; 
+  padding-left: 4px; }
+#popup.aa_picklist_popup .aa_highlight { color:blue; }
+#popup.aa_picklist_popup .aa_picklist_no_results { padding-top: 3px; 
+  padding-right: 5px; 
+  padding-bottom: 3px; 
+  padding-left: 5px; }
+#popup.aa_picklist_popup .aa_picklist_show_all { cursor: pointer; color:#333; 
+  padding-top: 5px; 
+  padding-right: 5px; 
+  padding-bottom: 5px; 
+  padding-left: 5px; }
+]]></Css>
+          </Style>
+        </FieldType>
+      </Field>
+    </Field>
+    <Field t="control.Layout" ID="Overflow_group" Title="Group">
+      <Field t="control.PropertySheet" ID="Overflow_properties" Title="Overflow">
+        <Style t="properties.TitlesAboveFields" HorizontalSpacing="25px" VerticalSpacing="10px"/>
+        <Field t="fld.Field" FieldData="%!overflow_x/@value%" ID="overflow_x" Title="Overflow X">
+          <FieldType t="fld_type.Picklist" AllowEmptyValue="true" AllowValueNotInOptions="true">
+            <Options t="editable_picklist.OptionsByCommas" Options="visible,hidden,scroll,auto"/>
+            <Style t="editable_picklist.JBartPicklist" Width="70px"/>
+          </FieldType>
+        </Field>
+        <Field t="fld.Field" FieldData="%!overflow_y/@value%" ID="overflow_y" Title="Overflow Y">
+          <FieldType t="fld_type.Picklist" AllowEmptyValue="true" AllowValueNotInOptions="true">
+            <Options t="editable_picklist.OptionsByCommas" Options="visible,hidden,scroll,auto"/>
+            <Style t="editable_picklist.JBartPicklist" Width="70px"/>
+          </FieldType>
+        </Field>
+        <FieldAspect t="field_aspect.Hidden">
+          <OnCondition t="field_aspect.CheckConditionForEveryItem" DataForCondition="Item data" WhenHidden="Do not render">
+            <ShowCondition t="yesno.OR">
+              <Item t="yesno.NotEmpty" Value="%width/@value%"/>
+              <Item t="yesno.NotEmpty" Value="%height/@value%"/>
+            </ShowCondition>
+          </OnCondition>
+        </FieldAspect>
+        <Field t="fld.Field" FieldData="%!overflow/@value%" ID="overflow" Title="Overflow">
+          <FieldType t="fld_type.Picklist" AllowEmptyValue="true" AllowValueNotInOptions="true">
+            <Options t="editable_picklist.OptionsByCommas" Options="visible,hidden,scroll,auto"/>
+            <Style t="editable_picklist.JBartPicklist" Width="70px"/>
+          </FieldType>
+        </Field>
+        <Field t="fld.Field" FieldData="%!box_sizing/@value%" ID="overflow" Title="Box Sizing">
+          <FieldType t="fld_type.Picklist" AllowEmptyValue="true" AllowValueNotInOptions="true">
+            <Options t="editable_picklist.OptionsByCommas" Options="content-box,border-box"/>
+            <Style t="editable_picklist.JBartPicklist" Width="70px"/>
+          </FieldType>
+        </Field>
+      </Field>
+      <Layout t="layout.Default"/>
+    </Field>
+    <Field t="css_dt.MarginPadding" Type="margin"/>
+    <Field t="css_dt.MarginPadding" Type="padding"/>
+    <Field t="css_dt.AbsoluteGroup"/>
+    <Field t="fld.Field" ID="jBStudioCssInner" Title="CssText">
+      <FieldType t="fld_type.EditableText">
+        <Style t="editable_text.CodeMirror" Readonly="false" Autofocus="false" LineNumbers="false" LineWrapping="true" EnableFullScreen="true" Width="400px" Height="32px" Mode="javascript"/>
+      </FieldType>
+      <FieldData t="css_dt.Xml2Css">
+        <Xml t="data.Pipeline">
+          <Item value="%..%"/>
+          <Aggregator t="xml.Wrap" HeadTag="Block"/>
+        </Xml>
+      </FieldData>
+    </Field>
+  </xtml>
+</Component>
+
+<Component id="AbsoluteGroup" type="field.Fields">
+  <xtml t="control.Layout" ID="AbsoluteGroup" Title="position">
+    <Layout t="layout.Vertical" Spacing="0"/>
+    <Field t="fld.Field" FieldData="%!position/@value%" ID="position_picklist" Title="position">
+      <FieldType t="fld_type.Picklist" AllowEmptyValue="true" AllowValueNotInOptions="">
+        <Options t="editable_picklist.OptionsTable">
+          <Option t="editable_picklist.Option" Code="absolute" DisplayName="absolute"/>
+          <Option t="editable_picklist.Option" Code="relative" DisplayName="relative"/>
+          <Option t="editable_picklist.Option" Code="fixed" DisplayName="fixed"/>
+          <Option t="editable_picklist.Option" Code="" DisplayName="none"/>
+        </Options>
+        <Style t="editable_picklist.RadioFadeRight"/>
+      </FieldType>
+      <FieldAspect t="field_feature.HandleEvent">
+        <Event t="field_feature.Update"/>
+        <Action t="field.RefreshField" FireOnUpdate="" FieldID="AbsoluteGroup" Scope="screen"/>
+      </FieldAspect>
+    </Field>
+    <Field t="control.Layout" ID="PositionSliders" Title="PositionSliders">
+      <Layout t="layout.Vertical" Spacing="0"/>
+      <Field t="control.PropertySheet" ID="Fields1" Title="ZIndex" gradientType="linear">
+        <Style t="properties.TitlesAboveFields" HorizontalSpacing="15px" VerticalSpacing="8px"/>
+        <Field t="fld.Field" FieldData="%!z_index/@value%" ID="Z_Index" Title="Z Index">
+          <FieldType t="fld_type.EditableNumber" NumberValidation="true">
+            <Style t="ui.CustomCss" base="editable_number.JBartNumberTextbox">
+              <Style t="editable_number.JBartNumberTextbox"/>
+              <Css><![CDATA[#this { 
+  background:url(_jbartImages_/css/shadow2.png) repeat-x scroll 0 0 transparent; 
+  font-size: 11px; width: 50px; height: 16px; padding-top: 3px; padding-right: 3px; 
+  padding-bottom: 3px; padding-left: 3px; border: 1px solid #BDC7D8; }
+#this:focus { 
+  box-shadow:  inset 0 1px 1px 0 rgba(0, 0, 0, 0.075),  0 0 8px 0 rgba(82, 168, 236, 0.6); 
+  border-color: rgba(82, 168, 236, 0.8); outline: 0; 
+  outline: thin dotted 9; }
+]]></Css>
+            </Style>
+            <Format t="number.Format">
+              <DisplayString t="number.ByExpression" Expression="%Symbol%%Value%"/>
+            </Format>
+          </FieldType>
+        </Field>
+        <FieldAspect t="field_feature.Layout">
+          <Css><![CDATA[#this {
+  position:absolute;
+  z-index: 1000;
+  top: -10px;right: 20px;
+}
+#wrapper {
+}
+]]></Css>
+        </FieldAspect>
+      </Field>
+      <Field t="fld.Field" FieldData="%!top/@value%" ID="Top" Title="Top">
+        <FieldType t="fld_type.EditableNumber" NumberValidation="true">
+          <Style t="editable_number.Slider" Width="150px"/>
+          <Format t="css_dt.OffsetPx"/>
+        </FieldType>
+        <FieldAspect t="field_feature.Layout">
+          <Css><![CDATA[#this { margin-left: 96px; }
+#wrapper { }
+]]></Css>
+        </FieldAspect>
+      </Field>
+      <Field t="control.Layout" ID="Horizontal" Title="Horizontal">
+        <Layout t="layout.HorizontalCss3" Spacing="20px"/>
+        <Field t="fld.Field" ID="left" Title="Left" FieldData="%!left/@value%">
+          <FieldType t="fld_type.EditableNumber" NumberValidation="true">
+            <Style t="editable_number.Slider" Width="150px"/>
+            <Format t="css_dt.OffsetPx"/>
+          </FieldType>
+        </Field>
+        <Field t="fld.Field" FieldData="%!right/@value%" ID="Right" Title="Right">
+          <FieldType t="fld_type.EditableNumber" NumberValidation="true">
+            <Style t="editable_number.Slider" Width="150px"/>
+            <Format t="css_dt.OffsetPx"/>
+          </FieldType>
+        </Field>
+      </Field>
+      <Field t="fld.Field" ID="bottom" Title="Bottom" FieldData="%!bottom/@value%">
+        <FieldType t="fld_type.EditableNumber" NumberValidation="true">
+          <Style t="editable_number.Slider" Width="150px"/>
+          <Format t="css_dt.OffsetPx"/>
+        </FieldType>
+        <FieldAspect t="field_feature.Layout">
+          <Css><![CDATA[#this { margin-left: 96px; }
+#wrapper { }
+]]></Css>
+        </FieldAspect>
+      </Field>
+      <FieldAspect t="field_aspect.Hidden">
+        <OnCondition t="field_aspect.CheckConditionForEveryItem" DataForCondition="Item data" WhenHidden="Do not render">
+          <ShowCondition t="yesno.And" Data="%position/@value%">
+            <Item t="yesno.NotEmpty" Value="%%">&#xa;              </Item>
+            <Item t="yesno.NotEqualsTo" To="none"/>
+          </ShowCondition>
+        </OnCondition>
+      </FieldAspect>
+      <FieldAspect t="field_feature.Layout">
+        <Css><![CDATA[#this { position:relative; }
+#wrapper { }
+]]></Css>
+      </FieldAspect>
+    </Field>
+    <FieldAspect1 t="field_aspect.Hidden">
+      <OnCondition t="field_aspect.CheckConditionForEveryItem" ShowCondition="%position/@value% == 'absolute'" DataForCondition="Item data" WhenHidden="Do not render"/>
+    </FieldAspect1>
+    <Style t="properties.TitlesAboveFields" HorizontalSpacing="15px" VerticalSpacing="8px"/>
+    <FieldAspect t="field_feature.Layout">
+      <Css><![CDATA[#this { width: 400px; }
+#wrapper { }
+]]></Css>
+    </FieldAspect>
+    <SectionStyle t="css_dt.CssEditor"/>
+  </xtml>
+</Component>
+
+<Component id="TextGroup" type="field.Fields">  <xtml t="control.Layout" ID="TextGroup" Title="Text">    <Layout t="layout.Vertical" Spacing="10px"/>    <Field t="control.PropertySheet" ID="Fields" Title="Fields">      <Style t="ui.CustomCss" base="properties.TitlesAboveFields">        <Style t="properties.TitlesAboveFields" HorizontalSpacing="23px" VerticalSpacing="8px"/>        <Css><![CDATA[#this>.aa_property {
+  float: left;
+}
+#this>.aa_property:not(:first-child) {
+  padding-left: 24px;
+}
+#this>.aa_property>.aa_property_title {
+  font-family: "lucida grande",tahoma,verdana,arial,sans-serif;
+  color:#666;
+  font-weight:bold;
+  font-size: 11px;
+  padding-bottom: 3px;
+}
+#this>.aa_property>.aa_property_content {
+  padding-bottom: 8px;
+  vertical-align: top;
+}
+#this {
+}
+]]></Css>      </Style>      <Field t="fld.Field" ID="font_size" Title="Font Size" FieldData="%!font_size/@value%">        <FieldType t="fld_type.EditableNumber" NumberValidation="true">          <Style t="editable_number.Slider" Width="100px"/>          <Format t="number.Format" Min="0" Max="" Symbol="px" DataString="%Value%%Symbol%" UseDynamicSymbol="true">            <DisplayString t="number.ByExpression" Expression="%Value%%Symbol%"/>          </Format>        </FieldType>      </Field>      <Field t="fld.Field" FieldData="%!font_family/@value%" ID="font_family" Title="Family">        <FieldType t="fld_type.Picklist" AllowEmptyValue="true" AllowValueNotInOptions="true">          <Options t="editable_picklist.DynamicOptions" OptionCode="%@family%" OptionDisplayName="%@name%">            <Options t="data.Pipeline">              <Item t="css_dt.Fonts"/>            </Options>          </Options>          <Style t="ui.CustomStyle" base="editable_picklist.JBartPicklist">            <Html><![CDATA[<div>
+  <div class="aa_picklist_div">
+    <div class="aa_picklist_image"/>
+    <div class="aa_picklist_text"/>
+    <div class="aa_picklist_drop_image"/>
+  </div>
+  <div class="aa_picklist_popup">
+    <div>
+      <input class="aa_picklist_popup_input" />
+      <div>
+        <div class="aa_picklist_item">
+          <div class="aa_picklist_item_image" />
+          <div class="aa_picklist_item_text" />
+        </div>
+        <div class="aa_picklist_no_results" />
+        <div class="aa_picklist_show_all" />
+      </div>
+    </div>
+  </div>
+</div>]]></Html>            <Css><![CDATA[#this {
+  display: inline-block;
+}
+.aa_picklist_div {
+  position: relative;
+  cursor: arrow;
+  width: 100px;
+  height: 14px;
+  border: 1px solid #BDC7D8;
+  font-size: 11px;
+  padding: 3px;
+  background: url(_jbartImages_/css/shadow2.png) repeat-x scroll 0 0 transparent;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow:ellipsis;
+}
+.aa_picklist_div:focus {
+  border-color: rgba(82, 168, 236, 0.8);
+  outline: 0;
+  outline: thin dotted 9;
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(82, 168, 236, 0.6);
+}
+.aa_picklist_div>.aa_picklist_text {
+  vertical-align:top;
+  display: inline-block;
+}
+.aa_picklist_div>.aa_picklist_image {
+  display: inline-block;
+  padding-right: 5px;
+}
+.aa_picklist_div>.aa_picklist_drop_image {
+  position: absolute;
+  right: 20px;
+  top: 6px;
+  display: inline-block;
+}
+.aa_picklist_div:hover .aa_picklist_drop_image:before,
+.aa_picklist_div:hover .aa_picklist_drop_image:after,
+.aa_picklist_div.aa_opened_popup .aa_picklist_drop_image:before,
+.aa_picklist_div.aa_opened_popup .aa_picklist_drop_image:after
+{
+  background: #528DD1;
+}
+.aa_picklist_drop_image:before, .aa_picklist_drop_image:after {
+  position: absolute;
+  background: #8EB5E2;
+  width: 3px;
+  height: 8px;
+  border-radius: 2px 2px 0 0;
+  content: "";
+  left: 10px;
+  top: 0;
+  -moz-border-radius: 2px 2px 0 0;
+  -webkit-transform: rotate(-45deg);
+  -moz-transform: rotate(-45deg);
+  -ms-transform: rotate(-45deg);
+  -o-transform: rotate(-45deg);
+  transform: rotate(-45deg);
+  -webkit-transform-origin: 0 100%;
+  -moz-transform-origin: 0 100%;
+  -ms-transform-origin: 0 100%;
+  -o-transform-origin: 0 100%;
+  transform-origin: 0 100%;
+}
+.aa_picklist_drop_image:after {
+  left: 8px;
+  -webkit-transform: rotate(45deg);
+  -moz-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  -o-transform: rotate(45deg);
+  transform: rotate(45deg);
+  -webkit-transform-origin: 100% 100%;
+  -moz-transform-origin: 100% 100%;
+  -ms-transform-origin: 100% 100%;
+  -o-transform-origin: 100% 100%;
+  transform-origin :100% 100%;
+}
+
+.aa_picklist.aa_error #this .aa_picklist_div {
+  background:#fbebeb;
+  border: 1px solid #feb2b2;
+}
+.aa_picklist_div>.aa_picklist_text.placeholder {
+  font-style: italic;
+  color: #8B8B8B;
+}
+#popup.aa_picklist_popup {
+  padding: 0 0 2px 0;
+  box-shadow: 2px 2px 7px 1px rgba(50,50,50,0.5);
+  overflow-y: auto;
+  overflow-x: hidden;
+  font:12px times;
+  background: white;
+  border: 1px solid gray;
+  min-height:50px;
+  max-height:200px;
+}
+#popup.aa_picklist_popup:focus {
+  outline: none;
+}
+.ie #popup.aa_picklist_popup {
+  border: 1px solid black;
+}
+#popup.aa_picklist_popup.aa_hide_searchbox .aa_picklist_popup_input {
+  display: none;
+}
+#popup.aa_picklist_popup .aa_picklist_popup_input {
+  font-size: 11px;
+  width: 100%;
+  box-sizing: border-box;
+  height: 22px;
+  padding-top: 3px;
+  padding-right: 3px;
+  padding-bottom: 3px;
+  padding-left: 3px;
+  border-top:none;
+  border-left:none;
+  border-right:none;
+  border-bottom: 1px solid rgba(82, 168, 236, 0.8);
+  outline: none;
+}
+#popup.aa_picklist_popup .aa_picklist_popup_input:focus {
+  outline: 0;
+}
+#popup.aa_picklist_popup .aa_picklist_item {
+  cursor: pointer;
+  width: 100%;
+  height:18px;
+  clear: both;
+}
+#popup.aa_picklist_popup .aa_picklist_item:focus {
+  outline: none;
+}
+#popup.aa_picklist_popup .aa_picklist_item_image {
+  float:left;
+  padding: 1px 5px 0 3px;
+}
+#popup.aa_picklist_popup .aa_picklist_item_image img {
+  height:14px;
+}
+#popup.aa_picklist_popup .aa_picklist_item.selected {
+  background: #D9E8FB;
+}
+#popup.aa_picklist_popup .aa_picklist_item_text {
+  cursor:pointer;
+  padding-top: 2px;
+  padding-right: 4px;
+  padding-bottom: 2px;
+  padding-left: 4px;
+  white-space: nowrap;
+}
+#popup.aa_picklist_popup .aa_highlight {
+  color: blue;
+}
+#popup.aa_picklist_popup .aa_picklist_no_results {
+  padding: 3px 5px;
+}
+#popup.aa_picklist_popup .aa_picklist_show_all {
+  padding: 5px 5px;
+  cursor: pointer;
+  color: #333;
+}
+]]></Css>            <Javascript><![CDATA[function render(picklist) { 
+    aa_bind(picklist.field,'picklistRenderOption',function(settings) { 
+    $(settings.optionTextEl).css('font-family',settings.option.code); 
+  });
+  aa_picklist(picklist);
+}]]></Javascript>          </Style>        </FieldType>      </Field>      <Field t="fld.Field" FieldData="%!text_transform/@value%" ID="font_transform" Title="Transform">        <FieldType t="fld_type.Picklist" AllowEmptyValue="true" AllowValueNotInOptions="true">          <Options t="editable_picklist.OptionsByCommas" Options="capitalize,uppercase,lowercase"/>          <Style t="editable_picklist.JBartPicklist" Width="100px">&#xa;              </Style>        </FieldType>      </Field>      <FieldAspect t="field_feature.Css">        <Css><![CDATA[#this {
+}
+#wrapper {
+}
+.aa_property:first-of-type>.aa_property_title {
+  margin-left: 13px;
+}
+]]></Css>      </FieldAspect>    </Field>    <Field t="control.PropertySheet" ID="Fields1" Title="Fields">      <Style t="properties.TitlesAboveFields" HorizontalSpacing="29px" VerticalSpacing="8px"/>      <Field t="fld.Field" FieldData="%!line_height/@value%" ID="line_height" Title="Line Height">        <FieldType t="fld_type.EditableNumber" NumberValidation="true">          <Style t="editable_number.Slider" Width="97px"/>          <Format t="css_dt.PositivePx">&#xa;              </Format>        </FieldType>      </Field>      <Field t="fld.Field" FieldData="%!font_weight/@value%" ID="font_weight" Title="Bold (Weight)">        <FieldType t="fld_type.Picklist" AllowEmptyValue="true" AllowValueNotInOptions="true">          <Options t="editable_picklist.OptionsByCommas" Options="bold,bolder,lighter,100,200,300,400,500,600,700,800,900"/>          <Style t="editable_picklist.JBartPicklist" Width="100px">&#xa;              </Style>        </FieldType>      </Field>      <Field t="fld.Field" FieldData="%!font_style/@value%" ID="font_style" Title="Font Style">        <FieldType t="fld_type.Picklist" AllowEmptyValue="true" AllowValueNotInOptions="true">          <Options t="editable_picklist.OptionsByCommas" Options="normal,italic,oblique"/>          <Style t="editable_picklist.JBartPicklist" Width="100px">&#xa;              </Style>        </FieldType>      </Field>      <FieldAspect t="field_feature.Css">        <Css><![CDATA[.aa_property:first-of-type>.aa_property_title {
+  margin-left: 13px;
+}]]></Css>      </FieldAspect>    </Field>    <Field t="control.PropertySheet" ID="Fields1" Title="Fields">      <Style t="properties.TitlesAboveFields" HorizontalSpacing="24px" VerticalSpacing="8px"/>      <Field t="fld.Field" FieldData="%!text_align/@value%" ID="line_height" Title="Align">        <FieldType t="fld_type.Picklist" AllowEmptyValue="true" AllowValueNotInOptions="true">          <Options t="editable_picklist.OptionsTable">            <Option t="editable_picklist.Option" Code="left" DisplayName="left"/>            <Option t="editable_picklist.Option" Code="right" DisplayName="right"/>            <Option t="editable_picklist.Option" Code="center" DisplayName="center"/>            <Option t="editable_picklist.Option" Code="justify" DisplayName="justify (stretch)"/>          </Options>          <Style t="editable_picklist.JBartPicklist" Width="100px"/>        </FieldType>      </Field>      <Field t="fld.Field" FieldData="%!text_overflow/@value%" ID="Overflow" Title="Overflow">        <FieldType t="fld_type.Picklist" AllowEmptyValue="true" AllowValueNotInOptions="true">          <Options t="editable_picklist.OptionsByCommas" Options="ellipsis,clip"/>          <Style t="ui.CustomCss" base="editable_picklist.JBartPicklist">            <Style t="editable_picklist.JBartPicklist"/>            <Css><![CDATA[#this { display: inline-block; }
+.aa_picklist_div { cursor: arrow; overflow: hidden; text-overflow:ellipsis; 
+  position: relative; 
+  background:url(_jbartImages_/css/shadow2.png) repeat-x scroll 0 0 transparent; 
+  text-overflow:ellipsis; font-size: 11px; width: 100px; height: 14px; 
+  padding-top: 3px; padding-right: 3px; padding-bottom: 3px; 
+  padding-left: 3px; border: 1px solid #BDC7D8; white-space:absolute; }
+.aa_picklist_div>.aa_picklist_text { vertical-align:top; display: inline-block; }
+.aa_picklist_div>.aa_picklist_image { padding-right: 5px; display: inline-block; }
+.aa_picklist_div>.aa_picklist_drop_image { position: absolute; right: 20px; top: 6px; 
+  display: inline-block; }
+.aa_picklist_div:hover .aa_picklist_drop_image:before,
+.aa_picklist_div:hover .aa_picklist_drop_image:after,
+.aa_picklist_div.aa_opened_popup .aa_picklist_drop_image:before,
+.aa_picklist_div.aa_opened_popup .aa_picklist_drop_image:after { 
+  background:#528DD1; 
+  }
+.aa_picklist_drop_image:before, .aa_picklist_drop_image:after { position: absolute; 
+  background:#8EB5E2; 
+  width: 3px; 
+  height: 8px; 
+  border-radius: 2px 2px 0 0; 
+  content: ""; 
+  left: 10px; top: 0; 
+  -moz-border-radius: 2px 2px 0 0; 
+  -webkit-transform: rotate(-45deg); 
+  -moz-transform: rotate(-45deg); 
+  -ms-transform: rotate(-45deg); 
+  -o-transform: rotate(-45deg); 
+  transform: rotate(-45deg); 
+  -webkit-transform-origin: 0 100\%; 
+  -moz-transform-origin: 0 100\%; 
+  -ms-transform-origin: 0 100\%; 
+  -o-transform-origin: 0 100\%; 
+  transform-origin: 0 100\%; 
+  }
+.aa_picklist_drop_image:after { left: 8px; -webkit-transform: rotate(45deg); 
+  -moz-transform: rotate(45deg); 
+  -ms-transform: rotate(45deg); 
+  -o-transform: rotate(45deg); 
+  transform: rotate(45deg); 
+  -webkit-transform-origin: 100\% 100\%; 
+  -moz-transform-origin: 100\% 100\%; 
+  -ms-transform-origin: 100\% 100\%; 
+  -o-transform-origin: 100\% 100\%; 
+  transform-origin :100\% 100\%; }
+.aa_picklist.aa_error #this .aa_picklist_div { background:#fbebeb; 
+  border: 1px solid #feb2b2; }
+.aa_picklist_div>.aa_picklist_text.placeholder { color:#8B8B8B; font-style:italic; }
+#popup.aa_picklist_popup { background:white; padding-top: 0px; padding-right: 0px; 
+  padding-bottom: 2px; padding-left: 0px; 
+  border: 1px solid gray; 
+  box-shadow:  2px 2px 7px 1px rgba(50,50,50,0.5); 
+  overflow-y: auto; overflow-x: hidden; font:12px times; 
+  min-height:50px; max-height:200px; }
+#popup.aa_picklist_popup:focus { outline: none; }
+.ie #popup.aa_picklist_popup { border: 1px solid black; }
+#popup.aa_picklist_popup.aa_hide_searchbox .aa_picklist_popup_input { 
+  display: none; 
+  }
+#popup.aa_picklist_popup .aa_picklist_popup_input { font-size: 11px; width: 100\%; 
+  height: 22px; padding-top: 3px; 
+  padding-right: 3px; 
+  padding-bottom: 3px; 
+  padding-left: 3px; 
+  border-bottom: 1px solid rgba(82, 168, 236, 0.8); 
+  box-sizing: border-box; 
+  outline: none; }
+#popup.aa_picklist_popup .aa_picklist_popup_input:focus { outline: 0; }
+#popup.aa_picklist_popup .aa_picklist_item { cursor: pointer; width: 100\%; 
+  height: 18px; clear: both; }
+#popup.aa_picklist_popup .aa_picklist_item:focus { outline: none; }
+#popup.aa_picklist_popup .aa_picklist_item_image { float:left; padding-top: 1px; 
+  padding-right: 5px; 
+  padding-bottom: 0px; 
+  padding-left: 3px; }
+#popup.aa_picklist_popup .aa_picklist_item_image img { height: 14px; }
+#popup.aa_picklist_popup .aa_picklist_item.selected { background:#D9E8FB; }
+#popup.aa_picklist_popup .aa_picklist_item_text { cursor:pointer; padding-top: 2px; 
+  padding-right: 4px; 
+  padding-bottom: 2px; 
+  padding-left: 4px; 
+  white-space:absolute; }
+#popup.aa_picklist_popup .aa_highlight { color:blue; }
+#popup.aa_picklist_popup .aa_picklist_no_results { padding-top: 3px; 
+  padding-right: 5px; 
+  padding-bottom: 3px; 
+  padding-left: 5px; }
+#popup.aa_picklist_popup .aa_picklist_show_all { cursor: pointer; color:#333; 
+  padding-top: 5px; 
+  padding-right: 5px; 
+  padding-bottom: 5px; 
+  padding-left: 5px; }
+]]></Css>          </Style>        </FieldType>      </Field>      <Field t="fld.Field" FieldData="%!text_decoration/@value%" ID="Overflow" Title="Decoration">        <FieldType t="fld_type.Picklist" AllowEmptyValue="true" AllowValueNotInOptions="true">          <Options t="editable_picklist.OptionsByCommas" Options="underline,line-through,overline,none"/>          <Style t="ui.CustomCss" base="editable_picklist.JBartPicklist">            <Style t="editable_picklist.JBartPicklist"/>            <Css><![CDATA[#this { display: inline-block; }
+.aa_picklist_div { cursor: arrow; overflow: hidden; text-overflow:ellipsis; 
+  position: relative; 
+  background:url(_jbartImages_/css/shadow2.png) repeat-x scroll 0 0 transparent; 
+  text-overflow:ellipsis; font-size: 11px; width: 100px; height: 14px; 
+  padding-top: 3px; padding-right: 3px; padding-bottom: 3px; 
+  padding-left: 3px; border: 1px solid #BDC7D8; white-space:absolute; }
+.aa_picklist_div>.aa_picklist_text { vertical-align:top; display: inline-block; }
+.aa_picklist_div>.aa_picklist_image { padding-right: 5px; display: inline-block; }
+.aa_picklist_div>.aa_picklist_drop_image { position: absolute; right: 20px; top: 6px; 
+  display: inline-block; }
+.aa_picklist_div:hover .aa_picklist_drop_image:before,
+.aa_picklist_div:hover .aa_picklist_drop_image:after,
+.aa_picklist_div.aa_opened_popup .aa_picklist_drop_image:before,
+.aa_picklist_div.aa_opened_popup .aa_picklist_drop_image:after { 
+  background:#528DD1; 
+  }
+.aa_picklist_drop_image:before, .aa_picklist_drop_image:after { position: absolute; 
+  background:#8EB5E2; 
+  width: 3px; 
+  height: 8px; 
+  border-radius: 2px 2px 0 0; 
+  content: ""; 
+  left: 10px; top: 0; 
+  -moz-border-radius: 2px 2px 0 0; 
+  -webkit-transform: rotate(-45deg); 
+  -moz-transform: rotate(-45deg); 
+  -ms-transform: rotate(-45deg); 
+  -o-transform: rotate(-45deg); 
+  transform: rotate(-45deg); 
+  -webkit-transform-origin: 0 100\%; 
+  -moz-transform-origin: 0 100\%; 
+  -ms-transform-origin: 0 100\%; 
+  -o-transform-origin: 0 100\%; 
+  transform-origin: 0 100\%; 
+  }
+.aa_picklist_drop_image:after { left: 8px; -webkit-transform: rotate(45deg); 
+  -moz-transform: rotate(45deg); 
+  -ms-transform: rotate(45deg); 
+  -o-transform: rotate(45deg); 
+  transform: rotate(45deg); 
+  -webkit-transform-origin: 100\% 100\%; 
+  -moz-transform-origin: 100\% 100\%; 
+  -ms-transform-origin: 100\% 100\%; 
+  -o-transform-origin: 100\% 100\%; 
+  transform-origin :100\% 100\%; }
+.aa_picklist.aa_error #this .aa_picklist_div { background:#fbebeb; 
+  border: 1px solid #feb2b2; }
+.aa_picklist_div>.aa_picklist_text.placeholder { color:#8B8B8B; font-style:italic; }
+#popup.aa_picklist_popup { background:white; padding-top: 0px; padding-right: 0px; 
+  padding-bottom: 2px; padding-left: 0px; 
+  border: 1px solid gray; 
+  box-shadow:  2px 2px 7px 1px rgba(50,50,50,0.5); 
+  overflow-y: auto; overflow-x: hidden; font:12px times; 
+  min-height:50px; max-height:200px; }
+#popup.aa_picklist_popup:focus { outline: none; }
+.ie #popup.aa_picklist_popup { border: 1px solid black; }
+#popup.aa_picklist_popup.aa_hide_searchbox .aa_picklist_popup_input { 
+  display: none; 
+  }
+#popup.aa_picklist_popup .aa_picklist_popup_input { font-size: 11px; width: 100\%; 
+  height: 22px; padding-top: 3px; 
+  padding-right: 3px; 
+  padding-bottom: 3px; 
+  padding-left: 3px; 
+  border-bottom: 1px solid rgba(82, 168, 236, 0.8); 
+  box-sizing: border-box; 
+  outline: none; }
+#popup.aa_picklist_popup .aa_picklist_popup_input:focus { outline: 0; }
+#popup.aa_picklist_popup .aa_picklist_item { cursor: pointer; width: 100\%; 
+  height: 18px; clear: both; }
+#popup.aa_picklist_popup .aa_picklist_item:focus { outline: none; }
+#popup.aa_picklist_popup .aa_picklist_item_image { float:left; padding-top: 1px; 
+  padding-right: 5px; 
+  padding-bottom: 0px; 
+  padding-left: 3px; }
+#popup.aa_picklist_popup .aa_picklist_item_image img { height: 14px; }
+#popup.aa_picklist_popup .aa_picklist_item.selected { background:#D9E8FB; }
+#popup.aa_picklist_popup .aa_picklist_item_text { cursor:pointer; padding-top: 2px; 
+  padding-right: 4px; 
+  padding-bottom: 2px; 
+  padding-left: 4px; 
+  white-space:absolute; }
+#popup.aa_picklist_popup .aa_highlight { color:blue; }
+#popup.aa_picklist_popup .aa_picklist_no_results { padding-top: 3px; 
+  padding-right: 5px; 
+  padding-bottom: 3px; 
+  padding-left: 5px; }
+#popup.aa_picklist_popup .aa_picklist_show_all { cursor: pointer; color:#333; 
+  padding-top: 5px; 
+  padding-right: 5px; 
+  padding-bottom: 5px; 
+  padding-left: 5px; }
+]]></Css>          </Style>        </FieldType>      </Field>      <FieldAspect t="field_feature.Layout">        <Css><![CDATA[#this { margin-top: 0px; margin-left: 14px; }
+#wrapper { }
+]]></Css>      </FieldAspect>    </Field>    <Field t="control.PropertySheet" ID="_Property_Sheet" Title="Fields">      <Style t="properties.TitlesAboveFields" HorizontalSpacing="15px" VerticalSpacing="8px"/>      <Field t="fld.Field" FieldData="%!display/@value%" ID="font_style" Title="Display">        <FieldType t="fld_type.Picklist" AllowEmptyValue="true" AllowValueNotInOptions="true">          <Options t="editable_picklist.OptionsTable">            <Option t="editable_picklist.Option" Code="block" DisplayName="block (line wrap)"/>            <Option t="editable_picklist.Option" Code="inline" DisplayName="inline"/>            <Option t="editable_picklist.Option" Code="inline-block" DisplayName="inline-block"/>            <Option t="editable_picklist.Option" Code="none" DisplayName="none"/>          </Options>          <Style t="ui.CustomCss" base="editable_picklist.RadioButtons">            <Style t="editable_picklist.RadioButtons" AddRadioButtonForEmptyValue="">&#xa;            </Style>            <Css><![CDATA[#this { padding-top: 3px; padding-left: 10px; }
+.aa_option { float: left; white-space: absolute; 
+  margin-right: 15px; font-size: 12px; }
+.aa_option_radio { vertical-align: top; 
+  margin: 0 0 0 0; }
+.aa_option_text { cursor: pointer; color: #666666; 
+  padding-left: 3px; margin: 0; 
+  vertical-align: text-bottom; 
+  display: inline-block; }
+]]></Css>          </Style>        </FieldType>      </Field>      <FieldAspect t="field_feature.Layout">        <Css><![CDATA[#this { margin-left: 15px; }
+#wrapper { }
+]]></Css>      </FieldAspect>    </Field>    <Field t="control.PropertySheet" ID="_Property_Sheet" Title="Fields">      <Style t="properties.TitlesAboveFields" HorizontalSpacing="15px" VerticalSpacing="8px"/>      <Field t="fld.Field" FieldData="%!white_space/@value%" ID="font_style" Title="White Space">        <FieldType t="fld_type.Picklist" AllowEmptyValue="true" AllowValueNotInOptions="">          <Options t="editable_picklist.OptionsByCommas" Options="normal,nowrap"/>          <Style t="ui.CustomCss" base="editable_picklist.RadioButtons">            <Style t="editable_picklist.RadioButtons" AddRadioButtonForEmptyValue=""/>            <Css><![CDATA[#this { padding-top: 3px; padding-left: 10px; }
+.aa_option { float: left; white-space: absolute; 
+  margin-right: 15px; font-size: 12px; }
+.aa_option_radio { vertical-align: top; 
+  margin: 0 0 0 0; }
+.aa_option_text { cursor: pointer; color: #666666; 
+  padding-left: 3px; margin: 0; 
+  vertical-align: text-bottom; 
+  display: inline-block; }
+]]></Css>          </Style>        </FieldType>      </Field>      <FieldAspect t="field_feature.Layout">        <Css><![CDATA[#this { margin-left: 15px; }
+#wrapper { }
+]]></Css>      </FieldAspect>    </Field>    <Field t="fld.Field" ID="jBStudioCssInner" Title="CssText">      <FieldType t="fld_type.EditableText">        <Style t="editable_text.CodeMirror" Readonly="false" Autofocus="false" LineNumbers="false" LineWrapping="true" EnableFullScreen="true" Width="400px" Height="32px" Mode="javascript"/>      </FieldType>      <FieldData t="css_dt.Xml2Css">        <Xml t="data.Pipeline">          <Item value="%..%"/>          <Aggregator t="xml.Wrap" HeadTag="Block"/>        </Xml>      </FieldData>    </Field>  </xtml></Component>
+
+<Component id="ColorGroup" type="field.Fields">
+  <xtml t="control.Layout" ID="ColorGroup" Title="Color">
+    <Field t="control.PropertySheet" ID="Fields" Title="Fields">
+      <Style t="properties.TitlesAboveFields" HorizontalSpacing="38px" VerticalSpacing="8px"/>
+      <Field t="fld.Field" FieldData="%!color/@value%" ID="FGColor" Title="Color">
+        <FieldType t="fld_type.EditableColor">
+          <Style t="editable_color.JSColor" Width="84px">&#xa;          </Style>
+        </FieldType>
+        <FieldAspect t="field_feature.Layout">
+          <Css><![CDATA[#this {} #wrapper {}]]></Css>
+        </FieldAspect>
+      </Field>
+      <Field t="fld.Field" FieldData="%!background_color/@value%" ID="BGColor" Title="Backgrund Color">
+        <FieldType t="fld_type.EditableColor">
+          <Style t="editable_color.JSColor" Width="84px"/>
+        </FieldType>
+        <FieldAspect t="field_feature.HandleEvent">
+          <Event t="field_feature.Update"/>
+          <Action t="css_dt.RecalcGradient" BackgroundImageElem="%../../background_image%"/>
+        </FieldAspect>
+      </Field>
+      <Field t="fld.Field" FieldData="%!opacity/@valueInv%" ID="opacity" Title="Opacity">
+        <FieldType t="fld_type.EditableNumber" NumberValidation="true">
+          <Style t="editable_number.Slider" Width="97px"/>
+          <Format t="number.Format" UseDynamicSymbol="" Min="0" Max="1">
+            <DisplayString t="number.ByExpression">
+              <Expression t="data.Pipeline">
+                <Item t="data.IfThenElse" Then="0" Else="%Value%">
+                  <If t="yesno.IsEmpty"/>
+                </Item>
+                <Item t="data.Math" Expression="1-%%" FixFloatingPointResult="true"/>
+              </Expression>
+            </DisplayString>
+            <UIHints t="number.FormatUIHints" Step="0.1"/>
+          </Format>
+        </FieldType>
+        <FieldAspect t="field_feature.HandleEvent">
+          <Event t="field_feature.Update"/>
+          <Action t="action.WriteValue" To="%!../@value%">
+            <Value t="data.Pipeline">
+              <Item t="data.IfThenElse" Then="0" Else="%%">
+                <If t="yesno.IsEmpty"/>
+              </Item>
+              <Item t="data.Math" Expression="1-%%" FixFloatingPointResult="true"/>
+            </Value>
+          </Action>
+        </FieldAspect>
+      </Field>
+    </Field>
+    <Layout t="layout.Default"/>
+    <Field t="control.Layout" ID="Gradient_section" Title="Background:">
+      <Layout t="layout.Vertical" Spacing="0"/>
+      <Field t="fld.Field" FieldData="%!@type%" ID="background_type" Title="Type">
+        <FieldType t="fld_type.Picklist" AllowEmptyValue="false" AllowValueNotInOptions="">
+          <Options t="editable_picklist.OptionsByCommas" Options="none,gradient,image"/>
+          <Style t="editable_picklist.RadioFadeRight">&#xa;              </Style>
+        </FieldType>
+        <FieldAspect t="field_feature.HandleEvent">
+          <Event t="field_feature.Update"/>
+          <Action t="operation.RunActions" Data="%..%">
+            <Action t="xml.ChangeXml">
+              <Change t="xml.SetAttribute" AttributeName="direction" RemoveEmptyAttribute="false">
+                <Value t="data.IfThenElse" Else="" Then="90deg">
+                  <If t="yesno.EqualsTo" Data="%@type%" To="gradient"/>
+                </Value>
+              </Change>
+              <Change t="xml.SetAttribute" RemoveEmptyAttribute="false" AttributeName="editorID" Value="%@type%"/>
+            </Action>
+          </Action>
+        </FieldAspect>
+        <FieldAspect t="field_aspect.DefaultValue" Value="none"/>
+        <FieldAspect t="fld_aspect.HideUnselectedPicklistOptions"/>
+      </Field>
+      <FieldAspect t="field_aspect.FieldData" FieldData="%!background_image%"/>
+      <SectionStyle t="css_dt.CssEditor"/>
+      <Field t="control.Layout" ID="image" Title="Background Image">
+        <Layout t="layout.Vertical" Spacing="0"/>
+        <Field t="control.PropertySheet" ID="Fields2" Title="Fields">
+          <Style t="properties.TitlesAboveFields" HorizontalSpacing="15px" VerticalSpacing="8px"/>
+          <Field t="fld.Field" FieldData="%!background_image/@url%" ID="backgroundImage" Title="Background Image">
+            <FieldType t="fld_type.EditableText">
+              <Style t="editable_text.JBartTextbox" Width="385px"/>
+            </FieldType>
+          </Field>
+        </Field>
+        <Field t="control.PropertySheet" ID="Fields1" Title="Fields">
+          <Style t="properties.TitlesAboveFields" HorizontalSpacing="15px" VerticalSpacing="8px"/>
+          <Field t="fld.Field" FieldData="%!background_repeat/@value%" ID="Background_Repeat" Title="Repeat">
+            <FieldType t="fld_type.Picklist" AllowEmptyValue="true" AllowValueNotInOptions="true">
+              <Options t="editable_picklist.OptionsByCommas" Options="no-repeat,repeat,repeat-x,repeat-y"/>
+              <Style t="editable_picklist.JBartPicklist" Width="88px"/>
+            </FieldType>
+          </Field>
+          <Field t="fld.Field" FieldData="%!background-attachment/@value%" ID="background-attachment" Title="Attachment">
+            <FieldType t="fld_type.Picklist" AllowEmptyValue="true" AllowValueNotInOptions="true">
+              <Options t="editable_picklist.OptionsByCommas" Options="scroll,fixed"/>
+              <Style t="editable_picklist.JBartPicklist" Width="100px"/>
+            </FieldType>
+          </Field>
+          <Field t="fld.Field" FieldData="%!background_position/@value%" ID="Background_Position" Title="Background Position">
+            <FieldType t="fld_type.Picklist" AllowEmptyValue="true" AllowValueNotInOptions="true">
+              <Options t="editable_picklist.OptionsByCommas" Options="left,center,right,top,bottom,top left, top center,top right,left center,right center,bottom left,bottom center,bottom right"/>
+              <Style t="editable_picklist.JBartPicklist" Width="142px"/>
+            </FieldType>
+          </Field>
+        </Field>
+        <FieldAspect t="field_aspect.FieldData" FieldData="%..%"/>
+      </Field>
+      <Field t="control.Layout" ID="gradient" Title="Gradient">
+        <Layout t="layout.Vertical" Spacing="0"/>
+        <Field t="control.PropertySheet" ID="Fields3" Title="Fields">
+          <Style t="properties.TitlesAboveFields" HorizontalSpacing="22px" VerticalSpacing="8px"/>
+          <Field t="fld.Field" FieldData="%!@luminance%" ID="luminance" Title="Luminance">
+            <FieldType t="fld_type.EditableNumber">
+              <Style t="editable_number.Slider" Width="270px"/>
+              <Format t="number.Format" UseDynamicSymbol="" Min="0" Max="1">
+                <DisplayString t="number.ByExpression" Expression="%Symbol%%Value%"/>
+                <UIHints t="number.FormatUIHints" Step="0.1"/>
+              </Format>
+            </FieldType>
+            <FieldAspect t="field_feature.Layout">
+              <Css><![CDATA[#this {
+  margin-left: 76px;
+}
+#wrapper {
+}
+]]></Css>
+            </FieldAspect>
+            <FieldAspect t="field_aspect.Title" Title="luminance (based on background color)"/>
+            <FieldAspect t="field_feature.HandleEvent">
+              <Event t="field_feature.Update"/>
+              <Action t="css_dt.RecalcGradient" BackgroundImageElem="%..%">&#xa;              </Action>
+            </FieldAspect>
+          </Field>
+          <Field t="fld.Field" ID="from" Title="From Color">
+            <FieldType t="fld_type.EditableColor">
+              <Style t="editable_color.JSColor" Width="100px">&#xa;      </Style>
+            </FieldType>
+            <FieldData t="data.CreateIfDoesNotExist" Query="%ColorStop[1]/@color%">
+              <Create t="xml.ChangeXml">
+                <Change t="xml.AddChildren">
+                  <Children t="xml.Xml">
+                    <ColorStop color="#ffffff" pos="0%"/>
+                  </Children>
+                </Change>
+              </Create>
+            </FieldData>
+            <FieldAspect t="field_aspect.Hidden"/>
+          </Field>
+          <Field t="fld.Field" ID="to" Title="To Color">
+            <FieldType t="fld_type.EditableColor">
+              <Style t="editable_color.JSColor" Width="100px"/>
+            </FieldType>
+            <FieldData t="data.CreateIfDoesNotExist">
+              <Create t="xml.ChangeXml">
+                <Change t="xml.AddChildren">
+                  <Children t="xml.Xml">
+                    <ColorStop color="#1A61F0" pos="100%"/>
+                  </Children>
+                </Change>
+              </Create>
+              <Query t="data.Pipeline">
+                <Item t="data.Pipeline">
+                  <Item value="%ColorStop%"/>
+                  <Aggregator t="data.Slice" From="1"/>
+                  <Aggregator t="data.Last"/>
+                </Item>
+                <Item value="%@color%"/>
+              </Query>
+            </FieldData>
+            <FieldAspect t="field_aspect.Hidden"/>
+          </Field>
+          <Field t="fld.Field" FieldData="%!@function%" ID="type" Title="Type">
+            <FieldType t="fld_type.Picklist" AllowEmptyValue="false" AllowValueNotInOptions="true">
+              <Options t="editable_picklist.OptionsTable">
+                <Option t="editable_picklist.Option" Code="-webkit-linear" DisplayName="linear"/>
+                <Option t="editable_picklist.Option" Code="-webkit-radial" DisplayName="radial"/>
+              </Options>
+              <Style t="editable_picklist.JBartPicklist" Width="75px"/>
+            </FieldType>
+            <FieldAspect t="field_aspect.Hidden"/>
+          </Field>
+        </Field>
+        <Field t="control.Layout" ID="Horizontal" Title="Horizontal">
+          <Layout t="layout.HorizontalCss3" Spacing="20px"/>
+          <Field t="control.PropertySheet" ID="Fields" Title="Fields">
+            <Style t="properties.TitlesAboveFields" HorizontalSpacing="15px" VerticalSpacing="8px"/>
+            <Field t="control.Layout" ID="Group" Title="Direction">
+              <Field t="control.Button" ID="Button" Title="Button" HideTitle="true" ButtonText="" Tooltip="up">
+                <Style t="ui.CustomStyle" base="btn.JBart">
+                  <Html><![CDATA[<div />]]></Html>
+                  <Css><![CDATA[#this { cursor: pointer; border-top: 9px solid #ffffff; 
+  border-left: 9px solid #ffffff; 
+  border-bottom: 10px solid #121212; 
+  width: 1px; border-right: 9px solid #ffffff; 
+  margin-left: 22px; }
+]]></Css>
+                  <Javascript><![CDATA[function render(button) {
+  aa_button(button);
+}
+
+function aa_button(button,settings) {
+	settings = aa_defaults(settings,{
+		buttonElement: button.el,
+    textElement: '',
+    imageElement: button.$el.firstOfClass('hypelink_img')[0],
+    keepImageElement: false
+	});
+
+	if (settings.onStartWaiting) aa_bind(button,'waiting',settings.onStartWaiting);
+	if (settings.onEndWaiting) aa_bind(button,'endWaiting',settings.onEndWaiting);
+
+	var jButton = $(settings.buttonElement);
+
+	if (settings.allowHtmlInButtonText)
+		$(settings.textElement).html(button.text);
+	else 
+  	$(settings.textElement).text(button.text);
+  
+  jButton.attr('title',button.tooltip);
+  
+  if ($(settings.imageElement)[0])
+		aa_setImage($(settings.imageElement),button.image,{ removeIfNoImage: !settings.keepImageElement });
+
+  if (jButton.disabled) jButton.addClass('disabled');
+
+  jButton.click(function(e) { 
+  	aa_buttonRunAction(button,e);
+  });	
+
+}]]></Javascript>
+                </Style>
+                <Action t="operation.RunActions">
+                  <Action t="action.WriteValue" Value="0deg" To="%!@direction%"/>
+                  <Action t="field.RefreshField" FireOnUpdate="" FieldID="direction_slider" Scope="screen"/>
+                </Action>
+              </Field>
+              <Field t="control.Button" ID="Button" Title="Button" HideTitle="true" Tooltip="right">
+                <Action t="operation.RunActions">
+                  <Action t="action.WriteValue" Value="90deg" To="%!@direction%"/>
+                  <Action t="field.RefreshField" FireOnUpdate="" FieldID="direction_slider" Scope="screen"/>
+                </Action>
+                <Style t="ui.CustomStyle" base="btn.JBart">
+                  <Html><![CDATA[<div />]]></Html>
+                  <Css><![CDATA[#this { cursor: pointer; border-top: 9px solid #ffffff; 
+  border-left: 9px solid #121212; 
+  border-bottom: 10px solid #ffffff; 
+  right: 6px; position: absolute; }
+]]></Css>
+                  <Javascript><![CDATA[function render(button) {
+  aa_button(button);
+}
+
+function aa_button(button,settings) {
+	settings = aa_defaults(settings,{
+		buttonElement: button.el,
+    textElement: '',
+    imageElement: button.$el.firstOfClass('hypelink_img')[0],
+    keepImageElement: false
+	});
+
+	if (settings.onStartWaiting) aa_bind(button,'waiting',settings.onStartWaiting);
+	if (settings.onEndWaiting) aa_bind(button,'endWaiting',settings.onEndWaiting);
+
+	var jButton = $(settings.buttonElement);
+
+	if (settings.allowHtmlInButtonText)
+		$(settings.textElement).html(button.text);
+	else 
+  	$(settings.textElement).text(button.text);
+  
+  jButton.attr('title',button.tooltip);
+  
+  if ($(settings.imageElement)[0])
+		aa_setImage($(settings.imageElement),button.image,{ removeIfNoImage: !settings.keepImageElement });
+
+  if (jButton.disabled) jButton.addClass('disabled');
+
+  jButton.click(function(e) { 
+  	aa_buttonRunAction(button,e);
+  });	
+
+}]]></Javascript>
+                </Style>
+              </Field>
+              <Layout t="ui.CustomCss" base="layout.Default">
+                <Style t="layout.Default"/>
+                <Css><![CDATA[#this {
+  position: relative;
+  width: 56px;
+}
+]]></Css>
+              </Layout>
+              <Field t="control.Button" ID="Button" Title="Button" HideTitle="true" Tooltip="left">
+                <Action t="operation.RunActions">
+                  <Action t="action.WriteValue" Value="270deg" To="%!@direction%"/>
+                  <Action t="field.RefreshField" FireOnUpdate="" FieldID="direction_slider" Scope="screen"/>
+                </Action>
+                <Style t="ui.CustomStyle" base="btn.JBart">
+                  <Html><![CDATA[<div />]]></Html>
+                  <Css><![CDATA[#this { cursor: pointer; border-top: 9px solid #ffffff; 
+  border-left: #ff4d00; 
+  border-bottom: 10px solid #ffffff; 
+  width: 13px; border-right: 9px solid; }
+]]></Css>
+                  <Javascript><![CDATA[function render(button) {
+  aa_button(button);
+}
+
+function aa_button(button,settings) {
+	settings = aa_defaults(settings,{
+		buttonElement: button.el,
+    textElement: '',
+    imageElement: button.$el.firstOfClass('hypelink_img')[0],
+    keepImageElement: false
+	});
+
+	if (settings.onStartWaiting) aa_bind(button,'waiting',settings.onStartWaiting);
+	if (settings.onEndWaiting) aa_bind(button,'endWaiting',settings.onEndWaiting);
+
+	var jButton = $(settings.buttonElement);
+
+	if (settings.allowHtmlInButtonText)
+		$(settings.textElement).html(button.text);
+	else 
+  	$(settings.textElement).text(button.text);
+  
+  jButton.attr('title',button.tooltip);
+  
+  if ($(settings.imageElement)[0])
+		aa_setImage($(settings.imageElement),button.image,{ removeIfNoImage: !settings.keepImageElement });
+
+  if (jButton.disabled) jButton.addClass('disabled');
+
+  jButton.click(function(e) { 
+  	aa_buttonRunAction(button,e);
+  });	
+
+}]]></Javascript>
+                </Style>
+              </Field>
+              <Field t="control.Button" ID="Button" Title="Button" HideTitle="true" Tooltip="down">
+                <Action t="operation.RunActions">
+                  <Action t="action.WriteValue" Value="180deg" To="%!@direction%"/>
+                  <Action t="field.RefreshField" FireOnUpdate="" FieldID="direction_slider" Scope="screen"/>
+                </Action>
+                <Style t="ui.CustomStyle" base="btn.JBart">
+                  <Html><![CDATA[<div />]]></Html>
+                  <Css><![CDATA[#this { cursor: pointer; border-top: 9px solid #0a0a0a; 
+  border-left: 9px solid #ffffff; 
+  border-bottom: 10px solid #ffffff; 
+  width: 1px; border-right: 9px solid #ffffff; 
+  margin-left: 21px; }
+]]></Css>
+                  <Javascript><![CDATA[function render(button) {
+  aa_button(button);
+}
+
+function aa_button(button,settings) {
+	settings = aa_defaults(settings,{
+		buttonElement: button.el,
+    textElement: '',
+    imageElement: button.$el.firstOfClass('hypelink_img')[0],
+    keepImageElement: false
+	});
+
+	if (settings.onStartWaiting) aa_bind(button,'waiting',settings.onStartWaiting);
+	if (settings.onEndWaiting) aa_bind(button,'endWaiting',settings.onEndWaiting);
+
+	var jButton = $(settings.buttonElement);
+
+	if (settings.allowHtmlInButtonText)
+		$(settings.textElement).html(button.text);
+	else 
+  	$(settings.textElement).text(button.text);
+  
+  jButton.attr('title',button.tooltip);
+  
+  if ($(settings.imageElement)[0])
+		aa_setImage($(settings.imageElement),button.image,{ removeIfNoImage: !settings.keepImageElement });
+
+  if (jButton.disabled) jButton.addClass('disabled');
+
+  jButton.click(function(e) { 
+  	aa_buttonRunAction(button,e);
+  });	
+
+}]]></Javascript>
+                </Style>
+              </Field>
+            </Field>
+          </Field>
+          <Field t="fld.Field" FieldData="%!@direction%" ID="direction_slider" Title="Dir">
+            <FieldType t="fld_type.EditableNumber" NumberValidation="true">
+              <Style t="editable_number.Slider" Width="270px"/>
+              <Format t="number.Format" UseDynamicSymbol="" Symbol="deg" Min="0" Max="360">
+                <DisplayString t="number.ByExpression" Expression="%Value%°"/>
+                <UIHints t="number.FormatUIHints" InitialPixelsPerUnit="1" Step="1"/>
+              </Format>
+            </FieldType>
+            <FieldAspect t="field_feature.Layout">
+              <Css><![CDATA[#wrapper { margin-top: 30px; margin-left: 1px; }
+]]></Css>
+            </FieldAspect>
+          </Field>
+        </Field>
+        <Field t="field.ItemListContainer" ID="breaks_cntr" Title="color breaks">
+          <Items t="itemlist.XmlItems" ParentXml="%%" Tag="break"/>
+          <Field t="field.Layout" ID="breaks_cntr_Toolbar" Title="Toolbar">
+            <Layout t="layout.HorizontalHtmlTable" Spacing="5px"/>
+            <FieldAspect t="itemlist_aspect.RefreshOnSelectionChange"/>
+            <Field t="control.Button" ID="breaks_cntr_Add" Title="Add break">
+              <Style t="btn.HyperlinkWithImage"/>
+              <Image t="img.Image" Url="_jbartImages_/add1616.gif" OriginalWidth="16" OriginalHeight="16"/>
+              <Action t="itemlist_action.AddItemToItemList">
+                <Item t="xml.ByTag" Tag="break"/>
+              </Action>
+            </Field>
+            <Field t="control.Button" ID="breaks_cntr_Delete" Title="Delete break">
+              <Style t="btn.HyperlinkWithImage"/>
+              <Image t="img.Image" Url="_jbartImages_/delete1616.gif" OriginalWidth="16" OriginalHeight="16"/>
+              <Action t="itemlist_action.DeleteSelectedItem"/>
+            </Field>
+          </Field>
+          <Field t="field.ItemList" Title="breaks" ID="breaks_table">
+            <View t="ui.CustomCss" base="itemlist_style.JBartTable">
+              <Style t="itemlist_style.JBartTable" MinWidth="540px"/>
+              <Css><![CDATA[#this >table {
+  color: #404040;
+  min-width: 240px;
+  border: 1px #ccc solid;
+  border-collapse: collapse;
+  border-spacing: 0px;
+  border: 1px solid #CCC;
+}
+#this>table>tbody>tr.aa_details_inplace>td {
+  background: #FAFADC;
+}
+#this>table>tbody>tr>td {
+  vertical-align:top;
+  border-bottom: 1px solid #ccc;
+  border-top: 0px;
+  border-left: 1px solid #ccc;
+  border-right: 0px;
+  padding: 5px;
+  color: #404040;
+  border-collapse: collapse;
+  border-spacing: 0px;
+}
+#this>table>thead>tr>th {
+  border-left: 1px solid #CCC;
+  border-bottom: 1px solid #CCC;
+  background:#eee;
+  padding: 4px 5px;
+}
+#this>table>thead>tr>th>.title {
+  padding-right: 5px;
+  font-weight: bold;
+  font-size: 11px;
+  color: #666;
+}
+#this>table>thead>tr>th>.sortArrow {
+  padding-right: 10px;
+  cursor:default;
+}
+#this>table>thead>tr>th.sort_ascending >.sortArrow {
+  background: url(_jbartImages_/css/sort2.gif) no-repeat 0 5px;
+}
+#this>table>thead>tr>th.sort_descending >.sortArrow {
+  background: url(_jbartImages_/css/sort1.gif) no-repeat 0 5px;
+}
+]]></Css>
+            </View>
+            <FieldAspect t="itemlist_aspect.ItemSelection"/>
+            <FieldAspect t="itemlist_aspect.TableColumnDragAndDrop"/>
+            <FieldAspect t="itemlist_aspect.DragAndDropItems"/>
+            <FieldAspect t="itemlist_aspect.ShowTextWhenNoItems"/>
+            <FieldAspect t="itemlist_aspect.UpdateOnAddOrDeleteItem"/>
+            <Field t="fld.Field" FieldData="%!@color%" ID="color" Title="Color">
+              <FieldType t="fld_type.EditableColor">
+                <Style t="editable_color.JSColor"/>
+              </FieldType>
+            </Field>
+            <Field t="fld.Field" FieldData="%!@pos%" ID="pos" Title="Pos">
+              <FieldType t="fld_type.EditableNumber">
+                <Style t="editable_number.Slider" Width="150px"/>
+                <Format t="number.Format" UseDynamicSymbol="" Min="0" Max="100" Symbol="%">
+                  <DisplayString t="number.ByExpression" Expression="%Value%%Symbol%"/>
+                </Format>
+              </FieldType>
+            </Field>
+          </Field>
+          <Layout t="layout.Default"/>
+          <FieldAspect t="field_aspect.Hidden"/>
+        </Field>
+        <FieldAspect t="field_feature.HandleEvent">
+          <Event t="field_feature.Load"/>
+          <Action t="xml.ChangeXml">
+            <Var name="Lum" t="css_dt.LuminanceOfColors" BaseColor="%../background_color/@value%" Color1="%ColorStop[1]/@color%" Color2="%ColorStop[3]/@color%"/>
+            <Change t="xml.SetAttribute" AttributeName="function">
+              <Value t="data.FirstSucceeding">
+                <Item value="%@function%"/>
+                <Item value="-webkit-linear"/>
+              </Value>
+            </Change>
+            <Change t="xml.SetAttribute" AttributeName="luminance" RemoveEmptyAttribute="false">
+              <Value t="data.FirstSucceeding">
+                <Item value="%$Lum%"/>
+                <Item value="0.5"/>
+              </Value>
+            </Change>
+            <Change t="xml.SetAttribute" AttributeName="type" RemoveEmptyAttribute="false" Value="gradient">
+              <Condition t="yesno.And">
+                <Item value="%$Lum%!=''"/>
+                <Item value="%@direction%!=''"/>
+              </Condition>
+            </Change>
+          </Action>
+        </FieldAspect>
+      </Field>
+      <FieldAspect t="field_feature.Layout">
+        <Css><![CDATA[#this { margin-top: 6px; margin-left: 0; }
+#wrapper { }
+]]></Css>
+      </FieldAspect>
+    </Field>
+  </xtml>
+</Component>
+
+<Component id="EffectsGroup" type="field.Fields">
+  <xtml t="control.Layout" ID="EffectsGroup" Title="Effects">
+    <Field t="control.PropertySheet" ID="Fields" Title="Fields">
+      <Style t="properties.TitlesAboveFields" HorizontalSpacing="193px" VerticalSpacing="8px"/>
+      <Field t="fld.Field" FieldData="%!border_radius/@value%" ID="Border_Radius" Title="Border Radius">
+        <FieldType t="fld_type.EditableNumber" NumberValidation="true">
+          <Style t="editable_number.Slider" Width="62px"/>
+          <Format t="number.Format" UseDynamicSymbol="" Min="0" Symbol="px">
+            <DisplayString t="number.ByExpression" Expression="%Value%%Symbol%"/>
+            <UIHints t="number.FormatUIHints" InitialPixelsPerUnit="5"/>
+          </Format>
+        </FieldType>
+      </Field>
+      <Field t="fld.Field" FieldData="%!cursor/@value%" ID="cursor" Title="Cursor">
+        <FieldType t="fld_type.Picklist" AllowEmptyValue="true" AllowValueNotInOptions="true">
+          <Options t="editable_picklist.OptionsByCommas" Options=" pointer,default,crosshair,move,progress,text,wait,resize"/>
+          <Style t="editable_picklist.JBartPicklist" Width="100px"/>
+        </FieldType>
+      </Field>
+    </Field>
+    <Layout t="layout.Default"/>
+    <Field t="control.Layout" ID="Group" Title="Border:">
+      <Field t="fld.Field" FieldData="%$BorderType%" ID="BorderType" Title="Border Type">
+        <FieldType t="fld_type.Picklist" AllowEmptyValue="" AllowValueNotInOptions="">
+          <Options t="editable_picklist.OptionsByCommas" Options="joined,separated_sides"/>
+          <Style t="editable_picklist.RadioFadeRight"/>
+        </FieldType>
+        <FieldAspect t="field_aspect.DefaultValue">
+          <Value t="data.IfThenElse" Then="joined" Else="separated sides">
+            <If t="yesno.IsEmpty" Value="%border_top_style/@value%%border_bottom_style/@value%%border_left_style/@value%%border_right_style/@value%"/>
+          </Value>
+        </FieldAspect>
+        <FieldAspect t="field_feature.Layout">
+          <Css><![CDATA[#this { margin-top: -67px; margin-left: 0; }
+#wrapper { }
+]]></Css>
+        </FieldAspect>
+        <FieldAspect t="fld_aspect.HideUnselectedPicklistOptions"/>
+      </Field>
+      <Layout t="ui.CustomCss" base="layout.Default">
+        <Style t="layout.Default"/>
+        <Css><![CDATA[#this {
+  position:relative;
+  top:22px;
+}]]></Css>
+      </Layout>
+      <SectionStyle t="section.Grey" LineWidth="400px"/>
+    </Field>
+    <Field t="control.Layout" ID="BorderGroup" Title="Border Values">
+      <Field t="control.PropertySheet" ID="joined" Title="Joined Border">
+        <Style t="properties.TitlesAboveFields" HorizontalSpacing="15px" VerticalSpacing="8px"/>
+        <Field t="fld.Field" FieldData="%!border_width/@value%" ID="width" Title="Width">
+          <FieldType t="fld_type.EditableNumber" NumberValidation="true">
+            <Style t="editable_number.Slider" Width="66px"/>
+            <Format t="number.Format" UseDynamicSymbol="true" Symbol="px" Min="0">
+              <DisplayString t="number.ByExpression" Expression="%Value%%Symbol%"/>
+              <UIHints t="number.FormatUIHints" InitialPixelsPerUnit="10"/>
+            </Format>
+          </FieldType>
+          <FieldAspect t="field_feature.HandleEvent">
+            <Event t="field_feature.Update"/>
+            <Action t="action.IfThenElse">
+              <If t="yesno.And">
+                <Item t="yesno.IsEmpty" Value="%../../border_style/@value%"/>
+              </If>
+              <Then t="action.RunActions">
+                <Action t="action.WriteValue" To="%!../../border_style/@value%" Value="solid"/>
+                <Action t="field.RefreshField" FireOnUpdate="" FieldID="border_style" Scope="screen"/>
+              </Then>
+            </Action>
+          </FieldAspect>
+        </Field>
+        <Field t="fld.Field" FieldData="%!border_style/@value%" ID="border_style" Title="Style">
+          <FieldType t="fld_type.Picklist" AllowEmptyValue="true" AllowValueNotInOptions="">
+            <Options t="editable_picklist.OptionsByCommas" Options="solid,dashed,dotted,double,groove,inset,outset,ridge,none"/>
+            <Style t="editable_picklist.JBartPicklist" Width="77px"/>
+          </FieldType>
+        </Field>
+        <Field t="fld.Field" FieldData="%!border_color/@value%" ID="color" Title="Color">
+          <FieldType t="fld_type.EditableColor">
+            <Style t="ui.CustomCss" base="editable_color.JSColor">
+              <Style t="editable_color.JSColor"/>
+              <Css><![CDATA[#this { font-size: 11px; width: 70px; height: 16px; padding-top: 3px; padding-right: 3px; 
+  padding-bottom: 3px; padding-left: 3px; border: 1px solid #BDC7D8; }
+#this:focus { 
+  box-shadow:  inset 0 1px 1px 0px rgba(0, 0, 0, 0.075),  0 0 8px 0px rgba(82, 168, 236, 0.6); 
+  border-color: rgba(82, 168, 236, 0.8); outline: 0; 
+  outline: thin dotted 9; }
+#this.placeholder { color:#8B8B8B; }
+]]></Css>
+            </Style>
+          </FieldType>
+        </Field>
+      </Field>
+      <Layout t="layout.Default"/>
+      <Field t="control.Layout" ID="separated_sides" Title="Separated">
+        <Layout t="ui.CustomCss" base="layout.Vertical">
+          <Style t="layout.Vertical" Spacing="0"/>
+          <Css><![CDATA[#this >.field:not(:last-child) {
+  margin-bottom: 3px;
+}
+>.field:first-child {
+  width: 180px;
+  margin-left: 110px;
+  border: 1px solid #F9F5F1;
+}
+>.field:last-child {
+  width: 180px;
+  margin-left: 110px;
+  border: 1px solid #F9F5F1;
+}
+]]></Css>
+        </Layout>
+        <Field t="css_dt.BorderSequence" Prefix="top"/>
+        <Field t="control.Layout" ID="Group" Title="Group">
+          <Field t="css_dt.BorderSequence" Prefix="left"/>
+          <Layout t="ui.CustomCss" base="layout.HorizontalCss3">
+            <Style t="layout.HorizontalCss3" Spacing="21px"/>
+            <Css><![CDATA[#this {
+  display: -webkit-box;
+  -webkit-box-orient: horizontal;
+}
+#this >.field {
+  margin-right:23px;
+  width: 180px;
+  border: 1px solid #F9F5F1;
+}]]></Css>
+          </Layout>
+          <Field t="css_dt.BorderSequence" Prefix="right"/>
+        </Field>
+        <Field t="css_dt.BorderSequence" Prefix="bottom"/>
+      </Field>
+      <FieldAspect t="field_feature.Layout">
+        <Css><![CDATA[#this { margin-top: 24px; margin-left: 0; }
+#wrapper { }
+]]></Css>
+      </FieldAspect>
+    </Field>
+    <FieldAspect t="field_aspect.Variable" VarName="BorderType">
+      <Value value="%!border_width/@border_type%"/>
+    </FieldAspect>
+  </xtml>
+</Component>
+
+    <Component id="TrippleEditor" type="field.Fields">
+      <xtml t="control.Layout" ID="TrippleEditor" Title="TrippleEditor">
+        <Layout t="layout.Default"/>
+        <FieldAspect t="field_aspect.Variable" VarName="CssAsXml">
+          <Value t="data.Pipeline">
+            <Item t="css_dt.Css2Xml">
+              <Css t="xml.CDataValue" Element="%$CssText%"/>
+            </Item>
+          </Value>
+        </FieldAspect>
+        <Field t="control.TabControl" ID="Tabs" Title="Tabs">
+          <Style t="tabs.BlueTabs"/>
+          <Field t="fld.Field" ID="Css" Title="Css">
+            <FieldType t="fld_type.EditableText">
+              <Style t="editable_text.CodeMirror" Readonly="false" Autofocus="false" LineNumbers="false" LineWrapping="false" EnableFullScreen="true" Width="400px" Height="200px" Mode="javascript"/>
+            </FieldType>
+            <FieldData t="xml.CDataValue" Element="%$CssText%"/>
+          </Field>
+          <Field t="css_dt.EditorGroup" FieldData="%$CssAsXml%"/>
+        </Field>
+      </xtml>
+    </Component>
+
+  <Component id="BorderSequence" type="field.Fields">
+      <Param name="Prefix"/>
+      <xtml t="control.PropertySheet" ID="BorderSequence_%$Prefix%" Title="Border %$Prefix%">
+        <Style t="ui.CustomCss" base="properties.TitlesAboveFields">
+          <Style t="properties.TitlesAboveFields" HorizontalSpacing="15px" VerticalSpacing="8px"/>
+          <Css><![CDATA[#this>.aa_property {
+  float: left;
+}
+#this>.aa_property:nth-of-type(3)  {
+  padding-left: 15px;
+}
+#this>.aa_property:nth-of-type(2) {
+  padding-left: 0px;
+}
+
+#this>.aa_property>.aa_property_title {
+  opacity: 0;
+  padding-bottom: 3px;
+  color: #666;
+  font-weight: bold;
+  font-size: 11px;
+  font-family: "lucida grande",tahoma,verdana,arial,sans-serif;
+}
+#this>.aa_property>.aa_property_content {
+  vertical-align: top;
+  padding-bottom: 8px;
+}
+#this {
+}
+]]></Css>
+        </Style>
+        <Field t="fld.Field" FieldData="%!border_{$Prefix}_width/@value%" ID="width" Title="Width">
+          <FieldType t="fld_type.EditableNumber" NumberValidation="true">
+            <Style t="editable_number.Slider" Width="34px"/>
+            <Format t="number.Format" UseDynamicSymbol="true" Symbol="px" Min="0">
+              <DisplayString t="number.ByExpression" Expression="%Value%%Symbol%"/>
+              <UIHints t="number.FormatUIHints" InitialPixelsPerUnit="3"/>
+            </Format>
+          </FieldType>
+          <FieldAspect t="field_feature.HandleEvent">
+            <Event t="field_feature.Update"/>
+            <Action t="action.IfThenElse">
+              <If t="yesno.And">
+                <Item t="yesno.IsEmpty" Value="%../../border_{$Prefix}_style/@value%"/>
+              </If>
+              <Then t="action.RunActions">
+                <Action t="action.WriteValue" To="%!../../border_{$Prefix}_style/@value%" Value="solid"/>
+                <Action t="field.RefreshField" FireOnUpdate="" FieldID="border_%$Prefix%_style" Scope="screen"/>
+              </Then>
+            </Action>
+          </FieldAspect>
+        </Field>
+        <Field t="fld.Field" FieldData="%!border_{$Prefix}_style/@value%" ID="border_%$Prefix%_style" Title="Style">
+          <FieldType t="fld_type.Picklist" AllowEmptyValue="true" AllowValueNotInOptions="">
+            <Options t="editable_picklist.OptionsByCommas" Options="solid,dashed,dotted,double,groove,inset,outset,ridge,none"/>
+            <Style t="editable_picklist.JBartPicklist" Width="41px"/>
+          </FieldType>
+        </Field>
+        <Field t="fld.Field" FieldData="%!border_{$Prefix}_color/@value%" ID="color" Title="Color">
+          <FieldType t="fld_type.EditableColor">
+            <Style t="ui.CustomCss" base="editable_color.JSColor">
+              <Style t="editable_color.JSColor"/>
+              <Css><![CDATA[#this { font-size: 11px; width: 36px; height: 16px; 
+  border: 1px solid #BDC7D8; 
+  padding: 3px 3px 3px 3px; }
+#this:focus { 
+  box-shadow: inset 0 1px 1px 0px rgba(0, 0, 0, 0.075),  0 0 8px 0px rgba(82, 168, 236, 0.6); 
+  border-color: rgba(82, 168, 236, 0.8); 
+  outline: 0; outline: thin dotted 9; }
+#this.placeholder { color: #8B8B8B; }
+]]></Css>
+            </Style>
+          </FieldType>
+        </Field>
+      </xtml>
+    </Component>
+
+</xtml>

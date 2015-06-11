@@ -1,0 +1,360 @@
+<xtml ns="tree_usage" light="false">
+
+  <Usage t="ui.ControlUsage" Of="tree.Tree" Name="of flat-like data">
+    <Data t="xml.Xml">
+      <people>
+        <person name="Homer"/>
+        <person name="Bart" parent="Homer"/>
+        <person name="Lisa" parent="Homer"/>
+        <person name="Ned Flanders"/>
+        <person name="Rod" parent="Ned Flanders"/>
+      </people>
+    </Data>
+    <Control t="tree.Tree" ItemImage="%$_Images%/studio/person3.gif">
+      <RootItems value="%person[not(@parent)]%"/>
+      <NextLevel value="%../person[@parent='{@name}']%"/>
+      <ItemText value="%@name%"/>
+    </Control>
+    <ExpectedResult t="yesno.Contains">
+      <Text value="Bart"/>
+      <Text value="Ned Flanders"/>
+    </ExpectedResult>
+  </Usage>
+
+  <Usage t="ui.ControlUsage" Of="tree.RefreshSelected">
+    <Data t="xml.Xml">
+      <people>
+        <person name="Original Homer"/>
+        <person name="Original Marge"/>
+      </people>
+    </Data>
+    <Control t="ui.Section">
+      <Control t="tree.Tree" Name="tree" RootItems="%person%" NextLevel="%person%" ItemImage="%$_Images%/studio/person3.gif">
+        <ItemText value="%@name%"/>
+        <OnDoubleClick t="uiaction.Alert" Text="you clicked on %@name%"/>
+      </Control>
+       
+      <Control t="ui.Text" Text="click on change model to change our data:"/>
+      <Control t="ui.ButtonOld" Name="change_model" Text="change model">
+        <OnClick t="xml.ChangeXml">
+          <Change t="xml.SetAttribute" Data="%person[1]%" AttributeName="name" Value="The New Homer"/>
+          <Change t="xml.SetAttribute" Data="%person[2]%" AttributeName="name" Value="The New Marge"/>
+        </OnClick>
+      </Control>
+       
+      <Control t="ui.Text" Text="now click on refresh selected to refresh only the selected tree node:"/>
+      <Control t="ui.ButtonOld" Name="refresh_btn" Text="refresh selected">
+        <OnClick t="tree.RefreshSelected" RunOn="tree"/>
+      </Control>
+    </Control>
+    <RunOnControl t="action.RunActions">
+      <Action t="uiaction.SelectItem" RunOn="tree">
+        <Filter t="yesno.EqualsTo" Data="%@name%" To="Original Homer"/>
+      </Action>
+      <Action t="uiaction.ButtonClick" RunOn="change_model"/>
+      <Action t="uiaction.ButtonClick" RunOn="refresh_btn"/>
+    </RunOnControl>
+    <ExpectedResult t="yesno.And">
+      <Item t="yesno.Contains">
+        <Text value="The New Homer"/>
+        <Text value="Original Marge"/>
+      </Item>
+      <Item t="yesno.NotContains" Text="Original Homer"/>
+    </ExpectedResult>
+    <Description value="refreshes the image and text of the tree's selected item. use it usually on a dialog's OnOK"/>
+    <TryItYourself value="make the change model button change Original Homer to Bart"/>
+  </Usage>
+
+  <Usage t="ui.ControlUsage" Name="tree.RefreshSelected - RefreshChildren">
+    <Data t="xml.Xml">
+      <people name="people">
+        <person name="Homer"/>
+        <person name="Marge"/>
+      </people>
+    </Data>
+    <Control t="ui.Section">
+      <Control t="tree.Tree" Name="tree" RootItems="%%" NextLevel="%person%" ItemImage="%$_Images%/studio/person3.gif">
+        <ItemText value="%@name%"/>
+      </Control>
+    </Control>
+    <RunOnControl t="action.RunActions">
+      <Action t="uiaction.SelectItem" RunOn="tree">
+        <Filter t="yesno.EqualsTo" Data="%@name%" To="people"/>
+      </Action>
+      <Action t="xml.ChangeXml">
+        <Change t="xml.AddChildren">
+          <Children t="xml.Xml">
+            <person name="Bart"/>
+          </Children>
+        </Change>
+      </Action>
+      <Action t="tree.RefreshSelected" RunOn="tree" RefreshParentChildren="true" RefreshChildren="true" IdentifierForSelected="%@name%"/>
+    </RunOnControl>
+    <ExpectedResult t="yesno.Contains">
+      <Text value="selected"/>
+      <Text value="people"/>
+      <Text value="Homer"/>
+      <Text value="Bart"/>
+    </ExpectedResult>
+  </Usage>
+
+  <Usage t="ui.ControlUsage" Of="tree.RefreshSelected.RefreshChildren">
+    <Data t="xml.Xml">
+      <people name="people"/>
+    </Data>
+    <Control t="ui.Section">
+      <Control t="tree.Tree" Name="tree" RootItems="%%" NextLevel="%person%" ItemImage="%$_Images%/studio/person3.gif">
+        <ItemText value="%@name%"/>
+      </Control>
+    </Control>
+    <RunOnControl t="action.RunActions">
+      <Action t="uiaction.SelectItem" RunOn="tree">
+        <Filter t="yesno.EqualsTo" Data="%@name%" To="people"/>
+      </Action>
+      <Action t="xml.ChangeXml">
+        <Change t="xml.AddChildren">
+          <Children t="xml.Xml">
+            <person name="Homer"/>
+          </Children>
+        </Change>
+      </Action>
+      <Action t="tree.RefreshSelected" RunOn="tree" RefreshChildren="true"/>
+    </RunOnControl>
+    <ExpectedResult t="yesno.Contains">
+      <Text value="selected"/>
+      <Text value="people"/>
+      <Text value="Homer"/>
+    </ExpectedResult>
+  </Usage>
+
+  <Usage t="ui.ControlUsage" Name="tree.RefreshAfterAddingItem - new items in sublevel">
+    <Data t="xml.Xml">
+      <people name="people"/>
+    </Data>
+    <Control t="tree.Tree" Name="tree" RootItems="%%" NextLevel="%*%" ItemText="%@name%"/>
+    <RunOnControl t="action.RunActions">
+      <Action t="uiaction.SelectItem" RunOn="tree">
+        <Filter t="yesno.EqualsTo" Data="%@name%" To="people"/>
+      </Action>
+      <Action t="xml.ChangeXml">
+        <Change t="xml.AddChildren">
+          <Children t="xml.Xml">
+            <person name="Bart"/>
+          </Children>
+        </Change>
+      </Action>
+      <Action t="tree.RefreshAfterAddingItem" RunOn="tree" AlsoSelect="true"/>
+    </RunOnControl>
+    <ExpectedResult t="yesno.Contains">
+      <Text value="selected"/>
+      <Text value="Bart"/>
+    </ExpectedResult>
+  </Usage>
+
+  <Usage t="ui.ControlUsage" Name="tree.RefreshAfterAddingItem - new item in the middle">
+    <Data t="xml.Xml">
+      <people name="people">
+        <person name="Homer"/>
+      </people>
+    </Data>
+    <Control t="tree.Tree" Name="tree" RootItems="%%" NextLevel="%*%" ItemText="%@name%"/>
+    <RunOnControl t="action.RunActions">
+      <Action t="uiaction.SelectItem" RunOn="tree">
+        <Filter t="yesno.EqualsTo" Data="%@name%" To="people"/>
+      </Action>
+      <Action t="xml.ChangeXml">
+        <Change t="xml.AddChildInPosition" Position="1">
+          <Child t="xml.Xml">
+            <person name="Bart"/>
+          </Child>
+        </Change>
+      </Action>
+      <Action t="tree.RefreshAfterAddingItem" RunOn="tree" AlsoSelect="true"/>
+    </RunOnControl>
+    <ExpectedResult t="yesno.Contains">
+      <Text value="selected"/>
+      <Text value="Bart"/>
+      <Text value="Homer"/>
+    </ExpectedResult>
+  </Usage>
+
+  <Usage t="ui.ControlUsage" Name="tree.RefreshAfterAddingItem to empty tree">
+    <Data t="xml.Xml">
+      <people name="people">
+      </people>
+    </Data>
+    <Control t="ui.Section">
+      <Control t="tree.Tree" Name="tree" RootItems="%*%" ItemText="%@name%"/>
+    </Control>
+    <RunOnControl t="action.RunActions">
+      <Action t="xml.ChangeXml">
+        <Change t="xml.AddChildren">
+          <Children t="xml.Xml">
+            <person name="Bart"/>
+          </Children>
+        </Change>
+      </Action>
+      <Action t="tree.RefreshAfterAddingItem" RunOn="tree" AlsoSelect="true">
+        <ParentNode t="ui.ControlToRunOn"/>
+      </Action>
+    </RunOnControl>
+    <ExpectedResult t="yesno.Contains">
+      <Text value="Bart"/>
+    </ExpectedResult>
+  </Usage>
+
+  <Usage t="ui.ControlUsage" Of="tree.ExpandAndSelectItem">
+    <Data t="xml.Xml">
+      <people name="People">
+        <person name="Homer" father="true">
+          <person name="Bart"/>
+          <person name="Lisa"/>
+        </person>
+        <person name="Ned Flanders" father="true">
+          <person name="Rod"/>
+        </person>
+        <person name="Mr.Berns" father="true"/>
+      </people>
+    </Data>
+    <Control t="tree.Tree" AutoExpandFirstLevel="false" RootItems="%%" NextLevel="%*%" ItemImage="%$_Images%/studio/person3.gif"
+      ItemText="%@name%"/>
+    <RunOnControl t="tree.ExpandAndSelectItem" TreePath="People/Homer/Lisa"/>
+    <ExpectedResult t="yesno.Contains">
+      <Text value="Bart"/>
+      <Text value="selected"/>
+      <Text value="Lisa"/>
+    </ExpectedResult>
+  </Usage>
+
+  <Usage t="usage.DataUsage" Of="tree.PathOfSelectedItem">
+    <Data t="xml.Xml">
+      <people name="People">
+        <person name="Homer" father="true">
+          <person name="Bart"/>
+          <person name="Lisa"/>
+        </person>
+        <person name="Ned Flanders" father="true">
+          <person name="Rod"/>
+        </person>
+        <person name="Mr.Berns" father="true"/>
+      </people>
+    </Data>
+    <Result t="data.Pipeline">
+      <Item t="ui.ControlWithAction">
+        <Control t="tree.Tree" AutoExpandFirstLevel="false" RootItems="%%" NextLevel="%*%" ItemImage="%$_Images%/studio/person3.gif"
+          ItemText="%@name%"/>
+        <RunAfterControl t="tree.ExpandAndSelectItem" TreePath="People/Homer/Lisa"/>
+      </Item>
+      <Item t="tree.PathOfSelectedItem" RunOn="%%"/>
+    </Result>
+    <ExpectedResult t="yesno.EqualsTo" To="People/Homer/Lisa"/>
+  </Usage>
+
+  <Usage t="usage.DataUsage" Of="tree.TreeNodeByPath">
+    <Data t="xml.Xml">
+      <people name="People">
+        <person name="Homer" father="true">
+          <person name="Bart"/>
+          <person name="Lisa"/>
+        </person>
+        <person name="Ned Flanders" father="true">
+          <person name="Rod"/>
+        </person>
+        <person name="Mr.Berns" father="true"/>
+      </people>
+    </Data>
+    <Result t="data.Pipeline">
+      <Item t="tree.Tree" AutoExpandFirstLevel="true" RootItems="%%" NextLevel="%*%" ItemImage="%$_Images%/studio/person3.gif"
+          ItemText="%@name%"/>
+      <Item t="tree.TreeNodeByPath" TreePath="People/Homer" RunOn="%%"/>
+    </Result>
+    <ExpectedResult t="yesno.Contains">
+      <Text value="Homer"/>
+    </ExpectedResult>
+  </Usage>
+
+  <Usage t="ui.ControlUsage" Of="tree.Tree.OpenAllNodes">
+      <Data t="xml.Xml">
+        <a name="top">
+          <a name="1">
+            <a name="1.1"/>
+          </a>
+          <a name="2"/>
+          <a name="3">
+            <a name="3.1"/>
+          </a>
+        </a>
+      </Data>
+      <Control t="ui.Section">
+         <Control t="tree.Tree" Name="tree" RootItems="%%" NextLevel="%a%" ItemText="%@name%" ItemImage="%$_Images%/studio/person3.gif" OpenAllNodes="true"/>
+      </Control>
+      <ExpectedResult t="yesno.And">
+        <Item t="yesno.Contains" IgnoreCase="true">
+          <Text value="1"/>
+          <Text value="1.1"/>
+          <Text value="2"/>
+          <Text value="3"/>
+          <Text value="3.1"/>
+        </Item>
+      </ExpectedResult>
+      <TryItYourself value="Open Only First Level"/>
+    </Usage>
+
+  <Usage t="ui.ControlUsage" Of="tree.SelectTreeNodeByPath">
+      <Data t="xml.Xml">
+        <xml name="People">
+          <family name="Simpsons">
+            <person name="Ned Flanders" father="true">
+              <person name="Rod"/>
+            </person>
+            <person name="Homer" father="true">
+              <person name="Lisa"/>
+              <person name="Bart"/>
+            </person>
+            <person name="Mr.Berns" father="true"/>
+          </family>
+        </xml>
+      </Data>
+      <Control t="tree.Tree" RootItems="%%" NextLevel="%*%" ItemText="%@name%" ItemImage="%$_Images%/studio/yesno1616.gif"/>
+      <RunOnControl t="tree.SelectTreeNodeByPath">
+        <PathItems t="data.ListByCommas" List="People,Simpsons,Homer,Bart"/>
+      </RunOnControl>
+      <ExpectedResult t="yesno.ItemsEqual" Item2="People/Simpsons/Homer/Bart">
+        <Item1 t="tree.PathOfSelectedItem"/>
+      </ExpectedResult>
+    </Usage>
+  
+  <Usage t="ui.ControlUsage" Of="tree.SelectTreeNodeByPath.WithUpdate">
+      <Data t="xml.Xml">
+        <xml name="People">
+          <family name="Simpsons">
+            <person name="Ned Flanders" father="true">
+              <person name="Rod"/>
+            </person>
+            <person name="Homer" father="true">
+              <person name="Lisa"/>
+              <person name="Bart"/>
+            </person>
+            <person name="Mr.Berns" father="true"/>
+          </family>
+        </xml>
+      </Data>
+      <Control t="tree.Tree" RootItems="%%" NextLevel="%*%" ItemText="%@name%" ItemImage="%$_Images%/studio/yesno1616.gif"/>
+      <RunOnControl t="action.RunActions">
+        <Action t="tree.SelectTreeNodeByPath">
+          <PathItems t="data.ListByCommas" List="People,Simpsons,Homer,Bart"/>
+        </Action>
+        <Action t="xml.ChangeXml" Xml="%family/person[@name='Homer']/person[@name='Bart']%">
+          <Change t="xml.SetAttribute" AttributeName="name" Value="Magy"/>
+        </Action>
+        <Action t="tree.SelectTreeNodeByPath">
+          <PathItems t="data.ListByCommas" List="People,Simpsons,Homer"/>
+        </Action>
+        <Action t="tree.RefreshSelected" RefreshChildren="true"/>
+      </RunOnControl>
+      <ExpectedResult t="yesno.Contains">
+        <Text value="Magy"/>
+      </ExpectedResult>
+    </Usage>
+    
+</xtml>

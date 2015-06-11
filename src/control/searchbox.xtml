@@ -1,0 +1,110 @@
+<xtml ns="searchbox">
+
+  <Component id="SearchBox" type="field.Fields" execution="native">
+    <Param name="ID" advanced="always" essential="true" idField="true" />
+    <Param name="Title" essential="true" autoaspects="false" titleField="true" />
+    <Param name="Style" type="searchbox.Style">
+      <Default t="searchbox.DefaultSearchBox" />
+    </Param>
+    <Param name="FieldAspect" type="field.FieldAspect[]" script="true" light="false" />    
+  	<Param name="Items" />
+  	<Param name="ItemText" />
+  	<Param name="ItemImage" type="image.Image" />
+  	<Param name="ItemExtraText" />
+  	<Param name="ItemDisplayPage" type="ui.Page" description="Optional. Defines the display of an item in the popup" />
+    <Param name="OnSelect" type="action.Action" script="true" />
+  </Component>
+
+  <Type id="Style" />
+
+  <Component id="DefaultSearchBox" type="searchbox.Style">
+  	<xtml t="ui.CustomStyle">
+			<Html><![CDATA[<div>
+  <div class="aa_searchbox_input_parent">
+	 <input class="aa_searchbox_input" />
+    <div class="aa_searchbox_icon" />
+  </div>
+	<div class="aa_searchbox_popup">
+		<div>
+			<div class="aa_searchbox_item">
+        <div class="aa_searchbox_item_image" />
+				<div class="aa_searchbox_item_text" />
+				<div class="aa_searchbox_item_extra_text" />
+			</div>
+      <div class="aa_searchbox_show_all" />
+		</div>
+	</div>
+</div>]]></Html>
+      <Css><![CDATA[
+.aa_searchbox_input {
+  padding: 6px 0 6px 10px;
+  color: #565656;
+  font: 12px Arial;
+  border-radius: 5px;
+  width: 323px;
+  border: 1px solid #BDC7D8;
+}
+.aa_searchbox_input_parent { 
+  position:relative;
+}
+.aa_searchbox_icon {
+  position: absolute; 
+  display: inline-block;
+  background: url('_jbartImages_/search.png') 0 0;
+  width: 16px;
+  height: 16px;
+  top:9px;
+  right:9px;
+  vertical-align: middle;
+}        
+#popup.aa_searchbox_popup {
+  background: #F8F9FF;
+  border: 1px groove lightgrey;
+  max-height: 350px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  min-width: 20px;
+  min-height: 100px;
+  max-height: 280px;
+  max-width: 320px;
+  overflow: auto;
+}
+#popup.aa_searchbox_popup .aa_searchbox_item {
+  position: relative;
+  padding: 8px;
+  overflow: hidden;
+  height: 40px;
+  cursor: pointer;
+  margin-bottom:4px;
+}
+#popup.aa_searchbox_popup .aa_searchbox_item:focus {
+  outline: 0;
+}
+#popup.aa_searchbox_popup .aa_searchbox_item_image {
+  float:left;
+  padding-right:8px;
+  height: 100%;
+}
+#popup.aa_searchbox_popup .aa_searchbox_item.selected {
+  background: #D9E8FB;
+}
+#popup.aa_searchbox_popup .aa_searchbox_item_text {
+  font-weight:bold;
+}
+#popup.aa_searchbox_popup .aa_highlight {
+  color: blue;
+}
+#popup.aa_searchbox_popup .aa_searchbox_show_all {
+  padding: 5px 5px;
+  cursor: pointer;
+  color: #333;
+}
+
+]]></Css>
+    <Javascript><![CDATA[function render(searchbox) { 
+  aa_searchbox(searchbox);
+}]]></Javascript>
+  	</xtml>
+  </Component>  
+
+</xtml>

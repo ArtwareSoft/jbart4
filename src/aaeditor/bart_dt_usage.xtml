@@ -1,0 +1,44 @@
+<xtml ns="bart_dt_usage" light="false">
+
+  <Usage t="usage.DataUsage" Of="bart_dt_compress.DependentFunctions">
+    <Result t="data.Pipeline">
+      <Item t="bart_dt_compress.DependentFunctions" Code="item = option.ItemForOptionPage || item; &#xa;      var pageId = aa_totext(field_data).replace(new RegExp(' ', &quot;g&quot;),'_').replace(new RegExp('/', &quot;g&quot;),'_');&#xa;      var page_params = {isObject:true, PageID: pageId , DataItems: {isObject: true, Items: item }}&#xa;      if (readonly) page_params.ReadOnly = true; &#xa;      var newContext = aa_ctx(context, { _PageParams: [page_params] } ); &#xa;      out = aa_runMethod(item,option.OptionPage,'Control',newContext)[0];&#xa;    }&#xa;    jQuery(out).addClass('aa_option_page');&#xa;    aa_field_fix_indentation(out,field.UnindentOptionPage,field);&#xa;      " />
+      <Aggregator t="text.Concat" Separator="," />
+    </Result>
+    <ExpectedResult t="yesno.EqualsTo" To="aa_totext,aa_ctx,aa_runMethod,aa_field_fix_indentation" />
+  </Usage>
+  
+  <Usage t="usage.DataUsage" Of="bart_dt_compress.JSMinCompress" IsTest="false">
+    <Result t="bart_dt_compress.JSMinCompress" Script="function aa_invoke_cntr_handlers(cntr,eventFuncs,data,ctx,extra) {   if (! eventFuncs || eventFuncs.RunningFlag) return;   eventFuncs.RunningFlag = true; // avoid recursion   var newContext = aa_ctx(ctx,{_Cntr: [cntr]});   try   {     for(var i=0;i&lt;eventFuncs.length;i++)       eventFuncs[i](data,newContext,extra);   }   catch (e) {}   eventFuncs.RunningFlag = false; } " />
+    <ExpectedResult t="yesno.Contains">
+    </ExpectedResult>
+  </Usage>
+  
+  <Usage t="usage.DataUsage" Of="bart_dt_compress.CompressComponent" IsTest="false">
+    <Result t="data.Pipeline">
+      <Item t="xml.Xml">
+        <Component id="abc">
+          <Param name="param1" description="abc">
+            <Default value="aaa" />
+            <value>xx</value>
+            <value>yy</value>
+            <FieldAspect t="xx" />
+          </Param>
+          <xtml />
+        </Component>
+      </Item>
+      <Item t="bart_dt_compress.CompressComponent" />
+      </Result>
+    <ExpectedResult t="yesno.EqualsTo">
+      <To t="xml.Xml">
+        <C id="abc">
+          <Param name="param1" >
+            <Default value="aaa" />
+          </Param>
+          <xtml />
+        </C>
+      </To>
+    </ExpectedResult>
+  </Usage>
+  
+</xtml>

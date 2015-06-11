@@ -1,0 +1,129 @@
+<xtml ns="jbartdb" plugin="jbartdb">
+
+  <Component id="CreateNewNodeInJBartDB" type="action.Action" execution="native">
+    <Param name="NodeXml" codemirror="true" codemirrorType="xml" Default="&lt;xml _type=&quot;mytype&quot; /&gt;" />
+    <Param name="AddTimestampToID" type="data.Boolean" Default="true" />
+    <Param name="OnSuccess" type="action.Action" script="true">
+      <Default t="notification_box.ShowNotification" Status="saved" Text="Item creatred" />
+    </Param>
+    <Param name="OnError" type="action.Action" script="true">
+      <Default t="notification_box.ShowNotification" Status="error" Text="Could not add an item" />
+    </Param>
+    <Param name="Server" />
+  </Component>
+
+  <Component id="SaveNodeInJBartDB" type="action.Action">
+    <Param name="Node" />
+    <Param name="OnSuccess" type="action.Action" script="true">
+      <Default t="notification_box.ShowNotification" Status="saved" Text="Item saved" />
+    </Param>
+    <Param name="OnError" type="action.Action" script="true">
+      <Default t="notification_box.ShowNotification" Status="error" Text="Could not add an item" />
+    </Param>
+    <Param name="Server" />
+    <xtml t="jbartdb.CreateNewNodeInJBartDB" NodeXml="%$Node%" AddTimestampToID="false" Server="%$Server%">
+      <OnSuccess t="xtml.UseParam" Param="OnSuccess" />
+      <OnError t="xtml.UseParam" Param="OnError" />
+    </xtml>
+  </Component>
+
+  <Component id="DeleteNodeInJBartDB" type="action.Action" execution="native">
+    <Param name="Node" />
+    <Param name="OnSuccess" type="action.Action" script="true">
+      <Default t="notification_box.ShowNotification" Status="saved" Text="Item deleted" />
+    </Param>
+    <Param name="OnError" type="action.Action" script="true">
+      <Default t="notification_box.ShowNotification" Status="error" Text="Could not delete item" />
+    </Param>
+    <Param name="Server" />
+  </Component>
+
+  <Component id="CloneNodeInJBartDB" type="action.Action" execution="native">
+    <Param name="Node" />
+    <Param name="OnSuccess" type="action.Action" script="true" description="New created node as input" />
+    <Param name="OnError" type="action.Action" script="true">
+      <Default t="notification_box.ShowNotification" Status="error" Text="Could not create an item" />
+    </Param>
+    <Param name="Server" />
+  </Component>
+
+  <Component id="SaveNodeAsync" type="action_async.Action" execution="native">
+    <Param name="Node" />
+    <Param name="Server" />
+  </Component>
+  
+  <Component id="JBartDBNode" type="data_async.Data" description="get jBart DB Node" execution="native">
+    <Param name="ID" essential="true" />
+    <Param name="ContentType" essential="true" />
+    <Param name="OnLoading" type="action.Action" script="true">
+      <Default t="notification_box.ShowNotification" Status="loading" Text="Loading item" />
+    </Param>
+    <Param name="OnSuccess" type="action.Action" script="true">
+      <Default t="notification_box.ShowNotification" Status="clear" Text="" />
+    </Param>
+    <Param name="OnError" type="action.Action" script="true">
+      <Default t="notification_box.ShowNotification" Status="error" Text="Could not load item" />
+    </Param>
+    <Param name="Server" />
+  </Component>
+
+  <Component id="JBartDBQuery" type="data_async.Data" execution="native">
+      <Param name="ContentType" essential="true"/>
+      <Param name="HeadersOnly" Default="true" essential="true"/>
+      <Param name="OnError" type="action.Action" script="true">
+        <Default t="notification_box.ShowNotification" Status="error" Text="Could not load items"/>
+      </Param>
+      <Param name="TemplateOf"/>
+      <Param name="Server" />
+    </Component>
+
+  <Component id="LoadFullNodeFromHeader" type="action.Action" execution="native">
+    <Param name="HeaderXml" Default="%%" />
+    <Param name="DoNotLoadIfPresent" type="data.Boolean" Default="true" />
+  </Component>
+
+  <Component id="SaveFileToJBartDB" type="action.Action" execution="native">
+    <Param name="ID" essential="true" />
+    <Param name="Content" />
+    <Param name="OnSuccess" type="action.Action" script="true">
+      <Default t="notification_box.ShowNotification" NotificationBox="GStudio_NotificationBox" Status="saved" Text="%$Id% saved" />
+    </Param>
+    <Param name="OnError" type="action.Action" script="true">
+      <Default t="notification_box.ShowNotification" NotificationBox="GStudio_NotificationBox" Status="error" Text="Could not save %$Id%: %$Result%" />
+    </Param>
+    <Param name="Server" />
+  </Component>
+
+  <Component id="GetFileFromJBartDB" type="data_async.Data" execution="native">
+    <Param name="ID" essential="true" />
+    <Param name="ResultFormat" type="enum" Options="xml,html,text"/>
+    <Param name="OnSuccess" type="action.Action" script="true">
+      <Default t="notification_box.ShowNotification" NotificationBox="GStudio_NotificationBox" Status="clear" Text="" />
+    </Param>
+    <Param name="OnError" type="action.Action" script="true">
+      <Default t="notification_box.ShowNotification" NotificationBox="GStudio_NotificationBox" Status="error" Text="Could not save %$Id%: %$Result%" />
+    </Param>
+    <Param name="Server" />
+  </Component>
+
+  <Component id="SaveWidgetToJBartDB" type="action.Action">
+    <Param name="WidgetID" essential="true" />
+    <Param name="WidgetJS" />
+    <Param name="OnSuccess" type="action.Action" script="true" />
+    <Param name="OnError" type="action.Action" script="true" />
+    <Param name="Server" />
+    <Param name="FileName" />
+    <xtml t="jbartdb.SaveFileToJBartDB" Content="%$WidgetJS%" Server="%$Server%">
+      <ID t="text.FirstSucceeding">
+        <Item value="%$FileName%" />
+        <Item t="data.Pipeline">
+          <Item value="widget_%$WidgetID%.js" />
+          <Item t="text.Replace" Find="/" ReplaceWith="_" />
+        </Item>
+      </ID>
+      <OnSuccess t="xtml.UseParam" Param="OnSuccess" />
+      <OnError t="xtml.UseParam" Param="OnError" />
+    </xtml>
+  </Component>
+
+</xtml>

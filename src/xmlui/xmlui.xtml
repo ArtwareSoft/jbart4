@@ -1,0 +1,300 @@
+<xtml ns="xmlui" light="false">
+
+  <Component id="XmlSelector" type="ui.Control" execution="xtml" databind="true">
+    <Param name="OnSelect" type="action.Action" script="true"/>
+    <Param name="OnDoubleClick" type="action.Action" script="true"/>
+    <Param name="Height" ><Default value="200px" /></Param>
+    <Param name="Borderless" type="data.Boolean"><Default value="false"/></Param>
+    
+    <xtml t="tree.Tree" Height="%$Height%" RootItems="%%" NextLevel="%*%" ItemImage="%$_Images%/default1616.gif" Borderless="%$Borderless%">
+      <Var name="XmlSelectorContext" t="xtml.Params">
+        <Param name="Input" t="data.Same"/>
+        <ScriptParam name="OnSelect" t="xtml.UseParam" Param="OnSelect">
+          <Var name="RelativeXPath" t="xml.XPathOfNode" StopAtIDAttribute="" TopXml="%$XmlSelectorContext/Input%"/>
+          <Var name="Selected" />
+        </ScriptParam>
+        <ScriptParam name="OnDoubleClick" t="xtml.UseParam" Param="OnDoubleClick">
+          <Var name="RelativeXPath" t="xml.XPathOfNode" StopAtIDAttribute="" TopXml="%$XmlSelectorContext/Input%"/>
+          <Var name="Selected" />
+        </ScriptParam>
+      </Var>
+      <ItemControl t="ui.DynamicList">
+        <Items t="data.List">
+          <Item t="data.Same"/>
+          <Item t="xml.Attributes"/>
+        </Items>
+        <Control t="data.IfThenElse">
+          <If t="xml.IsAttribute"/>
+          <Then t="xml.WithChanges">
+            <Var name="attrname" t="xml.AttributeName"/>
+            <Xml t="ui.Html" DynamicContent="true">
+	            <span ondblclick="ajaxart_runevent(this,'XmlSelectorContext','OnDoubleClick');" onclick="ajaxart_runevent(this,'XmlSelectorContext','OnSelect');" class="xml_selector_attribute">%$attrname%=
+	              <span class="xml_selector_attribute_value">%%</span>
+	            </span>
+            </Xml>
+            <Change t="ui.DataBind"/>
+          </Then>
+          <Else t="xml.WithChanges">
+            <Var name="innertext" t="xml.InnerTextValue"/>
+            <Var name="isprimitive" t="yesno.And">
+               <Item t="yesno.NotEmpty" Data="%$innertext%"/>
+               <Item t="yesno.IsEmpty">
+                 <Data t="xml.Attributes"/>
+               </Item>
+               <Item t="yesno.IsEmpty" Data="%*%"/>
+            </Var> 
+            <Var name="onlytag" t="xml.Tag"/>
+            <Var name="tag" t="data.Pipeline">
+              <Item value="%$onlytag%"/>
+              <Item t="data.IfThenElse" If="%$isprimitive%" Then="%%=" Else="%%"/>
+            </Var>
+            <Xml t="ui.Html" DynamicContent="true">
+              <span ondblclick="ajaxart_runevent(this,'XmlSelectorContext','OnDoubleClick');" onclick="ajaxart_runevent(this,'XmlSelectorContext','OnSelect');" class="xml_selector_tag">%$tag%
+                <span class="xml_selector_attribute_value">%$innertext%</span>
+              </span>
+            </Xml>
+            <Change t="ui.DataBind"/>
+          </Else>
+        </Control>
+        <Layout t="ui.NoLayout"/>
+      </ItemControl>
+    </xtml>
+  </Component>
+  
+ <Component id="ShowTextareaXmlDialog" type="action.Action" light="false">
+      <Param name="Xml"/>
+      <Param name="Title"/>
+      <Param name="Rows">
+        <Default value="30"/>
+      </Param>
+      <Param name="AutoWrite" type="data.Boolean"/>
+      <Param name="AutoWriteAllowTagChange" type="data.Boolean"/>
+      <Param name="OnChangeXml" type="action.Action" script="true"/>
+      <Param name="OnUpdate" type="action.Action" script="true"/>
+      <xtml t="dialog.OpenDialog">
+        <Dialog t="dialog.Dialog" AlwaysLTR="true" Title="%$Title%" Width="550px" NoTransaction="true" CloseOnEnter="false">
+          <DialogData t="data.WritableText">
+            <DefaultValue t="data.Pipeline">
+              <Item value="%$Xml%"/>
+              <Item t="xml.XmlToText" PrettyPrint="true" />
+            </DefaultValue>
+          </DialogData>
+          <Content t="field.ShowFieldControl">
+            <Item value="%%"/>
+		        <Field t="field.XmlField" Path="" ID="xml" >
+		          <Var name="Width" t="ui.ScreenSize" Axis="width" Margin="300" AsHtmlString="true" />
+		          <Var name="Height" t="ui.ScreenSize" Axis="height" Margin="300" AsHtmlString="true" />
+		          <Type t="field_aspect.MultiLineText" Rows="30"/>
+		          <FieldAspect t="field_aspect.Css" OnElement="content" Inline="white-space1:nowrap; height:%$Height%;font-size:11px;width:%$Width%;"/>
+		        </Field>
+          </Content>
+          <RunOnOK t="action.RunActions" Data="%$OriginalInput%" >
+            <Action t="xml.ChangeXml" Xml="%$Xml%" Condition="%$AutoWrite%" >
+              <Change t="xml.ReplaceElement" >
+                <NewElement t="xml.TextToXml" Data="%$DialogWorkingData%" />
+                <Mode t="data.IfThenElse" If="%$AutoWriteAllowTagChange%" Then="replace tag" Else="keep original tag"/>
+              </Change>
+            </Action>
+            <Action t="xtml.UseParam" Param="OnChangeXml">
+              <Input t="data.Pipeline">
+                <Item t="xml.XmlToText" Data="%$DialogWorkingData%"/>
+                <Item t="xml.TextToXml"/>
+              </Input>
+            </Action>
+            <Action t="xtml.UseParam" Param="OnUpdate"/>
+          </RunOnOK>
+          <Validations t="ui.Validation" Message="invalid xml: %$Error%">
+          	<Var name="Error" t="xml.XmlParsingError" />
+            <SuccessCondition t="yesno.IsEmpty" Value="%$Error%" />
+          </Validations>
+        </Dialog>
+      </xtml>
+    </Component>
+      
+  <Component id="ShowTextDialog" type="action.Action">
+    <Param name="Height">
+      <Default t="ui.ScreenSize" Axis="height" Margin="200" AsHtmlString="true"/>
+    </Param>
+    <Param name="Title" essential="true"/>    
+    <Param name="StudioPopup" type="data.Boolean" />
+    <Param name="Text" Default="%%"/>
+    <xtml t="popup.OpenPopup" PopupTitle="%$Title%">
+      <Style t="gstudio.GoogleDrivePopup" />
+      <Feature t="popup.StudioPopupFeature" Condition="%$StudioPopup%" />
+      <Var name="AsText" t="data.WritableText" varscope="Component" DefaultValue="%$Text%" />
+      <Contents t="field.InnerPage">
+        <Field t="fld.Field" ID="xml_ui_textarea" FieldData="%$AsText%">
+          <FieldType t="fld_type.EditableText">
+            <Style t="editable_text.CodeMirror" Readonly="false" Autofocus="false" LineNumbers="false" LineWrapping="false" EnableFullScreen="true" Height="%$Height%" Mode="text">
+              <Width t="ui.ScreenSize" Axis="width" Margin="300" AsHtmlString="true"/>                
+            </Style>
+          </FieldType>
+        </Field>
+        <Field t="control.Layout" ID="Horizontal" Title="Buttons">
+          <Layout t="layout.HorizontalHtmlTable" Spacing="10px" VerticalAlign="top"/>
+          <Field t="control.Button" ID="Cancel" Title="Close">
+            <Style t="btn.JBartGrey"/>
+            <Action t="popup.CloseContainingPopup"/>
+          </Field>
+          <FieldAspect t="field_feature.Css">
+            <Css><![CDATA[#this { margin-top: 23px; }]]></Css>
+          </FieldAspect>
+        </Field>          
+      </Contents>        
+    </xtml>
+  </Component>
+
+  <Component id="ShowXmlDialog" type="action.Action">
+    <Param name="Xml" Default="%%" />
+    <Param name="Title" essential="true"/>
+    <Param name="Height">
+      <Default t="ui.ScreenSize" Axis="height" Margin="200" AsHtmlString="true" ReduceStudioHeaderFooter="true" />
+    </Param>
+    <Param name="AutoWrite" type="data.Boolean"/>
+    <Param name="AutoWriteAllowTagChange" type="data.Boolean"/>
+    <Param name="OnChangeXml" type="action.Action" script="true"/>
+    <Param name="OnUpdate" type="action.Action" script="true"/>
+    <Param name="OnCancel" type="action.Action" script="true"/>
+    <Param name="StudioPopup" type="data.Boolean" />
+    <xtml t="popup.OpenPopup" PopupTitle="%$Title%">
+      <Style t="gstudio.GoogleDrivePopup" />
+      <Feature t="popup.StudioPopupFeature" Condition="%$StudioPopup%" />
+      <Var name="OriginalInput" value="%%" varscope="Component" />
+      <Var name="AsText" t="data.WritableText" varscope="Component">
+        <DefaultValue t="xml.XmlToText" PrettyPrint="true" Data="%$Xml%"/>
+      </Var>
+      <Contents t="field.InnerPage">
+        <Field t="fld.Field" ID="xml_ui_textarea" FieldData="%$AsText%">
+          <FieldType t="fld_type.EditableText">
+            <Style t="editable_text.CodeMirror" Readonly="false" Autofocus="false" LineNumbers="false" LineWrapping="false" EnableFullScreen="true" Height="%$Height%" Mode="xml">
+              <Width t="ui.ScreenSize" Axis="width" Margin="300" AsHtmlString="true"/>                
+            </Style>
+          </FieldType>
+        </Field>
+        <Field t="control.Layout" ID="Horizontal" Title="Buttons">
+          <Layout t="layout.HorizontalHtmlTable" Spacing="10px" VerticalAlign="top"/>
+          <Field t="control.Button" ID="gstudio_rename_OK" Title="OK" HideTitle="true">
+            <Style t="btn.JBart" MinWidth="60px"/>
+              <Action t="action.RunActions">
+                <Action t="popup.CloseContainingPopup" ExitMode="OK">
+                <DoOnExit t="action.RunActions"  Data="%$OriginalInput%">
+                  <Var name="AsXml" t="xml.TextToXml" Data="%$AsText%"/>
+                  <Action t="xml.ChangeXml" Xml="%$Xml%" Condition="%$AutoWrite%">
+                    <Change t="xml.ReplaceElement" Data="%$Xml%" NewElement="%$AsXml%">
+                      <Mode t="data.IfThenElse" If="%$AutoWriteAllowTagChange%" Then="replace tag" Else="keep original tag"/>
+                    </Change>
+                  </Action>
+                  <Action t="xtml.UseParam" Param="OnChangeXml" Input="%$AsXml%" />
+                  <Action t="xtml.UseParam" Param="OnUpdate" Input="%$AsText%"/>
+                </DoOnExit>
+              </Action>
+            </Action>
+          </Field>
+          <Field t="control.Button" ID="Cancel" Title="Cancel">
+            <Style t="btn.JBartGrey"/>
+            <Action t="action.RunActions">
+              <Action t="popup.CloseContainingPopup"/>
+              <Action t="xtml.UseParam" Param="OnCancel"/>
+            </Action>
+          </Field>
+          <FieldAspect t="field_feature.Css">
+            <Css><![CDATA[#this { margin-top: 23px; }]]></Css>
+          </FieldAspect>
+        </Field>          
+      </Contents>        
+    </xtml>
+  </Component>
+    
+  	<Component id="CodeMirrorTextarea" type="ui.Control" execution="native">
+      <Param name="Text" Default="%%"/>
+      <Param name="Type" type="enum" Options="xml,css,js,text"/>
+      <Param name="OnUpdate" type="action.Action" script="true"/>
+      <Param name="Width" Default="100%"/>
+      <Param name="Height" Default="200px"/>
+      <Param name="AutoFocus" type="data.Boolean" />
+      <Param name="ReadOnly" type="data.Boolean" />
+      <Param name="LineNumbers" type="data.Boolean" />
+      <Param name="TextWrapping" type="data.Boolean" Default="true" />
+      <Param name="OnCtrlEnter" type="action.Action" script="true"/>
+      <Param name="OnShiftEnter" type="action.Action" script="true" />
+      <Param name="Resizer" type="data.Boolean" />
+      <Param name="IdentifierToRecallLastSize" description="Used to recall the last value of resizing" />
+      <Param name="Css" advanced="true" Default="{ border:1px solid lightgray; }" />
+      <Param name="EnableFullScreen" type="data.Boolean" Default="true" />
+      <Param name="ShowJavascriptErrorsOnCtrlSpace" type="data.Boolean" Default="true" />
+      <Param name="AutoIndent" type="data.Boolean" />
+    </Component>
+    
+    <Component id="CallUpdateOfCodeMirror" type="action.Action" hidden="true" execution="native" />
+    <Component id="InsertTextToCodeMirror" type="action.Action" hidden="true" execution="native" >
+    	<Param name="Text" />
+  </Component>
+
+  <Component id="XmlTree" type="field.Fields" light="false">
+    <Param name="ViewAllText" Default="view all ..." />
+<xtml t="control.Layout" ID="_Vertical_Layout" Title="Vertical Layout">
+  <Layout t="ui.CustomCss" base="layout.Default">
+    <Style t="layout.Default"/>
+    <Css><![CDATA[#this {
+  position:relative;
+}
+#this:hover .fld_xml_view_all { 
+  display: block;
+}]]></Css>
+  </Layout>
+  <Field t="itemtree.Tree" ID="_Tree" Title="Tree" ItemSelection="false">
+    <Style t="itemtree.XmlTree"/>
+    <Items t="itemtree.TreeItems" Items="%%">
+      <SubItems t="data.IfThenElse" Then="%*%">
+        <If t="yesno.IsEmpty">
+          <Value t="xml.CDataValue"/>
+        </If>
+        <Else t="xml.CDataValue"/>
+      </SubItems>
+    </Items>
+    <ItemText t="xml.Tag"/>
+    <ItemImage t="image.ImageInSprite" Url="_jbartImages_/studio/studio_icons.png?ver=28_09_14_2" PositionInSprite="80,32"/>
+    <FieldAspect t="itemtree_aspect.TreeLongList" MaxItemsPerPage="25" TextForShowMore="More ..." />
+    <FieldAspect t="itemtree_aspect.TreeProperties">
+      <ControlForItem t="field.InnerPage" Title="tree xml element">
+        <Field t="xmltree.XmlElementTreeItem" ID="xml_tree_elem" Title="tree element">
+          <Style t="xmltree_style.Default"/>
+          <FieldAspect t="field_feature.Hidden" DataForCondition="Item data" WhenHidden="Do not render">
+            <ShowCondition t="xml.IsElement"/>
+          </FieldAspect>
+        </Field>
+        <Layout t="layout.Default"/>
+        <Field t="control.Label" ID="_Label" Title="cdata" Text="%%">
+          <Style t="uitext.PlainText"/>
+          <FieldAspect t="field_feature.Hidden" DataForCondition="Item data" WhenHidden="Do not render">
+            <ShowCondition t="yesno.Not">
+              <Of t="xml.IsElement"/>
+            </ShowCondition>
+          </FieldAspect>
+        </Field>
+      </ControlForItem>
+    </FieldAspect>
+  </Field>
+  <Field t="control.Button" ID="xml_view_all" Title="view all..." HideTitle="true">
+    <Style t="ui.CustomCss" base="btn.Hyperlink">
+      <Style t="btn.Hyperlink"/>
+      <Css><![CDATA[#this {
+  cursor:pointer;
+  font:12px times;
+  color:#000;
+  display:inline-block;
+  top:0px;  
+  right:4px;
+  position:absolute;
+  display:none;
+}
+#this:hover {
+  text-decoration:underline;
+}]]></Css>
+    </Style>
+    <Action t="xmlui.ShowXmlDialog" Title="Xml"/>
+  </Field>
+</xtml>
+  </Component>
+
+</xtml>

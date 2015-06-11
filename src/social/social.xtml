@@ -1,0 +1,24 @@
+<xtml package="true">
+<xtml ns="twitter">
+
+  <Component id="TwitterShare" type="field.Control" execution="native">
+  	<Param name="Url" />
+  	<Param name="Text" />
+  	<Param name="ShowCount" type="data.Boolean" Default="true" />
+  	<Param name="Large" type="data.Boolean" />
+  </Component>
+
+</xtml>
+
+<xtml ns="facebook">
+
+  <Component id="LikeButton" type="field.Control" execution="native">
+    <Param name="Url" />
+    <Param name="AppID" />
+    <Param name="Width" Default="450" />
+    <Param name="LayoutStyle" type="enum" Options="button_count,standard,box_count" Default="button_count" />
+    <Param name="SendButton" type="data.Boolean" />
+  </Component>
+
+</xtml>
+</xtml>

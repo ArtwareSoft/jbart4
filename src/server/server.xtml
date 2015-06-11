@@ -1,0 +1,107 @@
+<xtml ns="server" light="false">
+
+<Type id="ServerCall"/>
+<Type id="PostData"/>
+
+<Component id="CallServer" type="action.Action" execution="native">
+  <Param name="Call" type="server.ServerCall[]"/>
+  <Param name="OnSuccess" type="action.Action" script="true"/>
+  <Param name="OnFailure" type="action.Action" script="true"/>
+  <Param name="ProgressIndication" type="data.Data"><Default value="true"/></Param>
+</Component>
+
+<Component id="BasicServerCall" type="server.ServerCall" execution="native">
+  <Param name="Method" type="enum">
+    <Default value="get"/>
+    <Value>get</Value>
+    <Value>post</Value>
+  </Param>
+  <Param name="VarNameForResult"/>
+  <Param name="Reusable" type="data.Boolean"><Default value="true"/></Param>
+  <Param name="Url"/>
+  <Param name="PostData" type="server.PostData"/>
+  <Param name="OnLoad" type="action.Action" script="true"/>
+</Component>
+
+<Component id="File" type="server.ServerCall" synonyms="FileFromUrl">
+  <Param name="VarNameForResult"/>
+  <Param name="Reusable" type="data.Boolean"><Default value="true"/></Param>
+  <Param name="Url"/>
+  <Param name="OnLoad" type="action.Action" script="true"/>
+  <xtml t="server.BasicServerCall" Method="get" VarNameForResult="%$VarNameForResult%" Reusable="%$Reusable%" Url="%$Url%">
+    <OnLoad t="xtml.UseParam" Param="OnLoad"/>
+  </xtml>
+</Component>
+
+<Component id="PostUrl" type="server.ServerCall">
+  <Param name="VarNameForResult"/>
+  <Param name="Reusable" type="data.Boolean"><Default value="false"/></Param>
+  <Param name="Url"/>
+  <Param name="PostData" type="server.PostData"/>
+  <Param name="OnLoad" type="action.Action" script="true"/>
+  <xtml t="server.BasicServerCall" Method="post" VarNameForResult="%$VarNameForResult%" Reusable="%$Reusable%" Url="%$Url%">
+    <PostData value="%$PostData%" />
+    <OnLoad t="xtml.UseParam" Param="OnLoad"/>
+  </xtml>
+</Component>
+
+<Component id="ParallelCalls" type="server.ServerCall" execution="native">
+  <Param name="Call" type="server.ServerCall[]" script="true"/> 
+  <Param name="OnSuccess" type="action.Action" script="true"/>
+  <Param name="OnFailure" type="action.Action" script="true"/>
+</Component>
+
+<Component id="ImmediateResult" type="server.ServerCall" execution="native">
+  <Param name="VarNameForResult"/>
+  <Param name="Reusable" type="data.Boolean"><Default value="false"/></Param>
+  <Param name="Result" type="data.Data"/>
+  <Param name="OnLoad" type="action.Action" script="true"/>
+</Component>
+ 
+<Component id="ImmediateAction" type="server.ServerCall">
+  <Param name="VarNameForResult"><Default value="Result"/></Param>
+  <Param name="Action" type="data.Data"/>
+  <xtml t="server.ImmediateResult" VarNameForResult="%$VarNameForResult%">
+    <Result t="action.ActionReturningResult">
+      <Action t="xtml.UseParam" Param="Action"/>
+      <Result t="xml.Xml">
+        <result type="success"/>
+      </Result>
+    </Result>
+  </xtml>
+</Component>
+ 
+<Component id="ExportVirtualFile" type="action.Action" execution="native">
+      <Param name="FileName" essential="true"/>
+      <Param name="Content" essential="true"/>
+      <Param name="ContentType">
+        <Default value="text/plain"/>
+      </Param>
+      <Param name="Url" script="true">
+        <Default value="main.php?op=exportFile&amp;cnt=%$Counter%"/>
+      </Param>
+    </Component>
+
+<Component id="PostData" type="server.PostData">
+    <Param name="Name" essential="true"/>
+    <Param name="Value" essential="true"/>
+    <xtml t="xtml.Params">
+      <Param name="Name" value="%$Name%"/>
+      <Param name="Value" value="%$Value%"/>
+    </xtml>
+</Component>
+
+<Component id="MultiplePostData" type="server.PostData">
+  <Param name="PostData" type="server.PostData[]"/>
+  <xtml value="%$PostData%"/>
+</Component>
+
+<Component id="OnStartCallingServer" type="action.Action" light="false">
+  <xtml t="xtml.RunXtml" Xtml="%$_ProgressContext/StartCallingServer%" />
+</Component>
+
+<Component id="OnEndCallingServer" type="action.Action" light="false">
+  <xtml t="xtml.RunXtml" Xtml="%$_ProgressContext/EndCallingServer%"/>
+</Component>
+
+</xtml>

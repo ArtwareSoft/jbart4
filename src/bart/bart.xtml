@@ -1,0 +1,138 @@
+<xtml ns="bart" plugin="bart">
+
+  <Type id="Application" />
+  <Type id="Module" />
+  <Type id="ContentTypes" />
+  <Type id="Language" />
+  <Type id="ApplicationFeature" Image="%$_Images%/studio/app.gif"/>
+  
+  <Component id="Application" type="bart.Application" image="%$_Images%/studio/project.png">
+    <Param name="DesignTimeOnly">
+      <Field t="bart_dt.EditProjectProperties" />
+    </Param>
+    <Param name="Pages" type="bart.Pages" script="true" light="false"/>
+    <Param name="Resources" type="bart_resource.Resources" light="false"/>
+    <Param name="UsingCss" light="false"/>
+    <Param name="Title" light="false"/>
+    <Param name="Icon" light="false"/>
+    <Param name="BrowserTitle" script="true" light="false"/>
+    <Param name="Modules" light="false"/>
+    <Param name="RequiresLogin" type="data.Boolean" light="false"/>
+    <Param name="CssDefinitions" light="false"/>
+    <Param name="JsFiles" description="separate js files by comma" light="false"/>
+    <Param name="CssFiles" description="separate css files by comma" light="false"/>
+    <Param name="DoOnLoad" type="action_async.Action" script="true" description="Custom behavior when the application loads. E.g. changing the url" light="false"/>
+    <Param name="MainPage" light="false"><Default value="main"/></Param>
+    <Param name="MainPage1" type="jbart.MyWidgetPage" script="true">
+      <FieldAspect t="field_aspect.Title" Title="Main Page" />
+    </Param>
+    <Param name="ApplicationVersion" light="false"/>
+    <Param name="Language" type="bart.Language" script="true" light="false" />
+    <Param name="ApplicationFeature" type="bart.ApplicationFeature[]" script="true" />
+    <xtml t="action_async.RunActions">
+      <Action t="object.SetProperty" Object="%$_AppContext%" Property="Features">
+        <Value t="xtml.UseParamArray" Param="ApplicationFeature" />
+      </Action>
+      <Action t="bart.RunApplicationFeatures" Phase="CreateJBartContext" />      
+      <Action t="object.SetMethod" Object="%$_AppContext%" Method="Language">
+        <Xtml t="xtml.UseParam" Param="Language" />
+      </Action>
+      <Action t="object.SetMethod" Object="%$_AppContext%" Method="MainPage">
+        <Xtml t="xtml.UseParam" Param="MainPage1" />
+      </Action>
+      <Action t="object.SetTextProperty" Object="%$_AppContext%" Property="Version" Value="%$ApplicationVersion%" />
+      <Action t="action.LoadCssFiles" CssFiles="%$CssFiles%" />
+      <Action t="action_async.LoadJsFiles" JsFiles="%$JsFiles%" />
+      <Action t="object.SetProperty" Object="%$_AppContext%" Property="CssDefinitions" Value="%$CssDefinitions%" />
+      <Action t="object.SetTextProperty" Object="%$_AppContext%" Property="MainPageID" Value="%$MainPage%" />
+      <Action t="object.SetProperty" Object="%$_AppContext%" Property="Resources" Value="%$Resources%" />
+      <Action t="bart_resource.ResourcesToGlobalVars" />
+      <Action t="xtml.LoadComponents" Components="%$LanguageNode/Component%" Namespace="%$LanguageNode/@id%">
+        <Var name="LanguageNode" t="bart_resource.ResourceValue" ResourceID="Language" />
+      </Action>
+      <Action t="action.RunActions">
+        <Var name="Language" t="object.RunMethod" Object="%$_AppContext%" Method="Language" />            
+          <Action t="uiaction.SetBrowserIcon" Icon="%$Icon%" />
+          <Action t="object.SetProperty" Object="%$_AppContext%" Property="ContentTypes">
+            <Value t="data.Pipeline">
+              <Item t="xtml.UseParam" Param="ContentTypes" />
+              <Aggregator t="data.Demote" Items="metadata" ItemText="%ID%" />
+            </Value>
+          </Action>
+          <Action t="object.SetProperty" Object="%$_AppContext%" Property="Pages" >
+            <Value t="xtml.UseParam" Param="Pages" />
+          </Action>
+          <Action t="object.SetProperty" Object="%$_AppContext%" Property="AppTitle">
+            <Value t="text.Translate" Text="%$Title%" />
+          </Action>
+          <Action t="object.SetProperty" Object="%$_AppContext%" Property="Modules">
+            <Value t="text.Split" Text="%$Modules%"/>
+          </Action>
+          <Action t="xtml.UseParam" Param="DoOnLoad" />
+      </Action>
+      <Action t="bart.RunApplicationFeaturesAsync" Phase="Load" />
+    </xtml>
+  </Component>
+
+  <Component id="RunApplicationFeatures" type="action.Action">
+    <Param name="Phase" type="enum" Options="CreateJBartContext,Load,AfterShow" />
+    <xtml t="action.RunActionOnItems" Items="%$_AppContext/Features%">
+      <Action t="object.RunMethod" Object="%%" Method="%$Phase%" />
+    </xtml>
+  </Component>
+  
+  <Component id="RunApplicationFeaturesAsync" type="action_async.Action">
+    <Param name="Phase" type="enum" Options="CreateJBartContext,Load,AfterShow" />
+    <xtml t="action_async.RunActionOnItems" Items="%$_AppContext/Features%">
+      <Action t="object.RunMethod" Object="%%" Method="%$Phase%" />
+    </xtml>
+  </Component>
+  
+  <Component id="GlobalVars" type="data.Data">
+    <xtml t="object.Object" />
+  </Component>
+  
+  <Component id="Context" type="data.Data">
+    <Param name="Url">
+      <Default t="bart_url.BrowserUrl" />
+    </Param>
+    <xtml t="object.Object">
+      <SingleProperty name="Url" value="%$Url%" />
+      <SingleProperty name="ValidationStyle" t="validation.DefaultOld" />
+    </xtml>
+  </Component>
+
+  <Component id="FixedLanguage" type="bart.Language">
+      <Param name="Language" essential="true"/>
+      <xtml value="%$Language%"/>
+    </Component>
+  
+  <Component id="UIPreferences" type="uipref.UIPreferences" execution="native">
+    <Param name="AlsoInCookie" type="data.Boolean"><Default value="true"/></Param>
+    <NativeHelper name="AppXml" t="data.Pipeline">
+      <Item t="data.Pipeline">
+        <Item value="%$_AppContext/Units%" />
+        <Aggregator t="data.First"/>
+      </Item>
+      <Item value="%!UIPref%" />
+    </NativeHelper>
+    <NativeHelper name="CleanPref" t="xml.Delete">
+      <Data t="data.Pipeline">
+        <Item value="%$_AppContext/Units%" />
+        <Item value="%UIPref/{$Prefix}%" />
+      </Data>
+    </NativeHelper>
+    <NativeHelper name="WritePref" t="action.WriteValue" Value="%$Value%">
+      <To t="data.Pipeline">
+        <Item t="data.Pipeline">
+          <Item value="%$_AppContext/Units%" />
+          <Aggregator t="data.First"/>
+        </Item>
+        <Item value="%!UIPref/{$Prefix}%" />
+        <Item value="%!@{$Property}%" />
+      </To>
+    </NativeHelper>
+  </Component>
+  
+  
+</xtml>

@@ -1,0 +1,21 @@
+<xtml ns="aaeditor" light="false">
+
+	<Component id="UndoAction" type="data.Data">
+		<Param name="WriteValue" />
+		<Param name="WriteTo" />
+		<Param name="GlobalPreviewXtml" />
+		<Param name="TreeXtml" />
+		<Param name="SelectedInTreeFullPath" />
+	</Component>
+	
+	<Component id="XtmlByPath" type="data.Data">
+      <Param name="Path" short="true"/>
+      <xtml t="data.Pipeline">
+        <Item t="xtml.ComponentDefinition">
+          <ID t="text.Split" Text="%$Path%"/>
+        </Item>
+        <Item value="sds"/>
+      </xtml>
+    </Component>
+	
+</xtml>

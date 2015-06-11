@@ -1,0 +1,409 @@
+<xtml ns="studio_suggest" light="false">
+  <Type id="Suggestion" />
+
+  <Component id="Suggestions" type="data.Data">
+    <Param name="FieldXtml" Default="%%" />
+    <xtml t="data.Pipeline">
+  		<Item t="xtml.ComponentsOfType" Type="studio_suggest.Suggestion" />
+  		<Item t="xtml.RunXtmlByComponentId" ComponentID="%%" Input="%$FieldXtml%" />
+    </xtml>
+  </Component>
+
+  <Component id="Suggestion" type="data.Data">
+    <Param name="Title" />
+    <Param name="Action" type="action.Action" script="true" />
+    <xtml t="object.ObjectFromParams" />
+  </Component>
+
+  <Component id="SuggestAddingFieldAspect" type="data.Data">
+    <Param name="Title" />
+    <Param name="FieldAspectPT" />
+    <xtml t="studio_suggest.Suggestion" Title="%$Title%">
+      <Condition t="yesno.IsEmpty" Value="%FieldAspect[@t='{$FieldAspectPT}']%" />
+      <Action t="action.RunActions">
+        <Action t="xml.AddXmlChildren" Parent="%%">
+          <Children t="xml.Xml" DynamicContent="true">
+            <FieldAspect t="%$FieldAspectPT%" />
+          </Children>
+        </Action>
+        <Action t="studio_suggest.EditXtmlInStudio" />
+      </Action>
+    </xtml>
+  </Component>
+
+<Component id="SuggestionsGroupImpl" type="field.Fields">
+  <Param name="FieldXtml" Default="%%"/>
+  <Param name="Suggestions"/>
+  <xtml t="control.Layout" Title="Suggestions (%=Count($Suggestions)%)" ID="Studio_suggestions" Condition="%=Count($Suggestions)% != 0">
+    <Field t="field.ItemList" Title="Suggestions">
+      <View t="itemlist_style.Simple"/>
+      <FieldAspect t="field_aspect.ItemListContainer">
+        <Items t="itemlist.Items" Items="%$Suggestions%"/>
+      </FieldAspect>
+      <Field t="control.Button" Title="Suggestion" ButtonText="%Title%">
+        <Action t="object.RunMethod" Object="%%" Method="Action" Input="%$FieldXtml%"/>
+        <Image t="text.FirstSucceeding">
+          <Item value="%Image%"/>
+          <Item value="%$_Images%/studio/run.gif"/>
+        </Image>
+        <Style t="ui.CustomCss" base="gstudio.StudioMenuItem">
+          <Style t="gstudio.StudioMenuItem"/>
+          <Css><![CDATA[#this {
+  transition:all 0.1s ease-in-out;
+  -webkit-transition:all 0.1s ease-in-out;
+  cursor:default;
+  -webkit-user-select:none;
+  -moz-user-select:none;
+  cursor:pointer;
+}
+.hypelink_img {
+  width:16px;
+  vertical-align:top;
+  margin:6px 5px 0 5px;
+  opacity:0.7;
+}
+.hypelink_text {
+  white-space:absolute;
+  padding-top:6px;
+  padding-right:30px;
+  padding-bottom:6px;
+  padding-left:0px;
+  font:13px arial;
+}
+#this:hover {
+  background:#eee;
+}
+#this.disabled {
+  cursor:default;
+  text-decoration:none;
+}
+#this>div {
+  display:inline-block;
+}]]></Css>
+        </Style>
+      </Field>
+      <View t="itemlist_style.Simple"/>
+      <FieldAspect t="itemlist_aspect.ShowTextWhenNoItems" Text="No studio suggestions"/>
+    </Field>
+    <Layout t="layout.Default"/>
+  </xtml>
+</Component>
+
+  <Component id="SuggestionsGroup" type="field.Fields">
+      <Param name="FieldXtml" Default="%%"/>
+      <xtml t="studio_suggest.SuggestionsGroupImpl" FieldXtml="%$FieldXtml%">
+        <Suggestions t="studio_suggest.Suggestions" FieldXtml="%$FieldXtml%" />
+      </xtml>
+    </Component>
+
+  <Component id="EditXtmlInStudio" type="action.Action">
+    <xtml t="bart_dt.EditXtmlInStudioBar" RefreshPreview="true" />
+  </Component>
+
+<!-- Specific Suggestions -->
+
+  <Component id="ItemListSuggestions" type="studio_suggest.Suggestion">
+  	<xtml t="data.List">
+      <Item t="studio_suggest.Suggestion" Title="Expand Itemlist (to allow toolbars etc.)">
+        <Condition t="studio_suggest.IsCompactItemlist" />
+        <Action t="studio_suggest.ExpandCompactItemlist">
+          <DoOnContainerXtml t="studio_suggest.EditXtmlInStudio" />
+        </Action>
+      </Item>
+      <Item t="studio_suggest.Suggestion" Title="Add a Toolbar">
+        <Condition t="yesno.And">
+          <Item t="studio_suggest.IsItemlistContainer" XmlItemsOnly="true" />
+          <Item t="studio_suggest.HasNoInnerFieldWithIDSuffix" Suffix="_Toolbar" />
+        </Condition>
+        <Action t="studio_suggest.AddItemlistToolbar" />
+      </Item>
+      <Item t="studio_suggest.Suggestion" Title="Add fast find">
+        <Condition t="yesno.And">
+          <Item t="studio_suggest.IsItemlistContainer" XmlItemsOnly="false" />
+      	  <Item t="studio_suggest.HasNoInnerFieldWithIDSuffix" Suffix="_FilterGroup" />
+        </Condition>
+        <Action t="studio_suggest.AddItemlistFastFind" />
+      </Item>
+  	</xtml>
+  </Component>
+
+  <Component id="PicklistSuggestions" type="studio_suggest.Suggestion">
+    <xtml t="studio_suggest.SuggestAddingFieldAspect" Title="Customize picklist properties (hide searbox etc.)" FieldAspectPT="fld_aspect.PicklistProperties">
+      <Condition value="%FieldType/@t% == 'fld_type.Picklist'"/>
+    </xtml>
+  </Component>
+
+  <Component id="TabControlSuggestions" type="studio_suggest.Suggestion">
+    <xtml t="studio_suggest.SuggestAddingFieldAspect" Title="Customize tab control properties (keep selected tab etc.)" FieldAspectPT="fld_aspect.TabControlProperties">
+      <Condition value="%@t% == 'control.TabControl'"/>
+    </xtml>
+  </Component>
+
+  <Component id="AddDetailsInplaceSuggest" type="studio_suggest.Suggestion">
+    <Param name="FieldXtml" Default="%%" />
+    <xtml t="studio_suggest.Suggestion" Title="Add Details Inplace">
+      <Condition t="yesno.And" >
+          <Item value="%@t% == 'field.ItemList'" />
+          <Item t="yesno.Not">
+            <Of t="fieldgenerator_dt.HasDetailsInplace" Xtml="%$FieldXtml%" />
+          </Item>
+      </Condition>
+        <Action t="dlg.OpenDialog" Title="Add Details Inplace to Table">
+          <DialogData t="xml.ByTag" />
+          <Contents t="field.ShowFieldControl">
+            <Field t="field.Layout" ID="Group" Title="Group">
+              <Layout t="layout.Vertical" Spacing="16px" />
+              <Field t="field.Text"
+                Text="Details Inplace Feature allows editing or viewing item details within the table. &#xa;If your item list is not a table or is not prepared to show item details this feature will not work.&#xa;&#xa;This wizard will do the following:&#xa;1. Add 'Details' Field and copy all existing fields under it.&#xa;2. Add Hypelink feature to the selected field to toggle the details view."
+                Title="">
+                <Style t="uitext.YellowBox" />
+                <FieldAspect t="field_feature.Css">
+                  <Css><![CDATA[#this { max-width: 450px; }]]></Css>
+                </FieldAspect>
+              </Field>
+              <Field t="field.PropertySheet" Title="">
+                <Field t="field.Field" ID="FieldWithHyperlink" FieldData="%!@HyperlinkFieldID%" Title="Field With Hyperlink" ReadOnlyText="">
+                  <Type t="field_aspect.Picklist" AllowEmptyValue="" AllowValueNotInOptions="" RecalculateForEachCell="" Multiple="">
+                    <ControlStyle t="picklist.JBartPicklist">
+                      <PopupStyle t="picklist.SystemPopup" FilterTreshold="30">
+                        <Css><![CDATA[.aa_no_items_found { opacity: .4; filter: alpha(opacity=40); display:inline-block; padding-top:8px;}]]></Css>
+                      </PopupStyle>
+                    </ControlStyle>
+                    <Options t="picklist.DynamicOptions" Options="%$FieldXtml/Field%" OptionCodeByIndex="" OptionLabel="%@Title%"
+                      OptionCode="%@ID%" />
+                  </Type>
+                  <FieldAspect t="field_aspect.Description" Description="The selected field will become a hypelink which toggles the inplace details" />
+                </Field>
+                <Style t="group.PropertySheet" PropertiesWidth="110px" VerticalSpacing="8px" IndentationOfPicklistOptions="8px" />
+              </Field>
+            </Field>
+          </Contents>
+          <RunOnOK t="studio_suggest.AddDetailsInplace" Xtml="%$FieldXtml%" Config="%%" />
+        </Action>
+    </xtml>
+  </Component>
+
+<!-- Suggestion helpers -->
+  <Component id="HasNoInnerFieldWithIDSuffix" type="data.Boolean" execution="native">
+    <Param name="Suffix" />
+  </Component>
+
+  <Component id="IsItemlistContainer" type="data.Boolean" execution="native">
+    <Param name="XmlItemsOnly" type="data.Boolean" />
+  </Component>
+
+  <Component id="IsCompactItemlist" type="data.Boolean">
+    <Param name="FieldXtml" Default="%%" />
+    <xtml t="yesno.And">
+      <Item value="%$FieldXtml/@t% == 'field.ItemList'" />
+      <Item t="yesno.NotEmpty" Value="%$FieldXtml/FieldAspect[@t='field_aspect.ItemListContainer']%" />
+    </xtml>
+  </Component>
+
+  <Component id="ItemListXtmlToItemsXtml" type="data.Data">
+    <xtml t="data.FirstSucceeding">
+      <Item value="%FieldAspect[@t='field_aspect.ItemListContainer']/Items%" />
+      <Item value="%Items%" />
+    </xtml>
+  </Component>
+
+<!-- Suggestion actions (generations) -->
+
+  <Component id="ExpandCompactItemlist" type="action.Action">
+    <Param name="FieldXtml" Default="%%" />
+    <Param name="DoOnContainerXtml" type="action.Action" script="true" />
+    <xtml t="action.RunActions">
+      <Var name="NewXtml" t="xml.WithChanges">
+        <Xml t="xml.Xml" DynamicContent="true">
+          <Field t="field.ItemListContainer" ID="%$FieldXtml%_Cntr" Title="%$FieldXtml/@Title%" />
+        </Xml>
+        <Change t="xml.AddChildren" Children="%$FieldXtml/FieldAspect[@t='field_aspect.ItemListContainer']/Items%" />
+        <Change t="xml.AddChildren" Children="%$FieldXtml%" />
+        <Change t="xml.Delete" Data="%Field/FieldAspect[@t='field_aspect.ItemListContainer']%" />
+      </Var>
+      <Action t="xml.ReplaceXmlElement" Element="%$FieldXtml%" NewElement="%$NewXtml%">
+        <RunOnNewElement t="xtml.UseParam" Param="DoOnContainerXtml" />
+      </Action>
+    </xtml>
+  </Component>
+
+  <Component id="AddItemlistFastFind" type="action.Action">
+    <Param name="FieldXtml" Default="%%" />
+    <xtml t="action.RunActions">
+      <Action t="action.IfThenElse">
+        <If t="studio_suggest.IsCompactItemlist" FieldXtml="%$FieldXtml%" />
+        <Then t="studio_suggest.ExpandCompactItemlist">
+          <DoOnContainerXtml t="studio_suggest.AddItemlistFastFind" FieldXtml="%%" />
+        </Then>
+        <Else t="xml.AddXmlChildren" Parent="%%" Children="%$ToolbarXtml%" AddAsFirst="true">
+          <Var name="ID" value="%@ID%" />
+          <Var name="ToolbarXtml" t="xml.WithChanges">
+            <Xml t="xml.Xml" DynamicContent="true">            
+              <Field t="control.Layout" ID="%$ID%_FilterGroup" Title="Filters">
+                <Layout t="layout.Horizontal" Spacing="10"/>
+                <FieldAspect t="itemlist_aspect.FilterGroup"/>
+                <FieldAspect t="field_feature.Layout">
+                  <Css><![CDATA[#this { padding-bottom: 5px; }]]></Css>
+                </FieldAspect>
+                  <Field t="fld.Field" Title="Fast find" ID="Filter_fast_find" ReadOnlyText="" FieldData="\%!@Filter_fastfind\%">
+                    <FieldType t="fld_type.EditableText">
+                      <Style t="editable_text.JBartTextbox" Width="150px"/>
+                    </FieldType>
+                    <FieldAspect t="itemlist_aspect.Filter" FieldData="\%@name\%" ImmediateFilter="true">
+                      <FilterType t="itemlist_filter.Text"/>
+                    </FieldAspect>
+                    <FieldAspect t="field_aspect.DescriptionForEmptyText" Description="Search"/>
+                    <FieldAspect t="field_aspect.ClearValueButton"/>
+                    <FieldAspect t="field_aspect.ItemListSelectionWithKeyboard"/>
+                  </Field>
+              </Field>​
+            </Xml>
+          </Var>
+          <DoOnAddedChildren t="action.RunActions">
+            <Action t="studio_suggest.EditXtmlInStudio" Data="%Field%" RefreshPreview="true" />
+            <Action t="operation.ChangeTab" TabControl="DT_Properties_Tab" MoveTo="specific tab" TabToMoveTo="DT_Properties_Features">
+              <RunOn t="data.Empty" />
+            </Action>
+            <Action t="uiaction.Click" RunOn=".component_title" />
+            <Action t="async.RunOnNextTimer">
+              <Action t="operation.RunJavascript" RunOn=".aa_primitive_param_FieldData">
+                <Code><![CDATA[function(data,html_elem,context) { $('.aa_primitive_param_FieldData')[1].select();}]]></Code>
+              </Action>
+            </Action>
+          </DoOnAddedChildren>
+        </Else>
+      </Action>
+    </xtml>
+  </Component>
+
+  <Component id="AddItemlistToolbar" type="action.Action">
+    <Param name="FieldXtml" Default="%%" />
+    <xtml t="action.RunActions">
+      <Action t="action.IfThenElse">
+        <If t="studio_suggest.IsCompactItemlist" FieldXtml="%$FieldXtml%" />
+        <Then t="studio_suggest.ExpandCompactItemlist">
+          <DoOnContainerXtml t="studio_suggest.AddItemlistToolbar" FieldXtml="%%" />
+        </Then>
+        <Else t="xml.AddXmlChildren" Parent="%%" Children="%$FiltersXtml%" AddAsFirst="true">
+          <Var name="ID" value="%@ID%" />
+          <Var name="ItemlistXtml" t="xml.FindXmlByAttribute" ParentXml="%$FieldXtml%" Attribute="t" Value="field.ItemList" />
+          <Var name="FiltersXtml" t="xml.WithChanges">
+            <Xml t="xml.Xml" DynamicContent="true">            
+              <Field t="field.Layout" ID="%$ID%_Filters" Title="Filters">
+                <Layout t="layout.HorizontalHtmlTable" Spacing="5px"/>
+                <FieldAspect t="itemlist_aspect.RefreshOnSelectionChange"/>
+                <FieldAspect t="field_feature.Layout">
+                  <Css><![CDATA[#this { padding-bottom: 5px; }]]></Css>
+                </FieldAspect>
+                <Field t="control.Button" ID="Add_%$ID%" Title="Add %$ItemName%">
+                  <Style t="btn.HyperlinkWithImage"/>
+                  <Image t="image.Image" Url="%$_Images%/add1616.gif"/>
+                  <Action t="operation.OpenDialog" Title="Add">
+                    <DialogData t="xml.ByTag" Tag="%$PathTag%"/>
+                    <Contents t="ui.InnerPage" Title="Add item">
+                      <Field t="field.PropertySheet" ID="PropertySheet" Title="Properties" HideTitle="true" />
+                    </Contents>
+                    <RunOnOK t="itemlist_action.AddItemToItemList" />
+                  </Action>
+                </Field>
+                <Field t="control.Button" ID="Delete_%$ID%" Title="Delete">
+                  <Style t="btn.HyperlinkWithImage"/>
+                  <Image t="image.Image" Url="%$_Images%/delete1616.gif"/>
+                  <FieldAspect t="itemlist_aspect.RefreshOnSelectionChange"/>
+                  <Action t="itemlist_action.DeleteSelectedItem"/>
+                </Field>
+              </Field>​
+            </Xml>
+            <Change t="xml.AddChildren" Data="%Field[1]/Action/Contents/Field%" Children="%$ChildFields%" CloneChildren="true"/>
+          </Var>
+          <DoOnAddedChildren t="studio_suggest.EditXtmlInStudio" />
+        </Else>
+      </Action>
+    </xtml>
+  </Component>
+
+  <Component id="AddDetailsInplace" type="action.Actions" description="Adds inplace details to itemlist (design time)">
+    <Param name="Xtml" />
+    <Param name="Config" />
+    <xtml t="action.RunActions">
+      <Var name="HyperlinkField" value="%$Xtml/Field[@ID='{$Config/@HyperlinkFieldID}']%" />
+      <Var name="FieldsForDetails" value="%$Xtml/Field%" />
+      <Action t="xml.AddXmlChildren" Parent="%$Xtml%">
+        <Children t="xml.WithChanges">
+          <Xml t="xml.Xml">
+            <Field t="field.Layout" ID="Details" Title="Details">
+              <Layout t="layout.Vertical" />
+              <Field t="field.PropertySheet" ID="Fields" Title="Fields" />
+              <FieldAspect t="field_aspect.DetailsInplace" />
+              <Field t="field.Button" ID="Close_details" Title="Close details">
+                <Style t="button.Hyperlink" />
+                <Action t="itemlist_action.ToggleDetailsInplace" />
+                <FieldAspect t="field_feature.Css">
+                  <Css><![CDATA[#this { } #wrapper { padding-top: 7px; }]]></Css>
+                </FieldAspect>
+              </Field>
+            </Field>
+          </Xml>
+          <Change t="xml.AddChildren" Data="%Field[@ID='Fields']%" Children="%$FieldsForDetails%" CloneChildren="true" />
+        </Children>
+      </Action>
+      <Action t="xml.AddXmlChildren" Parent="%$HyperlinkField%">
+        <Children t="xml.Xml">
+          <FieldAspect t="field_aspect.Hyperlink">
+            <Action t="itemlist_action.ToggleDetailsInplace" DetailsField="Details">
+              <Item t="itemlist_item.ItemInContext"/>
+            </Action>
+          </FieldAspect>
+        </Children>
+      </Action>
+      <Action t="studio_suggest.EditXtmlInStudio" Data="%$Xtml%" />
+    </xtml>
+  </Component>
+
+  <Component id="AddPopupButtons" type="field.Fields" light="false">
+    <Param name="Xtml" Default="%%" />
+    <xtml t="control.Button" ID="dt_AddPopupButtons" Title="Add OK and Close buttons to popup">
+      <Style t="ui.CustomCss">
+        <Style t="btn.Hyperlink"/>
+          <Css><![CDATA[#this { cursor: pointer; 
+        font-family: "lucida grande", tahoma; 
+        color: #333; font-size: 11px; 
+        text-decoration: none; display: inline-block; }
+      #this:hover { text-decoration: underline; }
+      ]]></Css>
+      </Style>
+      <Action t="action.RunActions" Condition="%$Xtml/Contents/@t% == 'field.InnerPage'">
+        <Var name="XtmlToAdd" t="xml.Xml">
+          <Field t="control.Layout" ID="popup_buttons" Title="Buttons">
+            <Layout t="layout.Horizontal" Spacing="10px" />
+            <Field t="control.Button" ID="OK" Title="OK" HideTitle="true">
+              <Style t="btn.JBart" MinWidth="60px"/>
+              <Action t="popup.CloseContainingPopup" ExitMode="OK">
+                  <DoOnExit t="action.RunActions" />
+              </Action>
+            </Field>
+            <Field t="control.Button" ID="Cancel" Title="Cancel">
+              <Style t="btn.JBartGrey"/>
+              <Action t="popup.CloseContainingPopup"/>
+            </Field>
+            <FieldAspect t="field_feature.Layout">
+              <Css><![CDATA[#this { margin-top: 20px; }]]></Css>
+            </FieldAspect>
+          </Field>        
+        </Var>
+        <Action t="xml.AddXmlChildren" Parent="%$Xtml/Contents%" Children="%$XtmlToAdd%" CloneChildren="true" />
+        <Action t="gstudio_popup.ShowOutline"/>      
+        <Action t="field.RefreshField" FieldID="dt_AddPopupButtons" />      
+      </Action>
+      <FieldAspect t="field_aspect.Hidden">
+        <OnCondition t="field_aspect.CheckConditionForEveryItem" DataForCondition="Item data" WhenHidden="Do not render">
+          <ShowCondition t="yesno.And" >
+            <Item value="%$Xtml/Contents/@t% == 'field.InnerPage'" />
+            <Item value="%$Xtml/Contents/Field[@ID='popup_buttons']/@t% == ''" />
+          </ShowCondition>
+        </OnCondition>
+      </FieldAspect>
+      <FieldAspect t="field_aspect.HideTitle"/>
+    </xtml>
+  </Component>
+</xtml>

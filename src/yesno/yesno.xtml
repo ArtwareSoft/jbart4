@@ -1,0 +1,159 @@
+<xtml ns="yesno">
+
+<Component id="EqualsTo" type="data.Boolean" execution="native">
+      <Param name="To" essential="true"/>
+</Component>
+
+<Component id="IsOneOf" type="data.Boolean" execution="native">
+  <Param name="Value" Default="%%"/>
+  <Param name="Option" essential="true" />
+</Component>
+
+<Component id="EqualsToList" type="data.Boolean" execution="native">
+  <Param name="To" essential="true" />
+</Component>
+
+<Component id="IsSingleValue" type="data.Boolean" execution="native">
+	<Param name="Value" Default="%%" />
+</Component>
+
+<Component id="IsStruct" type="data.Boolean" execution="native"/>
+<Component id="IsXml" type="data.Boolean" execution="native"/>
+
+<Component id="IsMultipleValue" type="data.Boolean" execution="native">
+  <Param name="Value" Default="%%"/>
+</Component>
+
+<Component id="ListContains" type="data.Boolean" execution="native">
+  <Param name="InnerList" />
+  <Param name="OuterList" />
+  <Param name="Contains" type="enum" Options="all,one of" Default="one of" />
+</Component>
+
+<Component id="NotEqualsTo" type="data.Boolean" execution="xtml">
+  <Param name="To" essential="true" />
+  <xtml t="yesno.Not">
+    <Of t="yesno.EqualsTo" To="%$To%"/>
+  </xtml>
+</Component>
+
+<Component id="Contains" type="data.Boolean" execution="native">
+  <Param name="AllText"><Default t="data.Same"/></Param>
+  <Param name="Text" type="data.Data[]" essential="true" />
+  <Param name="IgnoreCase" type="data.Boolean"><Default value="false"/></Param>
+  <Param name="IgnoreOrder" type="data.Boolean"><Default value="false"/></Param>
+  <Param name="OneOf" type="data.Boolean"/>
+</Component>
+
+<Component id="NotContains" type="data.Boolean" execution="xtml">
+  <Param name="Text" type="data.Data" essential="true" />
+  <Param name="IgnoreCase" type="data.Boolean"><Default value="false"/></Param>
+  <Param name="AllText"><Default t="data.Same"/></Param>
+  
+  <xtml t="yesno.Not">
+    <Of t="yesno.Contains" IgnoreCase="%$IgnoreCase%" AllText="%$AllText%">
+      <Text value="%$Text%"/>
+    </Of>
+  </xtml>
+</Component>
+
+ <Component id="DynamicAnd" type="data.Boolean" execution="native">
+   <Param name="DynamicItems" essential="true" />
+   <Param name="ConditionOnItem" type="data.Boolean" script="true"/>
+ </Component>
+ 
+ <Component id="PassesCondition" type="data.Boolean" execution="native">
+   <Param name="Expression" essential="true" />
+ </Component>
+
+ <Component id="IsInList" type="data.Boolean" execution="native">
+   <Param name="Item"><Default t="data.Same"/></Param>
+   <Param name="List" essential="true" />
+ </Component>
+  
+ <Component id="NotInList" type="data.Boolean">
+   <Param name="Item"><Default t="data.Same"/></Param>
+   <Param name="List" essential="true" />
+   <xtml t="yesno.Not">
+     <Of t="yesno.IsInList" Item="%$Item%" List="%$List%"/>
+   </xtml>
+ </Component>
+
+ <Component id="NumberInRange" type="data.Boolean" execution="native">
+   <Param name="From" essential="true" />
+   <Param name="To" essential="true" />
+ </Component>
+
+ <Component id="GreaterThan" type="data.Boolean" execution="native">
+   <Param name="Item" Default="%%" />
+   <Param name="Than" essential="true" />
+   <Param name="AlsoEqual" type="data.Boolean" />
+   <Param name="Type" type="enum">
+      <Default value="number" />
+      <value>text</value>
+      <value>number</value>
+      <value>date</value>
+    </Param>
+ </Component>
+
+ <Component id="LessThan" type="data.Boolean" execution="native">
+   <Param name="Item" Default="%%" />
+   <Param name="Than" essential="true" />
+   <Param name="AlsoEqual" type="data.Boolean" />
+   <Param name="Type" type="enum">
+      <Default value="number" />
+      <value>text</value>
+      <value>number</value>
+      <value>date</value>
+    </Param>
+ </Component>
+   
+ <Component id="NotAnyOf" type="data.Boolean" execution="native">
+    <Param name="Item" type="data.Boolean[]" essential="true" />
+ </Component>
+
+  <Component id="BooleansEqual" type="data.Boolean" execution="native">
+    <Param name="Item1"/>
+    <Param name="Item2"/>
+  </Component>
+   
+  <Component id="IsWritableText" type="data.Boolean" execution="native"/>
+  <Component id="IsNumber" type="data.Boolean" execution="native" >
+  	<Param name="Value" ><Default value="%%" /></Param>
+  </Component>
+
+  <Component id="VariableExists" type="data.Boolean" execution="native">
+    <Param name="VarName" />
+  </Component>
+
+  <Component id="NotInLocalHost" type="data.Boolean" execution="native" />
+
+  <Component id="Expression" type="data.Boolean.promoted" autoexpand="true" execution="native">
+    <Param name="Expression" type="data.Boolean" description="E.g. %% &lt; 20" script="true"/>
+  </Component>  
+  
+  <Component id="ConditionByXtml" type="data.Boolean.promoted">
+    <Param name="Expression" type="data.Boolean" primitive="true" />
+    <xtml value="%$Expression%" />
+  </Component>  
+  
+  <Component id="ConditionByJavascript" type="data.Boolean.promoted" execution="native" autoexpand="true">
+    <Param name="Javascript" codemirror="true">
+      <Default><![CDATA[function(data,context) {
+  return true;
+}]]></Default>
+    </Param>
+  </Component>  
+
+<Component id="ContainsRegex" type="data.Boolean,data.Boolean.promoted" execution="native">
+  <Param name="Regex" essential="true" />
+  <Param name="Text" Default="%%" advanced="true"/>
+</Component>
+
+<Component id="InStudio"  type="data.Boolean" execution="native" />
+
+  <Component id="MathCondition" type="data.Boolean" execution="native">
+    <Param name="Expression" essential="true" />
+  </Component>
+
+</xtml>

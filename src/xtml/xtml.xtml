@@ -1,0 +1,300 @@
+<xtml ns="xtml">
+
+<Component id="RunXtml" type="*" execution="native" dtsupport="false">
+  <Param name="Xtml" essential="true" remark="no default (in js)"/>
+  <Param name="Input"  remark="default %% in js"/>
+  <Param name="ForceInputParam" type="data.Boolean"/>
+  <Param name="Field"  />
+  <Param name="Method"  />
+</Component>
+
+<Component id="UsagesOfPlugin" type="data.Data" execution="native">
+  <Param name="Plugin" essential="true" />
+</Component>
+
+<Component id="TypeDefinition" type="data.Data" execution="native">
+  <Param name="Type" essential="true" />
+</Component>
+
+<Component id="ComponentExists" type="data.Boolean">
+  <Param name="ComponentID" essential="true" />
+  <xtml t="yesno.NotEmpty">
+    <Value t="xtml.ComponentDefinition" ID="%$ComponentID%" />
+  </xtml>
+</Component>
+
+<Component id="AllTypes" type="data.Data" execution="native"/>
+
+<Component id="PluginDescriptor" type="data.Data" execution="native" >
+  <Param name="Plugin" essential="true" Default="%%" />
+</Component>
+
+<Component id="ComponentsOfPlugin" type="data.Data" execution="native">
+  <Param name="Plugin" essential="true" />
+  <Param name="Type"/>
+  <Param name="Result" type="enum">
+   <Default value="xtml" />
+   <value>full id</value>
+   <value>xtml</value>
+  </Param>
+  <Param name="AlsoHidden" type="data.Boolean"><Default value="true"/></Param>
+</Component>
+
+<Component id="LoadedPlugins" type="data.Data" execution="native">
+  <Param name="IncludeUsages" type="data.Boolean"><Default value="true"/> </Param>
+</Component>
+
+<Component id="RunDynamicText" type="*" execution="native">
+  <Param name="Text" essential="true" />
+  <Param name="Input" />
+  <Param name="Context" />
+</Component>
+
+<Component id="RunXtmlAsBoolean" type="*" execution="native">
+  <Param name="Xtml" remark="no default (in js)"/>
+  <Param name="Input" remark="default %% in js"/>
+  <Param name="ForceInputParam" type="data.Boolean"/>
+  <Param name="Field"/>
+  <Param name="Method"/>
+  <Param name="EmptyAsTrue" type="data.Boolean"/>
+</Component>
+
+<Component id="UseParamAsBoolean" type="*" execution="native" dtsupport="false">
+	<Param name="Param" essential="true" />
+	<Param name="Input"><Default t="data.Same"/></Param>
+</Component>
+
+<Component id="UseParamExcludeVariable" type="*" execution="native">
+  <Param name="Param" />
+  <Param name="ExcludeVariable"/>
+</Component>
+
+<Component id="RunXtmlByComponentId" type="*" execution="native" dtsupport="false">
+  <Param name="ComponentID" essential="true" />
+  <Param name="Input" Default="%%" />
+</Component>
+
+
+<Component id="RunXtmlWithDefaultImp" type="*">
+  <Param name="Xtml" remark="no default (in js)"/>
+  <Param name="Input"  Default="%%"/>
+  <Param name="DefaultImp"/>
+  <xtml t="data.IfThenElse">
+    <If t="yesno.NotEmpty" Value="%$Xtml%"/>
+    <Then t="xtml.RunXtml" Xtml="%$Xtml%" Input="%$Input%" />
+    <Else t="xtml.RunXtmlByComponentId" ComponentID="%$DefaultImp%" Input="%$Input%"/> 
+  </xtml>
+</Component>
+
+<Component id="Profile" type="data.Data" execution="native"/>
+<Component id="UsageByName" execution="xtml" type="data.Data">
+  <Param name="UsageName" essential="true" />
+  <xtml t="data.Pipeline" >
+   <Item t="xtml.LoadedPlugins" />
+   <Item t="xtml.UsagesOfPlugin" Plugin="%%" />
+   <Item t="yesno.PassesFilter" >
+    <Filter t="yesno.EqualsTo" Data="%@Name%" To="%$UsageName%" />
+   </Item>
+  </xtml>
+ </Component>
+ 
+ <Component id="ParamEmpty" type="data.Boolean" execution="native">
+  <Param name="Param" essential="true" />
+ </Component>
+ 
+ <Component id="VariableValue" execution="native">
+  <Param name="VarName" essential="true" />
+ </Component>
+ 
+ <Component id="CopyAllParams" type="data.Data" execution="native" dtsupport="false"/>
+
+ <Component id="ParamsWithChanges" type="data.Data" execution="native">
+    <Param name="Params"/>
+    <Param name="Param" type="data.Data[]"/>
+    <Param name="ScriptParam" type="data.Data[]"/>
+    <Param name="ScriptParamArray" type="data.Data[]"/>
+    <NativeHelper t="xtml.Params"/>
+ </Component>
+ 
+ <Component id="ScriptParamArrayContents" type="data.Data" execution="native">
+   <Param name="Param"/>
+ </Component>
+ 
+ <Component id="Xtml" type="data.Data" execution="native">
+   <Param name="Xtml" essential="true" />
+   <Param name="Input"/>
+   <Param name="Context"/>
+ </Component>
+
+ <Component id="ComponentHasParam" type="data.Boolean">
+   <Param name="Component" essential="true" />
+   <Param name="Param" essential="true" />
+   <xtml t="yesno.NotEmpty">
+     <Data t="data.Pipeline">
+       <Item t="xtml.ComponentDefinition" ID="%$Component%"/>
+       <Item value="%Param[@name='{$Param}']%"/>
+     </Data>
+   </xtml>
+ </Component>
+ 
+ <Component id="ToScript" type="data.Data" execution="native">
+   <Param name="Xtml"><Default t="data.Same"/></Param>
+ </Component>
+ 
+ <Component id="ToInput" type="data.Data" execution="native"/>
+ 
+<Component id="ComponentParamType" type="data.Data">
+  <Param name="Component" essential="true" />
+  <Param name="Param" essential="true" />
+  <xtml t="data.Pipeline">
+    <Item t="xtml.ComponentDefinition" ID="%$Component%"/>
+    <Item value="%Param[@name='{$Param}']%"/>
+    <Item t="data.FirstSucceeding">
+      <Item value="%@type%"/>
+      <Item value="data.Data"/>
+    </Item>
+  </xtml>
+</Component>
+
+<Component id="ComponentParam" type="data.Data">
+  <Param name="Component" essential="true" />
+  <Param name="Param" essential="true" />
+  <xtml t="data.Pipeline">
+    <Item t="xtml.ComponentDefinition" ID="%$Component%"/>
+    <Item value="%Param[@name='{$Param}']%"/>
+  </xtml>
+</Component>
+
+<Component id="ToParamDefaultValue" type="data.Data">
+  <Param name="Component" essential="true" />
+  <Param name="Param" essential="true" />
+  <xtml t="data.Pipeline">
+    <Item t="xtml.ComponentDefinition" ID="%$Component%"/>
+    <Item value="%Param[@name='{$Param}']/Default%" />
+  </xtml>
+</Component>
+
+<Component id="ToParamDefinition" type="data.Data">
+  <Param name="Component" essential="true" />
+  <Param name="Param" essential="true" />
+  <xtml t="data.Pipeline">
+    <Item t="xtml.ComponentDefinition" ID="%$Component%"/>
+    <Item value="%Param[@name='{$Param}']%" />
+  </xtml>
+</Component>
+
+<Component id="ComponentElementToFullId" type="data.Data">
+  <xtml t="data.IfThenElse">
+    <If t="xml.IsOfTag" Data="%..%" Tag="components"/>
+    <Then value="%../../@id%.%@id%"/>
+    <Else value="%../@ns%.%@id%"/>
+  </xtml>
+</Component>
+
+<Component id="FileNameOfComponent">
+  <Param name="ID" essential="true" />
+  <xtml t="data.Pipeline">
+    <Item t="xtml.ComponentDefinition" ID="%$ID%"/>
+    <Item value="%../@file%"/>
+  </xtml>
+</Component>
+
+<Component id="VariablesOfContext" type="data.Data" execution="native">
+  <Param name="ScriptAndContext" essential="true" />
+</Component>
+
+<Component id="GlobalVariables" type="data.Data" execution="native" />
+<Component id="DebugDataVariables" type="data.Data" execution="native" />
+
+<Component id="DebugVariableValue" type="data.Data" execution="native">
+  <Param name="Variable" essential="true" />
+</Component>
+
+<Component id="VariableValueFromContext" type="data.Data" execution="native">
+  <Param name="ScriptAndContext" essential="true" />
+  <Param name="Variable" essential="true" />
+</Component>
+ 
+<Component id="LoadComponents" type="action.Action" execution="native" light="false">
+  <Param name="Components"/>
+  <Param name="Namespace"/>
+  <Param name="ClearNSBefore" type="data.Boolean" />
+</Component>
+
+<Component id="LoadXtmlFile" type="action.Action" execution="native" light="false">
+  <Param name="Contents" essential="true" />
+</Component>
+
+<Component id="CleanLog" type="action.Action" execution="native" light="false">
+  <Param name="CleanAllLogs" type="data.Boolean" />
+  <Param name="Level" />
+</Component>
+
+<Component id="Logs" type="data.Data" execution="native" />
+
+<Component id="LogContent" type="action.Action" execution="native" light="false">
+  <Param name="Level" type="enum">
+  	<value>error</value>
+  	<value>warning</value>
+  	<value>general</value>
+  </Param>
+</Component>
+
+<Component id="NamespaceOfComponent" type="data.Data">
+  <Param name="Component"><Default t="data.Same"/></Param>
+  <xtml t="text.FirstSucceeding" Data="%$Component%">
+    <Item value="%../@ns%"/>
+    <Item value="%../../@id%"/>
+  </xtml>
+</Component>
+
+<Component id="ActiveLogLevels" type="data.Data" execution="native" />
+
+<Component id="RunUsage" type="action.Action" execution="native" light="false">
+	<Param name="OnSuccess" type="action.Action" script="true"/>
+	<Param name="OnFailure" type="action.Action" script="true"/>
+	<Param name="OnFinish" type="action.Action" script="true"/>
+</Component>
+
+<Component id="AllComponentDefinitions" type="data.Data" execution="native" />
+<Component id="AllComponentIds" type="data.Data" execution="native" />
+<Component id="ComponentIdsOfType" type="data.Data" execution="native" >
+	<Param name="Type" essential="true" />
+</Component>
+
+<Component id="PartsOfContext" type="data.Data" execution="native">
+	<Param name="Context" />
+	<Param name="Part" type="enum" >
+		<value>Variable Names</value>
+		<value>Global Variable Names</value>
+		<value>Param Names</value>
+		<value>Component Context</value>
+	</Param>
+</Component>
+
+<Component id="CurrentContext" type="data.Data" execution="native" />
+<Component id="ManualContext" type="data.Data" execution="native" >
+	<Param name="Variables" />
+</Component>
+
+<Component id="BuildVersion" type="data.Data" execution="native" internal="true">
+</Component>
+
+<Component id="XtmlOfParamArray" type="data.Data" execution="native" description="Retrieves the xtml of a param array" />
+
+<Component id="ClearComponentsCache" type="action.Action" execution="native" />
+ 
+ <Component id="RunCircuit" type="*" execution="native" dtsupport="false">
+  <Param name="Circuit"/>
+</Component>
+
+<Component id="ComponentId" type="data.Data">
+  <Param name="Component" Default="%%" />
+  <xtml t="text.Concat">
+    <Item t="xtml.NamespaceOfComponent" Component="%$Component%" />
+    <Item value="."/>
+    <Item value="%$Component/@id%"/>
+  </xtml>
+</Component>
+
+</xtml>

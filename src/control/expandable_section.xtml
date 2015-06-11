@@ -1,0 +1,63 @@
+<xtml package="true">
+
+<xtml ns="control">
+
+  <Component id="ExpandableSection" type="field.Fields" execution="native" image="%$_Images%/studio/cube1616.gif">
+    <Param name="ID" advanced="always" essential="true" idField="true" />
+    <Param name="Title" titleField="true"/>
+    <Param name="SectionTitle" />
+    <Param name="Field" type="field.Fields[]" light="false" script="true" essential="true"/>
+    <Param name="Style" type="expandable_section.Style" script="true">
+      <Default t="expandable_section.Default"/>
+    </Param>
+    <Param name="FieldAspect" type="field.FieldAspect[]" light="false" script="true"/>
+  </Component>
+
+</xtml>
+
+<xtml ns="expandable_section">
+
+  <Type id="Style" />
+
+<Component id="Default" type="expandable_section.Style">  <xtml t="ui.CustomStyle">    <Html><![CDATA[<div>
+  <div class="section_title">
+    <div class="section_title_toggle" />
+    <div class="section_title_text" />
+  </div>
+  <div class="section_body"/>
+</div>
+]]></Html>    <Css><![CDATA[
+#this>.section_title>div {
+  display:inline-block;
+  vertical-align:top;
+}
+#this >.section_title {
+  font:bold 14px arial;
+  color:#3764A0;
+  padding:3px 0;
+  margin-bottom:5px;
+  cursor:pointer;
+}
+#this>.section_title>.section_title_toggle {
+  margin-top:2px;
+  height:16px;
+  width:16px;
+  background:url('images/studio/plus.gif') no-repeat;
+}
+#this.aa_section_exapnded>.section_title>.section_title_toggle {
+  background:url('images/studio/minus.gif') no-repeat;
+}]]></Css>    <Javascript><![CDATA[function render(expandableSection) {
+  aa_expandableSection(expandableSection);
+}]]></Javascript>  </xtml></Component>
+
+</xtml>
+
+  <xtml ns="fld_aspect">
+
+  <Component id="ExpandableSectionProperties" type="field.FieldAspect" execution="native" context="FieldComponent=control.ExpandableSection">
+    <Param name="ControlForTitle" type="ui.Page"/>
+    <Param name="RefreshOnExpand" type="data.Boolean" Default="false" />
+  </Component>
+
+  </xtml>
+</xtml>

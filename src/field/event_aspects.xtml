@@ -1,0 +1,34 @@
+<xtml ns="field_feature">
+
+	<Type id="Event" />
+
+  <Component id="HandleEvent" type="field.FieldAspect" execution="native">
+    <summaryLabel t="data.Pipeline">
+      <Item value="%Event/@t%" />
+      <Item t="text.RemovePrefix" Separator="."/>
+      <Item t="text.Capitalize" Mode="capital to separate words"/>
+    </summaryLabel>
+    <Param name="Event" type="field_feature.Event" script="true" />
+    <Param name="Action" type="action.Action" script="true"/>
+  </Component>
+
+  <Component id="Update" type="field_feature.Event" description="When the data is updated" execution="native" />
+  <Component id="Click" type="field_feature.Event" execution="native" description="Mouse click. _DomEvent variable can be used"/>
+  <Component id="Blur" type="field_feature.Event" execution="native" />
+  <Component id="KeyDown" type="field_feature.Event" execution="native" />
+  <Component id="KeyUp" type="field_feature.Event" execution="native" />
+  <Component id="EnterPressed" type="field_feature.Event" execution="native" />
+  <Component id="ControlAttached" type="field_feature.Event" execution="native" />
+  <Component id="Load" type="field_feature.Event" execution="native" />
+  <Component id="BeforeRenderingControl" type="field_feature.Event" execution="native" />
+  <Component id="AfterRenderingControl" type="field_feature.Event" execution="native" />
+  <Component id="Focus" type="field_feature.Event" execution="native" />
+  <Component id="MouseOver" type="field_feature.Event" execution="native" />
+  <Component id="CtrlEnterPressed" type="field_feature.Event" execution="native" />
+
+  <Component id="MultipleEvents" type="field_feature.Event" decorator="Event">
+    <Param name="Event" type="field_feature.Event[]" script="true" />
+    <xtml t="xtml.UseParamArray" Param="Event" />
+  </Component>
+
+</xtml>

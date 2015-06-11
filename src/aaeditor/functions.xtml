@@ -1,0 +1,8 @@
+<xtml ns="js_dt">
+
+    <Component id="OverrideFunctionInJSCode" type="action.Action" execution="native">
+      <Param name="JSCode" />
+      <Param name="FunctionName" />
+    </Component>
+
+</xtml>

@@ -1,0 +1,28 @@
+<xtml ns="cobrowse_style" plugin="cobrowse">
+
+	<Type id="MarkShownItemStyle" />
+
+	<Component id="DefaultMarkShownItem" type="cobrowse_style.MarkShownItemStyle">
+		<xtml t="ui.CustomStyle">
+			<Html><![CDATA[<div class="cb_other_indication"/>]]></Html>
+			<Css><![CDATA[
+	#item>#this { display: none; }
+	#item.cobrowse_other>#this {
+		display:block;
+}				
+	#this { 
+	  position: absolute;
+	  top: 4px;
+	  right: 0px;
+	  width:20px;
+	  height:20px;
+	  background: url('_jbartImages_/comet_icons.png') 0 0;
+	}
+]]></Css>
+			<Javascript><![CDATA[function show(markShownItem) {
+  aa_cb_markShownItem(markShownItem);
+}]]></Javascript>
+		</xtml>
+	</Component>
+
+</xtml>

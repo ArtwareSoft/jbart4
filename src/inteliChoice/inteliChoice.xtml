@@ -1,0 +1,19 @@
+<xtml ns="inteliChoice" light="false">
+  
+  <Component id="jBartStudioAccumulator" type="bart.ApplicationFeature" execution="native">
+  </Component>
+  
+  <Component id="TriggerUserChoice" type="action.Action" execution="native" >
+    <Param name="Selection" Default="%$_FieldData%"/>
+    <Param name="Target" Default="%$_FieldData%" description="element from which can extract selection ancestors"/>
+    <Param name="FieldId" Default="%$_Field/Id%"/>
+    <Param name="FieldXtml" Default="%$_Field/XtmlSource%"/>
+  </Component>
+  
+  <Component id="TrackGoogleAnalyticsEvent" type="action.Action" description="To be put in jbartStudio analytics project" execution="native" light="false">
+  	<Param name="EventCategory" />
+  	<Param name="EventAction" />
+  	<Param name="EventLabel" />
+  </Component>
+
+</xtml>

@@ -1,0 +1,526 @@
+<xtml package="true">
+
+  <xtml ns="editable_text">
+
+    <Type id="Style" />
+
+<Component id="JBartTextbox" type="editable_text.Style">
+  <Param name="Width" Default="150px" slider="true" sliderUnit="px" />
+  <xtml t="ui.CustomStyle">
+    <Html><![CDATA[<input/>]]></Html>
+    <Css><![CDATA[#this {
+  border: 1px solid #BDC7D8;
+  font-size: 11px;
+  padding: 3px;
+  height: 16px;
+  width: %$Width%;
+  background: url(_jbartImages_/css/shadow2.png) repeat-x scroll 0 0 transparent;
+  box-sizing:border-box;
+  height: 24px;
+}
+#this:focus {
+border-color: rgba(82, 168, 236, 0.8);
+outline: 0;
+outline: thin dotted 9;
+box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(82, 168, 236, 0.6);
+}
+#this.placeholder {
+  color: #8B8B8B;
+}
+#this.aa_error {
+  background: #fbebeb; 
+  border: 1px solid #feb2b2; 
+  color: #ec643d !important;  
+}
+]]></Css>
+    <Javascript><![CDATA[function(textbox) {
+  aa_jbart_textbox(textbox);
+}]]></Javascript>
+  </xtml>
+</Component>
+
+  <Component id="WhiteTextbox" type="editable_text.Style">
+    <Param name="Width" Default="175px" slider="true" sliderUnit="px" />
+    <xtml t="ui.CustomStyle">
+      <Html><![CDATA[<input/>]]></Html>
+      <Css><![CDATA[#this { color:#666666; font-size: 12px; width: %$Width%; height: 16px; border-radius: 0; 
+  padding-top: 3px; padding-right: 3px; padding-bottom: 3px; padding-left: 3px; 
+  border: 1px solid #bfbfbf; }
+#this:focus { 
+  box-shadow:  inset 0 1px 1px 0px rgba(0, 0, 0, 0.075),  inset 0 0 0px 0px rgba(82, 168, 236, 0.6); 
+  border-color: rgba(82, 168, 236, 0.8); outline: 0; 
+  outline: thin dotted 9; }
+]]></Css>
+      <Javascript><![CDATA[function(textbox) {
+  aa_jbart_textbox(textbox);
+}]]></Javascript>
+    </xtml>
+  </Component>
+    
+  <Component id="ClickableText" type="editable_text.Style">
+    <Param name="Width" Default="175px" slider="true" sliderUnit="px" />
+    <xtml t="ui.CustomStyle">
+      <Html><![CDATA[<div>
+  <div/>
+  <input/>
+</div>]]></Html>
+      <Css><![CDATA[#this>input { color:#666666; font-size: 12px; width: %$Width%; height: 16px; border-radius: 0; 
+  padding-top: 3px; padding-right: 3px; padding-bottom: 3px; padding-left: 3px; 
+  border: 1px solid #bfbfbf; }
+#this>input:focus { 
+  box-shadow:  inset 0 1px 1px 0px rgba(0, 0, 0, 0.075),  inset 0 0 0px 0px rgba(82, 168, 236, 0.6); 
+  border-color: rgba(82, 168, 236, 0.8); outline: 0; 
+  outline: thin dotted 9; }
+]]></Css>
+      <Javascript><![CDATA[function(textbox) {
+  aa_jbart_clickable_text(textbox,{
+    TextElement: textbox.$el.find('div'),
+    InputElement: textbox.$el.find('input')
+  });
+}]]></Javascript>
+    </xtml>
+  </Component>
+    
+    <Component id="JBartMultiLine" type="editable_text.Style">
+      <Param name="Width" Default="200px" slider="true" sliderUnit="px" />
+      <Param name="Height" Default="50px" slider="true" sliderUnit="px" />
+    <xtml t="ui.CustomStyle">
+      <Html><![CDATA[<textarea/>]]></Html>
+      <Css><![CDATA[#this {
+  border: 1px solid #BDC7D8;
+  font-size: 11px;
+  padding: 3px;
+  height: %$Height%;
+  width: %$Width%;
+  background: url(_jbartImages_/css/shadow2.png) repeat-x scroll 0 0 transparent;
+  box-sizing:border-box;
+}
+#this:focus {
+border-color: rgba(82, 168, 236, 0.8);
+outline: 0;
+outline: thin dotted 9;
+box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(82, 168, 236, 0.6);
+}
+]]></Css>
+      <Javascript><![CDATA[function(textbox) {
+  aa_jbart_textbox(textbox);
+}]]></Javascript>
+    </xtml>
+    </Component>
+    
+    <Component id="JBartPicklistSearchbox" type="editable_text.Style">
+      <xtml t="ui.CustomStyle">
+        <Html><![CDATA[<input/>]]></Html>
+        <Css><![CDATA[#this {
+border: none;
+border-bottom: 1px solid rgba(82, 168, 236, 0.8);
+font-size: 11px;
+padding: 3px;
+height: 16px;
+width:100%;
+}
+#this:focus {
+outline: 0;
+}
+]]></Css>
+        <Javascript><![CDATA[function(textbox) {
+  aa_jbart_textbox(textbox);
+}]]></Javascript>
+      </xtml>
+    </Component>
+
+  <Component id="CodeMirror" type="editable_text.Style">
+    <Param name="Width" Default="400px" slider="true" sliderUnit="px" />
+    <Param name="Height" Default="200px" slider="true" sliderUnit="px" />
+    <Param name="Mode" type="enum" Options="javascript,xml,css,htmlmixed" Default="javascript"/>
+    <Param name="Readonly" type="data.Boolean" Default="false"/>
+    <Param name="Autofocus" type="data.Boolean" Default="false"/>
+    <Param name="LineNumbers" type="data.Boolean" Default="false"/>
+    <Param name="LineWrapping" type="data.Boolean" Default="false"/>
+    <Param name="EnableFullScreen" type="data.Boolean" Default="true"/>
+    <xtml t="ui.CustomStyle" lineNumbers="%$LineNumbers%" lineWrapping="%$LineWrapping%" height="%$Height%" width="%$Width%" mode="%$Mode%" enableFullScreen="%$EnableFullScreen%">
+      <Html><![CDATA[<div/>]]></Html>
+      <Css><![CDATA[#this { min-width: %$Width%; min-height: %$Height%; } #this .CodeMirror { border: 2px solid #FFEFD5; }]]></Css>
+      <Javascript><![CDATA[
+      function(textbox) {
+
+        var settings = {
+          value: textbox.value,
+          lineNumbers: textbox.params.lineNumbers == 'true',
+          lineWrapping: textbox.params.lineWrapping == 'true',
+          height: textbox.params.height,
+          width: textbox.params.width,
+          mode: textbox.params.mode,
+          onchange: function(editor) {
+            textbox.setValue(editor.getValue());
+          },
+          extraKeys: {
+            "Ctrl-Enter": function(editor) {
+              aa_trigger(textbox,'ctrlEnter');
+            }
+          }
+        };
+        if (textbox.params.enableFullScreen == 'true')
+          aa_enableFullScreenForCodeMirror(settings);
+        var cm = aa_codemirror(settings);
+        textbox.el.appendChild(cm);
+      }
+]]></Javascript>
+    </xtml>
+  </Component>
+
+<Component id="TinyMCE" type="editable_text.Style">
+  <Param name="Width" Default="600" slider="true" sliderUnit="" />
+  <Param name="Height" Default="200" slider="true" sliderUnit=""/>
+  <xtml t="ui.CustomStyle" Height="%$Height%" Width="%$Width%">
+    <Css><![CDATA[#this { width: %$Width%px; height: %$Height%px; box-sizing:border-box; padding:5px; }]]></Css>
+    <Html><![CDATA[<textarea/>]]></Html>
+    <Javascript><![CDATA[
+      function(textbox) {
+        aa_tinyMCE(textbox,{ width: textbox.params.Width, height:textbox.params.Height });
+      }
+]]></Javascript>
+  </xtml>
+</Component>
+
+<Component id="NicEdit" type="editable_text.Style">
+  <Param name="Buttons" Default="save,bold,italic,underline,left,center,right,justify,ol,ul,fontSize,fontFamily,fontFormat,indent,outdent,image,upload,link,unlink,forecolor,bgcolor" type="dynamic_enum_multi">
+    <Options t="data.ListByCommas" List="save,bold,italic,underline,left,center,right,justify,ol,ul,fontSize,fontFamily,fontFormat,indent,outdent,image,upload,link,unlink,forecolor,bgcolor"/>
+  </Param>
+  <Param name="Height" Default="200" slider="true" sliderUnit=""/>
+  <Param name="Width" Default="500" slider="true" sliderUnit=""/>
+  <xtml t="ui.CustomStyle" Buttons="%$Buttons%" Height="%$Height%" Width="%$Width%">
+    <Css><![CDATA[#this .nicEdit-main:focus {
+  outline:none;
+}
+.right_to_left #this>div:nth-child(2) { direction:rtl; }]]></Css>
+    <Html><![CDATA[<div>
+<textarea/>
+<a href="http://nicedit.com/" target="_blank"><img src="http://nicedit.com/images/logo.png" style="height:12px;"></a>
+  </div>]]></Html>
+    <Javascript><![CDATA[
+      function(textbox) {
+        aa_nicEdit(textbox,{ 
+          buttons:textbox.params.Buttons,
+          height: textbox.params.Height,
+          width: textbox.params.Width
+        });
+      }
+]]></Javascript>
+  </xtml>
+</Component>
+  </xtml>
+  
+  <xtml ns="editable_number">
+
+    <Type id="Style" />
+
+  <Component id="Slider" type="editable_number.Style">
+    <Param name="Width" Default="100px" slider="true" sliderUnit="px" />
+            <xtml t="ui.CustomStyle">
+              <Html><![CDATA[<div>
+<div class="aa_slider_scale">
+  <div class="aa_slider_text"/>
+  <div class="aa_slider_thumb" />
+  <input class="aa_slider_input" />
+</div>
+</div>]]></Html>
+              <Css><![CDATA[#this { height: 30px; padding-top: 0px; padding-right: 0px; padding-bottom: 0px; 
+  padding-left: 12px; }
+.aa_slider_scale { position:relative; float: left; background-color:#aaa; width: %$Width%; 
+  height: 1px; border-radius: 3px; margin-top: 13px; margin-right: 6px; 
+  margin-bottom: 13px; margin-left: 6px; 
+  border-bottom: 1px solid #efefef; }
+.aa_slider_thumb { cursor: pointer; position: absolute; color:black; 
+  background-color:#efefef; width: 6px; height: 13px; 
+  border-radius: 2px; border: 1px solid #adadad; 
+  box-shadow:  inset 0 0 3px 0px        grey; top: -7px; left: 0px; }
+.aa_slider_thumb:hover { background-color:#eee; border-color: #777; }
+.aa_slider_scale:hover .aa_slider_text { color:black; }
+.aa_slider_thumb:focus { background-color:#383838; }
+.aa_slider_text { color:#aaa; font-size: 10px; margin-top: -12px; margin-right: 0px; 
+  margin-bottom: 0px; margin-left: -19px; }
+#this.empty_value { opacity: 0.5; -webkit-transition: opacity, 0.5s; }
+.aa_slider_text:hover { cursor: pointer; text-decoration:underline; }
+.aa_slider_input { position:absolute; width: 98px; height: 20px; border-radius: 6px; 
+  padding-top: 4px; padding-right: 4px; padding-bottom: 4px; 
+  padding-left: 18px; margin-top: -13px; margin-left: 24px; 
+  border: 1px solid #D1D1D1; box-shadow:  2px 2px 6px 1px     grey; }
+  .aa_slider_thumb.aa_disabled { opacity: 0.5 }
+  .aa_slider_text.aa_disabled { opacity: 0.5 }
+  .aa_slider_scale.aa_disabled { opacity: 0.5 }
+]]></Css>
+              <Javascript><![CDATA[function(editableNumber) {
+  var settings = {
+    $el: editableNumber.$el,
+    scaleElement: editableNumber.$el.find('.aa_slider_scale')[0],    
+    thumbElement: editableNumber.$el.find('.aa_slider_thumb')[0],
+    textElement:  editableNumber.$el.find('.aa_slider_text')[0],
+    inputElement: editableNumber.$el.find('.aa_slider_input')[0]
+  };
+  aa_jbart_slider(editableNumber,settings);
+}
+  
+]]></Javascript>
+            </xtml>
+</Component>
+
+
+    <Component id="JBartNumberTextbox" type="editable_number.Style">
+      <Param name="Width" Default="150px" slider="true" sliderUnit="px" />
+      <xtml t="ui.CustomStyle">
+        <Html><![CDATA[<input/>]]></Html>
+        <Css><![CDATA[#this {
+  border: 1px solid #BDC7D8;
+  font-size: 11px;
+  padding: 3px;
+  height: 16px;
+  width: %$Width%;
+  background: url(_jbartImages_/css/shadow2.png) repeat-x scroll 0 0 transparent;
+  box-sizing:border-box;
+  height: 24px;
+}
+#this:focus {
+border-color: rgba(82, 168, 236, 0.8);
+outline: 0;
+outline: thin dotted 9;
+box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(82, 168, 236, 0.6);
+}
+]]></Css>
+        <Javascript><![CDATA[function(textbox) {
+  aa_jbart_textbox(textbox,{
+    InputValueMask: aa_input_value_mask('[0-9.]')
+  });        
+}]]></Javascript>
+      </xtml>
+    </Component>
+
+  </xtml>
+
+<xtml ns="boolean">
+
+    <Type id="Style" style="true" />
+
+    <Component id="Plain" type="boolean.Style">
+      <xtml t="ui.CustomStyle">
+        <Html><![CDATA[<div/>]]></Html>
+        <Css><![CDATA[]]></Css>
+        <Javascript><![CDATA[function(booleanObj) {
+  aa_booleanStyle(booleanObj);
+}]]></Javascript>
+      </xtml>
+    </Component>
+
+</xtml>
+
+<xtml ns="lookup">
+
+    <Type id="Style" style="true" />
+
+    <Component id="Plain" type="lookup.Style">
+      <xtml t="ui.CustomStyle">
+        <Html><![CDATA[<div><img class="image"/><div/></div>]]></Html>
+        <Css><![CDATA[.image { padding-right: 5px; }
+#this>div { display: inline-block;}
+]]></Css>
+        <Javascript><![CDATA[function(lookup) {
+  lookup.setImage('.image',lookup.image);
+  jQuery(lookup).find('>div').html( lookup.text );        
+}]]></Javascript>
+      </xtml>
+    </Component>
+
+  <Component id="ClearValueInPicklist" type="clear_button.Style">
+    <xtml t="ui.CustomStyle">
+      <Html><![CDATA[<span class="aa_clear_button" />]]></Html>
+      <Css><![CDATA[#this {
+  position: absolute; right: 22px; top: 2px; display: inline-block; width:16px; height:16px;
+  background: url(%$_Images%/./delete1616.gif) no-repeat 0 0; 
+  cursor: pointer;
+}
+#this.empty { background: none; display: none;}
+ ]]></Css>
+<Javascript><![CDATA[function(clearButton) {
+    clearButton.control.title = clearButton.Title; 
+    var picklistImage = jQuery(clearButton.FieldControlWrapper).find('.picklist_image')[0];
+    jBart.remove(jQuery(clearButton.FieldControlWrapper).find('.aa_clear_button')[0]);
+    if (picklistImage && picklistImage.parentNode)
+      picklistImage.parentNode.appendChild(clearButton.control);
+    clearButton.control.onclick = clearButton.ClearValue;
+    
+    if (clearButton.IsValueEmpty) clearButton.jElem.addClass('empty');
+    else clearButton.jElem.removeClass('empty');
+}]]></Javascript>
+    </xtml>
+  </Component>
+
+</xtml>
+
+<xtml ns="editable_boolean">
+
+    <Type id="Style" style="true" />
+
+    <Component id="Checkbox" type="editable_boolean.Style">
+      <xtml t="ui.CustomStyle">
+        <Html><![CDATA[<div class="aa_checkbox_div"><input type="checkbox" class="aa_checkbox_input"><div class="aa_checkbox_text"/></div>]]></Html>
+        <Css><![CDATA[#this>div {
+  display: inline-block;vertical-align: top;padding-top: 2px;padding-left:2px;
+  cursor: default;
+  font: 14px arial;
+}
+#this>input { margin-left: 0px; }
+]]></Css>
+        <Javascript><![CDATA[function(checkbox) {
+  aa_native_checkbox(checkbox,{
+    InputElement: jQuery(checkbox.control).find('>input')[0],
+    TextElement: jQuery(checkbox.control).find('>div')[0],
+  });
+}]]></Javascript>
+      </xtml>
+    </Component>
+
+    <Component id="RadioButtons" type="editable_boolean.Style">
+      <Param name="FirstValue" type="enum" Options="true,false" Default="true"/>
+      <xtml t="ui.CustomStyle" FirstValue="%$FirstValue%">
+        <Css><![CDATA[#this {
+  padding-top: 3px;
+}
+#this>div {
+  float: left;
+  white-space:absolute;
+  margin-right: 15px;
+}
+input {
+  margin-top: 0;
+  margin-right: 0;
+  margin-bottom: 0;
+  margin-left: 0;
+  vertical-align: top;
+}
+.radio_text {
+  font-size: 12px;  
+  cursor: pointer;
+  color:#666666;
+  padding-left: 3px;
+  margin: 0;
+  vertical-align: text-bottom;
+  display: inline-block;
+}]]></Css>
+        <Html><![CDATA[<div>
+<div class="radio_true"><input type="radio" name="group1" /><div class="radio_text"/></div>
+<div class="radio_false"><input type="radio" name="group1" /><div class="radio_text"/></div>
+</div>
+]]></Html>
+        <Javascript><![CDATA[function(checkbox) {
+  aa_native_boolean_radios(checkbox,{ PutFalseValueBeforeTrue: checkbox.params.FirstValue == 'false' });
+}]]></Javascript>
+      </xtml>
+    </Component>
+
+</xtml>
+
+  <xtml ns="editable_color">
+
+    <Type id="Style" />
+
+    <Component id="JSColor" type="editable_color.Style">
+    <Param name="Width" Default="150px" slider="true" sliderUnit="px" />
+      <xtml t="ui.CustomStyle">
+        <Html><![CDATA[<input/>]]></Html>
+        <Css><![CDATA[#this {
+border: 1px solid #BDC7D8;
+font-size: 11px;
+padding: 3px;
+height: 16px;
+width: %$Width%;
+}
+#this:focus {
+border-color: rgba(82, 168, 236, 0.8);
+outline: 0;
+outline: thin dotted 9;
+box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(82, 168, 236, 0.6);
+}
+#this.placeholder {
+  color: #8B8B8B;
+}
+]]></Css>
+        <Javascript><![CDATA[function render(textbox) {
+  aa_jbart_textbox(textbox);
+  aa_init_jscolor(textbox,{ InputElement: textbox.el });
+}
+]]></Javascript>
+      </xtml>
+    </Component>
+
+</xtml>
+
+  <xtml ns="editable_date">
+
+    <Type id="Style" />
+
+    <Component id="JQueryDatePicker" type="editable_date.Style">
+      <Param name="Width" slider="true" sliderUnit="px" Default="180px" />
+      <xtml t="ui.CustomStyle">
+        <Html><![CDATA[<input/>]]></Html>
+        <Css><![CDATA[#this { width: %$Width%; }]]></Css>
+        <Javascript><![CDATA[function render(textbox) {
+  aa_jbart_textbox(textbox);
+  aa_jquery_date_picker(textbox);
+}
+]]></Javascript>
+      </xtml>
+    </Component>
+
+</xtml>
+
+<xtml ns="number">
+
+  <Type id="Style" />
+
+    <Component id="Plain" type="number.Style">
+      <xtml t="ui.CustomStyle">
+        <Html><![CDATA[<div />]]></Html>
+        <Css><![CDATA[]]></Css>
+        <Javascript><![CDATA[function(number) {
+  aa_number(number);
+}]]></Javascript>
+      </xtml>
+    </Component>
+
+</xtml>
+
+<xtml ns="date">
+
+  <Type id="Style" />
+
+    <Component id="Plain" type="date.Style">
+      <xtml t="ui.CustomStyle">
+        <Html><![CDATA[<div />]]></Html>
+        <Css><![CDATA[]]></Css>
+        <Javascript><![CDATA[function(dateObj) {
+  aa_dateLabel(dateObj);
+}]]></Javascript>
+      </xtml>
+    </Component>
+
+</xtml>
+
+<xtml ns="rating_style">
+
+  <Component id="MediumRatingStars" type="rating.Style">
+      <xtml t="ui.CustomStyle">
+        <Html><![CDATA[<div><div class="star"/></div>]]></Html>
+        <Css><![CDATA[#this { display: inline-block; width: 120px; }
+.star { background: url('_jbartImages_/rating.png') 0 0; width: 24px; height: 24px; display: inline-block; }
+.star.full { background-position: 0 -48px; }
+.star.hover { background-position: 0 -24px; }
+]]></Css>
+        <Javascript><![CDATA[function(rating) {
+  aa_rating_stars(rating);
+}]]></Javascript>
+      </xtml>
+  </Component>
+
+</xtml>
+
+</xtml>

@@ -1,0 +1,284 @@
+<xtml ns="jbart_studio" light="false">
+
+  <Component id="ToggleDesignTimeClass" type="action.Action" execution="native">
+    <Param name="DesignTime" type="data.Boolean" Default="true"/>
+  </Component>
+
+  <Component id="SaveWidgetJSToJBartDB" type="action.Action">
+    <Param name="Project" Default="%$_WidgetXml%" />
+    <Param name="OnSuccess" type="action.Action" script="true" />
+    <Param name="OnError" type="action.Action" script="true" />
+    <Param name="WidgetId" />
+    <Param name="Server" />
+    <Param name="FileName" />
+    <xtml t="jbartdb.SaveWidgetToJBartDB" WidgetID="%$ID%" Server="%$Server%" FileName="%$FileName%">
+      <Var name="ID" t="data.Pipeline">
+        <Item t="text.FirstSucceeding">
+          <Item value="%$WidgetId%" />
+          <Item value="%$Project/@id%" />
+        </Item>
+        <Item t="text.Replace" Find="/" ReplaceWith="_" />
+      </Var>
+      <Var name="Components" t="bart_dt_compress.Components" Script="%$Project%" BlackList="%$Project/compress/@black_list%" />
+      <Var name="Xtml" t="bart_dt_compress.Xtml" Components="%$Components%" />
+      <Var name="AllXtml" t="data.List">
+        <Item value="%$Xtml%" />
+        <Item value="%$Project%" />
+      </Var>
+      <Var name="GCs" t="bart_dt_compress.GCs" Components="%$Components%" />
+      <Var name="Utils" t="bart_dt_compress.JsUtils" GCs="%$GCs%" WidgetXml="%$Project%" JsToAdd="%$Project/compress/@js_to_add%" Xtmls="%$AllXtml%"/>
+      <Var name="XtmlInOneLine" t="bart_dt.XmlInOneLine" Xml="%$Xtml%" />
+      <Var name="WidgetInOneLine" t="bart_dt.XmlInOneLine" Xml="%$Project%"/>
+      <WidgetJS t="text.Concat" Separator="&#xa;">
+        <Item value="(function(){" />
+        <Item value="%$Utils%" />
+        <Item value="%$GCs%" />
+        <Item value="ajaxart.load_xtml_content('',aa_parsexml('%$XtmlInOneLine%'));&#xa;" />
+        <Item value="var jBartWidget_%$ID% = '%$WidgetInOneLine%'; " />
+        <Item value="jBartWidgets.%$ID% = jBart.activator(jBartWidget_%$ID%);" /> 
+        <Item value="}());" />
+      </WidgetJS>
+      <OnSuccess t="xtml.UseParam" Param="OnSuccess"/>
+      <OnError t="xtml.UseParam" Param="OnError"/>
+    </xtml>
+  </Component>
+
+  <Component id="SaveProjectToJBartDB" type="action.Action">
+    <Param name="Project" Default="%$_WidgetXml%" />
+    <Param name="UploadingText" Default="Uploading to jbart db" />
+    <Param name="OnSuccess" type="action.Action" script="true">
+      <Default t="notification_box.ShowNotification" NotificationBox="jbart_studio_notification" Text="Project Saved" Status="saved"/>
+    </Param>
+    <Param name="OnError" type="action.Action" script="true">
+      <Default t="action.RunActions">
+        <Action t="action.WriteToLog" Message="Error Saving Node %@id% to %$Url%: %$Result%" Level="error"/>
+        <Action t="notification_box.ShowNotification" NotificationBox="jbart_studio_notification" Text="Error saving project (see log)" Status="error"/>
+      </Default>
+    </Param>
+    <Param name="WidgetId" />
+    <Param name="Server" />
+    <xtml t="action.RunActions">
+      <Var name="ID" t="data.Pipeline">
+        <Item t="text.FirstSucceeding">
+          <Item value="%$WidgetId%" />
+          <Item value="%$Project/@id%" />
+        </Item>
+        <Item t="text.Replace" Find="/" ReplaceWith="_"  />
+      </Var>
+      <Action t="notification_box.ShowNotification" NotificationBox="jbart_studio_notification" Text="%$UploadingText%" Status="saving"/>
+      <Action t="notification_box.ShowNotification" NotificationBox="GStudio_NotificationBox" Text="%$UploadingText%" Status="saving"/>
+      <Action t="jbartdb.SaveNodeInJBartDB" Node="%$Project%" Server="%$Server%">
+        <OnSuccess t="jbartdb.SaveWidgetToJBartDB" WidgetID="%$ID%">
+          <Var name="Components" t="bart_dt_compress.Components" Script="%$Project%" BlackList="%$Project/compress/@black_list%" />
+          <Var name="Xtml" t="bart_dt_compress.Xtml" Components="%$Components%" />
+          <Var name="AllXtml" t="data.List">
+            <Item value="%$Xtml%" />
+            <Item value="%$Project%" />
+          </Var>
+          <Var name="GCs" t="bart_dt_compress.GCs" Components="%$Components%" />
+          <Var name="Utils" t="bart_dt_compress.JsUtils" GCs="%$GCs%" WidgetXml="%$Project%" JsToAdd="%$Project/compress/@js_to_add%" Xtmls="%$AllXtml%"/>
+          <Var name="XtmlInOneLine" t="bart_dt.XmlInOneLine" Xml="%$Xtml%" />
+          <Var name="WidgetInOneLine" t="bart_dt.XmlInOneLine" Xml="%$Project%"/>
+          <WidgetJS t="text.Concat" Separator="&#xa;">
+            <Item value="(function(){" />
+            <Item value="%$Utils%" />
+            <Item value="%$GCs%" />
+            <Item value="ajaxart.load_xtml_content('',aa_parsexml('%$XtmlInOneLine%'));&#xa;" />
+            <Item value="var jBartWidget_%$ID% = '%$WidgetInOneLine%'; " />
+            <Item value="jBartWidgets.%$ID% = jBart.activator(jBartWidget_%$ID%);" /> 
+            <Item value="}());" />
+          </WidgetJS>
+          <OnSuccess t="xtml.UseParam" Param="OnSuccess"/>
+          <OnError t="xtml.UseParam" Param="OnError"/>
+        </OnSuccess>
+      </Action>
+    </xtml>
+  </Component>
+
+  <Component id="UploadCurrentStudio" type="action.Action">
+      <Param name="KeepStudioVersionInWidget" />
+      <Param name="OnSuccess" type="action.Action" script="true" />
+      <Param name="WriteToLocalFileSystem" type="data.Boolean" Default="true" />
+      <Param name="HtmlHeadExtras" />
+      <Param name="Server" Default="http://localhost:8888" />
+      <Param name="AddVersionSuffix" type="data.Boolean" Default="true" />
+      <xtml t="action.RunActions">
+        <Var name="Components" t="data.Pipeline">
+          <Item t="xtml.AllComponentIds"/>
+          <Aggregator t="data.Sort" />
+        </Var>
+        <Var name="JsInComponents" t="object.Object" />
+        <Var name="Components1" t="data.Pipeline" >
+          <Item value="%$Components%" />
+          <Aggregator t="data.Subset" From="1" Count="800" /> />
+        </Var>
+        <Var name="Components2" t="data.Pipeline" >
+          <Item value="%$Components%" />
+          <Aggregator t="data.Subset" From="801" Count="800" /> />
+        </Var>
+        <Var name="Components3" t="data.Pipeline" >
+          <Item value="%$Components%" />
+          <Aggregator t="data.Subset" From="1601" Count="10000" /> />
+        </Var>
+        <Var name="Xtml1" t="bart_dt_compress.Xtml" Components="%$Components1%"/>
+        <Var name="Xtml2" t="bart_dt_compress.Xtml" Components="%$Components2%"/>
+        <Var name="Xtml3" t="bart_dt_compress.Xtml" Components="%$Components3%"/>
+        <Var name="AllXtml" t="data.List">
+          <Item value="%$Xtml1%" />
+          <Item value="%$Xtml2%" />
+          <Item value="%$Xtml3%" />
+        </Var>
+        <Var name="GCs1" t="bart_dt_compress.GCs" Components="%$Components1%"/>
+        <Var name="GCs2" t="bart_dt_compress.GCs" Components="%$Components2%"/>
+        <Var name="GCs3" t="bart_dt_compress.GCs" Components="%$Components3%"/>
+        <Var name="GCs2And3" value="%$GCs2% %$GCs3%" />
+        <Var name="Utils" t="bart_dt_compress.JsUtils" GCs="%$GCs1%%$GCs2%%$GCs3%" WithStudio="true" Xtmls="%$AllXtml%"/>
+        <Var name="Xtml1InOneLine" t="bart_dt.XmlInOneLine" Xml="%$Xtml1%"/>
+        <Var name="Xtml2InOneLine" t="bart_dt.XmlInOneLine" Xml="%$Xtml2%"/>
+        <Var name="Xtml3InOneLine" t="bart_dt.XmlInOneLine" Xml="%$Xtml3%"/>
+        <Var name="BlankJS" t="data.Pipeline">
+          <Item t="bart_dt.XmlInOneLine">
+             <Xml t="data.Pipeline">
+               <Item t="xtml.ComponentDefinition" ID="jbart_prototype.Blank" ToXtml="true" />
+               <Item value="%file%" />
+              </Xml>
+          </Item>
+          <Item value="window.jbStudioBlank = '%%';" />
+        </Var>
+        <Var name="Version" t="data.Pipeline">
+          <Item t="data.Now" Format="with time"/>
+          <Item t="text.Replace" Find="[/ :]" ReplaceWith="" UseRegex="true"/>
+        </Var>
+        <Var name="Suffix" value="_%$Version%" Condition="%$AddVersionSuffix%"/>
+        <Var name="Html" t="data.Pipeline">
+          <Item t="xml.Xml" DynamicContent="true">
+            <xml><![CDATA[
+<!DOCTYPE html>
+<html>
+<head>
+    <title>jBart Studio</title>
+    <link rel="icon" href="//jbartlib.appspot.com/images/studio/favicon.png" />
+    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js"></script>       
+    <script type="text/javascript" src="/file/studio_utils%$Suffix%.js"></script>   
+    <script type="text/javascript" src="/file/studio_gcs1%$Suffix%.js"></script>   
+    <script type="text/javascript" src="/file/studio_gcs2%$Suffix%.js"></script>   
+    <script type="text/javascript" src="/file/studio_xtml1%$Suffix%.js"></script> 
+    <script type="text/javascript" src="/file/studio_xtml2%$Suffix%.js"></script> 
+    <script type="text/javascript" src="/file/studio_xtml3%$Suffix%.js"></script> 
+    <link rel="stylesheet" type="text/css" href="/file/studio%$Suffix%.css"></link>
+
+    <script type="text/javascript" src="//jbartlib.appspot.com/lib/jquery/treeview/jquery.treeview.js"></script>
+    <link rel="stylesheet" type="text/css" href="//jbartlib.appspot.com/lib/jquery/treeview/jquery.treeview.css"></link>
+    %$HtmlHeadExtras%
+</head>
+
+<style>
+  html,body { height: 100%; margin: 0; } 
+  body.jbstudio_select *, body.jbstudio_select:hover { cursor: url('//jbartlib.appspot.com/images/studio/cursor_select.png') , auto !important;}
+</style>
+
+<script type="text/javascript">
+  ajaxart.jbart_studio = true;
+  window.gstudioStorage = 'jbartdb';
+  window.jbartdbserver = "%$Server%";
+  jQuery(document).ready(function() {
+     ajaxart.ready(function() {
+        ajaxart.start("#ajaxart_top",null,aa_parsexml('<Control t="gstudio.Main" />'));
+   });
+  });
+
+</script>                                                               
+
+<body style="background:#EBEBEB;">
+  <div id="ajaxart_top"></div>
+</body>
+
+</html>              
+              ]]></xml>
+          </Item>
+          <Item t="xml.CDataValue" />
+        </Var>
+        <Var name="CStudioHtml" t="data.Pipeline">
+          <Item t="xml.Xml" DynamicContent="true">
+            <xml><![CDATA[
+<!DOCTYPE html>
+<html>
+<head>
+  <title>jBart Component Editor</title>
+    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js"></script>       
+    <script type="text/javascript" src="/file/studio_utils%$Suffix%.js"></script>   
+    <script type="text/javascript" src="/file/studio_gcs1%$Suffix%.js"></script>   
+    <script type="text/javascript" src="/file/studio_gcs2%$Suffix%.js"></script>   
+    <script type="text/javascript" src="/file/studio_xtml1%$Suffix%.js"></script> 
+    <script type="text/javascript" src="/file/studio_xtml2%$Suffix%.js"></script> 
+    <script type="text/javascript" src="/file/studio_xtml3%$Suffix%.js"></script> 
+    <link rel="stylesheet" type="text/css" href="/file/studio%$Suffix%.css"></link>
+
+    <script type="text/javascript" src="//jbartlib.appspot.com/lib/jquery/treeview/jquery.treeview.js"></script>
+    <link rel="stylesheet" type="text/css" href="//jbartlib.appspot.com/lib/jquery/treeview/jquery.treeview.css"></link>
+    %$HtmlHeadExtras%
+
+</head>
+
+<script type="text/javascript">
+  ajaxart.jbart_studio = true;
+  window.gstudioStorage = 'jbartdb';
+  window.jbartdbserver = "%$Server%";
+  jQuery(document).ready(function() {
+     ajaxart.ready(function() {
+        ajaxart.start("#ajaxart_top",null,aa_parsexml('<Control t="cstudio.MainStyleStudioWindow" />'));
+   });
+  });
+
+</script>                                                               
+
+<body style="margin:0;background:#EBEBEB;">
+  <div id="ajaxart_top"></div>
+</body>
+
+</html>              
+              ]]></xml>
+          </Item>
+          <Item t="xml.CDataValue" />
+        </Var>
+        <Action t="action.RunActions" Condition="%$WriteToLocalFileSystem%">
+          <Var name="Dir" value="C:\dropbox\public\jbartstudio" />
+          <Action t="bart_dt.SaveFile" FileName="%$Dir%\studio_utils%$Suffix%.js" Content="%$Utils%" />
+          <Action t="bart_dt.SaveFile" FileName="%$Dir%\studio_xtml1%$Suffix%.js" Content="ajaxart.load_xtml_content('',aa_parsexml('%$Xtml1InOneLine%'));&#xa;" />
+          <Action t="bart_dt.SaveFile" FileName="%$Dir%\studio_xtml2%$Suffix%.js" Content="ajaxart.load_xtml_content('',aa_parsexml('%$Xtml2InOneLine%'));&#xa;" />
+          <Action t="bart_dt.SaveFile" FileName="%$Dir%\studio_xtml3%$Suffix%.js" Content="ajaxart.load_xtml_content('',aa_parsexml('%$Xtml3InOneLine%'));&#xa;window.jbStudioLoaded=true;" />
+          <Action t="bart_dt.SaveFile" FileName="%$Dir%\studio_gcs1%$Suffix%.js" Content="%$GCs1%" />
+          <Action t="bart_dt.SaveFile" FileName="%$Dir%\studio_gcs2%$Suffix%.js" Content="%$GCs2And3%" />
+          <Action t="bart_dt.SaveFile" FileName="%$Dir%\studio_blank%$Suffix%.js" Content="%$BlankJS%" />
+          <Action t="bart_dt.SaveFile" FileName="%$Dir%\studio%$Suffix%.html" >
+            <Content t="text.Replace" Data="%$Html%" Find="file.js[?]id=" ReplaceWith="" />
+          </Action>
+          <Action t="bart_dt.SaveFile" FileName="%$Dir%\cstudio%$Suffix%.html" >
+            <Content t="text.Replace" Data="%$CStudioHtml%" Find="file.js[?]id=" ReplaceWith="" />
+          </Action>
+        </Action>
+        <Action t="xml.SetAttribute" AttributeName="studio_version" Value="%$Version%" Data="%$_WidgetXml%" Condition="%$KeepStudioVersionInWidget%"/>
+        <Action t="action_async.AsyncActionOnAsyncData">
+          <Query t="data_async.UrlGet" Url="http://localhost/ajaxart/jbartstudio.css" ResultType="text"/>
+          <Action t="action_async.ActionOnAsyncData">
+            <Var name="StudioCss" />
+            <Query t="data_async.UrlGet" Url="http://localhost/ajaxart/default.css" ResultType="text"/>
+            <Action t="async.RunInParallel">
+              <Action t="jbartdb.SaveFileToJBartDB" Server="%$Server%" ID="studio_xtml1%$Suffix%.js" Content="ajaxart.load_xtml_content('',aa_parsexml('%$Xtml1InOneLine%'));&#xa;" OnSuccess=""/>
+              <Action t="jbartdb.SaveFileToJBartDB" Server="%$Server%" ID="studio_xtml2%$Suffix%.js" Content="ajaxart.load_xtml_content('',aa_parsexml('%$Xtml2InOneLine%'));&#xa;" OnSuccess="" />
+              <Action t="jbartdb.SaveFileToJBartDB" Server="%$Server%" ID="studio_xtml3%$Suffix%.js" Content="ajaxart.load_xtml_content('',aa_parsexml('%$Xtml3InOneLine%'));&#xa;window.jbStudioLoaded=true;" OnSuccess="" />
+              <Action t="jbartdb.SaveFileToJBartDB" Server="%$Server%" ID="studio_gcs1%$Suffix%.js" Content="%$GCs1%" OnSuccess="" />
+              <Action t="jbartdb.SaveFileToJBartDB" Server="%$Server%" ID="studio_gcs2%$Suffix%.js" Content="%$GCs2And3%" OnSuccess="" />
+              <Action t="jbartdb.SaveFileToJBartDB" Server="%$Server%" ID="studio_utils%$Suffix%.js" Content="%$Utils%" OnSuccess=""/>
+              <Action t="jbartdb.SaveFileToJBartDB" Server="%$Server%" ID="studio%$Suffix%.css" Content="%%&#xa;&#xa;&#xa;%$StudioCss%" OnSuccess="" />
+              <Action t="jbartdb.SaveFileToJBartDB" Server="%$Server%" ID="studio%$Suffix%.html" Content="%$Html%" OnSuccess="" />
+              <Action t="jbartdb.SaveFileToJBartDB" Server="%$Server%" ID="cstudio%$Suffix%.html" Content="%$CStudioHtml%" OnSuccess="" />
+              <Action t="jbartdb.SaveFileToJBartDB" Server="%$Server%" ID="studio_blank%$Suffix%.js" Content="%$BlankJS%" OnSuccess="" />
+              <OnSuccess t="xtml.UseParam" Param="OnSuccess" />
+            </Action>
+          </Action>
+        </Action>
+      </xtml>
+    </Component>
+
+ </xtml>

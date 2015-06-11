@@ -1,0 +1,178 @@
+<xtml ns="xtml_dt" light="false">
+
+  <Component id="OpenPrimitiveControlPopup" type="action.Action">
+      <xtml t="menu.OpenContextMenu">
+        <Menu t="menu.ContextMenu">
+          <Item t="data.Pipeline">
+            <Var name="Xtml" value="%%" />
+            <Item t="xtml.ComponentParam" Component="%@t%" Param="%$Field%" />
+            <Item value="%ContextMenu%" />
+            <Item t="xtml.RunXtml" Xtml="%%" Input="%$Xtml%"/>
+          </Item>
+          <Item t="menu.MenuItem" Text="add data item ..." Image="%$_Images%/add1616.gif">
+            <Condition t="yesno.And">
+              <Item t="yesno.NotEmpty" Value="%$_Context/Input%"/>
+              <Item value="%$IsAttribute%"/>
+            </Condition>
+            <Action RunOn="%$_PrimitiveControl%" t="ui.TriggerSuggestionBoxPopup" TextToSimulate="\%" TextPatternToAdd="\%%%\%"/>
+          </Item>
+          <Item t="menu.MenuItem" Text="edit script ..." Image="%$_Images%/studio/customize1616.gif">
+            <Condition t="yesno.Not" Of="%$IsAttribute%"/>
+            <Action t="xtml_dt.EditScriptOfPrimitive"/>
+          </Item>
+          <Item t="menu.MenuItem" Text="xtml script ..." Image="%$_Images%/studio/customize1616.gif" Condition="%$IsAttribute%">
+            <Action t="action.RunActions">
+              <Action t="xml.Delete" Data="%$Xtml/{$Field}%"/>
+              <Action t="xml.AddChildren" Data="%$Xtml%">
+                <Children t="xml.ElementOfDynamicTag" Tag="%$Field%">
+                  <Change t="xml.SetAttribute" AttributeName="t">
+                    <Value t="data.IfThenElse" Else="data.Pipeline" Then="yesno.And" If="%$ParamType%=='data.Boolean'">
+                      <Var name="ParamType" t="xtml.ComponentParamType" Component="%$Xtml/@t%" Param="%$Field%"/>
+                    </Value>
+                  </Change>
+                  <Change t="xml.AddChildren">
+                    <Children t="xml.Xml" DynamicContent="true">
+                      <Item value="%$Xtml/@{$Field}%"/>
+                    </Children>
+                  </Change>
+                </Children>
+              </Action>
+              <Action1 t="xml.SetAttribute" Data="%$Xtml/{$Field}%" AttributeName="customxtml" Value="true"/>
+              <Action t="xml.Delete" Data="%$Xtml/@{$Field}%"/>
+              <Action t="xtml.RunXtml" Xtml="%$_XtmlDtContext/Refresh%"/>
+              <Action t="gstudio_popup.ShowAAEditorFloatingPopup" Xtml="%$Xtml/{$Field}%">
+                <RunOnClose t="xtml.RunXtml" Xtml="%$_XtmlDtContext/Refresh%"/>
+              </Action>
+            </Action>
+          </Item>
+          <Item t="menu.MenuItem" Text="java script ..." Image="%$_Images%/studio/r.gif" Condition="%$IsAttribute%">
+            <Action t="action.RunActions">
+              <Action t="xml.Delete" Data="%$Xtml/{$Field}%"/>
+              <Action t="xml.AddChildren" Data="%$Xtml%">
+                <Children t="xml.ElementOfDynamicTag" Tag="%$Field%">
+                  <Change t="xml.SetAttribute" AttributeName="t" Value="data.JavaScript"/>
+                  <Change t="xml.SetAttribute" AttributeName="Code">
+                    <Condition t="yesno.NotEmpty" Value="%$Xtml/@{$Field}%"/>
+                    <Value value="function(data,html_elem,context) { &#xa;return &quot;%$Xtml/@{$Field}%&quot;;&#xa; }"/>
+                  </Change>
+                </Children>
+              </Action>
+              <Action t="xml.Delete" Data="%$Xtml/@{$Field}%"/>
+              <Action t="xtml.RunXtml" Xtml="%$_XtmlDtContext/Refresh%"/>
+            </Action>
+          </Item>
+          <Item t="menu.MenuItem" Text="delete script" Image="%$_Images%/delete1616.gif">
+            <Condition t="yesno.Not" Of="%$IsAttribute%"/>
+            <Action t="dialog.AskForConfirmation" Title="Delete Formula Script" Question="Are you sure you want to delete the formula script?">
+              <RunOnOK t="action.RunActions">
+                <Action t="xml.SetAttribute" Data="%$Xtml%" AttributeName="%$Field%">
+                  <Value t="xtml.RunXtml" Xtml="%$Xtml/{$Field}%" Input="%$_Context/Input%" Context="%$_Context/context%"/>
+                </Action>
+                <Action t="xml.Delete" Data="%$Xtml/{$Field}%"/>
+                <Action t="xtml.RunXtml" Xtml="%$_XtmlDtContext/Refresh%"/>
+              </RunOnOK>
+            </Action>
+          </Item>
+          <Item1 t="menu.DynamicMenuItems" Text="%Title%" Image="%$_Images%/add1616.gif">
+            <Items t="xtml_dt.FieldsOfCurrentXtml" Xtml="%$Xtml%"/>
+            <Action t="ui.AddTextToSuggestionBox" Text="\%%Path%\%" RunOn="%$_PrimitiveControl%" TriggerOnAfterTextAdded="false"/>
+          </Item1>
+          <Item t="menu.MenuItem" Text="edit as large text ..." Image="%$_Images%/studio/file1616.png">
+            <Condition value="%$IsAttribute%"/>
+            <Action t="action.RunActions">
+              <Action t="aaeditor.OpenPrimitiveAsDialog" Context="%$_Context%" Data="%$Xtml/!@{$Field}%">
+                <RunOnOK t="action.RunActions">
+                  <Var name="NewValue"/>
+                  <Action t="xml.SetAttribute" Data="%$Xtml%" AttributeName="%$Field%" Value="%$NewValue%"/>
+                  <Action t="xtml.RunXtml" Xtml="%$_XtmlDtContext/Refresh%"/>
+                  <Action t="field_dt.RefreshPreview" />
+                </RunOnOK>
+              </Action>
+            </Action>
+          </Item>
+          <Item1 t="menu.MenuItem" Text="add variable ..." Image="%$_Images%/studio/balls1616.png">
+            <Condition t="yesno.NotEmpty">
+              <Value t="xtml.PartsOfContext" Context="%$_Context/context%" Part="Variable Names"/>
+            </Condition>
+            <Action RunOn="%$_PrimitiveControl%" t="ui.TriggerSuggestionBoxPopup" TextToSimulate="\%$" TextPatternToAdd="\%$%%"/>
+          </Item1>
+          <Item t="menu.MenuItem" Image="%$_Images%/studio/undo.jpg" ID="revert">
+            <Var name="DefaultValue" value="%$_XtmlDtContext/DefaultValue%"/>
+            <Condition t="yesno.NotEmpty" Value="%$DefaultValue%"/>
+            <Text value="restore default (%$DefaultValue%)"/>
+            <Action t="action.RunActions">
+              <Action t="xml.Delete" Data="%$Xtml/@{$Field}%"/>
+              <Action t="xtml.RunXtml" Xtml="%$_XtmlDtContext/Refresh%"/>
+            </Action>
+          </Item>
+          <Item t="menu.MenuItem" Text="edit in popup ..." Image="%$_Images%/studio/file1616.png">
+            <Action t="dialog.OpenDialog">
+              <Dialog t="dialog.Dialog">
+                <Content t="xmlui.CodeMirrorTextarea" Type="js" UpdateOnClick="true" AutoFocus="true" Class="jstextarea">
+                  <Height t="ui.ScreenSize" Margin="200" AsHtmlString="true"/>
+                  <Width t="ui.ScreenSize" Margin="200" AsHtmlString="true" Axis="width"/>
+                </Content>
+                <RunOnOK t="action.RunActions">
+                  <Action t="action.WriteValue" To="%$Xtml/{$Field}/@Code%" Value="%$DialogWorkingData%"/>
+                  <Action t="xtml.RunXtml" Xtml="%$_XtmlDtContext/Refresh%" />
+                </RunOnOK>
+                <DialogData t="data.WritableText" DefaultValue="%{$Field}/@Code%"/>
+                <Validations t="xmlui.CallUpdateOfCodeMirror" RunOn="updown(.dialog_box,.jstextarea)"/>
+              </Dialog>
+            </Action>
+            <Condition t="yesno.ItemsEqual" Item1="%{$Field}/@t%" Item2="data.JavaScript"/>
+          </Item>
+        </Menu>
+      </xtml>
+    </Component>
+
+  <Component id="PrimitiveEditor" type="ui.Control">
+      <Param name="Xtml"/>
+      <Param name="Param"/>
+      <Param name="PreviewRunner" type="data.Data" script="true"/>
+      <xtml t="ui.List" Class="primitive_list">
+        <Var name="IsAttribute" t="yesno.IsEmpty" Value="%$Xtml/{$Param/@name}%"/>
+        <Var name="Field" value="%$Param/@name%"/>
+        <Var name="Xtml" value="%$Xtml%"/>
+        <Var name="_PrimitiveControl" t="uiaction.ControlElementToRunOn" RunOn="updown(.primitive_list,.primitive_text_box)"/>
+        <Var name="_XtmlDtContext" t="data.Object">
+          <Property name="DefaultValue" value="%$Param/Default/@value%"/>
+          <Method name="Refresh" t="action.RunActions">
+            <Action t="uiaction.Refresh" RunOn="up(.primitive_list)"/>
+            <Action t="field_dt.RefreshPreview"/>
+          </Method>
+        </Var>
+        <Control t="ui.Switch">
+          <Case Remark="primitive">
+            <IfCondition t="yesno.IsEmpty" Value="%$Xtml/{$Param/@name}%"/>
+            <Then t="aaeditor.EditPrimitiveTextBox" Text="%$text_data%" OnlyPrimitive="true">
+              <Var name="text_data" t="data.WritableText">
+                <DefaultValue t="text.FirstSucceeding">
+                  <Item value="%$Xtml/@{$Param/@name}%"/>
+                  <Item value="%$Param/Default/@value%"/>
+                </DefaultValue>
+              </Var>
+              <Var name="_XtmlDt" t="data.Object">
+                <Method t="action.WriteValue" name="OnUpdate" Value="%$text_data%">
+                  <To value="%$Xtml/!@{$Param/@name}%"/>
+                </Method>
+              </Var>
+            </Then>
+          </Case>
+          <Case Remark="javascript" IfCondition="false"/>
+          <Default t="field.ShowFieldControl" Remark="xtml" Text="(calculated)">
+            <Field t="field.JavaScriptControl" ID="aa" Html="&lt;input value=&quot;calculated&quot; readonly=&quot;true&quot; style=&quot;background:lightGray;border:1px solid gray; cursor:pointer;&quot;&gt;&lt;/input&gt;" JavaScript="function(data,html_elem,context) {&#xa;  jQuery(html_elem).click(function(e) { ajaxart.run([], context.vars._EditScript[0], &quot;&quot;, context); });&#xa;}">&#xa;      </Field>
+            <Var t="xml.Xml">
+              <xml t="xtml_dt.EditScriptOfPrimitive" name="_EditScript"/>
+            </Var>
+          </Default>
+        </Control>
+        <Control t="ui.ButtonOld" Image="%$_Images%/openmenu.gif" CssStyle="padding-top:2px;" Class="primitive_menu_btn">
+          <Style t="ui.ButtonAsImage"/>
+          <OnClick t="xtml_dt.OpenPrimitiveControlPopup" Data="%$Xtml%">&#xa;</OnClick>
+        </Control>
+        <Layout t="ui.Horizontal" VerticalAlign="top" Padding="4px"/>
+      </xtml>
+    </Component>
+  
+</xtml>

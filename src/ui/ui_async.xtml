@@ -1,0 +1,44 @@
+<xtml package="true">
+
+<xtml ns="ui_async">
+
+<Component id="LoadingControl" type="ui.Control" execution="native">
+  <Param name="DivID"><Default value="ajaxart_loading"/></Param>
+</Component>
+
+ <Component id="ControlUsage" type="usage.Usage" execution="native">
+  <Param name="Of"/>
+  <Param name="Control" type="ui.Control" script="true"/>
+  <Param name="RunOnControl" type="uiaction.UsageAction" script="true"/>
+  <Param name="CleanAfter" type="action.Action" script="true"/>
+  <Param name="ExpectedResult" type="data.Boolean" script="true"/>
+  <NativeHelper name="CloseDialogAndPopUp" t="action.RunActions">
+    <Action1 t="dialog.CloseDialog"/>
+    <Action t="dlg.CloseDialogFrame" />
+    <Action t="dialog.ClosePopup" />
+  </NativeHelper>
+</Component>
+
+ <Component id="WaitForAsyncToFinish" type="uiaction.UsageAction" execution="native"/>
+
+ <Component id="ControlWithTimer" execution="native" description="runs and shows the control after a timer">
+   <Param name="Control" type="ui.Control" script="true" />
+ </Component>
+  
+</xtml>
+
+  <xtml ns="loading_style">
+  
+    <Type id="Style" style="true"/>
+    
+    <Component id="Default" type="loading_style.Style">
+      <Param name="Height" Default="100px" slider="true" sliderUnit="px" />
+      <xtml t="ui.CustomStyle">
+        <Html><![CDATA[<div/>]]></Html>
+        <Css><![CDATA[#this { font-style: italic; height: %$Height%; }]]></Css>
+        <Javascript><![CDATA[function(elem) { elem.$el.html(elem.text); }]]></Javascript>
+      </xtml>
+    </Component>
+    
+  </xtml>
+</xtml>

@@ -1,0 +1,231 @@
+<xtml package="true">
+<xtml ns="popup">
+  
+  <Type id="Style" />
+  <Type id="Feature" />
+  <Type id="Location" />
+  <Type id="Event" />
+
+  <Component id="OpenPopup" type="action.Action" execution="native">
+		<Param name="Contents" type="ui.Page"/>
+ 		<Param name="PopupTitle" />
+ 		<Param name="Style" type="popup.Style">
+ 			<Default t="popup.Default" />
+ 		</Param>
+		<Param name="Feature" type="popup.Feature[]" />
+    <Param name="DesignTime">
+      <Field t="studio_suggest.AddPopupButtons" />
+    </Param>
+  </Component>
+
+  <Component id="CloseContainingPopup" type="action.Action" execution="native">  
+    <Param name="ExitMode" type="enum" Options="OK,Cancel" />
+    <Param name="DoOnExit" type="action.Action" description="Run after validations have passed" />
+  </Component>
+
+  <Component id="RunAsyncActionAndCloseContainingPopup" type="action.Action" execution="native">  
+    <Param name="Action" type="action.Action" description="Run after validations have passed" />
+  </Component>
+
+  <Component id="RunOnPopup" type="uiaction.UsageAction" execution="native">
+    <Param name="Action" type="uiaction.UsageAction" />
+  </Component>
+
+  <Component id="CloseUniquePopup" type="action.Action" execution="native">  
+    <Param name="UniqueID" />
+  </Component>
+
+  <Component id="TitleDragAndDrop" type="popup.Feature" execution="native" />
+  <Component id="CloseOnEnter" type="popup.Feature" execution="native" />
+  <Component id="CloseOnBrowserBackButton" type="popup.Feature" execution="native" />
+  <Component id="AutoFocusOnFirstInput" type="popup.Feature" execution="native" />
+  <Component id="ZIndex" type="popup.Feature" execution="native">
+    <Param name="ZIndex" Default="10"/>
+  </Component>
+  
+  <Component id="UniquePopup" type="popup.Feature" execution="native">
+    <Param name="UniqueID" />
+  </Component>
+
+  <Component id="PopupLocation" type="popup.Feature" execution="native">
+    <Param name="Location" type="popup.Location" />
+  </Component>
+
+  <Component id="PopupSize" type="popup.Feature" execution="native">
+    <Param name="Width" slider="true" sliderUnit="" />
+    <Param name="Height" slider="true" sliderUnit="" />
+  </Component>
+
+  <Component id="ScreenCenter" type="popup.Location" execution="native" />
+
+  <Component id="ScreenTopRight" type="popup.Location" execution="native">
+    <Param name="MarginTop" Default="100" slider="true" sliderUnit=""/>
+    <Param name="MarginRight" Default="5" slider="true" sliderUnit=""/>
+  </Component>
+
+  <Component id="NearLauncher" type="popup.Location" execution="native">
+    <Param name="MinWidthAsLaunchingElement" type="data.Boolean" />
+    <Param name="Location" type="enum" Options="below,right,above center" Default="below" />
+  </Component>
+
+  <Component id="Features" type="popup.Feature">
+    <Param name="Feature" type="popup.Feature[]" script="true"/>
+    <xtml t="xtml.UseParamArray" Param="Feature" />
+  </Component>
+
+  <Component id="HandleEvent" type="popup.Feature" execution="native">
+    <Param name="Event" type="popup.Event" />
+    <Param name="Action" type="action.Action" />
+  </Component>
+
+  <Component id="StudioPopupFeature" type="popup.Feature" execution="native" light="false" />
+
+  <Component id="FloatingPopup" type="popup.Feature" execution="native">
+    <Param name="Identifier" />
+    <Param name="AutoBringToFront" type="data.Boolean" Default="true" />
+    <Param name="RememberPopupLocations" type="data.Boolean" Default="true" />
+    <Param name="FieldIdsToRefreshWhenOpenOrClosed" />
+    <Param name="Location" type="popup.Location"/>
+    <Param name="CloseCondition" type="data.Boolean" script="true" />
+  </Component>
+
+  <Component id="IsFloatingPopupOpen" type="data.Boolean" execution="native">
+    <Param name="Identifier" />
+  </Component>
+
+  <Component id="CloseFloatingPopup" type="action.Action" execution="native">
+    <Param name="Identifier" />
+  </Component>
+
+  <Component id="CheckFloatingPopupsCloseCondition" type="action.Action" execution="native" />
+
+  <Component id="RestoreFloatingPopup" type="action.Action" execution="native" light="false">
+    <Param name="Identifier" />
+    <Param name="OpenPopup" type="action.Action" />
+  </Component>
+
+</xtml>
+
+  <xtml ns="popup_feature">
+
+  <Component id="RunOnClose" type="popup.Feature" execution="native">
+    <Param name="CloseType" Default="OK" Options="OK,Cancel" description="Empty means all close types" />
+    <Param name="Action" type="action.Action" script="true" />
+  </Component>
+
+  <Component id="Variable" type="popup.Feature" execution="native">
+    <Param name="VarName" Default="MyVar" essential="true"/>
+    <Param name="Value"/>
+  </Component>
+
+  <Component id="PopupData" type="popup.Feature" execution="native">
+    <Param name="Value"/>
+  </Component>
+
+    <Component id="Resizer" type="popup.Feature" execution="native">
+      <Param name="Style" type="popup_resizer.Style">
+        <Default t="popup_resizer.DefaultResizer" />
+      </Param>
+    </Component>
+
+    <Component id="TogglePopup" type="popup.Feature" execution="native">
+      <Param name="PopupIdentifier" description="Required" essential="true" />
+    </Component>
+
+  </xtml>
+
+  <xtml ns="popup_event">
+
+    <Component id="Close" type="popup.Event" execution="native" />
+    <Component id="Show" type="popup.Event" execution="native" />
+
+  </xtml>
+
+  <xtml ns="popup_field_aspect">
+
+    <Component id="PopupOnHover" type="field.FieldAspect" execution="native" description="Shows a popup on hover or on other cases">
+      <Param name="PopupStyle" type="popup.Style">
+        <Default t="popup.InfoHoverPopup" />
+      </Param>
+      <Param name="OpenPopup" type="field_aspect_popup.OpenPopupStrategy">
+        <Default t="field_aspect_popup.OpenOnHover" />
+      </Param>
+      <Param name="PopupContents" type="ui.Page" script="true">
+      </Param>
+      <Param name="PopupTitle" />
+      <Param name="PopupFeature" type="popup.Feature[]" />
+      <NativeHelper name="OpenPopup" t="popup.OpenPopup" PopupTitle="%$PopupTitle%" Style="%$PopupStyle%">
+        <Contents t="xtml.UseParam" Param="PopupContents" />
+        <Feature t="xtml.UseParamArray" Param="PopupFeature" />
+      </NativeHelper>
+    </Component>
+
+    <Component id="ToolbarPopup" type="field.FieldAspect" execution="native">
+      <Param name="ToolbarID" Default="toolbar" />
+      <Param name="Contents" type="ui.Page" />
+      <Param name="PopupStyle" type="popup.Style">
+        <Default t="popup.ToolbarPopup" />
+      </Param>
+      <Param name="PopupFeature" type="popup.Feature[]" />
+    </Component>
+
+    <Component id="CascadingMenuPopup" type="field.FieldAspect" execution="native">
+      <Param name="Contents" type="ui.Page" />
+      <Param name="PopupStyle" type="popup.Style">
+        <Default t="popup.ToolbarPopup" />
+      </Param>
+      <Param name="PopupFeature" type="popup.Feature[]" />
+    </Component>
+
+  </xtml>
+
+  <xtml ns="popup_confirmation">
+
+    <Type id="Style" />
+
+    <Component id="OpenConfirmationPopup" type="action.Action" execution="native" decorator="Action">
+      <Param name="Title" />
+      <Param name="Question" Default="Are you sure?"/>
+      <Param name="Action" type="action.Action" script="true" />
+      <Param name="Style" type="popup_confirmation.Style">
+        <Default t="popup_confirmation.GoogleDriveConfirmation" />
+      </Param>
+      <Param name="Feature" type="popup.Feature[]" />
+      <Param name="LabelForYes" Default="Yes"/>
+      <Param name="LabelForNo" Default="No"/>
+    </Component>
+
+  </xtml>
+
+<xtml ns="field_aspect_popup">
+  <Type id="OpenPopupStrategy" />
+
+  <Component id="OpenOnHover" type="field_aspect_popup.OpenPopupStrategy">
+    <Param name="Delay" Default="200" />
+    <xtml t="ui.CustomStyle" delay="%$Delay%">
+      <Html><![CDATA[]]></Html>
+      <Css><![CDATA[]]></Css>
+      <Javascript><![CDATA[function attach(popupAdapterObject) {
+  aa_popup_strategy_onhover(popupAdapterObject, {
+    delay: popupAdapterObject.params.delay,
+    alsoOpenOnClick: false
+  });    
+}]]></Javascript>
+    </xtml>
+  </Component>
+
+</xtml>
+
+<xtml ns="popup_async">
+
+  <Component id="OpenPopupAsync" type="action.Action" execution="native" description="Waits for the popup to close on OK before proceeding">
+    <Param name="Contents" type="ui.Page"/>
+    <Param name="PopupTitle" />
+    <Param name="Style" type="popup.Style">
+      <Default t="popup.Default" />
+    </Param>
+    <Param name="Feature" type="popup.Feature[]" />
+  </Component>
+
+</xtml>
+</xtml>

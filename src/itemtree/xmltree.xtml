@@ -1,0 +1,59 @@
+<xtml package="true">
+<xtml ns="xmltree">
+
+  <Component id="XmlElementTreeItem" type="field.Fields" execution="native" light="false">
+    <Param name="Title" titleField="true" />
+    <Param name="ID" advanced="always" idField="true" />
+  	<Param name="OnClick" type="action.Action" script="true" />
+  	<Param name="Style" type="xmltree_style.Style">
+  		<Default t="xmltree_style.Default" />
+  	</Param>
+    <Param name="FieldAspect" type="field.FieldAspect[]" script="true" light="false"/>
+  </Component>
+
+  <Type id="Style" />
+</xtml>
+
+<xtml ns="xmltree_style">
+	<Type id="Style" />
+
+  <Component id="Default" type="xmltree_style.Style">
+      <xtml t="ui.CustomStyle">
+        <Css><![CDATA[
+#this {
+   font:12px times;
+   line-height: 16px;
+   white-space: nowrap;
+}
+#this * { display:inline-block; }
+#this *>* { display:inline-block; }
+.aa_xml_tag { color: rgb(57,125,123); padding-right: 5px; }
+.aa_xml_attribute_name { color: rgb(123,0,123); vertical-align: middle; }
+.aa_xml_attribute_value { color: rgb(41,0,255); padding-right: 5px; 
+max-width: 500px;
+overflow-x: hidden;
+text-overflow: ellipsis;
+white-space: nowrap;
+vertical-align: middle;
+}
+.aa_xml_cdata {
+  font: 11px times;
+  padding: 0 0 3px 10px;
+  color: #666;
+}
+#this.clickable .aa_xml_attribute:hover >*, 
+#this.clickable .aa_xml_tag:hover { text-decoration: underline; cursor: pointer;}
+]]></Css>
+        <Html><![CDATA[
+<div class="aa_xml_line">
+  <div class="aa_xml_tag" />
+</div>]]></Html>
+        <Javascript><![CDATA[function render(treeNode) {
+  aa_xml_tree_node(treeNode);
+}]]></Javascript>
+      </xtml>
+    </Component>
+
+</xtml>
+
+</xtml>

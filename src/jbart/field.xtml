@@ -1,0 +1,566 @@
+<xtml package="true">
+
+<xtml ns="field" jbart="true">
+
+  <Type id="Fields" >
+    <MoreComponents>
+      <component id="field.Fields" itemsParam="Field" />
+    </MoreComponents>
+  </Type>
+
+  <Type id="FieldAspect" image="%$_Images%/studio/cherry1616.gif" />
+    
+  <Type id="Control" />
+  
+  <Component id="Control" type="field.Fields" execution="native" image="%$_Images%/studio/control1616.gif" deprecated="true">
+      <Param name="ID" essential="true" advanced="always" />
+      <Param name="Title" essential="true" autoaspects="false" titleField="true" />
+      <Param name="HideTitle" type="data.Boolean" boolfeature="true" />
+      <Param name="Control" type="field.Control" script="true" essential="true" />
+      <Param name="FieldAspect" type="field.FieldAspect[]" light="false" script="true"/>
+  </Component>
+  
+  <Component id="CustomControl" type="field.Fields" execution="native" deprecated="true" hidden="true" description="Deprecated, use field.Control instead" light="false" image="%$_Images%/studio/control1616.gif">
+      <Param name="ID" advanced="always" essential="true"/>
+      <Param name="ShowTitle" type="data.Boolean"/>
+      <Param name="Title" essential="true" autoaspects="false" titleField="true" />
+      <Param name="Image" advanced="true"/>
+      <Param name="Control" type="uiaspect.Control" script="true" essential="true" RunningInput="%$_Items/Items%"/>
+      <Param name="FieldAspect" type="field.FieldAspect[]" light="false" script="true"/>
+  </Component>
+
+ <Component id="FireOnUpdate" type="action.Action" execution="native" light="false"/>
+
+  <Component id="Field" type="field.Fields" execution="native" deprecated="true">
+      <Aspect t="component_aspect.Image" Image="%$_Images%/studio/bullet1616.gif"/>
+      <Param name="Title" essential="true" autoaspects="false" titleField="true" />
+      <Param name="FieldData" essential="true" advanced="true">
+         <FieldAspect t="field_aspect.Title" Title="Data" />
+         <FieldAspect t="field_aspect.ChangeFieldID" ID="dt_field_data" />
+      </Param>
+      <Param name="ID" advanced="always" essential="true" idField="true"/>
+      <Param name="Type" essential="true" type="field_aspect.FieldType" script="true">
+        <Default t="field_aspect.Text"/>
+      </Param>
+      <Param name="ReadOnlyText" type="data.Boolean" Title="Read Only"/>​
+      <Param name="FieldAspect" essential="true" type="field.FieldAspect[]" light="false" script="true"/>
+  </Component>
+
+  <Component id="FilterField" type="field.Fields" execution="native">
+      <Aspect t="component_aspect.Image" Image="%$_Images%/studio/bullet1616.gif"/>
+      <Param name="Title" essential="true" autoaspects="false" titleField="true" />
+      <Param name="BasedOn" essential="true" description="field id to filter" />
+      <Param name="ID" advanced="always" essential="true"/>
+      <Param name="Type" essential="true" type="field_aspect.FieldType" script="true">
+        <Default t="field_type.Text"/>
+      </Param>
+      <Param name="FieldAspect" essential="true" type="field.FieldAspect[]" light="false" script="true"/>
+  </Component>
+  
+  <Component id="PropertySheet" type="field.Fields" image="%$_Images%/studio/pform.gif">
+    <Param name="ID" essential="true" advanced="always"/>
+    <Param name="Title" essential="true" autoaspects="false">
+        <FieldAspect t="field_aspect.FieldData" FieldData="%!@Title%"/>
+        <FieldAspect t="field_dt.TitleField" />
+    </Param>
+    <Param name="Style" type="propertysheet.Style" script="true">
+      <Default t="group.PropertySheet"/>
+    </Param>
+    <Param name="Field" type="field.Fields[]" light="false" script="true" essential="true"/>
+    <Param name="Aspect" type="uiaspect.Aspect[]" script="true" light="false"/>
+    <Param name="FieldAspect" type="field.FieldAspect[]" script="true" light="false"/>
+    <Param name="HideTitle" type="data.Boolean" boolfeature="true"/>
+    <Param name="CalcFieldsInAdvance" type="data.Boolean" light="false"><Default value="true"/></Param>
+    <Param name="GroupData" type="group.GroupData" script="true" essential="false" advanced="true" />
+	  <xtml t="field.Group" ID="%$ID%" Title="%$Title%" HideTitle="%$HideTitle%" CalcFieldsInAdvance="%$CalcFieldsInAdvance%">
+	    <Layout t="uiaspect.Group">
+  	     <Style t="xtml.UseParam" Param="Style" />
+	    </Layout>
+	    <Field t="xtml.UseParamArray" Param="Field" />
+	    <Aspect t="xtml.UseParamArray" Param="Field" />
+	    <FieldAspect t="xtml.UseParamArray" Param="FieldAspect" />
+	    <GroupData t="xtml.UseParam" Param="GroupData" />
+	  </xtml>
+  </Component>
+  <Component id="Group" type="field.Fields" execution="native" image="%$_Images%/studio/cube1616.gif" deprecated="true">
+    <Param name="ID" essential="true" advanced="always"/>
+    <Param name="Title" essential="true" autoaspects="false">
+        <FieldAspect t="field_aspect.FieldData" FieldData="%!@Title%"/>
+        <FieldAspect t="field_dt.TitleField" />
+    </Param>
+    <Param name="Layout" type="uiaspect.DocumentPresentation" script="true">
+      <Default t="uiaspect.PropertySheet"/>
+    </Param>
+    <Param name="Field" type="field.Fields[]" light="false" script="true" essential="true"/>
+    <Param name="Aspect" type="uiaspect.Aspect[]" script="true" light="false"/>
+    <Param name="FieldAspect" type="field.FieldAspect[]" script="true" light="false"/>
+    <Param name="HideTitle" type="data.Boolean" boolfeature="true"/>
+    <Param name="CalcFieldsInAdvance" type="data.Boolean" light="false"><Default value="true"/></Param>
+    <Param name="GroupData" type="group.GroupData" script="true" essential="false" advanced="true" />
+    <NativeHelper name="using(only for compress)" t="field.XmlField" />
+  </Component>
+  <Component id="XmlGroup" type="field.Fields" execution="native" image="%$_Images%/studio/cube1616.gif" deprecated="true">
+    <Param name="Title" essential="true"/>
+    <Param name="Presentation" type="uiaspect.DocumentPresentation" script="true">
+      <Default t="uiaspect.PropertySheet"/>
+    </Param>
+    <Param name="Path" essential="false">
+         <FieldAspect t="field_dt.FieldXPathEditor" />
+    </Param>
+    <Param name="ID" advanced="always" essential="true"/>
+    <Param name="Field" type="field.Fields[]" light="false" script="true" essential="true"/>
+    <Param name="Operations" type="operation.Operations" script="true" light="false"/>
+    <Param name="Aspect" type="uiaspect.Aspect[]" script="true" light="false"/>
+    <Param name="FieldAspect" type="field.FieldAspect[]" script="true" light="false"/>
+    <Param name="HideTitle" type="data.Boolean" boolfeature="true"/>
+    <NativeHelper1 name="Aspects" t="uiaspect.Aspects">
+      <Aspect t="xtml.UseParam" Param="Presentation"/>
+      <Aspect t="uiaspect.Permissions">
+        <WritableIf t="yesno.Not" Of="%$_ParentCntr/ReadOnly%"/>
+      </Aspect>
+      <Aspect t="xtml.UseParamArray" Param="Aspect"/>
+      <Aspect t="object.SetBooleanProperty" Object="%$_Cntr%" Property="IsVirtualGroup" Value="true" Condition="%$Path% == ''"/>
+    </NativeHelper1>
+    <NativeHelper1 name="Control" t="ui.Document" ID="%$_Cntr/ID%_%$Path%">
+      <Var name="_ParentCntr" value="%$_Cntr/Items%"/>
+      <Var name="_ParentItems" value="%$_Cntr/Items%"/>
+      <Class value="aa_layoutgroup">
+        <Condition t="yesno.IsEmpty" Value="%$Path%"/>
+      </Class>
+      <Item t="data_items.Items" Items="%%">
+        <Aspect t="data_items.InnerDataItems" ParentDataItems="%$_ParentItems%"/>
+      </Item>
+      <Fields t="xtml.UseParamArray" Param="Field"/>
+      <Operations t="xtml.UseParam" Param="Operations"/>
+    </NativeHelper1>
+  </Component>
+  
+  <Component id="Button" type="field.Fields" execution="native" image="%$_Images%/studio/button.png" deprecated="true">
+    <Param name="ID" advanced="always" essential="true" idField="true" />
+    <Param name="Title" titleField="true"/>
+    <Param name="Image" type="image.Image"/>
+    <Param name="Action" type="action.Action" script="true" essential="true">
+      <RunningInput t="field_aspect.RunningInputFieldData" />
+    </Param>
+    <Param name="Style" type="button.Style" script="true">
+      <Default t="button.JBartButton"/>
+    </Param>
+    <Param name="Tooltip" advanced="true"/>
+    <Param name="HideTitle" type="data.Boolean" advanced="true" Default="true"/>
+    <Param name="FieldAspect" type="field.FieldAspect[]" light="false" script="true"/>
+    <Param name="ButtonText" script="true" advanced="true" description="Button text can be different than the title"/>
+  </Component>
+  ​
+  <Component id="Button1" type="field.Fields" light="false">
+      <Param name="ID" advanced="always" essential="true"/>
+      <Param name="Title" essential="true"/>
+      <Param name="Image"/>
+      <Param name="Action" type="action.Action" script="true" essential="true"/>
+      <Param name="ButtonStyle" type="ui.ButtonStyle" script="true">
+        <Default t="ui.StandardButton"/>
+      </Param>
+      <Param name="ShowTitle" type="data.Boolean"/>
+      <Param name="FieldAspect" type="field.FieldAspect[]" light="false" script="true"/>
+      <Param name="ButtonText" script="true" advanced="true"/>
+      <Param name="IsSelected" type="data.Boolean" script="true" advanced="true"/>
+      <Param name="Tooltip" advanced="true"/>
+      <xtml t="field.CustomControl" ID="%$ID%" ShowTitle="%$ShowTitle%" Title="%$Title%">
+        <Control t="ui.ButtonOld" Image="%$Image%" Tooltip="%$Tooltip%">
+            <Text t="text.FirstSucceeding">
+              <Item t="xtml.UseParam" Param="ButtonText" />
+              <Item value="%$Title%"/>
+            </Text>
+            <Style t="xtml.UseParam" Param="ButtonStyle"/>
+            <IsSelected t="xtml.UseParam" Param="IsSelected"/>
+            <OnClick t="operation.RunInOperationContext">
+              <Action t="xtml.UseParam" Param="Action"/>
+            </OnClick>
+        </Control>
+        <FieldAspect t="xtml.UseParamArray" Param="FieldAspect"/>
+      </xtml>
+    </Component>
+   <Component id="Image1" hidden="true" type="field.Fields" >
+    <Aspect t="component_aspect.Image" Image="%$_Images%/studio/bmp1616.png" />
+    <Param name="ID" advanced="always" essential="true"/>
+    <Param name="Title" essential="true"/>
+    <Param name="ShowTitle" type="data.Boolean"/>
+    <Param name="Image" script="true" />
+    <Param name="Height" />
+    <Param name="Width" />
+    <Param name="KeepImageProportions" type="data.Boolean" advanced="true"><Default value="true"/></Param>
+    <Param name="FieldAspect" type="field.FieldAspect[]" light="false" script="true" />
+    <xtml t="field.XmlField" ID="%$ID%" Title="%$Title%" Path="">
+      <FieldAspect t="field_aspect.HideTitle">
+        <Condition t="yesno.Not" Of="%$ShowTitle%" />
+      </FieldAspect>
+      <FieldAspect t="field_aspect.ImageReadOnlyImp" Height="%$Height%" Width="%$Width%" KeepImageProportions="%$KeepImageProportions%">
+        <Src t="xtml.UseParam" Param="Image" />
+      </FieldAspect>
+      <FieldAspect t="field_aspect.ReadOnly" />
+      <FieldAspect t="xtml.UseParamArray" Param="FieldAspect" />
+    </xtml>
+  </Component>
+
+   <Component id="Image" type="field.Fields" image="%$_Images%/studio/bmp1616.png">
+    <Param name="Title" essential="true" autoaspects="false">
+      <FieldAspect t="field_aspect.FieldData" FieldData="%!@Title%"/>
+      <FieldAspect t="field_dt.TitleField" />
+    </Param>
+    <Param name="Image" type="image.Image" script="true">
+      <Default t="img.Image" />
+    </Param>
+    <Param name="Style" type="image.Style">
+      <Default t="image.PlainImage" />
+    </Param>
+    <Param name="DefaultImage" type="data.Data" />    
+    <Param name="HideTitle" boolfeature="true" type="data.Boolean"/>
+    <Param name="FieldAspect" type="field.FieldAspect[]" light="false" script="true" />
+    <Param name="ID" essential="true"/>
+    <xtml t="field.Control" ID="%$ID%" Title="%$Title%" HideTitle="%$HideTitle%">
+      <Control t="field_control.Image" Style="%$Style%" DefaultImage="%$DefaultImage%">
+        <Image t="xtml.UseParam" Param="Image" />
+      </Control>
+      <FieldAspect t="xtml.UseParamArray" Param="FieldAspect" />
+    </xtml>
+  </Component>
+
+
+   <Component id="Text" type="field.Fields" execution="native" deprecated="true">
+    <Aspect t="component_aspect.Image" Image="%$_Images%/studio/text.png" />
+    <Param name="ID" advanced="always" essential="true"/>
+    <Param name="Title" essential="true" titleField="true" />
+    <Param name="Text" script="true" />
+    <Param name="Style" type="uitext.Style"><Default t="uitext.PlainText" /></Param>
+    <Param name="HideTitle" type="data.Boolean" boolfeature="true"><Default value="true"/></Param>
+    <Param name="FieldAspect" type="field.FieldAspect[]" light="false" script="true" />
+  </Component>
+
+   <Component id="Text1" type="field.Fields" deprecated="true">
+    <Aspect t="component_aspect.Image" Image="%$_Images%/studio/text.png" />
+    <Param name="Text" script="true" />
+    <Param name="CssStyle" />
+    <Param name="ID" advanced="always" essential="true"/>
+    <Param name="Title" essential="true"/>
+    <Param name="ShowTitle" type="data.Boolean"/>
+    <Param name="FieldAspect" type="field.FieldAspect[]" light="false" script="true" />
+    <xtml t="field.Field1" ID="%$ID%" Title="%$Title%"> 
+      <FieldAspect t="field_aspect.HideTitle">
+        <Condition t="yesno.Not" Of="%$ShowTitle%" />
+      </FieldAspect>
+      <FieldAspect t="field_aspect.TextSummary">
+        <Text t="xtml.UseAndTranslateParam" Param="Text" />
+      </FieldAspect>
+      <FieldAspect t="field_aspect.Css" OnElement="content" Inline="%$CssStyle%" />
+      <FieldAspect t="xtml.UseParamArray" Param="FieldAspect" />
+    </xtml>
+  </Component>
+   <Component id="XmlMultipleGroup" type="field.Fields" execution="native" image="%$_Images%/studio/books.gif" deprecated="true">
+    <Param name="ID" advanced="always" essential="true"/>
+    <Param name="Items" type="field.MultipleGroupData" />
+    <Param name="Path" light="false" essential="true" advanced="true"/>
+    <Param name="Title" essential="true" autoaspects="false">
+      <FieldAspect t="field_aspect.FieldData" FieldData="%!@Title%"/>
+      <FieldAspect t="field_dt.TitleField" />
+    </Param>
+    <Param name="TitleForSingle" essential="true"/>
+    <Param name="Field" type="field.Fields[]" script="true" light="false" essential="true"/>
+    <Param name="Presentation" type="uiaspect.ItemListPresentation" script="true" />
+    <Param name="Operations" type="operation.Operations" light="false" script="true" />
+    <Param name="Aspect" type="uiaspect.Aspect[]" script="true" light="false" />
+    <Param name="FieldAspect" type="field.FieldAspect[]" script="true" light="false" />
+    <NativeHelper name="Items" t="object.RunMethod" Method="Items">
+      <Object t="data.FirstSucceeding">
+        <Item value="%$Items%" />
+        <Item t="field.InnerItems" Path="%$Path%" /> 
+      </Object>
+    </NativeHelper>
+    <NativeHelper name="Control" t="ui.ItemList" ID="%$_Cntr/ID%_%$Path%" DataHolderCntr="true">
+      <Var name="_ParentCntr" value="%$_Cntr%" />
+      <Items t="object.RunMethod" Object="%$_Field%" Method="InnerItems"/> 
+      <Fields t="xtml.UseParamArray" Param="Field" />
+      <Operations t="xtml.UseParam" Param="Operations" />
+      <Presentation t="xtml.UseParam" Param="Presentation" />
+      <Aspect t="uiaspect.Permissions" WritableIf="false" Condition="%$_ParentCntr/ReadOnly%" />
+      <Aspect t="xtml.UseParamArray" Param="Aspect" />
+    </NativeHelper>
+  </Component>
+  <Component id="XtmlControl" type="field.Fields" execution="native" >
+      <Param name="ID" advanced="always" essential="true"/>
+      <Param name="Title"/>
+      <Param name="Control" type="ui.Control" script="true" essential="true" RunningInput="%$_Items/Items%"/>
+      <Param name="FieldAspect" type="field.FieldAspect[]" light="false" script="true"/>
+    </Component>
+  
+  <Component id="CustomItems" type="field.MultipleGroupData">
+    <Param name="Items" script="true"/>
+    <Param name="AddNewItem" type="data_items.DataItemsNewItem" script="true"/>
+    <xtml t="object.Object">
+      <Method name="ContainerData" value="%%" />
+      <Method name="Items" t="data_items.Items">
+        <Items t="xtml.UseParam" Param="Items" />
+        <Aspect t="xtml.UseParam" Param="AddNewItem" />
+      </Method>
+    </xtml>
+  </Component>
+ 
+  <Component id="CustomDataItems" type="field.MultipleGroupData" light="false" description="an adapter between data items and multiple group data">
+    <Param name="DataItems" script="true" type="data_items.Items"/>
+    <xtml t="object.Object">
+      <Method name="ContainerData" value="%%" />
+      <Method name="Items" t="xtml.UseParam" Param="DataItems" />
+    </xtml>
+  </Component>
+ 
+  <Component id="SimpleXmlFields" type="field.Fields" execution="native" hidden="true">
+    <Param name="Paths" essential="true"/>
+  </Component>
+
+  <Component id="Fields" type="field.Fields" execution="native" dtsupport="false">
+    <Param name="Field" type="field.Fields[]" script="true" essential="true"/>
+  </Component>
+
+  <Component id="DynamicFields" type="field.Fields" execution="native" >
+    <Param name="ID" advanced="always" />
+    <Param name="Title" fieldTitle="true" />
+    <Param name="FieldItems" description="list of elements from which to create the fields" />
+    <Param name="Field" type="field.Fields" script="true" description="The field based on %$_FieldItem%" />
+  </Component>
+
+  <Component id="FieldsByItems" type="field.Fields" deprecated="true">
+    <Param name="Items" />
+    <Param name="Field" type="field.Fields" script="true" />
+    <xtml t="data.Pipeline">
+      <Item value="%$Items%" />
+      <Item t="xtml.UseParam" Param="Field" />
+    </xtml>
+  </Component>
+
+	<Component id="JavaScriptControl" type="field.Fields" execution="native" deprecated="true">
+      <Param name="ID" advanced="always" essential="true"/>
+      <Param name="Title" titleField="true"/>
+      <Param name="Html" essential="false" codemirror="true" />
+      <Param name="JavaScript" essential="true" codemirror="true" >
+        <Default value="function(data,html_elem,context) {&#xa;  &#xa;}"/>
+      </Param>
+      <Param name="Css" essential="false" codemirror="true" />
+      <Param name="FieldAspect" type="field.FieldAspect[]" light="false" script="true"/>
+    </Component>​  
+ 
+  <Component id="OpenButton" type="field.Fields" deprecated="true">
+    <Aspect t="component_aspect.Image" Image="%$_Images%/edit1616.gif"/>
+    <Param name="ID" advanced="always" />
+    <Param name="Title" />
+    <Param name="Image"><Default value="%$_Images%/edit1616.gif"/></Param>
+    <Param name="ExpandCollapseImages" type="data.Boolean"><Default value="false"/></Param>
+    <Param name="ButtonStyle" type="ui.ButtonStyle" script="true">
+      <Default t="ui.ButtonAsImage"/>
+    </Param>
+    <Param name="Text" script="true" advanced="true">
+      <Default t="operation.TextOfOpen" />
+    </Param>
+    <Param name="ImageForExpand"><Default value="%$_Images%/expand-down.gif"/></Param>
+    <Param name="ImageForCollapse"><Default value="%$_Images%/collapse-up.gif"/></Param>
+    <Param name="FieldAspect" type="field.FieldAspect[]" light="false" script="true"/>
+    <xtml t="field.CustomControl" ID="%$ID%" Title="%$Title%">
+      <Control t="ui.Section" Class="aa_open_button">
+        <Control t="ui.ButtonOld">
+          <Image t="data.IfThenElse" If="%$ExpandCollapseImages%" Else="%$Image%">
+            <Then t="data.IfThenElse" If="%$InplaceIsOpen%" Then="%$ImageForCollapse%" Else="%$ImageForExpand%" />
+          </Image>
+          <Text t="xtml.UseParam" Param="ButtonText" />
+          <Style t="xtml.UseParam" Param="ButtonStyle" />
+          <OnClick t="operation.RunInOperationContext">
+            <Action t="operation.Open" />
+          </OnClick>
+        </Control>
+      </Control>
+      <FieldAspect t="field_aspect.HideInProperties" />
+      <FieldAspect t="xtml.UseParamArray" Param="FieldAspect"/>
+    </xtml>
+  </Component>
+    
+  <Component id="FieldTitle" type="data.Data" execution="native">
+    <Param name="Field" type="data.Data" essential="true">
+      <Default value="%$_Field%" />
+    </Param>
+  </Component>
+
+ <Component id="ToggleFieldClass" type="action.Action" execution="native">
+   <Param name="FieldID" essential="true" type="dynamic_enum_multi">
+     <Options t="data.Pipeline">
+       <Item t="bart_dt.AllFieldIDs" />
+       <Item value="%Options%" />
+       <Item value="%code%" />
+     </Options>
+   </Param>   
+   <Param name="ClassName" />
+   <Param name="ConditionForClass" type="data.Boolean" script="true" />
+   <Param name="Scope" type="enum" Options="screen,sibling,table row" Default="screen"/>
+ </Component>
+
+ <Component id="RefreshField" type="action.Action" execution="native">
+   <Param name="FieldID" essential="true" type="dynamic_enum_multi" AllowValueNotInOptions="true">
+     <Options t="data.Pipeline">
+       <Item t="bart_dt.AllFieldIDs" />
+       <Item value="%Options%" />
+       <Item value="%code%" />
+     </Options>
+   </Param>
+   <Param name="Scope" type="enum" Options="screen,sibling,table row" Default="screen"/>
+   <Param name="Transition" type="transition.Transition" />
+   <Param name="FireOnUpdate" type="data.Boolean" />
+ </Component>
+ 
+ <Component id="RefreshCurrentField" type="action.Action" execution="native" />
+ 
+ <Component id="FieldWithAspects" type="field.Fields" light="false" execution="native" dtsupport="false">
+   <Param name="Field" type="field.Fields" />
+    <Param name="FieldAspect" type="field.FieldAspect[]" script="true" light="false"/>
+ </Component>
+ 
+ <Component id="RefreshFieldByElement" type="action.Action" execution="native" light="false">
+   <Param name="Element" essential="true"/>
+   <Param name="Transition" type="transition.Transition" />
+   <Param name="RefreshFieldData" type="data.Boolean" />
+ </Component>
+ 
+ <Component id="IsGroup" type="data.Boolean" execution="native"/>
+
+  <Component id="SubFields" type="data.Data" execution="native">
+    <Param name="Parent" />
+  </Component>
+  
+  <Type id="SortLine"/>
+  
+  
+  <Component id="SortBox" type="field.Fields" execution="native" deprecated="true">
+     <Param name="ID" advanced="always"/>
+     <Param name="Title" />
+     <Param name="Sorter" type="field.SortLine[]" />
+     <Param name="FieldAspect" type="field.FieldAspect[]" script="true" />
+     <NativeHelper name="Field" t="field.Field1" ID="%$ID%" Title="%$Title%">
+        <FieldAspect t="field_aspect.FieldData">
+          <FieldData t="data.WritableText" DefaultValue="%$_CurrentSort%" />
+        </FieldAspect>
+		    <FieldAspect t="picklist.Picklist" AllowEmptyValue="false">
+		      <Options t="picklist.DynamicOptions" OptionLabel="%Label%" OptionCode="%Label%">
+		        <Options t="xtml.UseParamArray" Param="Sorter"/>
+		      </Options>
+		    </FieldAspect>
+		    <FieldAspect t="field_aspect.OnUpdate">
+		      <Action t="object.RunMethod" Object="%$_Field%" Method="SortOfSortBox" Input="%%" />
+		    </FieldAspect>
+        <FieldAspect t="xtml.UseParamArray" Param="FieldAspect" /> 
+		 </NativeHelper>
+  </Component>
+    
+  <Component id="SortLine" type="field.SortLine" >
+    <Param name="Label" />
+	  <Param name="SortBy" type="dynamic_enum" recalc_options="true">
+	    <Options t="dataview.FieldIDs" />
+	  </Param>
+	  <Param name="SortDirection" type="enum" Options="ascending,descending">
+	     <Default value="descending"/>
+	  </Param>
+    <xtml t="object.Object" Label="%$Label%" SortBy="%$SortBy%" SortDirection="%$SortDirection%"/>
+  </Component>
+    
+  <Component id="Layout" type="field.Fields" execution="native" image="%$_Images%/studio/cube1616.gif" deprecated="true">
+    <Param name="Title" titleField="true" />
+    <Param name="Field" type="field.Fields[]" light="false" script="true" essential="true"/>
+    <Param name="FieldAspect" type="field.FieldAspect[]" script="true" light="false"/>
+    <Param name="HideTitle" type="data.Boolean" boolfeature="true" />
+    <Param name="Layout" type="layout.Style" script="true">
+      <Default t="layout.Default" />
+    </Param>
+    <Param name="SectionStyle" type="section.Style" description="Select a section style to make it a section" />
+    <Param name="ID" idField="true" />
+  </Component>
+
+  <Component id="TabControl" type="field.Fields" execution="native" gallery="TabControl" image="%$_Images%/studio/tab1616.png">
+    <Param name="ID" advanced="always" />
+    <Param name="Title" fieldTitle="true" />
+    <Param name="Field" type="field.Fields[]" light="false" script="true" essential="true"/>
+    <Param name="FieldAspect" type="field.FieldAspect[]" script="true" light="false"/>
+    <Param name="Style" type="tabcontrol.Style" script="true">
+      <Default t="tabcontrol.BlueTabs" />
+    </Param>
+    <Param name="OnTabChange" type="action.Action" script="true" description="Event fired when selecting a tab. Can use $PrevTab and $NewTab" advanced="true"/>
+    <Param name="RefreshTabsOnSelect" type="data.Boolean" Default="true" advanced="true"/>
+    <Param name="KeepSelectedTab" type="prefstorage.PrefStorage" advanced="true" />
+  </Component>
+  
+  <Component id="IsTabSelected" type="data.Boolean" execution="native">
+    <Param name="TabControl" essential="true" description="Put tab control field id here"/>
+    <Param name="Tab" essential="true" />
+  </Component>
+
+  <Component id="RefreshTabsHead" type="action.Action,uiaction.UsageAction" Description="Refresh tabs visibility and number indication" execution="native">
+	  <Param name="RunOn">
+	    <Field t="bart_dt.RunOnDT" />
+	  </Param>
+  </Component>
+  
+     <Component id="InnerPage" type="ui.Page" image="%$_Images%/studio/star1616.gif" dtsupport="false">
+        <Param name="Title" />
+        <Param name="Field" type="field.Fields[]" script="true" advanced="true" light="false"/>
+        <Param name="Layout" type="layout.Style" script="true">
+          <Default t="layout.Default" />
+        </Param>
+        <Param name="DesignTimeOnly">
+          <Field t="bart_dt_custom.InnerPageButtons" />
+          <EditorField1 t="bart_dt_custom.InnerPageButtons2" />
+        </Param>
+        <xtml t="control.Layout">
+          <ID t="text.ToIdText" Data="%$Title%" />
+          <Field t="xtml.UseParamArray" Param="Field" />
+          <Layout t="xtml.UseParam" Param="Layout" />
+        </xtml>
+     </Component>
+  
+</xtml>
+
+<xtml ns="field_control">
+
+  <Component id="Image" type="field.Control" image="%$_Images%/studio/bmp1616.png" execution="native" hidden="true">
+    <Param name="Image" type="image.Image" />
+    <Param name="Style" type="image.Style">
+      <Default t="image.PlainImage" />
+    </Param>
+    <Param name="DefaultImage" type="data.Data" />
+  </Component>
+
+  <Component id="CustomControlOld" type="field.Control" execution="native">
+    <Param name="Html" codemirror="true" Default="&lt;div/&gt;"/>
+    <Param name="Css" codemirror="true" Default="{}"/>
+    <Param name="Javascript" codemirror="true">
+      <Default value="function(html_elem,context) { } " />
+    </Param>
+    <NativeHelper name="StyleObject" t="object.Object">
+      <TextProperty name="Html" value="%$Html%" />
+      <TextProperty name="Css" value="%$Css%" />
+      <TextProperty name="Javascript" value="%$Javascript%" />
+    </NativeHelper>
+  </Component>
+
+
+
+</xtml>
+
+<xtml ns="action">
+
+  <Component id="Validate" type="action.Action" description="Validates before execution" execution="native">
+    <Param name="Group" type="dynamic_enum_multi">
+     <Options t="data.Pipeline">
+       <Item t="bart_dt.AllFieldIDs" FieldPT="control.Layout,control.PropertySheet,field.PropertySheet" />
+       <Item value="%Options%" />
+       <Item value="%code%" />
+     </Options>
+    </Param>
+    <Param name="WhenValid" type="action.Action" script="true" />
+    <Param name="WhenError" type="action.Action" script="true" />
+  </Component>
+
+</xtml>
+
+</xtml>

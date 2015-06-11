@@ -1,0 +1,44 @@
+<xtml ns="gchart">
+
+  <Component id="GoogleChart" type="dataview.Presentation" execution="native">
+    <Param name="LabelField" type="dynamic_enum" recalc_options="true"><Options t="dataview.FieldIDs" /></Param>
+    <Param name="AmountField" type="dynamic_enum" recalc_options="true"><Options t="dataview.FieldIDs" /></Param>
+    <Param name="Title"/>
+    <Param name="Amount2Field" advanced="true" type="dynamic_enum" recalc_options="true"><Options t="dataview.FieldIDs" /></Param>
+    <Param name="Amount3Field" advanced="true" type="dynamic_enum" recalc_options="true"><Options t="dataview.FieldIDs" /></Param>
+    <Param name="Type" type="enum" Options="PieChart,BarChart,ColumnChart,LineChart,AreaChart,ScatterChart,SteppedAreaChart"><Default value="PieChart"/></Param>
+    <Param name="Legend" type="enum" Options="right,top,bottom,none" advanced="true"><Default value="right"/></Param>
+    <Param name="FrameWidth" advanced="true"><Default value="400px" /></Param>
+    <Param name="FrameHeight" advanced="true"><Default value="400px" /></Param>
+    <Param name="OnClick" advanced="true" type="action.Action" script="true" />
+  </Component>
+
+  <Component id="PieChart" type="ui.Control" execution="native" remark="depricated" hidden="true">
+    <Param name="Items" />
+    <Param name="ItemText" script="true">
+      <Default value="%%" />
+    </Param>
+    <Param name="ItemAmount" script="true" />
+    <Param name="OnItemClick" type="action.Action" script="true" />
+    <Param name="Title" />
+  </Component>
+
+  <Component id="TimelineChart" type="ui.Control" execution="native" remark="depricated" hidden="true">
+    <Param name="Items" />
+    <Param name="Date" script="true">
+      <Default value="%@date%" />
+    </Param>
+    <Param name="ItemAmount" script="true" />
+    <Param name="OnItemClick" type="action.Action" script="true" />
+    <Param name="Title" />
+    <Param name="FrameWidth">
+      <Default value="400px" />
+    </Param>
+    <Param name="FrameHeight">
+      <Default value="400px" />
+    </Param>
+    <Param name="GoogleParams">
+      <Default value="width: 400, height: 400" />
+    </Param>
+  </Component>
+</xtml>

@@ -1,0 +1,446 @@
+<xtml package="true" light="false">
+
+<xtml ns="bart_dt_custom" light="false">
+
+  <Component id="Custom_RunXtmlAction" type="field.Fields">
+    <xtml t="control.Button" Title="Edit in AAEditor" ID="xtmldt_Custom_RunXtmlAction">
+      <Action t="gstudio_popup.ShowAAEditorFloatingPopup" Xtml="%%" />
+      <Style t="btn.Hyperlink"/>
+      <FieldAspect t="field_aspect.HidePropertyTitle"/>
+    </xtml>
+  </Component>
+  
+</xtml>
+
+<xtml ns="bart_dt" light="false">
+
+  <Component id="AllFieldIDs" type="picklist.OptionsDefinition" execution="native" hidden="true">
+    <Param name="FieldPT" />
+    <Param name="OnlyCodes" type="data.Boolean" />
+    <Param name="IncludePages" type="data.Boolean" />
+    <NativeHelper name="TopXml" value="%$_AppContext/AppXtml/../..%" />
+  </Component>
+  
+  <Component id="EditTextArrayField">
+    <xtml t="field.CustomControl">
+      <Control t="ui.ItemList">
+        <Presentation t="uiaspect.RichTable" />
+        <Items t="xml.XmlItems" Tag="Text" />
+        <Fields t="field.XmlField" Path="@value" Title="Text" />
+        <Aspect t="uiaspect.DefaultFeatures" />
+        <Aspect t="uiaspect.CellPresentation" Content="control" />
+        <Aspect t="uiaspect.ItemDetails">
+          <OpenIn t="uiaspect.ExpandAllText" />
+          <OpenNewIn t="uiaspect.ExpandAllText" />
+        </Aspect>
+        <Operations t="operation.StdOperations" />
+      </Control>
+    </xtml>
+  </Component>
+
+  <Component id="BartResources" type="picklist.OptionsDefinition">
+    <xtml t="picklist.DynamicOptions" Options="%$_AppContext/AppXtml/DataResource/@ResourceID%" />
+  </Component>
+  
+  <Component id="ConvertDefaultResource" type="action.Action">
+    <xtml t="action.RunActions">
+      <Action t="xml.AddXmlChildren" Parent="%%">
+        <Condition t="yesno.NotEmpty" Value="%@DefaultResource%" />
+        <Children t="xml.Xml" DynamicContent="true">
+          <DefaultResource t="bart.Resource" Name="%@DefaultResource%" />
+        </Children>
+      </Action>
+      <Action t="xml.SetAttribute" RemoveEmptyAttribute="true" AttributeName="DefaultResource" />
+    </xtml>
+  </Component>
+    
+  <Component id="ValueForDTOnly">
+    <Param name="Value" />
+  </Component>
+
+  <Component id="DataResourceValue" type="field.Fields">
+    <Param name="Xtml" Default="%%" />
+      <xtml t="field.CustomControl" Title="Value" ShowTitle="true" ID="DataResource_Value" >
+        <Control t="ui.IfThenElse" If="%$Xtml/@ValueType% == 'calculated'">
+          <Then t="field.ShowFieldControl">
+            <Field t="xtml_dt.ParamsAsFields" Component="bart_dt.ValueForDTOnly" Param="Value" />
+          </Then>
+          <Else t="field.ShowFieldControl">
+            <Var name="TempValue" t="text.FirstSucceeding">
+              <Item t="xml.CDataValue" Element="%$Xtml/Value%"/>
+              <Item t="xml.XmlToText" Data="%$Xtml/Value/*%"/>
+            </Var>
+            <Var name="TempData" t="data.WritableText">
+                <DefaultValue t="data.Switch" Default="%$TempValue%">
+                  <Case>
+                    <IfCondition t="yesno.And" >
+                      <Item value="%$Xtml/@ValueType% == 'javascript'"/>
+                      <Item t="yesno.Not">
+                        <Of t="yesno.Contains" AllText="%$TempValue%">
+                          <Text value="function" />
+                        </Of>
+                      </Item>
+                    </IfCondition>
+                    <Then><![CDATA[function(data,elem,context) {
+  return [{ title: 'sample js object' }];                    
+}]]></Then>
+                  </Case>
+                  <Case>
+                    <IfCondition t="yesno.And" >
+                      <Item value="%$Xtml/@ValueType% == 'xml' || %$Xtml/@ValueType% == 'xml clean ns'"/>
+                      <Item t="yesno.Not">
+                        <Of t="yesno.Contains" AllText="%$TempValue%">
+                          <Text value="&lt;" />
+                        </Of>
+                      </Item>
+                    </IfCondition>
+                    <Then><![CDATA[<xml/>]]></Then>
+                  </Case>
+                  <Case>
+                    <IfCondition t="yesno.And" >
+                      <Item value="%$Xtml/@ValueType% == 'json' || %$Xtml/@ValueType% == 'json to xml'"/>
+                      <Item t="yesno.Not">
+                        <Of t="yesno.Contains" AllText="%$TempValue%">
+                          <Text value="{" />
+                        </Of>
+                      </Item>
+                    </IfCondition>
+                    <Then><![CDATA[{
+  "title": "my title", "author": "my author"
+}]]></Then>
+                  </Case>
+                </DefaultValue>
+              </Var>
+              <Field t="field.Field" FieldData="%$TempData%">
+                <Type t="field_aspect.MultiLineText">
+                  <Style t="textarea.Default" Height="200px" Width="500px"/>
+                </Type>
+                <FieldAspect t="field_aspect.OnUpdate" FireOnUpdateWhenLoaded="true">
+                  <Action t="action.IfThenElse" If="%$Xtml/@ValueType% == 'xml' || %$Xtml/@ValueType% == 'xml multiple' || %$Xtml/@ValueType% == 'xml clean ns'">
+                    <Then t="action.IfThenElse">
+                      <Var name="ParsedXml" t="xml.TextToXml" Data="%%" />
+                      <If t="yesno.NotEmpty" Value="%$ParsedXml%" />
+                      <Then t="bart_dt.SaveXmlValueToDataResource" Xtml="%$Xtml%" Xml="%$ParsedXml%" />
+                      <Else t="action.RunActions" />
+                    </Then>
+                    <Else t="action.RunActions">
+                      <Action t="xml.Delete" Data="%$Xtml/@Value%"/>
+                      <Action t="xml.Delete" Data="%$Xtml/Value/@t%"/>
+                      <Action t="field_dt.WriteCDataAndFix" CDataText="%$TempData%" Element="%$Xtml/!Value%" />
+                    </Else>
+                  </Action>
+                </FieldAspect>
+              </Field>
+          </Else>
+        </Control>
+      </xtml>
+  </Component>
+  
+  <Component id="XmlResource" type="field.Fields">
+      <Param name="Param"/>
+      <xtml t="field.CustomControl" Title="%$Param%" ShowTitle="true" ID="Resource_Xml">
+        <Control t="ui.Document">
+          <Var name="OrigXtml" value="%%"/>
+          <Data t="data.WritableText">
+            <DefaultValue t="xml.XmlToText" Data="%$OrigXtml/{$Param}/*%" PrettyPrint="true"/>
+          </Data>
+          <Fields t="field.XmlField" ID="xml" Path="" Title="">
+            <Type t="field_aspect.MultiLineText">
+              <Style t="textarea.Default" Height="200px"/>
+            </Type>
+            <FieldAspect t="field_aspect.Css" Inline="width:500px"/>
+            <FieldAspect t="field_aspect.HideTitle"/>
+            <FieldAspect t="field_aspect.OnUpdate">
+              <Action t="action.RunActions">
+                <Var name="NewXml" t="xml.TextToXml"/>
+                <Action t="xml.RemoveAttributes" AttributeNames="%$Param%"/>
+                <Action t="xml.Delete" Data="%$OrigXtml/{$Param}%"/>
+                <Action t="xml.AddXmlChildren" Parent="%$OrigXtml/!{$Param}%" Children="%$NewXml%"/>
+                <Action t="action.WriteValue" To="%$OrigXtml/!{$Param}/@t%" Value="xml.Xml"/>
+              </Action>
+            </FieldAspect>
+          </Fields>
+        </Control>
+      </xtml>
+    </Component>
+
+  <Component id="FillDataSourceForXmlResource" type="field.Fields">
+    <xtml t="field.Button" Title="Click here to fill sample data from the data source">
+      <Style t="button.Hyperlink"/>​    
+      <Action t="action.IfThenElse">
+        <Var name="Xtml" value="%%" />
+        <If t="yesno.IsEmpty" Value="%DataSource%" />
+        <Then t="uiaction.Alert" Text="You must choose a data source" />
+        <Else t="action_async.RunAsync">
+          <Action t="action_async.AsyncActionOnAsyncData">
+            <Query t="object.RunMethod" Method="Retrieve">
+              <Object t="xtml.RunXtml" Xtml="%DataSource%" />
+            </Query>
+            <Action t="action.RunActions">
+                <Action t="xml.Delete" Data="%$Xtml/Value/*%" />
+                <Action t="xml.AddXmlChildren" Parent="%$Xtml/Value%" Children="%%" CloneChildren="true" />
+                <Action t="field.RefreshField" Scope="screen" FieldID="DataResource_Value" />
+              </Action>
+          </Action>
+        </Else>
+      </Action>
+    </xtml>
+  </Component>
+
+  <Component id="SaveXmlValueToDataResource" type="action.Action">
+    <Param name="Xtml" />
+    <Param name="Xml" />
+    <xtml t="action.RunActions">
+      <Action t="xml.Delete" Data="%$Xtml/Value%" />
+      <Action t="xml.AddXmlChildren" Parent="%$Xtml%">
+        <Children t="xml.Xml">
+          <Value t="xml.Xml" />
+        </Children>
+      </Action>
+      <Action t="xml.AddXmlChildren" Parent="%$Xtml/Value%" Children="%$Xml%" CloneChildren="true" />
+    </xtml>
+  </Component>
+    
+  <Component id="PreviewForFillResourceFromAPI" type="field.Fields">
+    <xtml t="field.Button" HideTitle1="true" Title="Show Preview">
+      <Style t="button.Hyperlink" />
+      <Action t="action_async.AsyncActionOnAsyncData">
+        <Query t="xtml.RunXtml" Xtml="%APICall%" />
+        <Action t="xmlui.ShowXmlDialog" Title="API Call Preview" Xml="%%" />
+      </Action>
+    </xtml>
+  </Component>
+  </xtml> 
+
+  <xtml ns="bart_dt_custom" light="false">
+  
+    <Component id="AddTabGroup" type="field.Fields" dtsupport="false">
+      <Param name="Xtml" Default="%%" />
+      <xtml t="control.Button" Title="Add Tab Group">
+        <Style t="btn.Hyperlink"/>
+        <FieldAspect t="field_aspect.HideTitle" />
+        <Action t="action.RunActions">
+          <Var name="NewID" t="text.ToId" Text="_Tab">
+            <UsedIDs t="gstudio_insert.UsedIDs" />
+          </Var> 
+          <Var name="NewFieldXtml" t="xml.Xml" DynamicContent="true">
+             <Field t="control.Layout" ID="%$NewID%" Title="Tab" />
+          </Var>
+          <Action t="gstudio_insert.AddFieldByXtml" NewFieldXtml="%$NewFieldXtml%" />
+        </Action>
+      </xtml>
+    </Component>
+
+<Component id="InnerPageButtons" type="field.Fields" description="for field.InnerPage">
+  <xtml t="control.Layout">
+    <Var name="InnerFieldXtml" value="%%" varScope="Component"/>
+    <FieldAspect t="field_aspect.HideTitle"/>
+    <Layout t="layout.Vertical" Spacing="5px"/>
+    <Field t="control.Button" Title="Show in Outline">
+      <Image t="gstudio.StudioSmallImage" PositionInSprite="208,0"/>
+      <Action t="action.RunActions">
+        <Action t="gstudio.SetSelectedFieldXtml">
+          <FieldXtml t="xml.UpToTag" Tag="Field"/>
+        </Action>
+        <Action t="gstudio_popup.ShowOutline"/>
+      </Action>
+      <Style t="btn.HyperlinkWithImage"/>
+    </Field>
+    <Field t="control.Button" Title="Make it a global page">
+      <Image t="gstudio.StudioSmallImage" PositionInSprite="272,0"/>
+      <Action t="popup.OpenPopup" PopupTitle="Make Page Global">
+        <Style t="gstudio.GoogleDrivePopup"/>
+        <Contents t="field.InnerPage" Title="Make page global">
+          <Field t="control.Layout" ID="Dialog_Data" Title="Dialog Data">
+            <Layout t="layout.Vertical" Spacing="0"/>
+            <Field t="control.Label" ID="Label" Title="Label" Text="Enter a new page name:">
+              <Style t="ui.CustomCss" base="uitext.PlainText">
+                <Style t="uitext.PlainText"/>
+                <Css><![CDATA[#this { font-family:Arial, Helvetica; font-size: 13px; padding-top: 2px; }
+]]></Css>
+              </Style>
+            </Field>
+            <Field t="fld.Field" FieldData="%%" ID="newname" Title="Newname">
+              <FieldType t="fld_type.EditableText">
+                <Style t="ui.CustomCss" base="editable_text.JBartTextbox">
+                  <Style t="editable_text.JBartTextbox"/>
+                  <Css><![CDATA[#this {
+  background:url(images/css/shadow2.png) repeat-x scroll 0 0 transparent;
+  font-size: 13px;
+  width: 259px;
+  height: 16px;
+  padding-top: 3px;
+  padding-right: 3px;
+  padding-bottom: 3px;
+  padding-left: 3px;
+  margin-top: 15px;
+  border: 1px solid #BDC7D8;
+}
+#this:focus {
+  box-shadow:  inset 0 1px 1px 0px rgba(0, 0, 0, 0.075),  0 0 8px 0px rgba(82, 168, 236, 0.6);
+  border-color: rgba(82, 168, 236, 0.8);
+  outline: 0;
+  outline: thin dotted 9;
+}
+#this.placeholder {
+  color:#8B8B8B;
+}
+#this.aa_error {
+  background: #fbebeb; 
+  border: 1px solid #feb2b2; 
+  color: #ec643d !important;  
+}]]></Css>
+                </Style>
+              </FieldType>
+              <FieldAspect t="field_aspect.Mandatory" ErrorMessage="Please provide a page name"/>
+              <FieldAspect t="field_feature.HandleEvent">
+                <Event t="field_feature.EnterPressed"/>
+                <Action t="operation.ClickOnButton" Button="gstudio_rename_OK"/>
+              </FieldAspect>
+            </Field>
+            <Field t="control.Layout" ID="Horizontal" Title="Buttons">
+              <Layout t="layout.HorizontalHtmlTable" Spacing="10px"/>
+              <Field t="control.Button" ID="gstudio_rename_OK" Title="OK" HideTitle="true">
+                <Style t="btn.JBart"/>
+                <Action t="popup.CloseContainingPopup" ExitMode="OK">
+                  <DoOnExit t="action.RunActions">
+                    <Action t="action.WriteValue" To="%%">
+                      <Value t="text.Capitalize" Mode="separate words to capital"/>
+                    </Action>
+                    <Action t="action.RunActions">
+                      <Action t="bart_dt_custom.DoMakeInnerPageGlobal" InnerFieldXtml="%$InnerFieldXtml%" NewPageID="%%"/>
+                      <Action t="gstudio.RefreshFooter"/>
+                      <Action t="gstudio.SwitchPage" PageID="%%"/>
+                    </Action>
+                  </DoOnExit>
+                </Action>
+              </Field>
+              <Field t="control.Button" ID="Cancel" Title="Cancel">
+                <Style t="btn.JBartGrey"/>
+                <Action t="popup.CloseContainingPopup"/>
+              </Field>
+              <FieldAspect t="field_feature.Css">
+                <Css><![CDATA[#this { margin-top: 23px; }]]></Css>
+              </FieldAspect>
+            </Field>
+            <FieldAspect t="field_aspect.FieldData">
+              <FieldData t="data.WritableText" DefaultValue=""/>
+            </FieldAspect>
+          </Field>
+        </Contents>
+      </Action>
+      <Style t="btn.HyperlinkWithImage"/>
+    </Field>
+  </xtml>
+</Component>
+
+<Component id="InnerPageButtons2" type="field.Fields" description="for field.InnerPage">
+  <xtml t="control.Layout">
+    <Var name="InnerFieldXtml" value="%%" varScope="Component"/>
+    <FieldAspect t="field_aspect.HideTitle"/>
+    <Layout t="layout.Vertical" Spacing="5px"/>
+    <Field t="control.Button" Title="Show in Outline">
+      <Image t="gstudio.StudioSmallImage" PositionInSprite="208,0"/>
+      <Action t="action.RunActions">
+        <Action t="gstudio.SetSelectedFieldXtml">
+          <FieldXtml t="xml.UpToTag" Tag="Field"/>
+        </Action>
+        <Action t="gstudio_popup.ShowOutline"/>
+      </Action>
+      <Style t="btn.HyperlinkWithImage"/>
+    </Field>
+    <Field t="control.Button" Title="Make it a global page">
+      <Image t="gstudio.StudioSmallImage" PositionInSprite="272,0"/>
+      <Action t="popup.OpenPopup" PopupTitle="Make Page Global">
+        <Style t="gstudio.GoogleDrivePopup"/>
+        <Contents t="field.InnerPage" Title="Make page global">
+          <Field t="control.Layout" ID="Dialog_Data" Title="Dialog Data">
+            <Layout t="layout.Vertical" Spacing="0"/>
+            <Field t="control.Label" ID="Label" Title="Label" Text="Enter a new page name:">
+              <Style t="ui.CustomCss" base="uitext.PlainText">
+                <Style t="uitext.PlainText"/>
+                <Css><![CDATA[#this { font-family:Arial, Helvetica; font-size: 13px; padding-top: 2px; }
+]]></Css>
+              </Style>
+            </Field>
+            <Field t="fld.Field" FieldData="%%" ID="newname" Title="Newname">
+              <FieldType t="fld_type.EditableText">
+                <Style t="ui.CustomCss" base="editable_text.JBartTextbox">
+                  <Style t="editable_text.JBartTextbox"/>
+                  <Css><![CDATA[#this {
+  background:url(images/css/shadow2.png) repeat-x scroll 0 0 transparent;
+  font-size: 13px;
+  width: 259px;
+  height: 16px;
+  padding-top: 3px;
+  padding-right: 3px;
+  padding-bottom: 3px;
+  padding-left: 3px;
+  margin-top: 15px;
+  border: 1px solid #BDC7D8;
+}
+#this:focus {
+  box-shadow:  inset 0 1px 1px 0px rgba(0, 0, 0, 0.075),  0 0 8px 0px rgba(82, 168, 236, 0.6);
+  border-color: rgba(82, 168, 236, 0.8);
+  outline: 0;
+  outline: thin dotted 9;
+}
+#this.placeholder {
+  color:#8B8B8B;
+}
+#this.aa_error {
+  background: #fbebeb; 
+  border: 1px solid #feb2b2; 
+  color: #ec643d !important;  
+}]]></Css>
+                </Style>
+              </FieldType>
+              <FieldAspect t="field_aspect.Mandatory" ErrorMessage="Please provide a page name"/>
+              <FieldAspect t="field_feature.HandleEvent">
+                <Event t="field_feature.EnterPressed"/>
+                <Action t="operation.ClickOnButton" Button="gstudio_rename_OK"/>
+              </FieldAspect>
+            </Field>
+            <Field t="control.Layout" ID="Horizontal" Title="Buttons">
+              <Layout t="layout.HorizontalHtmlTable" Spacing="10px"/>
+              <Field t="control.Button" ID="gstudio_rename_OK" Title="OK" HideTitle="true">
+                <Style t="btn.JBart"/>
+                <Action t="popup.CloseContainingPopup" ExitMode="OK">
+                  <DoOnExit t="action.RunActions">
+                    <Action t="action.WriteValue" To="%%">
+                      <Value t="text.Capitalize" Mode="separate words to capital"/>
+                    </Action>
+                    <Action t="action.RunActions">
+                      <Action t="bart_dt_custom.DoMakeInnerPageGlobal" InnerFieldXtml="%$InnerFieldXtml%" NewPageID="%%"/>
+                      <Action t="gstudio.RefreshFooter"/>
+                      <Action t="gstudio.SwitchPage" PageID="%%"/>
+                    </Action>
+                  </DoOnExit>
+                </Action>
+              </Field>
+              <Field t="control.Button" ID="Cancel" Title="Cancel">
+                <Style t="btn.JBartGrey"/>
+                <Action t="popup.CloseContainingPopup"/>
+              </Field>
+              <FieldAspect t="field_feature.Css">
+                <Css><![CDATA[#this { margin-top: 23px; }]]></Css>
+              </FieldAspect>
+            </Field>
+            <FieldAspect t="field_aspect.FieldData">
+              <FieldData t="data.WritableText" DefaultValue=""/>
+            </FieldAspect>
+          </Field>
+        </Contents>
+      </Action>
+      <Style t="btn.HyperlinkWithImage"/>
+    </Field>
+  </xtml>
+</Component>
+
+    <Component id="DoMakeInnerPageGlobal" type="action.Action" execution="native">
+      <Param name="InnerFieldXtml" />
+      <Param name="NewPageID" />
+    </Component>
+
+  </xtml>  
+</xtml>

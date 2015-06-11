@@ -1,0 +1,33 @@
+<xtml ns="prefstorage">
+
+	<Type is="PrefStorage" />
+
+	<Component id="UrlFragmentKey" type="prefstorage.PrefStorage" execution="native" Description="e.g: http:/...html#key1=value?key2=value2">
+		<Param name="Separator" Default="?" />
+		<Param name="KeyPrefix" advanced="true" />
+	</Component>
+
+	<Component id="LocalStorage" type="prefstorage.PrefStorage" execution="native">
+		<Param name="KeyPrefix" advanced="true" />
+	</Component>
+
+	<Component id="SessionStorage" type="prefstorage.PrefStorage" execution="native">
+		<Param name="KeyPrefix" advanced="true" />
+	</Component>
+
+	<Component id="Cookie" type="prefstorage.PrefStorage" execution="native">
+		<Param name="KeyPrefix" advanced="true" />
+	</Component>
+
+	<Component id="GetPreferenceValue" type="data.Data" description="for tests" execution="native">
+		<Param name="Storage" type="prefstorage.PrefStorage" />
+		<Param name="Key" />
+	</Component>
+
+	<Component id="SetPreferenceValue" type="action.Action" description="for tests" execution="native" light="false">
+		<Param name="Storage" type="prefstorage.PrefStorage" />
+		<Param name="Key" />
+		<Param name="Value" />
+	</Component>
+
+</xtml>

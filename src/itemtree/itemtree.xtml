@@ -1,0 +1,261 @@
+<xtml package="true">
+
+<xtml ns="itemtree_aspect">
+
+  <Component id="ItemTreeContainer" type="field.FieldAspect" execution="native" context="FieldComponent=itemtree.Tree,FieldComponent=control.Layout" fieldImage="%$_Images%/studio/library.png">
+    <Param name="Items" type="itemtree.Items" script="true">
+      <Default t="itemtree.TreeItems" />
+    </Param>
+  </Component>
+
+  <Component id="RefreshOnTreeSelectionChange" type="field.FieldAspect" execution="native" description="Refreshed when the selection changes in the tree" context="InItemTreeContainer=true">
+    <Param name="SelectedItemAsData" type="data.Boolean" Default="true" />
+    <Param name="HideWhenNoSelection" type="data.Boolean" Default="false"/>
+  </Component>
+
+  <Component id="TreeProperties" type="field.FieldAspect" execution="native" context="FieldComponent=itemtree.Tree">
+    <Param name="ControlForItem" type="ui.Page"/>
+    <Param name="LazyCreation" type="data.Boolean" Default="true" />
+  </Component>  
+
+  <Component id="TreeLongList" type="field.FieldAspect" description="Show large number of tree items in a responsive way" execution="native" context="FieldComponent=itemtree.Tree">
+    <Param name="MaxItemsPerPage" Default="10" Description="" />
+    <Param name="TextForShowMore" Default="Show More Items..." />
+    <Param name="Style" type="uitext.Style"><Default t="itemtree.TreeShowMoreButton" /></Param>  
+  </Component>
+
+</xtml>
+
+<xtml ns="itemtree">
+
+  <Type id="Style" />
+  <Type id="Items" />
+  
+  <Component id="TreeItems" type="itemtree.Items" autoexpand="true" execution="native">
+    <Param name="Items" />
+    <Param name="SubItems" script="true" />
+  </Component>
+
+  <Component id="Tree" type="field.Fields" execution="native" doc="http://jb-letmesee.appspot.com/LetMeSee/p80kd9kkn6.html?roomid=toqpvm&amp;notracking=true">
+    <Param name="Title" titleField="true" />
+    <Param name="ID" advanced="always" idField="true" />
+    <Param name="Items" type="itemtree.Items" description="Keep empty to use items from tree container" script="true" />
+    <Param name="ItemText" script="true" />
+    <Param name="ItemImage" type="image.Image" script="true" />
+    <Param name="ItemSelection" type="data.Boolean" Default="true" />
+  	<Param name="Style" type="itemtree.Style">
+  		<Default t="itemtree.Default" />
+  	</Param>
+    <Param name="FieldAspect" type="field.FieldAspect[]" script="true" light="false"/>
+    <NativeHelper name="ContainerAspect" t="itemtree_aspect.ItemTreeContainer">
+      <Items t="xtml.UseParam" Param="Items" />
+    </NativeHelper>
+  </Component>
+
+</xtml>
+
+<xtml ns="itemtree_event">
+
+  <Component id="BeforeTreeSelectAsync" type="field_feature.Event" execution="native">
+    <Param name="Action" type="action.Action" script="true" description="Use %$_TreeSelect% object and call methods Approve and Cancel" />
+  </Component>
+
+</xtml>
+
+<xtml ns="itemtree">
+
+ <Component id="Default" type="itemtree.Style">
+      <xtml t="ui.CustomStyle">
+        <Css><![CDATA[
+#this {
+  cursor: default;
+  outline: none;
+}
+.aa_tree_node_subnodes {
+  padding-left: 10px;
+}
+.aa_tree_node_image {
+  width: 16px;
+  height: 16px;
+  padding-right: 7px;
+  display:inline-block;
+  vertical-align: bottom;
+}
+.aa_tree_node_expandbox {
+  display:inline-block;
+  width:0px;
+  height:0px;
+  vertical-align: top;
+  border: 5px solid;
+  border-color: transparent  transparent  transparent #aaa;
+  cursor:pointer;
+  margin: 3px 2px 0 2px;
+}
+.aa_tree_node.collapsed>.aa_tree_node_line>.aa_tree_node_expandbox {
+  border-color: #aaa transparent  transparent  transparent;
+  margin: 3px 4px 0 0px;
+}
+.aa_tree_node_text {
+  display:inline-block;
+  border: 1px solid transparent;
+  padding: 0px 1px;
+}
+.aa_tree_node_line {
+  padding-bottom: 3px;
+  white-space: nowrap;
+}
+.aa_tree_node.collapsed>.aa_tree_node_subnodes {
+  display: none;
+}
+.aa_tree_node.leaf>.aa_tree_node_line>.aa_tree_node_expandbox {
+  border:none;
+  width: 10px;
+}
+.aa_tree_node_line.selected>.aa_tree_node_text {
+  background: #D9E8FB;
+  border-color: #97BFF1;
+}
+.show_more_button {
+  padding-left: 14px;
+  cursor:pointer;  
+}
+]]></Css>
+        <Html><![CDATA[
+<div class="aa_tree_all">
+  <div class="aa_tree_node">
+    <div class="aa_tree_node_line">
+      <div class="aa_tree_node_expandbox" />
+      <div class="aa_tree_node_image" />
+      <div class="aa_tree_node_text" />
+    </div>
+    <div class="aa_tree_node_subnodes">
+      <div class="aa_tree_node" />
+    </div>
+  </div>
+</div>]]></Html>
+        <Javascript><![CDATA[function render(tree) {
+  aa_item_tree(tree);
+}]]></Javascript>
+      </xtml>
+    </Component>
+
+<Component id="TreeWithBullets" type="itemtree.Style">
+  <xtml t="ui.CustomStyle" base="itemtree.Default">
+    <Html><![CDATA[
+<div class="aa_tree_all">
+  <div class="aa_tree_node">
+    <div class="aa_tree_node_line">
+      <div class="aa_tree_node_expandbox">
+         <div class="frame" />
+         <div class="line_lr" />
+         <div class="line_tb" />
+      </div>
+      <div class="aa_tree_node_image" />
+      <div class="aa_tree_node_text" />
+    </div>
+    <div class="aa_tree_node_subnodes">
+      <div class="aa_tree_node" />
+    </div>
+  </div>
+</div>]]></Html>
+    <Css><![CDATA[#this {
+  cursor:default;
+  outline:none;
+  padding:6px;
+}
+.aa_tree_node_subnodes {
+  padding-left:10px;
+}
+.aa_tree_node_image {
+  width:8px;
+  height:16px;
+  padding-right:6px;
+  display:inline-block;
+  vertical-align:bottom;
+}
+.aa_tree_node_expandbox {
+  display:inline-block;
+  vertical-align:top;
+  margin-top:3px;
+  margin-right:3px;
+  width:11px;
+  height:11px;
+  position:relative;
+  cursor:pointer;
+}
+.collapsed>div>div>.line_tb {
+  display:block;
+}
+.frame {
+  background:#F8FFF9;
+  border-radius:3px;
+  border:1px solid #91B193;
+  position:absolute;
+  top:0px;
+  left:0px;
+  right:0px;
+  bottom:0px;
+}
+.line_lr {
+  position:absolute;
+  background:#91B193;
+  top:5px;
+  left:3px;
+  width:5px;
+  height:1px;
+  box-shadow:1px 1px 1px -1px #89A385;
+}
+.line_tb {
+  position:absolute;
+  background:#91B193;
+  left:5px;
+  top:3px;
+  height:5px;
+  width:1px;
+  box-shadow:1px 1px 1px -1px #89A385;
+  display:none;
+}
+.aa_tree_node.collapsed>.aa_tree_node_line>.aa_tree_node_expandbox {
+  border-color:#aaa transparent transparent transparent;
+  margin:3px 4px 0 0px;
+}
+.aa_tree_node_text {
+  display:inline-block;
+  border:1px solid transparent;
+  padding:0 1px;
+}
+.aa_tree_node_line {
+  padding-bottom:3px;
+  white-space:nowrap;
+}
+.aa_tree_node.collapsed>.aa_tree_node_subnodes {
+  display:none;
+}
+.aa_tree_node.leaf>.aa_tree_node_line>.aa_tree_node_expandbox>div {
+  display:none;
+}
+.aa_tree_node_line.selected>.aa_tree_node_text {
+  background:#D9E8FB;
+}
+.show_more_button {
+  padding-left: 14px;
+  cursor:pointer;  
+}
+]]></Css>
+    <Javascript><![CDATA[function render(tree) {
+  aa_item_tree(tree);
+}]]></Javascript>
+  </xtml>
+</Component>
+
+<Component id="TreeShowMoreButton" type="uitext.Style" hidden="true">
+  <xtml t="ui.CustomStyle">
+    <Html><![CDATA[<span class="show_more_button"/>]]></Html>
+    <Css><![CDATA[#this {}]]></Css>
+    <Javascript><![CDATA[function(textObj) {aa_textLabel(textObj);}]]></Javascript>
+  </xtml>
+</Component>
+
+</xtml>
+
+</xtml>

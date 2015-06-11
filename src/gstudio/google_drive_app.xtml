@@ -1,0 +1,163 @@
+<xtml ns="gstudio_googledrive">
+
+<Component id="WidgetLatestVersion" type="data.Data" execution="native">
+  <Param name="Widget" />
+</Component>
+
+<Component id="GoogleDriveAppHomePage" type="ui.Control">
+  <Param name="AppName"/>
+  <xtml t="control.ShowFieldControl">
+    <Var name="MimeType" t="data.Switch" Value="%$AppName%" varScope="Component">
+      <Case If="jbart" Then="application/jbart"/>
+      <Case If="letmesee" Then="application/jbart_letmesee"/>
+    </Var>
+    <Field t="control.Layout" ID="top" Title="">
+      <Layout t="layout.Vertical" Spacing="18px"/>
+      <Field t="control.Layout" ID="_Group" Title="Group">
+        <Field t="control.Button" ID="_Button6" Title="Create a jbart widget" Condition="%$AppName% == 'jbart'">
+          <Style t="gstudio_googledrive.NewWidget"/>
+          <Action t="uiaction.GoToPage" Url="https://jbartdrive.appspot.com/jbart.html?newdocument=true" Type="navigate current page" />
+        </Field>
+        <Field t="control.Button" ID="_Button6" Title="Create a crawler" Condition="%$AppName% == 'jbart_crawler'">
+          <Style t="gstudio_googledrive.NewWidget"/>
+          <Action t="uiaction.GoToPage" Url="https://jb-crawler.appspot.com/crawler.html?newdocument=true" Type="navigate current page" />
+        </Field>
+        <Layout t="layout.HorizontalCss3" Spacing="27px"/>
+        <Field t="control.Button" ID="_Button6" Title="Create a new Let Me See Project" Condition="%$AppName% == 'letmesee'">
+          <Style t="gstudio_googledrive.NewWidget"/>
+          <Action t="uiaction.GoToPage" Url="https://jb-letmesee.appspot.com/letmesee.html?newdocument=true" Type="navigate current page" />
+        </Field>
+      </Field>
+      <Field t="control.Layout" ID="_Group" Title="JBart Widgets">
+        <Field t="control.Label" ID="_Label" Title="My Drive">
+          <Style t="ui.CustomCss" base="uitext.PlainText">
+            <Style t="uitext.PlainText"/>
+            <Css><![CDATA[#this {
+  color: rgb(119, 119, 119);
+  padding-bottom: 3px;
+  font: bold 11px arial;
+}
+]]></Css>
+          </Style>
+        </Field>
+        <Field t="field.ItemList" Title="items" ID="gdrive_items">
+          <View t="itemlist_style.JBartTable" MinWidth="540px"/>
+          <FieldAspect t="field_aspect.ItemListContainer">
+            <Items t="itemlist.Items" Items="%$Widgets/items%"/>
+          </FieldAspect>
+          <FieldAspect t="itemlist_aspect.ItemSelection"/>
+          <FieldAspect t="itemlist_aspect.TableColumnDragAndDrop"/>
+          <FieldAspect t="itemlist_aspect.ShowTextWhenNoItems"/>
+          <Field t="control.Button" ID="_Button" Title="Title" HideTitle="true" ButtonText="%title%">
+            <Style t="ui.CustomCss" base="btn.Hyperlink">
+              <Style t="btn.Hyperlink"/>
+              <Css><![CDATA[#this {
+  cursor:pointer;
+  font-size: 12px;
+  text-decoration: none;
+}
+#this:hover {
+  text-decoration:underline;
+}
+#this.disabled {
+  text-decoration:none;
+  cursor: default;
+}
+]]></Css>
+            </Style>
+            <Action t="operation.RunActionInJavascript">
+              <Code><![CDATA[function run(data,context) {
+  var id = data[0].id;
+  var userid = '';
+  var open_url = '?state={"ids":["' + id + '"],"action":"open","userId":"' + userid + '"}&redirect=true';
+  window.location.href = encodeURI(open_url);
+}]]></Code>
+            </Action>
+          </Field>
+        </Field>
+        <Layout t="layout.Default"/>
+        <FieldAspect t="async.AsyncActionBeforeLoad" LoadingText="Loading My Drive...">
+          <LoadingStyle t="loading_style.Default"/>
+          <Action t="operation.RunActionInJavascript">
+            <Code><![CDATA[function run(data,context) {
+ var deferred = $.Deferred();
+ 
+ var widgets = aa_var_first(context,'Widgets');
+ 
+ googledrive_lib.ready().then(function() {
+   var request = gapi.client.drive.files.list({
+       'q': 'mimeType="%$MimeType%"'
+   });
+   request.execute(getData);     
+ });
+ 
+ return [deferred.promise()];
+ 
+  function getData(resp) {
+    widgets.items = resp.items;
+    deferred.resolve();  
+    aa_refresh_field(['gdrive_items'],'screen',false,null,context);
+  } 
+}
+
+]]></Code>
+          </Action>
+        </FieldAspect>
+      </Field>
+      <FieldAspect t="field_feature.Css">
+        <Css><![CDATA[#this { margin-top: 50px; margin-left: 50px; }
+#this *:focus { outline: none; }
+]]></Css>
+      </FieldAspect>
+      <FieldAspect t="field_aspect.Variable" VarName="Widgets">
+        <Value t="data.Object"/>
+      </FieldAspect>
+    </Field>
+  </xtml>
+</Component>
+
+<Component id="NewWidget" type="btn.Style">
+  <xtml t="ui.CustomStyle">
+    <Css><![CDATA[#this {
+  cursor: pointer;
+  text-align: center;
+  color:White;
+  background:#0F52BA;
+  font-size: 13px;
+  margin:0;
+  border-radius: 2px;
+  padding-top: 0px;
+  padding-right: 25px;
+  padding-bottom: 1px;
+  padding-left: 25px;
+  border: 1px solid #586E9E;
+  text-shadow:  0.05em -0.15em 0em #002FA7;
+  box-shadow:  .03em .03em .05em 0px rgba(0,0,0,0.4);
+  background-image: -webkit-linear-gradient(-90deg, #5987A8 0\% , #0F52BA 100\% );
+  min-width: 250px;
+  vertical-align: middle;
+  line-height: 40px;
+}
+#this:hover {
+  background-image: -webkit-linear-gradient(-90deg, #75B2DD 0\% , #0F52BA 100\% );
+}
+#this:active {
+  background:#5987A8;
+  background-image: -webkit-linear-gradient(90deg, #C04000 0\% , #FF5A36 39\% , white 100\% );
+  outline: 0;
+  background-image: none;
+}
+#this.disabled {
+  background-image:none;
+  background: #5987A8;
+  cursor: default;
+}
+]]></Css>
+    <Html><![CDATA[<button />]]></Html>
+    <Javascript><![CDATA[function render(button) {
+  aa_button(button);
+}]]></Javascript>
+  </xtml>
+</Component>
+
+</xtml>

@@ -1,0 +1,55 @@
+<xtml ns="studio_sample" light="false">
+
+  <Component id="WritableTableSample" type="data.Data">
+  	<Param name="SampleConfig" description="Includes @multipleTitle,@singleTitle,@tag,@fields"/>
+  	<xtml t="data.Pipeline">
+  		<Var name="ID_Cntr" t="text.ToId" Text="%$SampleConfig/@multipleTitle%_cntr">
+        <UsedIDs t="gstudio_insert.UsedIDs" />
+      </Var> 
+  		<Var name="ID_Itemlist" t="text.ToId" Text="%$SampleConfig/@multipleTitle%_table">
+        <UsedIDs t="gstudio_insert.UsedIDs" />
+      </Var> 
+  		<Var name="ID_Item" t="text.ToId" Text="%$SampleConfig/@singleTitle%">
+        <UsedIDs t="gstudio_insert.UsedIDs" />
+      </Var> 
+      <Var name="CreatedFieldXtml" t="xml.Xml" DynamicContent="true">
+        <Field t="field.ItemListContainer" ID="%$ID_Cntr%" Title="%$SampleConfig/@multipleTitle%">
+          <Items t="itemlist.XmlItems" ParentXml="\%\%" Tag="%$SampleConfig/@tag%" />
+          <Field t="control.Layout" ID="%$ID_Cntr%_Toolbar" Title="Toolbar">
+            <Layout t="layout.Horizontal" Spacing="5px"/>
+            <FieldAspect t="itemlist_aspect.RefreshOnSelectionChange"/>
+            <FieldAspect t="field_feature.Layout">
+              <Css><![CDATA[#this { margin-bottom: 5px; }]]></Css>
+            </FieldAspect>
+            <Field t="control.Button" ID="%$ID_Cntr%_Add" Title="Add %$SampleConfig/@singleTitle%">
+              <Style t="btn.HyperlinkWithImage"/>
+              <Image t="img.Image" Url="_jbartImages_/add1616.gif" OriginalWidth="16" OriginalHeight="16"/>
+              <Action t="itemlist_action.AddItemToItemList">
+                <Item t="xml.ByTag" Tag="%$SampleConfig/@tag%"/>
+              </Action>
+            </Field>
+            <Field t="control.Button" ID="%$ID_Cntr%_Delete" Title="Delete %$SampleConfig/@singleTitle%">
+              <Style t="btn.HyperlinkWithImage"/>
+              <Image t="img.Image" Url="_jbartImages_/delete1616.gif" OriginalWidth="16" OriginalHeight="16" />
+              <Action t="itemlist_action.DeleteSelectedItem"/>
+            </Field>
+          </Field>​
+          <Field t="field.ItemList" Title="%$SampleConfig/@multipleTitle%" ID="%$ID_Itemlist%">
+             <View t="itemlist_style.JBartTable" />
+             <FieldAspect t="itemlist_aspect.ItemSelection" />
+             <FieldAspect t="itemlist_aspect.TableColumnDragAndDrop" />
+             <FieldAspect t="itemlist_aspect.DragAndDropItems" />
+             <FieldAspect t="itemlist_aspect.ShowTextWhenNoItems" />
+             <FieldAspect t="itemlist_aspect.UpdateOnAddOrDeleteItem" />
+          </Field>
+        </Field>
+      </Var>
+      <Item t="xml.WithChanges" Xml="%$CreatedFieldXtml%">
+        <Change t="xml.AddChildren" Data="%Field[@t='field.ItemList']%">
+          <Children t="field_dt.NewBasicFields" Names="%$SampleConfig/@fields%" />
+        </Change>
+      </Item>
+  	</xtml>
+  </Component>
+
+</xtml>

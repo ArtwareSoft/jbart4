@@ -1,0 +1,203 @@
+<xtml ns="ui">
+
+  <Type id="Control" Icon="%$_Images%/studio/app.gif" >
+    <ComponentAspect t="component_aspect.Image" Image="%$_Images%/studio/control1616.gif" />
+    <MoreComponents>
+      <component id="ui.List" itemsParam="Control" />
+      <component id="ui.Section" itemsParam="Control" />
+      <component id="ui.ControlWithAction" itemsParam="Control" />
+      <component id="ui.IfThenElse" itemsParam="Then" />
+      <component id="ui.Switch" itemsParam="Default" />
+    </MoreComponents>
+  </Type>
+
+  <Type id="ListLayout"/>
+    
+ <Component id="ControlUsage" type="usage.Usage" execution="native">
+  <Param name="Name"/>
+  <Param name="Of"/>
+  <Param name="Description"/>
+  <Param name="Control" type="ui.Control" script="true"/>
+  <Param name="RunOnControl" type="action.Action" script="true"/>
+  <Param name="RunBefore" type="action.Action" script="true"/>
+  <Param name="CleanAfter" type="action.Action" script="true"/>
+  <Param name="ResultType" type="enum"><Default value="Control" />
+    <value>Data</value>
+    <value>Control</value>
+  </Param>
+  <Param name="ExpectedResult" type="data.Boolean" script="true"/>
+  <Param name="RunInAllTests" type="data.Boolean" />
+  <Param name="AssignedTo" />
+
+ 	<xtml t="usage.DataUsage"  >
+	  <Name value="%$Name%"/>
+    <Of value="%$Of%"/>
+    <Var name="UsageInput"/>
+    <Var name="RunBeforePatch" t="xtml.UseParam" Param="RunBefore" />
+    <Var name="ControlElement" Class="ajaxart" t="xtml.UseParam" Param="Control" />
+    <Var name="TopControlElement" value="%$ControlElement%" />
+    <Result t="data.IfThenElse" Then="%$UsageInput%" Else="%$TopControlElement%" >
+     <If t="yesno.EqualsTo" Data="%$ResultType%" To="Data" />
+    </Result>
+    <RunBefore t="action.RunActions">
+     <Action t="xtml.RunXtml" Input="%$UsageInput%" Xtml="%$RunOnControl%">
+      <Condition t="yesno.NotEqualsTo" Data="%$SimulateDontRunOpreration%" To="true"/>
+     </Action>
+    </RunBefore>
+ 		<ResultTransformer t="data.IfThenElse">
+     <If t="yesno.EqualsTo" Data="%$ResultType%" To="Data" />
+     <Then t="data.Same" />
+     <Else t="data.Pipeline" >
+       <Item t="xml.XmlToText"/>
+       <Item t="text.Replace" Find="on(\w+)=\&quot;[^\&quot;]*\&quot;" ReplaceWith="" UseRegex="true"/>
+       <Item t="text.Replace" Find="jQuery([0-9]+)=\&quot;[^\&quot;]*\&quot;" ReplaceWith="" UseRegex="true"/>
+       <Item t="ui.TextToHtml" />
+     </Else>
+    </ResultTransformer>
+    <HtmlResultAsXml t="data.Pipeline">
+      <Item t="xml.XmlToText"/>
+      <Item t="text.Replace" Find="class=(\w+)" ReplaceWith="class=&quot;$1&quot;" UseRegex="true" />
+      <Item t="text.Replace" Find="id=(\w+)" ReplaceWith="id=&quot;$1&quot;" UseRegex="true" />
+      <Item t="text.Replace" Find="&lt;IMG([^&gt;]+)&gt;" ReplaceWith="&lt;IMG$1/&gt;" UseRegex="true" />
+      <Item t="text.Replace" Find="&lt;BR&gt;" ReplaceWith="&lt;BR/&gt;" Name="fix BR" UseRegex="true"/>
+      <Item t="text.Replace" Find="value=(\w+)" ReplaceWith="value=&quot;$1&quot;" UseRegex="true" />
+    </HtmlResultAsXml>
+ 		<CleanAfter t="xtml.UseParam" Param="CleanAfter" />
+ 		<ExpectedResult t="xtml.UseParam" Param="ExpectedResult"/>
+ 	</xtml>
+ </Component>
+
+ <Component id="DataFromJavaScript" type="data.Data" execution="native">
+   <Description>retrieves data from a javascript expression. The expression can access the data and variables as js variables named : data,var1,...</Description>
+   <Param name="Expression" essential="true"/>
+ </Component>
+ 
+ <Component id="RunJavaScript" type="action.Action" execution="native" hidden="true" depricated="true">
+   <Param name="Expression" essential="true"/>
+   <NativeHelper t="ui.DataFromJavaScript"/>
+ </Component>
+
+ <Component id="TextToHtml" type="data.Control" execution="native" />
+
+  <Component id="SetUrlHashValue" type="action.Action" execution="native">
+      <Param name="Attribute" />
+      <Param name="Value" />
+  </Component>
+
+  <Component id="UrlHashValue" type="data.Data" execution="native">
+      <Param name="Attribute" />
+  </Component>
+
+ <Component id="UrlFragment" type="data.Data">
+      <Param name="Attribute" essential="true"/>
+      <xtml t="data.Pipeline">
+        <Item t="data.Url"/>
+        <Item t="text.Split" Separator="#" Part="Second"/>
+        <Item t="data.IfThenElse" Then="%%">
+          <If t="yesno.IsEmpty" Value="%$Attribute%"/>
+          <Else t="ui.UrlFragmentAttribute" Url="%%" Attribute="%$Attribute%">
+            <Url t="data.Url"/>
+          </Else>
+        </Item>
+        <Item t="text.UrlEncoding" Type="decode"/>
+      </xtml>
+    </Component>
+
+ <Component id="UrlFragmentAttribute" type="data.Data" execution="native">
+   <Param name="Url" />
+   <Param name="Attribute" />
+ </Component>
+
+ <Component id="UrlAtt" type="data.Data">
+      <Param name="Attribute" essential="true"/>
+      <xtml t="data.Pipeline">
+        <Item t="data.Url"/>
+        <Item t="text.Split" Separator="%$Attribute%=" Part="Second"/>
+        <Item t="text.Split" Separator=";" Part="First"/>
+        <Item t="text.Split" Separator="#" Part="First"/>
+        <Item t="text.Split" Separator="&amp;" Part="First"/>
+        <Item t="text.UrlEncoding" Type="decode"/>
+      </xtml>
+    </Component>
+
+
+ <Component id="Switch" type="ui.Control" execution="native" databind="true">
+  <Param name="Value"><Default t="data.Same"/></Param>
+  <Param name="Case" type="inline[]" essential="true">
+   <Param name="If" essential="true" />
+   <Param name="IfCondition" type="data.Boolean" script="true" essential="true"/>
+   <Param name="Then" type="ui.Control" essential="true"/>
+  </Param>
+  <Param name="Default" type="ui.Control"><Default t="ui.Text" /></Param>
+ </Component>
+ 
+ <Component id="IsHtml" type="data.Boolean" execution="native" />
+ 
+ <Component id="UrlParameter" type="data.Data" execution="native">
+   <Param name="Param"/>
+ </Component>
+ 
+ <Component id="ScreenSize" type="data.Data" execution="native">
+   <Param name="Axis" type="enum.Enum" Options="height,width" Default="height" />
+   <Param name="Margin"/>
+   <Param name="AsHtmlString" type="data.Boolean"/>
+   <Param name="ReduceStudioHeaderFooter" type="data.Boolean"/>
+ </Component>
+ 
+ <Component id="LoadCssFile" type="action.Action" execution="native" light="false">
+   <Param name="Url" essential="true"/>
+ </Component>
+ 
+ <Component id="CurrentUrlWithChangedParam" type="data.Data" execution="native">
+   <Param name="Param"/>
+   <Param name="Value"/>
+   <Param name="Url"><Default t="data.Url"/></Param>
+ </Component>
+
+<Component id="IsChrome" type="data.Boolean" execution="native"/>
+
+  <Component id="BaseUrl" type="data.Data">
+    <xtml t="data.Pipeline">
+      <Item t="data.Url" />
+      <Item t="text.KeepPrefix" Separator="#" />
+      <Item t="text.RemovePrefix" Prefix="http://" />
+      <Item value="%%#" />
+    </xtml>
+  </Component>
+  
+  <Component id="CssClassesInControl" type="data.Data" execution="native">
+    <Param name="Control" />
+  </Component>
+
+  <Component id="AttachGlobalCss" type="data.Data" execution="native">
+    <Param name="Css" />
+    <Param name="Name" />
+  </Component>
+  
+  <Component id="ScreenPercentage" type="data.Data" execution="native">
+    <Param name="Axis" type="enum" Options="width,height" Default="width" />
+    <Param name="Percent" Default="50" />
+    <Param name="AddPxSuffix" type="data.Boolean" Default="true" />
+  </Component>
+
+  <Component id="IsMobileDevice" type="data.Boolean" execution="native">
+    <Param name="SimulatorSupport" type="data.Boolean" Default="true" />
+  </Component>
+
+  <Component id="InlineCssIntoElements" type="data.Data" execution="native" description="HTML emails don't work with css, so we embedd the styles in the elements. Currently supports only simple class selector">
+  	<Param name="Html" />
+  	<Param name="Css" />
+  </Component>
+
+  <Type id="EventExtraVariable" />
+  <Component id="EventExtraVariable" type="ui.EventExtraVariable">
+    <Param name="Name" />
+    <Param name="Value" />
+    <xtml t="object.Object">
+      <TextProperty name="Name" value="%$Name%" />
+      <Property name="Value" value="%$Value%" />
+    </xtml>
+  </Component>
+
+
+</xtml>

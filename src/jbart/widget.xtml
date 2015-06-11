@@ -1,0 +1,90 @@
+<xtml package="true">
+
+<xtml ns="jbart">
+
+	<Type id="Widget" />
+	<Type id="Page" />
+	<Type id="DataResource" />
+	<Type id="ApplicationFeature" />
+
+	<Component id="Widget" type="jbart.Widget" description="The component that defines the widget">
+		<Param name="MainPage" type="jbart.MyWidgetPage" />
+		<Param name="DataResource" type="jbart.DataResource[]" light="false" />
+		<Param name="ApplicationFeature" type="jbart.ApplicationFeature[]" />
+		<xtml t="action.RunActions" Comment="Do nothing" />
+	</Component>
+
+</xtml>
+
+<xtml ns="gstudio">
+  
+  <Component id="ConvertToNewWidgetFormat" type="data.Data" execution="native">
+    <Param name="WidgetXml" />
+  </Component>
+
+</xtml>
+
+<xtml ns="jbart_prototype">
+
+	<Type id="Prototype" />
+
+  <Component id="Blank" type="jbart_prototype.Prototype">
+    <xtml t="xml.Xml">
+    	<file _type="jbart_project" >
+    		<xtml ns="sample">
+    			<Component id="Widget" type="jbart.Widget">
+            <xtml t="jbart.Widget">
+      				<MainPage t="sample.main" />
+              <DataResource t="jbart_resource.Data" ResourceID="Data" ValueType="xml">
+                <Value><![CDATA[<xml/>]]></Value>
+              </DataResource>
+              <ApplicationFeature t="appfeature.Css">
+                <Css><![CDATA[#this { font: 12px Arial; }
+      #this *:focus { outline:none; }
+      p { margin: 0} 
+      ]]></Css>
+              </ApplicationFeature>
+              <ApplicationFeature t="appfeature.Responsive" />
+            </xtml>
+    			</Component>
+          <Component id="main" type="jbart.MyWidgetPage">
+            <xtml t="control.Layout" ID="main" Title="main">
+              <FieldAspect t="field_aspect.FieldData" FieldData="%$Data%"/>
+            </xtml>
+          </Component>
+    		</xtml>
+    	</file>
+    </xtml>
+  </Component>
+
+  <Component id="BlankCrawler" type="jbart_prototype.Prototype">
+    <xtml t="xml.Xml">
+      <file _type="jbart_project" >
+        <xtml ns="sample_crawler">
+          <Component id="Project" type="crawler.Project">
+                <xtml t="crawler.Project">
+                  <DataResource t="jbart_resource.Data" ResourceID="Settings" ValueType="xml" AutoSaveSampleData="false">
+                    <Value t="xml.Xml">
+                      <xml/>
+                    </Value>
+                  </DataResource>
+                  <DataResource t="jbart_resource.Data" ResourceID="Results" ValueType="xml" AutoSaveSampleData="false">
+                    <Value t="xml.Xml">
+                      <xml/>
+                    </Value>
+                  </DataResource>
+                  <DataResource t="jbart_resource.Data" ResourceID="Queues" ValueType="xml" AutoSaveSampleData="false">
+                    <Value t="xml.Xml">
+                      <xml/>
+                    </Value>
+                  </DataResource>
+                </xtml>
+              </Component>
+        </xtml>
+      </file>
+    </xtml>
+  </Component>
+
+</xtml>
+
+</xtml>

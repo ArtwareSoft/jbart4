@@ -1,0 +1,70 @@
+<xtml ns="usage">
+
+  <Type id="PassesUsage">
+    <ComponentAspect t="component_aspect.Image" Image="%$_Images%/studio/run.gif" />
+  </Type>
+
+  <Component id="RunInTestMode" type="action.Action" light="false" execution="native">
+    <Param name="Action" type="action.Action" script="true" />
+  </Component>
+
+  <Component id="And" type="usage.PassesUsage" execution="native">
+    <Param name="Item" type="usage.PassesUsage[]" script="true" essential="true" />
+  </Component>
+
+  <Component id="Or" type="usage.PassesUsage" execution="native">
+    <Param name="Item" type="usage.PassesUsage[]" script="true" essential="true" />
+  </Component>
+
+  <Component id="ContainsText" type="usage.PassesUsage" execution="native" autoexpand="true">
+    <Param name="Text" type="data.Data[]">
+      <Field t="bart_dt.EditTextArrayField"/>
+    </Param>
+    <Param name="LookIn" type="enum" Options="screen,current dialog,current popup"/>
+    <Param name="IgnoreCase" advanced="true" type="data.Boolean"/>
+    <Param name="RemoveHiddenElements" advanced="true" type="data.Boolean"/>
+    <Param name="IgnoreOrder" advanced="true" type="data.Boolean"/>
+    <Param name="OneOf" type="data.Boolean"/>
+    <Param name="AndNotContainingText" type="data.Data"/>
+   </Component>
+  
+  <Component id="EqualsTo" type="usage.PassesUsage" autoexpand="true">
+    <Param name="To" />
+    <xtml t="yesno.ItemsEqual" Item1="%%" Item2="%$To%" />
+   </Component>
+  
+  <Component id="NotContainsText" type="usage.PassesUsage">
+    <Param name="Text" />
+    <Param name="LookIn" advanced="true" type="enum" Options="screen,current dialog,current popup" />
+    <Param name="IgnoreCase" advanced="true" type="data.Boolean"/>
+    <xtml t="yesno.NotContains" IgnoreCase="%$IgnoreCase%" IgnoreOrder="%$IgnoreOrder%" Text="%$Text%">
+      <AllText t="data.Switch" Value="%$LookIn%">
+        <Case If="current dialog">
+          <Then t="dialog.TopDialogContent" />
+        </Case>
+        <Case If="current popup">
+          <Then t="dialog.ContentsOfOpenPopup" />
+        </Case>
+        <Default value="%%" />
+      </AllText>
+    </xtml>
+  </Component>
+
+  <Component id="CountOfText" type="usage.PassesUsage">
+    <Param name="Text" />
+    <Param name="Count" />
+    <xtml t="yesno.ItemsEqual" Item1="%$Count%">
+      <Item2 t="text.CountOfSubtext" Text="%$Text%" />
+    </xtml>
+  </Component>
+  
+  <Component id="CustomCondition" type="usage.PassesUsage" autoexpand="true">
+    <Param name="Condition" type="data.Boolean" script="true"/>
+    <xtml value="true" Comment="Condition is run as a common param" />
+  </Component>
+  
+  <Component id="HasFocus" type="usage.PassesUsage" execution="native" autoexpand="true">
+    <Param name="CssClass" />
+  </Component>
+
+</xtml>

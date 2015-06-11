@@ -1,0 +1,120 @@
+<xtml package="true">
+
+<xtml ns="chart2">
+
+  <Component id="Chart" type="field.Fields" execution="native">
+    <Param name="ID" advanced="always" idField="true"/>
+    <Param name="Title" titleField="true" />
+    <Param name="Chart" type="chart_type.Style">
+      <Default t="googlechart.GooglePieChart" />
+    </Param>
+    <Param name="ChartItems" script="true" Default="%$ItemListCntr/Items%" />
+    <Param name="ChartTitle" />
+    <Param name="OnDrilldownClick" type="action.Action" script="true" />
+    <Param name="Field" type="field.Fields[]" light="false" script="true" essential="true"/>
+    <Param name="FieldAspect" type="field.FieldAspect[]" script="true" light="false"/>
+  </Component>
+    
+</xtml>
+
+<xtml ns="googlechart">
+
+  <Component id="GooglePieChart" type="chart_type.Style">
+    <Param name="ConfigurationOptions" Default="{}" codemirror="true">
+      <Description><![CDATA[JSON Format. <a target="_blank" href="http://google-developers.appspot.com/chart/interactive/docs/gallery/piechart#Configuration_Options">See documentation here</a>]]></Description>
+    </Param>
+    <xtml t="ui.CustomStyle">
+      <Html><![CDATA[<div/>]]></Html>
+      <Css><![CDATA[#this {}]]></Css>
+      <Javascript><![CDATA[
+function(chart) {
+  function drawChart() {
+    var data = google.visualization.arrayToDataTable(chart.DataMatrix(true));
+    var gchart = new google.visualization.PieChart(chart.control);
+    var options = %$ConfigurationOptions%;
+    options.title = chart.Title;
+    gchart.draw(data, options );
+  }
+
+  function loadGoogleCharts() {
+    aa_loadJsFile({
+     url :'https://www.google.com/jsapi',
+     variableToFind: 'google',
+     success: function() {
+        aa_loadJsFile({
+          isLoaded: function() { return google.visualization.PieChart != null; },
+          loadFunction: function() {
+            google.load("visualization", "1", {callback:'' , packages:["corechart"]});
+          },
+          success: function() {
+            aa_addOnAttach(chart.control,function() {
+              drawChart();
+            });
+          }
+        });
+     }
+    });
+  }
+  loadGoogleCharts();
+}]]></Javascript>
+    </xtml>
+  </Component>
+  
+  <Component id="GoogleColumnChart" type="chart_type.Style">
+    <Param name="ConfigurationOptions" Default="{}" codemirror="true">
+      <Description><![CDATA[JSON Format. <a target="_blank" href="http://google-developers.appspot.com/chart/interactive/docs/gallery/columnchart#Configuration_Options">See documentation here</a>]]></Description>
+    </Param>
+    <xtml t="ui.CustomStyle">
+      <Html><![CDATA[<div/>]]></Html>
+      <Css><![CDATA[#this {}]]></Css>
+      <Javascript><![CDATA[
+function(chart) {
+  function drawChart() {
+    var data = google.visualization.arrayToDataTable(chart.DataMatrix(true));
+    var gchart = new google.visualization.ColumnChart(chart.control);
+    var options = %$ConfigurationOptions%;
+    options.title = chart.Title;
+    gchart.draw(data, options );
+  }
+
+  function loadGoogleCharts() {
+    aa_loadJsFile({
+     url :'https://www.google.com/jsapi',
+     variableToFind: 'google',
+     success: function() {
+        aa_loadJsFile({
+          isLoaded: function() { return google.visualization.ColumnChart != null; },
+          loadFunction: function() {
+            google.load("visualization", "1", {callback:'' , packages:["corechart"]});
+          },
+          success: function() {
+            aa_addOnAttach(chart.control,function() {
+              drawChart();
+            });
+          }
+        });
+     }
+    });
+  }
+  loadGoogleCharts();
+}]]></Javascript>
+    </xtml>
+  </Component>
+  
+</xtml>
+
+<xtml ns="chart_type">
+  <Type id="Style" customPT="chart_type.CustomStyle" />
+  
+    <Component id="CustomStyle" type="chart_type.Style" customPT="true">
+      <Param name="Html" codemirror="true" light="false"/>
+      <Param name="Css" codemirror="true" light="false"/>
+      <Param name="Javascript" codemirror="true" light="false"/>
+      <ParamGenerator t="bart_dt.StyleGenerator" />
+      <xtml t="ui.CustomStyle" Html="%$Html%" Css="%$Css%" Javascript="%$Javascript%" />
+    </Component>
+  
+</xtml>
+
+
+</xtml>

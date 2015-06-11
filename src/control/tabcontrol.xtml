@@ -1,0 +1,68 @@
+<xtml package="true">
+
+  <xtml ns="control">
+
+    <Component id="TabControl" type="field.Fields" execution="native" image="%$_Images%/studio/tab1616.png">
+      <Param name="Title" essential="true" autoaspects="false" titleField="true" />
+      <Param name="Style" type="tabs.Style">
+        <Default t="tabs.BlueTabs" />
+      </Param>
+      <Param name="Field" type="field.Fields[]" script="true" light="false" />
+      <Param name="FieldAspect" type="field.FieldAspect[]" script="true" light="false" />    
+      <Param name="ID" essential="true" idField="true" />
+      <Param name="DTAddTab">
+        <Field t="bart_dt_custom.AddTabGroup" />
+      </Param>
+    </Component>
+
+  </xtml>
+
+  <xtml ns="fld_aspect">
+
+    <Component id="TabControlProperties" type="field.FieldAspect" execution="native" context="FieldComponent=control.TabControl">
+      <Param name="KeepSelectedTab" type="prefstorage.PrefStorage" />
+      <Param name="RefreshTabsOnSelect" type="data.Boolean" Default="false" />
+      <Param name="DoOnTabChange" type="action.Action" script="true" description="Event fired when selecting a tab. Can use $PrevTab and $NewTab, e.g $NewTab/Title" />
+      <Param name="KeepHiddenTabInTheDOM" type="data.Boolean" Default="false" description="When hiding a tab contents, keep it in the DOM with display:none (useful for iframes etc.)" />            
+      <Param name="Transition" type="transition.ReplaceTransitionStyle" description="Tab contents must have the same size"/>
+      <Param name="TabContentsWidth" description="Define a width to make the transition smooth" />      
+      <Param name="TabContentsHeight" description="Define a height to make the transition smooth"/>      
+    </Component>
+
+    <Component id="ControlInTab" type="field.FieldAspect" execution="native" context="parentFieldComponent=control.TabControl">
+      <Param name="Page" type="ui.Page" />
+    </Component>
+
+    <Component id="TabControlAsWizard" type="field.FieldAspect" execution="native" context="FieldComponent=control.TabControl">
+      <Param name="DisableFurtherNextTabs" type="data.Boolean" Default="true" description="Disables clicking on tabs which are not the next tab or previous tabs"/>
+      <Param name="CheckValidationsWhenMovingForward" type="data.Boolean" Default="true" descrtipn="Checks validation for advancing in the wizard" />
+    </Component>
+
+  </xtml>
+
+  <xtml ns="tabcontrol">
+  
+    <Component id="RefreshTabControlTitles" type="action.Action" execution="native">
+      <Param name="TabControl" essential="true" type="dynamic_enum_multi">
+       <Options t="data.Pipeline">
+         <Item t="bart_dt.AllFieldIDs" FieldPT="control.TabControl" />
+         <Item value="%Options%" />
+         <Item value="%code%" />
+       </Options>
+     </Param>
+    </Component>
+
+  <Component id="IfThenElseTabControlStyle" type="tabs.Style">
+    <Param name="If" type="data.Boolean" script="true" />
+    <Param name="StyleForThen" type="tabs.Style" script="true" />
+    <Param name="StyleForElse" type="tabs.Style" script="true" />
+    <xtml t="data.IfThenElse">
+      <If t="xtml.UseParam" Param="If" />
+      <Then t="xtml.UseParam" Param="StyleForThen" />
+      <Else t="xtml.UseParam" Param="StyleForElse" />
+    </xtml>
+  </Component>
+
+  </xtml>
+
+</xtml>

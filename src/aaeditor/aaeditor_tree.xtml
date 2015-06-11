@@ -1,0 +1,174 @@
+<xtml ns="aaeditor" light="false">
+
+  <Component id="TreeItemData" type="data.Data" execution="xtml">
+    <Param name="ParentXtml" />
+    <Param name="Field" />
+    <Param name="Type" />
+    <Param name="Xtml" />
+    <Param name="IsDrillDown" type="data.Boolean" />
+    <Param name="MakeLocalEntry" />
+    <Param name="MakeLocalDefaultValuePath" />
+
+    <xtml t="data.Struct">
+      <Item Name="ParentXtml" Value="%$ParentXtml%" />
+      <Item Name="Field" Value="%$Field%" />
+      <Item Name="Type" Value="%$Type%" />
+      <Item Name="Xtml" Value="%$Xtml%" />
+      <Item Name="IsDrillDown" Value="%$IsDrillDown%" />
+      <Item Name="MakeLocalEntry" Value="%$MakeLocalEntry%" />
+      <Item Name="MakeLocalDefaultValuePath" Value="%$MakeLocalDefaultValuePath%" />
+    </xtml>
+  </Component>
+
+  <Component id="NextTreeItemData" type="data.Data">
+    <Param name="ParentTreeItem" />
+    <Param name="TreeItem" />
+    <xtml t="aaeditor.TreeItemData" ParentXtml="%$TreeItem/ParentXtml%" Type="%$TreeItem/Type%"
+      Field="%$TreeItem/Field%" Xtml="%$TreeItem/Xtml%" MakeLocalEntry="%$TreeItem/MakeLocalEntry%">
+      <MakeLocalDefaultValuePath t="text.Text"
+        Text="%$OrigPath%%$ParentTreeItem/Field%">
+        <Var name="OrigPath" t="data.Pipeline">
+          <Item value="%$ParentTreeItem/MakeLocalDefaultValuePath%" />
+          <Item t="text.Text" Text="%%/">
+            <Condition t="yesno.NotEmpty" Data="%$ParentTreeItem/MakeLocalDefaultValuePath%" />
+          </Item>
+        </Var>
+        <Condition t="yesno.NotEmpty" Data="%$ParentTreeItem/MakeLocalEntry%" />
+      </MakeLocalDefaultValuePath>
+    </xtml>
+  </Component>
+
+  <Component id="AddTreeItemMakeLocalInfo" type="data.Data">
+    <Param name="TreeItem" />
+    <Param name="ParentTreeItem" />
+    <xtml t="data.IfThenElse" Else="%$TreeItem%">
+      <If t="yesno.And">
+        <Item t="yesno.ItemsEqual" Item2="Default">
+          <Item1 t="xml.Tag" Data="%$ParentTreeItem/Xtml%" />
+        </Item>
+        <Item t="yesno.ItemsEqual" Item2="Param">
+          <Item1 t="xml.Tag" Data="%$ParentTreeItem/Xtml/..%" />
+        </Item>
+      </If>
+      <Then t="aaeditor.TreeItemData" ParentXtml="%$TreeItem/ParentXtml%" Field="%$TreeItem/Field%"
+        Type="%$TreeItem/Type%" Xtml="%$TreeItem/Xtml%" IsDrillDown="%$TreeItem/IsDrillDown%"
+        MakeLocalEntry="%$ParentTreeItem%" MakeLocalDefaultValuePath="" />
+    </xtml>
+  </Component>
+
+  <Component id="ImageOfType" type="data.Data" execution="xtml">
+    <Param name="Type" />
+    <xtml t="data.Switch" Value="%$Type%">
+      <Case If="data.Data" Then="%$_Images%/studio/data1616.gif" />
+      <Case If="data.Aggregator" Then="%$_Images%/studio/data1616.gif" />
+      <Case If="data.Boolean" Then="%$_Images%/studio/yesno1616.gif" />
+      <Case If="ui.Control" Then="%$_Images%/studio/control1616.gif" />
+      <Case If="action.Action" Then="%$_Images%/studio/run.gif" />
+      <Default value="%$_Images%/default1616.gif" />
+    </xtml>
+  </Component>
+
+  <Component id="ItemImageInTree" type="data.Data" execution="xtml">
+    <xtml t="data.IfThenElse" If="%IsDrillDown%" Then="%$_Images%/studio/track.jpg">
+      <Else t="aaeditor.ImageOfType" Type="%Type%" />
+    </xtml>
+  </Component>
+
+  <Component id="ComponentOfScript">
+    <xtml t="data.Pipeline">
+      <Item t="xtml.ToScript" Xtml="%$AAEditorState/TreeXtml%" />
+      <Item t="data.RecursiveScan" OnlyLeaves="true">
+        <ChildNodes value="%..%">
+          <Condition t="yesno.NotInList">
+            <Item t="xml.Tag" />
+            <List t="data.List">
+              <Item value="Component" />
+              <Item value="Usage" />
+            </List>
+          </Condition>
+        </ChildNodes>
+      </Item>
+      <Item value="%../@ns%.%@id%">
+        <Condition t="yesno.NotEmpty" Value="%@id%" />
+      </Item>
+    </xtml>
+  </Component>
+
+  <Component id="WrapWithComposite">
+    <Param name="To" />
+    <Param name="ConfigEntry" />
+    <xtml t="aaeditor.WriteValue" Data="%$To/Xtml%" To="%$To%">
+      <Value t="xml.Xml" DynamicContent="true">
+        <aaeditor valuetype="wrap" component="%$ConfigEntry/@component%"
+          itemsParam="%$ConfigEntry/@itemsParam%" />
+      </Value>
+    </xtml>
+  </Component>
+
+  <Component id="ClickOnAdd" type="action.Action">
+    <xtml t="action.RunActions">
+      <Action t="menu.OpenContextMenu">
+        <Menu t="menu.ContextMenu" HeaderMessage="Add :">
+          <Item t="menu.DynamicMenuItems" Text="%%">
+            <Items t="aaeditor.CommonPropertiesToAdd" />
+            <Image t="data.Switch">
+              <Case If="Data" Then="%$_Images%/studio/data1616.gif" />
+              <Case If="Condition" Then="%$_Images%/studio/yesno1616.gif" />
+              <Default value="%$_Images%/default1616.gif" />
+            </Image>
+            <Action t="aaeditor.AddCommonPropertyToTreeSelected" CommonProperty="%%" />
+          </Item>
+        </Menu>
+      </Action>
+      <Action t="dialog.TogglePopup" Width="100" Condition="false">
+        <Contents t="ui.DynamicList">
+          <Items t="aaeditor.CommonPropertiesToAdd" />
+          <Control t="ui.ButtonOld" Text="%%">
+            <Image t="data.Switch">
+              <Case If="Data" Then="%$_Images%/studio/data1616.gif" />
+              <Case If="Condition" Then="%$_Images%/studio/yesno1616.gif" />
+              <Default value="%$_Images%/default1616.gif" />
+            </Image>
+            <OnClick t="action.RunActions">
+              <Action t="dialog.ClosePopup" />
+              <Action t="aaeditor.AddCommonPropertyToTreeSelected" CommonProperty="%%" />
+            </OnClick>
+            <Style t="ui.ButtonAsHyperlink" />
+          </Control>
+        </Contents>
+      </Action>
+    </xtml>
+  </Component>
+
+  <Component id="CommonPropertiesToAdd" type="data.Data">
+    <xtml t="data.List">
+      <Item t="data.Subtract">
+        <List t="data.Switch" Value="%$AAEditorState/SelectedInTree/Type%">
+          <Case If="ui.Control">
+            <Then t="text.Split" Separator="," Data="Data,Name,Condition,Class,Remark" />
+          </Case>
+          <Case If="action.Action">
+            <Then t="text.Split" Separator=","
+              Data="Data,Name,Condition,RunOn,Remark" />
+          </Case>
+          <Default t="text.Split" Separator="," Data="Data,Name,Condition,Remark" />
+        </List>
+        <Subtract t="data.Pipeline">
+          <Item value="%$AAEditorState/SelectedInTree/Xtml%" />
+          <Item t="data.List">
+            <Item t="data.Pipeline">
+              <Item t="xml.Attributes" />
+              <Item t="xml.AttributeName" />
+            </Item>
+            <Item t="data.Pipeline">
+              <Item value="%" />
+              <Item t="xml.Tag" />
+            </Item>
+          </Item>
+        </Subtract>
+      </Item>
+      <Item value="Variable" />
+    </xtml>
+  </Component>
+
+</xtml>

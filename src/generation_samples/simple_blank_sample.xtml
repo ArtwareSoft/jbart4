@@ -1,0 +1,85 @@
+<xtml package="true">
+
+<xtml ns="studio_sample" light="false">
+
+  <Component id="SimpleBlankSample" type="data.Data">
+    <Param name="SampleConfig" description="Includes @items"/>
+    <xtml t="data.Pipeline">
+      <Var name="ID_Itemlist" t="text.ToId" Text="itemslist">
+        <UsedIDs t="gstudio_insert.UsedIDs" />
+      </Var> 
+      <Var name="CreatedFieldXtml" t="xml.Xml" DynamicContent="true">
+        <Field t="field.ItemList" Title="items" ID="%$ID_Itemlist%">
+         <FieldAspect t="field_aspect.ItemListContainer">
+            <Items t="itemlist.Items" Items="%$SampleConfig/@items%"/>
+         </FieldAspect>
+         <FieldAspect t="itemlist_aspect.ShowTextWhenNoItems" />
+        </Field>
+      </Var>
+      <Item value="%$CreatedFieldXtml%" />
+    </xtml>
+  </Component>
+
+</xtml>
+
+<xtml ns="gstudio_insert" light="false">
+
+  <Component id="InsertSimpleBlank" type="action.Action">
+      <xtml t="popup.OpenPopup" PopupTitle="Insert Simple Blank Itemlist">
+        <Var name="SampleConfig" t="gstudio_insert.GetOrCreateMockupField"/>
+        <Data value="%$SampleConfig%"/>
+        <Feature t="popup.HandleEvent">
+          <Event t="popup_event.Close"/>
+          <Action t="xml.Delete" Data="%$SampleConfig%"/>
+        </Feature>
+        <Contents t="control.Layout" Title="">
+          <FieldAspect t="field_feature.HandleEvent">
+            <Event t="field_feature.Load"/>
+            <Action t="operation.RunActions">
+              <Action t="action.WriteValue" To="%!@items%" Value="\%*\%"/>
+            </Action>
+          </FieldAspect>
+          <Field t="control.PropertySheet" Title="" ID="dt_insert_table_props">
+            <Style t="properties.Default" PropertiesWidth="145px"/>
+            <FieldAspect t="field_aspect.FeatureForChildren">
+              <Feature t="field_feature.HandleEvent">
+                <Event t="field_feature.EnterPressed"/>
+                <Action t="operation.ClickOnButton" Button="OK"/>
+              </Feature>
+            </FieldAspect>
+            <Field t="field_control.CustomXtmlControl" ID="items" Title="Items">
+              <Control t="ui.Document">
+                <Presentation1 t="uiaspect.Group">
+                  <Style t="group.PropertySheet"/>
+                </Presentation1>
+                <Field t="xtml_dt.ParamsAsFields" Params="items" />
+              </Control>
+            </Field>
+            <FieldAspect t="field_feature.Layout">
+              <Css><![CDATA[#this { margin-top: 7px; margin-right: 18px; margin-bottom: 41px; }]]></Css>
+            </FieldAspect>
+          </Field>
+          <Layout t="layout.Default"/>
+          <Field t="control.Layout" ID="Horizontal" Title="Horizontal">
+            <Layout t="layout.HorizontalHtmlTable" Spacing="20px" VerticalAlign="top"/>
+            <Field t="control.Button" ID="OK" Title="Insert">
+              <Style t="btn.JBart"/>
+              <Action t="popup.CloseContainingPopup" ExitMode="OK">
+                <DoOnExit t="gstudio_insert.AddFieldByXtml">
+                  <NewFieldXtml t="studio_sample.SimpleBlankSample" SampleConfig="%$SampleConfig%"/>
+                </DoOnExit>
+              </Action>
+            </Field>
+            <Field t="control.Button" ID="Cancel" Title="Cancel">
+              <Style t="btn.JBartGrey"/>
+              <Action t="popup.CloseContainingPopup" ExitMode=""/>
+            </Field>
+          </Field>
+        </Contents>
+        <Style t="gstudio.GoogleDrivePopup"/>
+      </xtml>
+    </Component>
+
+</xtml>
+
+</xtml>

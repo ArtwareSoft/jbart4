@@ -1,0 +1,51 @@
+<xtml ns="data">
+	  <Component id="IndexOfValueInCSV" type="data.Data" execution="native">
+      <Param name="Values" essential="true" description="comma separated values"/>
+      <Param name="Value" essential="true"/>
+    </Component>
+
+	  <Component id="CSVValueByIndex" type="data.Data" execution="native">
+      <Param name="Values" essential="true" description="to be writable, must be an xml attribute"/>
+      <Param name="Index" essential="true"/>
+    </Component>
+
+	  <Component id="CSVValuesByCode" type="data.Data" execution="native">
+      <Param name="Codes" essential="true"/>
+      <Param name="Values" description="to be writable, must be an xml attribute" essential="true"/>
+    </Component>
+
+    <Component id="ObjectToCSV" type="data.Data" execution="native">
+      <Param name="Atts" essential="true"/>
+      <Param name="Object" essential="true"/>
+    </Component>
+
+	  <Component id="MatrixByColumns" type="data.Aggregator" execution="native" description="converting vector to matrix">
+      <Param name="Items" Default="%%"/>
+	  	<Param name="NoOfColumns" essential="true"/>
+	  </Component>
+
+	  <Component id="SwapRowsAndColumns" type="data.Aggregator" execution="native">
+      <Param name="Items" Default="%%"/>
+      <Param name="NoOfColumns" essential="true"/>
+    </Component>
+
+  <Component id="CSVCellValue" type="data.Data">
+      <Param name="CSV" essential="true"/>
+      <Param name="FieldName" description="field name from the field row" essential="true"/>
+      <Param name="Line" description="line index" essential="true"/>
+      <xtml t="data.Pipeline">
+        <Var name="Fields" t="text.ExtractPrefix" Data="%$CSV%">
+          <Separator t="text.NewLine"/>
+        </Var>
+        <Item t="data.CSVValuesByCode" Codes="%$Fields%">
+          <Values t="text.Split" Text="%$CSV%" Part="By index" Index="%$Line% + 1">
+            <Separator t="text.NewLine"/>
+          </Values>
+        </Item>
+        <Item value="%{$FieldName}%"/>
+      </xtml>
+    </Component>
+
+  <Component id="CSVColumn" type="data.Data">      <Param name="CSV" essential="true"/>      <Param name="FieldName" description="field name from the field row" essential="true"/>      <xtml t="data.Pipeline">        <Var name="Fields" t="text.ExtractPrefix" Data="%$CSV%">          <Separator t="text.NewLine"/>        </Var>        <Item t="text.Split" Text="%$CSV%" Part="ButFirst">          <Separator t="text.NewLine"/>        </Item>        <Item t="data.CSVValuesByCode" Codes="%$Fields%" Values="%%">        </Item>        <Item value="%{$FieldName}%"/>      </xtml>    </Component>
+
+</xtml>

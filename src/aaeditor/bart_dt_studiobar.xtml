@@ -1,0 +1,277 @@
+<xtml ns="bart_dt" light="false">
+
+  <Component id="Inspect" type="action.Action" execution="native" light="false">
+    <Param name="Level" Options="application,sample,infra"><Default value="sample"/></Param>
+  </Component>
+  
+  <Component id="InspectInfra" type="action.Action">
+    <xtml t="bart_dt.Inspect" Level="infra" />
+  </Component>
+  
+  <Component id="SetSelectedStudiobarObject" type="action.Action" execution="native" light="false">
+    <Param name="Xtml"/>
+  </Component>
+  
+  <Component id="EditXtmlInStudioBar" type="action.Action">
+    <Param name="Xtml" Default="%%"/>
+    <Param name="IsNewItem" type="data.Boolean" />
+    <Param name="RefreshPreview" type="data.Boolean" />
+      <xtml t="action.RunActions" >
+        <Action t="bart_dt.SetSelectedStudiobarObject" Xtml="%$Xtml%"/>
+        <Action t="gstudio.SetSelectedFieldXtml" FieldXtml="%$Xtml%" />
+        <Action t="gstudio_popup.ShowProperties">
+          <Var name="_StudioIsNewItem" value="%$IsNewItem%" />
+        </Action>
+        <Action t="gstudio_popup.ShowOutline" />
+        <Action t="bart_dt.RefreshSelectedObject" Condition="%$RefreshPreview%"/>
+        <Action t="bart_dt.ShowSelectedObjectElements" />
+      </xtml>​
+  </Component>
+  
+  <Component id="ShowSelectedObjectElements" type="action.Action" execution="native" light="false"/>
+  <Component id="HideSelectedObjectIndication" type="action.Action" execution="native" light="false" />
+  
+  <Component id="InspectPopup" type="dialog_style.Style">
+  <Param name="Padding" Default="5px 15px" />
+  <xtml t="dialog_style.CustomStyle"
+    Html="&lt;div&gt; &lt;table cellpadding='0' cellspacing='0' &gt;&lt;tbody class='aa_dlg_tbody'&gt;&lt;tr&gt;&lt;td class='aa_dialog_title jbartStudio_dialog'/&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style='vertical-align:top;'&gt;&lt;div class='aa_dialogcontents'/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td class='aa_dialogbuttons'/&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt; &lt;/div&gt;"
+    Javascript="" Mode="dialog">
+    <Css>
+      <![CDATA[ 
+      #this { -moz-box-shadow: 0 0 2px 2px #888;-webkit-box-shadow: 0 0 2px 2px #888;
+        box-shadow: 0 0 2px 2px #888; border:1px solid rgb(204,204,204);  background:rgb(166,198,255);  position:fixed; %$CssOnTop% } 
+      #this .aa_dlg_tbody { background: white; } 
+      #this .aa_dialog_title { 
+        height:32px;  cursor: move;  text-align: center;  
+        vertical-align:top;  font-family: Arial;  margin-top: 8px; 
+       } 
+       #this .aa_dialog_title_text { padding:8px 30px;  } 
+       #this .aa_dialogcontents { overflow: auto; padding:%$Padding%; margin-top: 2px; margin-bottom:3px;  } 
+       #this .aa_dialogbuttons { border-top: 1px solid #BBB; }
+        ]]>
+       
+    </Css>
+    <Feature t="dlg.DragDialog" />
+    <Feature t="dlg.AutomaticFocus" FocusOn="first input" />
+    <Feature t="dlg.JBartStudioDialog" />
+  </xtml>
+  </Component>
+  
+  <Component id="RefreshSelectedObject" type="action.Action" execution="native"/>
+  
+  <Component id="EditCustomXtml" type="action.Action">
+    <xtml t="xtml_dt_tree.OpenScriptEditor">
+      <Xtml t="ui.ControlData" Type="script" Control="%$ControlElement%"/>
+      <Var name="_OriginalElement" value="%$ControlElement%" />
+      <Var name="XtmlWithContext" t="xtml.Xtml">
+        <Xtml t="ui.ControlData" Type="script" Control="%$ControlElement%"/>
+        <Context t="ui.ControlData" Type="context" Control="%$ControlElement%"/>
+        <Input t="ui.ControlData" Type="original_data" Control="%$ControlElement%"/>
+      </Var>
+      <Var name="AAEditorState" t="aaeditor.State" Data="%$XtmlWithContext%" />
+      <RunOnOK t="uiaction.Refresh" RunOn="%$_OriginalElement%"/>
+      <GlobalPreview t="xtml.RunXtml" Xtml="%$XtmlWithContext%" />
+      <MainCircuit t="xtml.RunXtml" Xtml="%$XtmlWithContext%" />
+    </xtml>
+  </Component>
+  
+  <Component id="RefreshAfterTreeDrop" type="Action.Action" execution="native" />
+
+  <Component id="StudioPopupLocation" type="dlg.DialogFeature" hidden="true" execution="native" >
+    <Param name="Padding"><Default value="5" /></Param>
+    <Param name="Popup" type="enum">
+      <value>tree</value>
+      <value>properties</value>
+    </Param>
+  </Component>
+  
+  <Component id="StudioPropertiesLocation" type="dlg.DialogFeature" hidden="true" execution="native" >
+    <Param name="Padding"><Default value="5" /></Param>
+  </Component>
+  
+  
+  <Component id="InpectBarDialogStyle" type="dialog_style.Style" hidden="true">
+    <xtml t="dialog_style.CustomStyle" Html="&lt;div class=&quot;aa_popup aa_dialogcontents aa_dialog_title aa_click_dosent_close_popup&quot;/&gt;"
+      Css="#this { z-index:2100; padding: 0px 20px 4px 10px; -moz-border-radius: 3px;&#xa; border-radius: 3px; &#xa; -moz-box-shadow: 0 0 2px 2px #888;-webkit-box-shadow: 0 0 2px 2px#888;&#xa;box-shadow: 0 0 2px 2px #888;&#xa; background:#EEEEFC; border:none; &#xa; overflow-y: auto; overflow-x: hidden; &#xa;position:fixed !important; top: 2px; right: 2px; min-width: 300px;&#xa;} #this .aa_button_text { padding-top:0px; }"
+      Javascript="" Mode="dialog">
+      <Feature t="dlg.DontCloseOtherPopupsOnOpen" />
+      <Feature t="dlg.CloseIcon" CssStyle="top:2px; right:2px;" />
+      <Feature t="dlg.UniquePopup" Identifier="inspect" />
+      <Feature t="dlg.ZIndex" ZIndex="2100" />
+      <Feature t="dlg.DragDialog" />
+    </xtml>
+  </Component>
+
+  <Component id="EditDataResource" type="action.Action">
+    <Param name="IsNew" type="data.Boolean" />
+    <xtml t="dlg.OpenDialog">
+      <Title t="data.IfThenElse" If="%$IsNew%" Then="New Data Resource" Else="Settings of Data Resource %@ResourceID%" />
+      <Contents t="ui.Document">
+        <Fields t="xtml_dt.ParamsAsFields" />
+      </Contents>
+      <RunOnOK t="gstudio.StrongRefresh" />
+      <Feature t="dlg.Buttons">
+        <Layout t="group.Horizontal" Spacing=""/>
+        <Buttons t="dlg.Custom" KeepOriginalButtons="">
+          <Button t="dlg.Button" Text="Delete">
+            <Style t="button.Hyperlink" />
+            <OnClick t="dialog.AskForConfirmation" customxtml="true" Question="Are you sure?" Title="Delete Data Source">
+              <RunOnOK t="action.RunActions">
+                <Action t="xml.Delete" />
+                <Action t="dlg.CloseDialog" />
+              </RunOnOK>
+            </OnClick>
+          </Button>
+          <Button t="dlg.OKButton" Text="OK"/>          
+        </Buttons>
+      </Feature>
+    </xtml>
+  </Component>
+  
+  <Component id="ShowDataResource" type="action.Action">
+    <Param name="DataResourceXtml" Default="%%"/>
+    <xtml t="popup.OpenPopup" Data="%$DataResourceXtml%" PopupTitle="Data Resource - %@ResourceID%">
+      <Style t="gstudio.GoogleDrivePopup"/>      
+      <Var name="Value" t="data.FirstSucceeding">
+        <Item value="%$_AppContext/Resources[ID='{@ResourceID}']/Xml%" />
+        <Item value="%$_AppContext/Resources[ID='{@ResourceID}']/Items%" />
+      </Var>
+      <Var name="ResourceValue" t="data.WritableText">
+        <DefaultValue t="xml.XmlToText" PrettyPrint="true" Data="%$Value%" />
+      </Var>
+      <Contents t="field.InnerPage" Title="GStudio Data Resource">
+        <Field t="fld.Field" FieldData="%$ResourceValue%" ID="gstutio_data_resource_in_popup" Title="Code Mirror">
+          <FieldType t="fld_type.EditableText">
+            <Style t="editable_text.CodeMirror" Readonly="false" Autofocus="false" LineNumbers="false" LineWrapping="false" EnableFullScreen="true">
+              <Mode t="data.IfThenElse" Then="xml" Else="js">
+                <If t="yesno.IsXml" Data="%$Value%" />
+              </Mode>
+              <Width t="ui.ScreenSize" Axis="width" Margin="250" AsHtmlString="true"/>
+              <Height t="ui.ScreenSize" Axis="height" Margin="200" AsHtmlString="true"/>
+            </Style>
+          </FieldType>
+        </Field>
+        <Field t="control.Layout" ID="Horizontal" Title="Buttons">
+          <Layout t="layout.HorizontalHtmlTable" Spacing="10px"/>
+          <FieldAspect t="field_feature.Css">
+    <Css><![CDATA[#this {
+  position:absolute;
+  right:0;
+  top:15px;
+}
+#wrapper {
+  position:relative;
+  height:35px;
+}]]></Css>
+          </FieldAspect>
+        <Field t="control.Button" ID="gstudio_settings" Title="Settings" HideTitle="true">
+          <Style t="btn.JBart"/>
+          <Action t="popup.CloseContainingPopup" ExitMode="OK">
+            <DoOnExit t="bart_dt.EditDataResource" Data="%$DataResourceXtml%" />
+          </Action>
+        </Field>
+        <Field t="control.Button" ID="gstudio_data_save" Title="Save as Sample Data" Condition="%$DataResourceXtml/@t% == 'bart_resource.Xml'">
+          <Style t="btn.JBart"/>
+          <Action t="popup.CloseContainingPopup" ExitMode="OK">
+            <DoOnExit t="action.RunActions">
+              <Action t="xml.ReplaceXmlChildren" Parent="%$DataResourceXtml/Xml%" Children="%%">
+                <Data t="xml.TextToXml" Data="%$ResourceValue%" />
+                <Condition t="yesno.IsXml" />
+              </Action>
+              <Action t="object.RunMethod" Object="%$_BartDevDtContext%" Method="StrongRefresh"/>
+            </DoOnExit>
+          </Action>
+        </Field>
+        <Field t="control.Button" ID="gstudio_data_save" Title="Save as Sample Data">
+          <Condition t="yesno.And" >
+            <Item value="%@t% == 'jbart_resource.Data'" />
+            <Item t="yesno.OR">
+              <Item value="%@ValueType% == 'xml'"/>
+              <Item value="%@ValueType% == 'json'" />
+            </Item>
+          </Condition>
+          <Style t="btn.JBart"/>
+            <Action t="action.RunActions">
+              <Var name="_Status" t="object.Object" />
+              <Action t="action.IfThenElse" If="%@ValueType% == 'xml'">
+                <Then t="action.IfThenElse">
+                  <Var name="ParsedXml" t="xml.TextToXml" Data="%$ResourceValue%" />
+                  <If t="yesno.NotEmpty" Value="%$ParsedXml%" />
+                  <Then t="bart_dt.SaveXmlValueToDataResource" Xtml="%$DataResourceXtml%" Xml="%$ParsedXml%" />
+                  <Else t="action.RunActions">
+                    <Action t="object.SetProperty" Object="%$_Status%" Property="Error" Value="true" />
+                    <Action t="uiaction.Alert" Text="Xml is not well formed" />
+                  </Else>
+                </Then>
+                <Else t="field_dt.WriteCDataAndFix" Element="%$DataResourceXtml/Value%" CDataText="%$ResourceValue%" />
+              </Action>
+              <Action t="action.RunActions">
+                <Condition t="yesno.Not" Of="%$_Status/Error%" />
+                <Action t="popup.CloseContainingPopup" ExitMode="OK" />
+                <Action t="object.RunMethod" Object="%$_BartDevDtContext%" Method="StrongRefresh"/>
+                <Action t="gstudio.StrongRefresh" />
+              </Action>
+            </Action>
+        </Field>
+          <Field t="control.Button" ID="Close" Title="Close">
+            <Style t="btn.JBart"/>
+            <Action t="popup.CloseContainingPopup"/>
+          </Field>        
+        </Field>
+      </Contents>
+    </xtml>
+  </Component>
+  
+  <Component id="ActionInMenu" type="action.Action">
+    <Param name="Action" type="action.Action" script="true"/>
+    <xtml t="action.RunActions">
+      <Action t="dlg.CloseContainingDialog" />
+      <Action t="xtml.UseParam" Param="Action" />
+    </xtml>
+  </Component>
+  
+  <Component id="InspectSelectedObject" type="data.Data" execution="native" />
+  <Component id="CleanInspectSelectedObject" type="action.Action" execution="native" />
+
+  <Component id="Credit" type="field.Fields">
+    <Param name="DisplayName" />
+    <Param name="Url" />
+    <Param name="Images" />
+    <xtml t="field.Text">
+      <Text t="data.Pipeline">
+        <Var name="FirstImage" t="text.Split" Separator="," Part="First" Text="%$Images%" />
+        <Var name="Image" t="text.FirstSucceeding">
+          <Item value="%$_Images%/%$FirstImage%" Condition="%$FirstImage% != ''" />
+          <Item value="%$_Images%/studio/blackboard.png" />
+        </Var>
+        <Item>
+            <![CDATA[<div><img width="16px" height="16px" style="vertical-align: bottom;padding-right:5px;" src="%$Image%" /><a href="%$Url%" target="new">%$DisplayName%</a></div>]]>
+        </Item>
+      </Text>
+    </xtml>
+  </Component>
+  
+  
+  <Component id="ActionFromPopupMenu" type="action.Action">
+    <Param name="Action" type="action.Action[]" script="true"/>
+    <xtml t="action.RunActions">
+      <Action t="dlg.CloseDialog" />
+      <Action t="xtml.UseParamArray" Param="Action" />
+    </xtml>
+  </Component>
+  
+  <Component id="ListenToAltC" type="field.FieldAspect" execution="native" />
+    
+  <Component id="RefreshDtPopups" type="action.Action">
+    <xtml t="gstudio_popup.RefreshFloatingPopups" />
+  </Component>
+  
+  <Component id="PathToXtml" type="data.Data" execution="native">
+    <Param name="FieldPath"/>
+  </Component>
+
+  <Component id="XtmlToPath" type="data.Data" execution="native">
+    <Param name="Xtml"/>
+  </Component>
+  
+</xtml>

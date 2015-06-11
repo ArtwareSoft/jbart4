@@ -1,0 +1,520 @@
+<xtml ns="tabs">
+
+  <Type id="Style" />
+
+  <Component id="BigBlueTabs" type="tabs.Style">
+      <xtml t="ui.CustomStyle">
+        <Css><![CDATA[#this >div>div.aatabs_tab { cursor:default; position:relative; float: left; width: 196px; }
+#this >div>div>div.aatabs_tab_text { font-family:Arial, Helvetica; text-align:center; 
+  color:#1B9BEC; font-weight:bold; font-size: 13px; 
+  padding-top: 20px; padding-right: 0px; 
+  padding-bottom: 20px; padding-left: 0px; }
+#this >div>div.aatabs_tab:first-child { border-left: 1px solid #6EBFF2; }
+#this >div>div.aatabs_tab:not(.aa_selected_tab) { cursor: pointer; background:white; 
+  border-right: 1px solid #6EBFF2; 
+  border-top: 1px solid #6EBFF2; 
+  border-bottom: 1px solid #6EBFF2; }
+#this >div>div.aa_selected_tab>.aatabs_tab_text { color:white; }
+#this >div>div.aatabs_tab.aa_selected_tab { background:#1B9BEB; 
+  border: 1px solid #1B9BEB; }
+#this >.aatabs_contents { padding-top: 12px; padding-right: 0px; padding-bottom: 15px; 
+  padding-left: 0px; clear:both; }
+#this>*>*.aa_selected_tab>.arrow { position:absolute; margin-left: -8px; bottom:-9px; 
+  left:50\%; }
+#this>*>*.aa_selected_tab>.arrow>.arrow1 { float:left; 
+  border-right: 8px solid #1B9BEB; 
+  border-bottom: 8px solid transparent; }
+#this>*>*.aa_selected_tab>.arrow>.arrow2 { float:left; 
+  border-left: 8px solid #1B9BEB; 
+  border-bottom: 8px solid transparent; }
+]]></Css>
+        <Html><![CDATA[<div>
+  <div class="aatabs_tabs">
+    <div class="aatabs_tab">
+      <div class="aatabs_tab_text"/>
+      <div class="arrow">
+        <div class="arrow1" />
+        <div class="arrow2" />
+      </div>
+    </div>
+  </div>
+  <div class="aatabs_contents"/>
+</div>]]></Html>
+        <Javascript><![CDATA[function(tabcontrol) {
+ aa_tabcontrol(tabcontrol,{});
+}]]></Javascript>
+      </xtml>
+    </Component>
+
+  <Component id="BlueTabs" type="tabs.Style">
+    <Param name="TabBottomMargin" Default="10px" slider="true" sliderUnit="px" />
+      <xtml t="ui.CustomStyle">
+        <Css><![CDATA[#this >div>div.aatabs_tab { cursor: pointer; font-family: arial; float: left; 
+  color:black; background:rgb(60,143,228); font-size: 93\%; 
+  padding-top: 14px; padding-right: 27px; 
+  padding-bottom: 14px; padding-left: 15px; 
+  margin-right: 5px; min-width:30px; 
+  border-top-left-radius:6px; border-top-right-radius:6px; 
+  min-width:80px; }
+#this >div>div>div.aatabs_tab_text { float:left; color:white; font-size: 16px; 
+  padding-top: 0px; padding-right: 0px; 
+  padding-bottom: 0px; padding-left: 5px; }
+#this >div>div>div.aa_tabs_control_in_tab { float:left; }
+#this >div>div.aa_selected_tab { color:white; background:rgb(31,112,195); }
+#this >div>div>div.aatabs_tab_image { float: left; }
+#this >.aatabs_margin {
+  clear: both;
+  padding-bottom: %$TabBottomMargin%;
+  border-top: 1px solid #ddd; 
+}
+#this >.aatabs_contents { 
+  padding-right: 0px; padding-bottom: 15px; 
+  padding-left: 0px; 
+  clear: both; 
+  }
+.right2left #this >div>div.aatabs_tab { float: right; padding-top: 6px; 
+  padding-right: 6px; padding-bottom: 4px; 
+  padding-left: 15px; }
+.right2left #this >div>div>div.aatabs_tab_image { float: right; }
+.right2left #this >div>div>div.aatabs_tab_text { float: right; padding-top: 0px; 
+  padding-right: 5px; 
+  padding-bottom: 0px; 
+  padding-left: 0px; }
+]]></Css>
+        <Html><![CDATA[<div>
+  <div class="aatabs_tabs_top">
+    <div class="aatabs_tab">
+      <div class="aatabs_tab_image"/>
+      <div class="aatabs_tab_text"/>
+    </div>
+  </div>
+  <div class="aatabs_margin"/>
+  <div class="aatabs_contents"/>
+</div>]]></Html>
+        <Javascript><![CDATA[function(tabcontrol) {
+ aa_tabcontrol(tabcontrol,{});
+}]]></Javascript>
+      </xtml>
+    </Component>
+
+  <Component id="CompactTabsBelow" type="tabs.Style">
+      <xtml t="ui.CustomStyle">
+        <Css><![CDATA[
+#this >div>div.aatabs_tab {
+  cursor: pointer;
+  font-family: arial;
+  float: left;
+  color:black;
+  background:rgb(60,143,228);
+  padding-top: 3px;
+  padding-right: 11px;
+  padding-bottom: 3px;
+  padding-left: 4px;
+  border-right: 1px solid white;
+  min-width:20px;
+}
+#this >div>div>div.aatabs_tab_text {
+  float:left;
+  color:white;
+  font-size: 12px;
+  padding-top: 0px;
+  padding-right: 0px;
+  padding-bottom: 0px;
+  padding-left: 5px;
+}
+#this >div>div.aa_selected_tab {
+  color:white;
+  background:rgb(31,112,195);
+}
+#this >div>div>div.aatabs_tab_image {
+  float: left;
+}
+#this >.aatabs_contents {
+  padding-right: 0px;
+  padding-left: 0px;
+  clear: both;
+}
+#this>div.aatabs_tabs_top {
+  background:#3C8FE4;
+  background-color:#87CEEB;
+  height: 21px;
+}          
+]]></Css>
+        <Html><![CDATA[<div>
+  <div class="aatabs_contents"/>
+  <div class="aatabs_tabs_top">
+    <div class="aatabs_tab">
+      <div class="aatabs_tab_image"/>
+      <div class="aatabs_tab_text"/>
+    </div>
+  </div>
+</div>]]></Html>
+        <Javascript><![CDATA[function(tabcontrol) {
+ aa_tabcontrol(tabcontrol,{});
+}]]></Javascript>
+      </xtml>
+    </Component>
+
+  <Component id="Accordion" type="tabs.Style">
+    <xtml t="ui.CustomStyle">
+    <Css><![CDATA[
+#this >div>div.aatabs_tab {
+  margin-bottom:15px;
+}
+#this >div>div.aatabs_tab>.aatabs_tab_caption { 
+  cursor: pointer;
+border-bottom: 2px solid #99BBE8;
+margin-bottom: 5px;      
+}
+#this >div>div>div>.aatabs_tab_text { 
+padding-left: 7px;
+font-family: tahoma,arial,helvetica,sans-serif;
+font-size: 12px;
+font-weight: bold;
+color: #3764A0;
+vertical-align: top;
+}
+#this >div>div>.aatabs_tab_caption>div { 
+display: inline-block;
+}
+#this >div>div>div>.aatabs_tab_toggle {
+height: 14px;
+width: 9px;  
+margin-top: 2px;
+background: url('_jbartImages_/css/expand.gif') no-repeat;
+}
+#this >div>div.expanded>div>.aatabs_tab_toggle {
+background: url('_jbartImages_/css/collapse.gif') no-repeat;
+}]]></Css>
+    <Html><![CDATA[<div>
+  <div>
+    <div class="aatabs_tab">
+      <div class="aatabs_tab_caption">
+        <div class="aatabs_tab_toggle"/>
+        <div class="aatabs_tab_image"/>
+        <div class="aatabs_tab_text"/>
+      </div>
+      <div class="aatabs_tab_contents" />
+    </div>
+  </div>
+  <div class="aatabs_contents"/>
+</div>]]></Html>
+    <Javascript><![CDATA[function(tabcontrol) {
+ aa_tabcontrolAsAccordion(tabcontrol,{
+  collapseAnimationTime: 100,
+  expandAnimationTime: 100
+ });
+}]]></Javascript>
+    </xtml>
+  </Component>
+
+<Component id="FancyBreadCrumbs" type="tabs.Style">
+  <xtml t="ui.CustomStyle" base="tabs.BlueTabs">
+    <Html><![CDATA[<div>
+  <div class="aa_tabs_top">
+    <div class="aatabs_tab">
+      <div class="aatabs_tab_text"/>
+      <div class="aatabs_separator"></div>
+    </div>
+  </div>
+  <div class="aatabs_contents"/>
+</div>]]></Html>
+    <Css><![CDATA[#this>.aa_tabs_top {
+  background:#0E1546;
+  height: 34px;
+  padding-top: 12px;
+  padding-left: 16px;
+  margin-bottom: 8px;
+  border-top: 1px solid #CBCBCB;
+  font: 18px Arial;
+}
+#this >div>div.aatabs_tab {
+  cursor: pointer;
+  display: inline-block;
+}
+#this >div>div>div.aatabs_tab_text {
+  color:rgb(185, 186, 194);
+  display: inline-block;
+  line-height: 22px;
+}
+#this >div>div>div.aatabs_tab_text:hover {
+  text-decoration:underline;
+}
+#this >div>div>div.aatabs_separator {
+  background:url('_jbartImages_/jbart_icons.png') -80px 0 no-repeat;
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
+  margin-left: 10px;
+  display: inline-block;
+  line-height: 22px;
+  vertical-align: top;
+}
+#this >div>div:last-child>div.aatabs_separator {
+  display: none;
+}
+#this >div>div.aa_selected_tab .aatabs_tab_text {
+  color:white;
+}
+#this >.aatabs_contents {
+  clear: both;
+  padding-left:15px;
+  background: #EFEFFF;
+}
+]]></Css>
+    <Javascript><![CDATA[function(tabcontrol) {
+ aa_tabcontrol(tabcontrol,{});
+}]]></Javascript>
+  </xtml>
+</Component>
+
+<Component id="GreenNumberedWizard" type="tabs.Style">
+      <xtml t="ui.CustomStyle" base="tabs.BlueTabs">
+        <Css><![CDATA[#this>.aa_tabs_top {
+  background:#EFEFF0;
+  margin-bottom: 8px;
+  font: 18px Arial;
+}
+#this >div>div>div {
+  display: inline-block;
+}
+#this >div>div.aatabs_tab {
+  cursor: pointer;
+  position: relative;
+  color:rgb(185, 186, 194);
+  height: 42px;
+  padding-top: 5px;
+  padding-right: 50px;
+  padding-bottom: 5px;
+  padding-left: 12px;
+  display: inline-block;
+}
+#this >div>div>div.aatabs_tab_text {
+  display: inline-block;
+  line-height: 42px;
+  vertical-align: middle;
+}
+#this >div>div>div.aatabs_tab_index_circle {
+  background:white;
+  width: 20px;
+  height: 20px;
+  border-radius: 30px;
+  margin-top: 11px;
+  margin-right: 10px;
+  vertical-align: top;
+}
+#this >div>div>div>.aatabs_tab_index {
+  text-align:center;
+  color:#96C8A2;
+  font-weight:bold;
+  font-size: 12px;
+  padding-top: 2px;
+  margin-left: -1px;
+}
+#this >div>div>div.aatabs_left_arrow {
+  display:none;
+}
+#this >div>div.aa_selected_tab>.aatabs_left_arrow {
+  position: absolute;
+  height: 0px;
+  top:0;
+  left:-12px;
+  display: block;
+  border-color: #82C559 transparent #82C559 transparent;
+  border-width: 26px 13px 26px 13px;
+  border-style: solid;
+  border-width1: 25px;
+}
+#this >div>div:first-child>div.aatabs_left_arrow {
+  display:none;
+}
+#this >div>div>div.aatabs_separator {
+  position: absolute;
+  height: 0px;
+  top:0;
+  right: 0px;
+  display: block;
+  border-top: 26px solid #EFEFF0;
+  border-bottom: 26px solid #EFEFF0;
+  border-left: 13px solid transparent;
+  border-right: 13px solid #EFEFF0;
+}
+#this >div>div:last-child>div.aatabs_separator {
+  display: none;
+}
+#this >div>div.aa_selected_tab {
+  color:white;
+  background:#82C559;
+}
+#this >.aatabs_contents {
+  padding-left: 15px;
+  clear: both;
+}
+]]></Css>
+        <Html><![CDATA[<div>
+  <div class="aa_tabs_top">
+    <div class="aatabs_tab">
+      <div class="aatabs_left_arrow"></div>
+      <div class="aatabs_left_arrow2"></div>
+      <div class="aatabs_tab_index_circle">
+        <div class="aatabs_tab_index"/>
+      </div>
+      <div class="aatabs_tab_text"/>
+      <div class="aatabs_separator"></div>
+    </div>
+  </div>
+  <div class="aatabs_contents"/>
+</div>]]></Html>
+        <Javascript><![CDATA[function(tabcontrol) {
+ aa_tabcontrol(tabcontrol,{});
+}]]></Javascript>
+      </xtml>
+    </Component>
+
+
+<Component id="StudioAccordion" type="tabs.Style">
+  <xtml t="ui.CustomStyle">
+    <Html><![CDATA[<div>
+  <div>
+    <div class="aatabs_tab">
+      <div class="aatabs_tab_caption">
+        <div class="aatabs_tab_toggle"/>
+        <div class="aatabs_tab_image"/>
+        <div class="aatabs_tab_text"/>
+      </div>
+      <div class="aatabs_tab_contents" />
+    </div>
+  </div>
+  <div class="aatabs_contents"/>
+</div>]]></Html>
+    <Css><![CDATA[#this >div>div.aatabs_tab { border-radius: 3px; margin-bottom: 15px; 
+  }
+#this >div>div.aatabs_tab>.aatabs_tab_caption { cursor: pointer; 
+  margin-bottom: 5px; 
+  border-bottom: 2px solid #aaa; }
+#this >div>div>div>.aatabs_tab_text { 
+  color:#444; 
+  font: 11px Verdana,Arial,sans-serif;
+  padding-left: 7px; 
+  vertical-align: top; }
+#this >div>div>.aatabs_tab_caption>div { display: inline-block; }
+#this >div>div>div>.aatabs_tab_toggle { 
+  background:url('_jbartImages_/css/expand.gif') no-repeat; 
+  width: 9px; height: 14px; margin-top: 2px; 
+  margin-left: 2px; }
+#this >div>div.expanded>div>.aatabs_tab_toggle { 
+  background:url('_jbartImages_/css/collapse.gif') no-repeat; 
+  }
+]]></Css>
+    <Javascript><![CDATA[function(tabcontrol) {
+ aa_tabcontrolAsAccordion(tabcontrol,{
+  collapseAnimationTime: 100,
+  expandAnimationTime: 100
+ });
+}]]></Javascript>
+  </xtml>
+</Component>
+
+<Component id="StudioAccordionAllExpanded" type="tabs.Style">
+      <xtml t="ui.CustomStyle">
+        <Css><![CDATA[#this >div>div.aatabs_tab {
+  margin-bottom:4px;
+}
+#this >div>div.aatabs_tab>.aatabs_tab_caption {
+  cursor: pointer;
+  background: #F3F3F3;
+  height:28px;
+  line-height: 28px;
+}
+#this >div>div>div>.aatabs_tab_text {
+  color:#515151;
+  font: bold 13px arial;
+  vertical-align: middle;
+}
+#this >div>div>.aatabs_tab_caption>div {
+  display: inline-block;
+  vertical-align: middle;
+}
+#this >div>div>div>.aatabs_tab_toggle {
+  height: 0px;
+  width: 0px;
+  border: 4px solid;
+  border-color: transparent transparent transparent #7B7B7B;
+  margin: 0 3px 0 6px;
+}
+#this >div>div.expanded>div>.aatabs_tab_toggle {
+  border-color: #7B7B7B transparent transparent transparent;
+  margin: 3px 6px 0 3px;
+}
+]]></Css>
+        <Html><![CDATA[<div>
+  <div>
+    <div class="aatabs_tab">
+      <div class="aatabs_tab_caption">
+        <div class="aatabs_tab_toggle"/>
+        <div class="aatabs_tab_text"/>
+      </div>
+      <div class="aatabs_tab_contents" />
+    </div>
+  </div>
+  <div class="aatabs_contents"/>
+</div>]]></Html>
+        <Javascript><![CDATA[function(tabcontrol) {
+ aa_tabcontrolAsAccordion(tabcontrol,{
+  collapseAnimationTime: 100,
+  expandAnimationTime: 100,
+  autoExpandAll: false
+ });
+}]]></Javascript>
+      </xtml>
+    </Component>
+
+    <Component id="LandingPageTabs" type="tabs.Style">
+      <xtml t="ui.CustomStyle">
+        <Css><![CDATA[#this>.aatabs_tabs_top {
+  background: #536079;
+  height: 45px;
+  border-top: 1px solid #636363;
+  border-bottom: 1px solid #f1f1f1;
+  padding-left: 100px;
+}
+#this>.aatabs_tabs_top>.aatabs_tab {
+  cursor: pointer;
+  float: left;
+  color: #ccc;
+  margin-right: 30px;
+  font: 14px 'lucida sans';
+}
+#this>.aatabs_tabs_top>.aatabs_tab>.aatabs_tab_text {
+  vertical-align: middle;
+  line-height: 45px;
+  padding-right:20px;
+  font-weight: bold;
+}
+#this>.aatabs_tabs_top>.aatabs_tab.aa_selected_tab {
+  color: white;
+}
+#this >.aatabs_contents {
+  padding-right: 0px;
+  padding-bottom: 15px;
+  padding-left: 0px;
+  clear: both;
+}
+]]></Css>
+        <Html><![CDATA[<div>
+  <div class="aatabs_tabs_top">
+    <div class="aatabs_tab">
+      <div class="aatabs_tab_image"/>
+      <div class="aatabs_tab_text"/>
+    </div>
+    <div style="clear:both"/>
+  </div>
+  <div class="aatabs_contents"/>
+</div>]]></Html>
+        <Javascript><![CDATA[function(tabcontrol) {
+ aa_tabcontrol(tabcontrol,{});
+}]]></Javascript>
+      </xtml>
+    </Component>
+
+</xtml>

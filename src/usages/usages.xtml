@@ -1,0 +1,3212 @@
+<xtml package="true">
+
+<xtml ns="action_usage">
+
+   <Usage t="action.ActionUsage" Name="action.WriteValue - in xml element dosen't change it's identity">
+    <Data t="xml.Xml">
+	     <person name="Homer" />
+    </Data>
+    <Var name="Person" />
+    <Action t="action.WriteValue" To="%%" >
+    	<Value t="xml.Xml">
+		     <person name="Marge" />
+    	</Value>
+    </Action>
+    <ExpectedResult t="yesno.EqualsTo" Data="%$Person%">
+     <To t="xml.Xml">
+      <person name="Marge" />
+     </To>
+    </ExpectedResult>
+   </Usage>
+  
+</xtml>
+
+<xtml ns="data_usage" light="false">
+
+  <Component id="AddCommas">
+    <Param name="ItemToConcat" type="Data[]" />
+    <xtml t="data.Pipeline">
+      <Item value="%$ItemToConcat%" />
+      <Aggregator t="text.Concat" Separator="," />
+    </xtml>
+  </Component>
+
+  <Component id="TestComponentVarScope" type="data.Data">
+    <xtml t="object.Object">
+      <Var name="VarValue" varScope="Component" value="var value" />
+      <Method name="Get" value="%$VarValue%" />
+    </xtml>
+  </Component>
+
+  <Usage t="usage.DataUsage" Name="varscope of component">
+    <Result t="data.Pipeline">
+      <Item t="data_usage.TestComponentVarScope" />
+      <Item t="object.RunMethod" Object="%%" Method="Get" />
+    </Result>
+    <ExpectedResult t="yesno.EqualsTo" To="var value" />
+  </Usage>
+
+  <Usage t="usage.DataUsage" Name="xtml component with params (default value)"
+    Data="yaron">
+    <Result t="text.AddPrefix" />
+    <ExpectedResult t="yesno.EqualsTo" To="...yaron" />
+  </Usage>
+  <Usage t="usage.DataUsage" Data="hello" Of="data.Pipeline">
+    <Result t="data.Pipeline">
+      <Item value="%% world" />
+      <Item value="my first %%" />
+    </Result>
+    <ExpectedResult t="yesno.EqualsTo" To="my first hello world" />
+  </Usage>
+  <Usage t="usage.DataUsage" Name="test booleans in the core"
+    ExpectedResult="true" />
+  <Usage t="usage.DataUsage" Name="list test" Of="data.List">
+    <Result t="data.List">
+      <Item value="first" />
+      <Item value="second" />
+    </Result>
+    <ExpectedResult t="yesno.EqualsToList">
+      <To t="data.List">
+        <Item value="first" />
+        <Item value="second" />
+      </To>
+    </ExpectedResult>
+  </Usage>
+  <Usage t="usage.DataUsage" Of="text.Concat">
+    <Result t="data.Pipeline">
+      <Item t="data.List">
+        <Item value="first" />
+        <Item value="second" />
+      </Item>
+      <Aggregator t="text.Concat" Separator="," Prefix="("
+        Suffix=")" />
+    </Result>
+    <ExpectedResult t="yesno.EqualsTo" To="(first,second)" />
+  </Usage>
+
+  <Usage t="usage.DataUsage" Of="data.IfThenElse">
+    <Data t="xml.Xml">
+      <people>
+        <person name="homer" gender="male" />
+        <person name="marge" gender="female" />
+      </people>
+    </Data>
+    <Result t="data.Pipeline">
+      <Item value="%person%" />
+      <Item t="data.IfThenElse">
+        <If t="yesno.EqualsTo" Data="%@gender%" To="male" />
+        <Then value="%@name%(M)" />
+        <Else value="%@name%(F)" />
+      </Item>
+      <Aggregator t="text.Concat" Separator=" , " />
+    </Result>
+    <ExpectedResult t="yesno.EqualsTo" To="homer(M) , marge(F)" />
+  </Usage>
+
+  <Usage t="usage.DataUsage" Name="component with array param">
+    <Result t="data_usage.AddCommas">
+      <ItemToConcat value="John" />
+      <ItemToConcat value="Marry" />
+    </Result>
+    <ExpectedResult t="yesno.EqualsTo" To="John,Marry" />
+    <Var name="myvar" value="a" />
+  </Usage>
+  <Usage t="usage.DataUsage" Name="variables" Result="%$myvar%">
+    <Var name="myvar" value="a" />
+    <ExpectedResult t="yesno.EqualsTo" To="a" />
+  </Usage>
+  <Usage t="usage.DataUsage" Name="variables and xpath">
+    <Var name="myvar" t="xml.Xml">
+      <person name="homer" />
+    </Var>
+    <Result value="%$myvar/@name%" />
+    <ExpectedResult t="yesno.EqualsTo" To="homer" />
+  </Usage>
+  <Usage t="usage.DataUsage" Name="using {} inside %%">
+    <Data t="xml.Xml">
+      <Tag attrname="age" age="20" />
+    </Data>
+    <Result value="%@{@attrname}%" />
+    <ExpectedResult t="yesno.EqualsTo" To="20" />
+  </Usage>
+
+  <Usage t="usage.DataUsage" Of="Expression.Vars.Bug">
+    <Var name="Items" t="data.List">
+      <Item t="xml.Xml">
+        <item id="1" name="a" />
+      </Item>
+      <Item t="xml.Xml">
+        <item id="2" name="b" />
+      </Item>
+    </Var>
+    <Var name="Current" t="xml.Xml">
+      <current id="2" />
+    </Var>
+    <Result value="%$Items[@id='{$Current/@id}']/@name%" />
+    <ExpectedResult t="yesno.EqualsTo" To="b" />
+  </Usage>
+
+  <Usage t="usage.DataUsage" Of="Expression.Vars.Bug2">
+    <Var name="Items" t="data.List">
+      <Item t="xml.Xml">
+        <item id="1" name="a" />
+      </Item>
+      <Item t="xml.Xml">
+        <item id="2" name="b" />
+      </Item>
+    </Var>
+    <Var name="Current" t="xml.Xml">
+      <current id="2" />
+    </Var>
+    <Result value="%$Items[@id='{$Current/@id}']/@name% :-)" />
+    <ExpectedResult t="yesno.EqualsTo" To="b :-)" />
+  </Usage>
+
+  <Usage t="usage.DataUsage" Name="using {} inside %">
+    <Var name="data" t="xml.Xml">
+      <Tag age="20" />
+    </Var>
+    <Data t="xml.Xml">
+      <Field attrname="age" />
+    </Data>
+    <Result value="%$data/@{@attrname}%" />
+    <ExpectedResult t="yesno.EqualsTo" To="20" />
+  </Usage>
+
+  <Usage t="usage.DataUsage" Of="VariablesInXpath">
+    <Var name="Person" value="Homer" />
+    <Var name="ListVariable" t="data.Pipeline">
+      <Item t="xml.Xml">
+        <mypeople>
+          <person name="Homer" lastName="Simpson" />
+          <person name="Marge" lastName="Simpson" />
+        </mypeople>
+      </Item>
+      <Item value="%*%" />
+    </Var>
+    <Result value="hello %$ListVariable[@name = '{$Person}']/@name%" />
+    <ExpectedResult t="yesno.EqualsTo" To="hello Homer" />
+  </Usage>
+
+  <Usage t="usage.DataUsage" Of="xtml.RunXtml" Data="john">
+    <Description
+      value="allows dynamic running of xtml code (similar to js eval)" />
+    <Result t="xtml.RunXtml">
+      <Xtml t="xml.Xml">
+        <xtml t="text.Text" Text="hello %%" />
+      </Xtml>
+    </Result>
+    <ExpectedResult t="yesno.EqualsTo" To="hello john" />
+  </Usage>
+
+  <Usage t="usage.DataUsage" Of="data.RecursiveScan" Name="leaves">
+    <Description
+      value="Returns a flat list of a tree contents. The tree structure is defined by ChildNodes parameter (advancing from a node to its child nodes in the tree)" />
+    <Data t="xml.Xml">
+      <a>
+        <b1 />
+        <b2 />
+      </a>
+    </Data>
+    <Result t="data.Pipeline">
+      <Item t="data.RecursiveScan" OnlyLeaves="true">
+        <ChildNodes value="%*%" />
+      </Item>
+      <Item t="xml.Tag" />
+      <Aggregator t="text.Concat" Separator="," />
+    </Result>
+    <ExpectedResult t="yesno.EqualsTo" To="b1,b2" />
+  </Usage>
+
+  <Usage t="usage.DataUsage" Name="data.RecursiveScan - all">
+    <Data t="xml.Xml">
+      <a>
+        <b1>
+          <c11 />
+          <c112 />
+        </b1>
+        <b2 />
+      </a>
+    </Data>
+    <Result t="data.Pipeline">
+      <Item t="data.RecursiveScan" OnlyLeaves="false">
+        <ChildNodes value="%*%" />
+      </Item>
+      <Item t="xml.Tag" />
+      <Aggregator t="text.Concat" Separator="," />
+    </Result>
+    <ExpectedResult t="yesno.EqualsTo" To="a,b1,b2,c11,c112" />
+  </Usage>
+
+  <Usage t="usage.DataUsage" Name="data.RecursiveScan - DFS">
+    <Data t="xml.Xml">
+      <a>
+        <b1>
+          <c11 />
+          <c112 />
+        </b1>
+        <b2 />
+      </a>
+    </Data>
+    <Result t="data.Pipeline">
+      <Item t="data.RecursiveScan" ScanOrder="Depth first search">
+        <ChildNodes value="%*%" />
+      </Item>
+      <Item t="xml.Tag" />
+      <Aggregator t="text.Concat" Separator="," />
+    </Result>
+    <ExpectedResult t="yesno.EqualsTo" To="a,b1,c11,c112,b2" />
+  </Usage>
+
+  <Usage t="usage.DataUsage" Of="data.Subset" Data="a,b,c,d,e">
+    <Result t="data.Pipeline">
+      <Item t="text.Split" Separator="," />
+      <Aggregator t="data.Subset" From="2" Count="3" />
+      <Aggregator t="text.Concat" Separator="," />
+    </Result>
+    <ExpectedResult t="yesno.EqualsTo" To="b,c,d" />
+  </Usage>
+
+  <Usage t="usage.DataUsage" Name="using perc once" Data="">
+    <Result t="data.Pipeline" Data="hello">
+      <Item value="%" />
+    </Result>
+    <ExpectedResult t="yesno.EqualsTo" To="1">
+      <Data t="text.Length" />
+    </ExpectedResult>
+  </Usage>
+
+  <Usage t="usage.DataUsage" Of="data.Max">
+    <Data t="xml.Xml">
+      <people>
+        <person name="Lisa" age="5" />
+        <person name="Homer" age="50" />
+        <person name="Marge" age="40" />
+      </people>
+    </Data>
+    <Result t="data.Pipeline">
+      <Item value="%*%" />
+      <Aggregator t="data.Max" ToCompare="%@age%" />
+      <Aggregator t="text.Concat" Data="%@name% is the oldest with age of %@age%" />
+    </Result>
+    <ExpectedResult t="yesno.EqualsTo" To="Homer is the oldest with age of 50" />
+    <TryItYourself value="Change Marge age to be the oldest" />
+  </Usage>
+
+  <Usage t="usage.DataUsage" Of="data.First" Data="a,b,c,d,e">
+    <Result t="data.Pipeline">
+      <Item t="text.Split" Separator="," />
+      <Aggregator t="data.First" />
+      <Aggregator t="text.Concat" Separator="," />
+    </Result>
+    <ExpectedResult t="yesno.EqualsTo" To="a" />
+  </Usage>
+
+  <Usage t="usage.DataUsage" Name="use var with $">
+    <Var name="Var1" value="Homer" />
+    <Result value="Hi %$Var1%" />
+    <ExpectedResult t="yesno.EqualsTo" To="Hi Homer" />
+  </Usage>
+
+  <Usage t="usage.DataUsage" Name="filtering with not">
+    <Data t="xml.Xml">
+      <people>
+        <person name="Homer" />
+        <person name="Marge" />
+      </people>
+    </Data>
+    <Result t="data.Pipeline">
+      <Item value="%person%" />
+      <Item t="yesno.PassesFilter">
+        <Filter t="yesno.NotEqualsTo" Data="%@name%" To="Homer" />
+      </Item>
+    </Result>
+    <ExpectedResult t="yesno.EqualsTo">
+      <To t="xml.Xml">
+        <person name="Marge" />
+      </To>
+    </ExpectedResult>
+  </Usage>
+
+  <Usage t="usage.DataUsage" Name="variable with multiple input">
+    <Var name="MyVar" t="data.List">
+      <Item value="var1" />
+      <Item value="var2" />
+    </Var>
+    <Data t="data.List">
+      <Item value="input1" />
+      <Item value="input2" />
+    </Data>
+    <Result t="data.Pipeline">
+      <Item value="%$MyVar%" />
+      <Aggregator t="text.Concat" Separator="," />
+    </Result>
+    <ExpectedResult t="yesno.EqualsTo" To="var1,var2" />
+  </Usage>
+
+  <Usage t="usage.DataUsage" Of="data.MakeUnique">
+    <Result t="data.Pipeline">
+      <Item t="data.List">
+        <Item value="item1" />
+        <Item value="item1" />
+        <Item value="item2" />
+      </Item>
+      <Aggregator t="data.MakeUnique" />
+      <Aggregator t="text.Concat" Separator="," />
+    </Result>
+    <ExpectedResult t="yesno.EqualsTo" To="item1,item2" />
+  </Usage>
+
+  <Usage t="usage.DataUsage" Of="data.Struct">
+    <Result t="data.Pipeline">
+      <Item t="data.Struct">
+        <Item Name="name" Value="Homer" />
+        <Item Name="age" Value="40" />
+      </Item>
+      <Item value="%name%" />
+    </Result>
+    <ExpectedResult t="yesno.EqualsTo" To="Homer" />
+    <TryItYourself value="add a hobby property and return it" />
+  </Usage>
+
+  <Usage t="usage.DataUsage" Of="data.Switch" Data="2">
+    <Result t="data.Switch">
+      <Case If="1" Then="One" />
+      <Case If="2" Then="Two" />
+      <Default value="Unknown" />
+    </Result>
+    <ExpectedResult t="yesno.EqualsTo" To="Two" />
+  </Usage>
+
+  <Usage t="usage.DataUsage" Name="Default" Of="data.Switch" Data="3E">
+    <Result t="data.Switch">
+      <Case If="1" Then="One" />
+      <Case If="2" Then="Two" />
+      <Default value="Unknown Number" />
+    </Result>
+    <ExpectedResult t="yesno.EqualsTo" To="Unknown Number" />
+  </Usage>
+
+  <Usage t="usage.DataUsage" Name="data.Switch - IfCondition" Data="30">
+    <Result t="data.Switch">
+      <Case IfCondition="%% &lt; 50" Then="smaller than 50" />
+      <Case IfCondition="%% == 50" Then="50" />
+      <Default value="bigger than 50" />
+    </Result>
+    <ExpectedResult t="yesno.EqualsTo" To="smaller than 50" />
+  </Usage>
+
+  <Usage t="usage.DataUsage" Name="data aggregator">
+    <Data t="xml.Xml">
+      <people>
+        <person name="Homer" />
+        <person name="Marge" />
+      </people>
+    </Data>
+    <Result t="data.Pipeline">
+      <Item value="%person/@name%" />
+      <Aggregator t="text.Concat" Separator=" " />
+    </Result>
+    <ExpectedResult t="yesno.EqualsTo" To="Homer Marge" />
+  </Usage>
+
+  <Usage t="usage.DataUsage" Name="using tag Data inside xml.Xml">
+    <Data t="xml.Xml">
+      <Data value="val" />
+    </Data>
+    <Result value="%@value%" />
+    <ExpectedResult t="yesno.EqualsTo" To="val" />
+  </Usage>
+
+  <Component id="UsingScriptParam">
+    <Param name="Query" script="true" />
+    <xtml t="data.Pipeline">
+      <Item value="my %%" />
+      <Item t="xtml.UseParam" Param="Query" />
+    </xtml>
+  </Component>
+
+  <Component id="UsingScriptParamWithParam">
+    <Param name="MyPrefix" />
+    <xtml t="data_usage.UsingScriptParam">
+      <Query t="text.AddPrefix" Prefix="%$MyPrefix%" />
+    </xtml>
+  </Component>
+
+  <Usage t="usage.DataUsage" Name="script=params" Data="world">
+    <Result t="data_usage.UsingScriptParam">
+      <Query t="text.AddPrefix" Prefix="hello " />
+    </Result>
+    <ExpectedResult t="yesno.EqualsTo" To="hello my world" />
+  </Usage>
+
+  <Usage t="usage.DataUsage" Name="script=params using param" Data="world">
+    <Result t="data_usage.UsingScriptParamWithParam" MyPrefix="hello " />
+    <ExpectedResult t="yesno.EqualsTo" To="hello my world" />
+  </Usage>
+
+  <Usage t="usage.DataUsage" Name="struct and xpath">
+    <Data t="data.Struct">
+      <Item Name="Xml">
+        <Value t="xml.Xml">
+          <person name="Homer" />
+        </Value>
+      </Item>
+    </Data>
+    <Result value="hi %Xml/@name%" />
+    <ExpectedResult t="yesno.EqualsTo" To="hi Homer" />
+  </Usage>
+
+  <Usage t="usage.DataUsage" Name="add Separator">
+    <Result t="data.Pipeline">
+      <Item t="data.List">
+        <Item value="Ann" />
+        <Item value="Dan" />
+      </Item>
+      <Aggregator t="data.AddSeparator" Separator="," AddBefore="People:" />
+      <Aggregator t="text.Concat" />
+    </Result>
+    <ExpectedResult t="yesno.EqualsTo" To="People:Ann,Dan" />
+  </Usage>
+
+  <Usage t="usage.DataUsage" Of="data.Math">
+    <Result t="data.Math" Expression="5+3" />
+    <ExpectedResult t="yesno.EqualsTo" To="8" />
+    <Description value="math expression evaluator" />
+    <TryItYourself value="try to evaluate 8*3" />
+  </Usage>
+
+  <Usage t="usage.DataUsage" Name="data.Math - FixFloatingPointResult">
+    <Result t="data.Math" Expression="1.0 - 0.8" FixFloatingPointResult="true" />
+    <ExpectedResult t="yesno.EqualsTo" To="0.2" />
+  </Usage>
+
+  <Usage t="usage.DataUsage" Of="data.Subtract">
+    <Result t="data.Pipeline">
+      <Item t="data.Subtract">
+        <List t="text.Split" Separator=":" Data="Homer:Bart:Marge" />
+        <Subtract t="text.Split" Separator=":" Data="Bart:Lisa:Maggy" />
+      </Item>
+      <Aggregator t="text.Concat" Separator="," />
+    </Result>
+    <ExpectedResult t="yesno.EqualsTo" To="Homer,Marge" />
+    <Description value="subtracts one list from the other" />
+    <TryItYourself value="make the result show Bart and not Marge" />
+  </Usage>
+
+  <Usage t="usage.DataUsage" Of="data.Sort">
+    <Data t="xml.Xml">
+      <people>
+        <person name="Lisa" age="5" />
+        <person name="Homer" age="50" />
+        <person name="Marge" age="40" />
+      </people>
+    </Data>
+    <Result t="data.Pipeline">
+      <Item value="%person%" />
+      <Aggregator t="data.Sort" SortBy="%@age%" Type="number" />
+      <Aggregator t="text.Concat" ItemText="%@name%(%@age%)"
+        Separator=", " />
+    </Result>
+    <TryItYourself
+      value="change the sort to descending (from the older to the youngest)" />
+    <ExpectedResult t="yesno.EqualsTo" To="Lisa(5), Marge(40), Homer(50)" />
+  </Usage>
+
+  <Usage t="usage.DataUsage" Name="data.Sort by text">
+    <Data t="xml.Xml">
+      <people>
+        <person name="Lisa" age="5" />
+        <person name="Homer" age="50" />
+        <person name="Marge" age="40" />
+      </people>
+    </Data>
+    <Result t="data.Pipeline">
+      <Item value="%person%" />
+      <Aggregator t="data.Sort" SortBy="%@name%" />
+      <Aggregator t="text.Concat" ItemText="%@name%" Separator="," />
+    </Result>
+    <ExpectedResult t="yesno.EqualsTo" To="Homer,Lisa,Marge" />
+  </Usage>
+
+  <Usage t="usage.DataUsage" Of="data.MoveElement">
+    <Data t="xml.Xml">
+      <people>
+        <person name="Lisa" age="5" />
+        <person name="Homer" age="50" />
+        <person name="Marge" age="40" />
+      </people>
+    </Data>
+    <Result t="data.Pipeline">
+      <Item value="%person%" />
+      <Aggregator t="data.Sort" SortBy="%@name%" />
+      <Aggregator t="text.Concat" ItemText="%@name%" Separator="," />
+    </Result>
+    <ExpectedResult t="yesno.EqualsTo" To="Homer,Lisa,Marge" />
+  </Usage>
+
+  <Usage t="usage.DataUsage" Of="data.PathItems">
+    <Data t="xml.Xml">
+      <people>
+        <person name="Grandfather">
+          <person name="Homer">
+            <person name="Lisa" />
+          </person>
+        </person>
+      </people>
+    </Data>
+    <Result Data="%person/person/person%" t="text.Concat" ItemText="%@name%"
+      Separator=",">
+      <Items t="data.PathItems" Next="%..%">
+        <StopCondition t="yesno.PassesCondition" Expression="%$Tag% != 'person'">
+          <Var name="Tag" t="xml.Tag" />
+        </StopCondition>
+      </Items>
+    </Result>
+    <ExpectedResult t="yesno.EqualsTo" To="Lisa,Homer,Grandfather" />
+  </Usage>
+
+  <Usage t="usage.DataUsage" Of="data.Duplicate">
+    <Var name="Original" t="data.List">
+      <Item value="A" />
+      <Item t="xml.Xml">
+        <xml>A</xml>
+      </Item>
+      <Item t="data.Pipeline">
+        <Item t="xml.Xml">
+          <xml val="A" />
+        </Item>
+        <Item value="%@val%" />
+      </Item>
+    </Var>
+    <Var name="Duplicate" t="data.Pipeline">
+      <Item value="%$Original%" />
+      <Item t="data.Duplicate" />
+    </Var>
+    <RunBefore t="action.RunActionOnItems" Items="%$Duplicate%">
+      <Action t="action.WriteValue" To="%%" Value="B" />
+    </RunBefore>
+    <Result t="text.Concat" Separator=",">
+      <Items t="data.List">
+        <Item value="%$Original%" />
+        <Item value="%$Duplicate%" />
+      </Items>
+    </Result>
+    <ExpectedResult t="yesno.EqualsTo" To="A,A,A,A,B,B" />
+  </Usage>
+
+  <Usage t="action.ActionUsage" Name="action.WriteValue - xml inner text and attribute">
+    <Data t="xml.Xml">
+      <xml age="30">Homer</xml>
+    </Data>
+    <Action t="action.WriteValue" To="%%">
+      <Value t="xml.Xml">
+        <xml age="24">Marge</xml>
+      </Value>
+    </Action>
+    <ExpectedResult t="yesno.EqualsTo">
+      <To t="xml.Xml">
+        <xml age="24">Marge</xml>
+      </To>
+    </ExpectedResult>
+  </Usage>
+
+  <Usage t="usage.DataUsage" Of="inline aggreagator">
+    <Data t="xml.Xml">
+      <people>
+        <person name="Bart" age="8" />
+        <person name="Lisa" age="4" />
+        <person name="Maggy" age="2" />
+      </people>
+    </Data>
+    <Result t="text.Concat" Separator=". ">
+      <Item
+        value="Total: %=Count(person)% people, %=Count(person[@age&lt;5])% of them are young" />
+      <Item
+        value="I have %=Count(person)% children: %=Concat(person/@name,',',' and ')%" />
+      <Item value="My oldest child is %=Max(person/@name,'{../@age}')%" />
+    </Result>
+    <ExpectedResult t="yesno.EqualsTo"
+      To="Total: 3 people, 2 of them are young. I have 3 children: Bart,Lisa and Maggy. My oldest child is Bart" />
+  </Usage>
+
+  <Usage1 t="usage.DataUsage" Name="data.Switch - if with condition">
+    <Data t="xml.Xml">
+      <company employees="2000" />
+    </Data>
+    <Result t="data.Switch">
+      <Case If="%@employees% > 10000" Then="big company" />
+      <Case If="%@employees% > 1000" Then="medium company" />
+      <Default value="small company" />
+    </Result>
+    <ExpectedResult t="yesno.EqualsTo" To="medium company" />
+  </Usage1>
+
+  <Usage t="usage.DataUsage" Name="conditions">
+    <Data t="xml.Xml">
+      <company employees="2000" company="true" industry="food"
+        desc="'mte' - ...">
+        <address>100 Industrial Way</address>
+        <address>202 Strongfield Street</address>
+      </company>
+    </Data>
+    <Result t="text.Concat" Separator=" ">
+      <Item t="text.Text" Text="This is a" Condition="true" />
+      <Item t="text.Text" Text="multi-site" Condition="%=Count(address)% &gt; 1" />
+      <Item t="text.Text" Text="company" Condition="%@company%" />
+      <Item t="text.Text" Text="of big size" Condition="%@employees% &gt; 3000" />
+      <Item t="text.Text" Text="of medium size"
+        Condition="%@employees% &gt; 1000 &amp;&amp; %@employees% &lt; 3000" />
+      <Item t="text.Text" Text="from the food industry" Condition="%@industry% == 'food'" />
+      <Item t="text.Text" Text="from the hi-tech industry" Condition="%@industry% == 'hi-tech'" />
+      <Item t="text.Text" Text="with ''" Condition="%@desc% == %@desc%" />
+    </Result>
+    <ExpectedResult t="yesno.EqualsTo"
+      To="This is a multi-site company of medium size from the food industry with ''" />
+  </Usage>
+
+  <Usage t="usage.DataUsage" Name="use variables in primitive value">
+    <Result value="text with %$Var1%">
+      <Var name="Var1" value="variables" />
+    </Result>
+    <ExpectedResult t="yesno.EqualsTo" To="text with variables" />
+  </Usage>
+
+  <Usage t="usage.DataUsage" Of="data.RandomNumber">
+    <Result t="data.RandomNumber" From="10" To="20" />
+    <ExpectedResult value="%% &gt;= 10 &amp;&amp; %% &lt; 21" />
+  </Usage>
+
+  <Usage t="usage.DataUsage" Of="data.ValueFromCookie">
+    <RunBefore t="action.WriteToCookie" Cookie="ajaxart_testing_cookie"
+      Value="checking" />
+    <Result t="data.ValueFromCookie" Cookie="ajaxart_testing_cookie" />
+    <ExpectedResult t="yesno.EqualsTo" To="checking" />
+  </Usage>
+
+  <Usage t="usage.DataUsage" Name="data.ValueFromCookie - hebrew">
+    <RunBefore t="action.WriteToCookie" Cookie="ajaxart_testing_cookie"
+      Value="עברית" />
+    <Result t="data.ValueFromCookie" Cookie="ajaxart_testing_cookie" />
+    <ExpectedResult t="yesno.EqualsTo" To="עברית" />
+  </Usage>
+
+  <Usage t="usage.DataUsage" Of="data.Now">
+    <Result t="data.Now" Format="text" />
+    <ExpectedResult t="yesno.NotEmpty" />
+  </Usage>
+
+  <Usage t="usage.DataUsage" Of="data.AddToCommaSeparated">
+    <Result t="text.Concat" Separator=";">
+      <Item t="data.AddToCommaSeparated" Data="a,b" ToAdd="c" />
+      <Item t="data.AddToCommaSeparated" Data="" ToAdd="c" />
+    </Result>
+    <ExpectedResult t="yesno.EqualsTo" To="a,b,c;c" />
+  </Usage>
+
+  <Usage t="usage.DataUsage" Of="data.RemoveFromCommaSeparated">
+    <Result t="data.RemoveFromCommaSeparated" Data="a,b,c"
+      ToRemove="b" />
+    <ExpectedResult t="yesno.EqualsTo" To="a,c" />
+  </Usage>
+  <Usage t="usage.DataUsage" Of="data.IsInCommaSeparatedList">
+    <Result t="data.IsInCommaSeparatedList" List="a,b,c" Item="b" />
+    <ExpectedResult t="yesno.EqualsTo" To="true" />
+  </Usage>
+
+  <Usage t="usage.DataUsage" Of="data.Average">
+    <Data value="10,20,32" />
+    <Result t="data.Pipeline">
+      <Item t="data.ListByCommas" List="%%" />
+      <Aggregator t="data.Average" Digits="2" />
+    </Result>
+    <ExpectedResult t="yesno.EqualsTo" To="20.67" />
+  </Usage>
+
+  <Usage t="usage.DataUsage" Of="data.NextLevelCategory.Inner">
+    <Var name="Categories" t="data.BuildCategories">
+      <Categories t="text.Split" Data="1.b,1.c,1.d,2.a,2.b,1.b.A,1.b.B" />
+    </Var>
+    <Result t="data.Pipeline">
+      <Item t="data.List">
+        <Item t="data.NextLevelCategory" Categories="%$Categories%"
+          Parent="" />
+        <Item t="data.NextLevelCategory" Categories="%$Categories%"
+          Parent="1.b" />
+      </Item>
+      <Aggregator t="text.Concat" Separator="," />
+    </Result>
+    <ExpectedResult t="yesno.EqualsTo" To="1,2,1.b.A,1.b.B" />
+  </Usage>
+
+  <Component id="ScriptTrueTest" type="data.Data">
+    <Param name="Items" />
+    <Param name="ItemText" script="true" />
+    <xtml t="data.Pipeline">
+      <Item value="%$Items%" />
+      <Item t="xtml.UseParam" Param="ItemText" />
+      <Aggregator t="text.Concat" Separator="," />
+    </xtml>
+  </Component>
+
+  <Component id="UseParamTwiceTest" type="data.Data">
+    <Param name="Items" />
+    <Param name="ItemText" script="true" />
+    <xtml t="data_usage.ScriptTrueTest" Items="%$Items%">
+      <ItemText t="xtml.UseParam" Param="ItemText" />
+    </xtml>
+  </Component>
+
+  <Usage t="usage.DataUsage" Of="XPathAttribute.Compile">
+    <Data t="xml.Xml">
+      <xml>
+        <item id="1" />
+        <item id="2" />
+        <item id="3" />
+        <item id="4" />
+        <item id="5" />
+      </xml>
+    </Data>
+    <Result t="data.Pipeline">
+      <Item value="%item%" />
+      <Item value="%@id%" />
+      <Aggregator t="text.Concat" Separator="," />
+    </Result>
+    <ExpectedResult t="yesno.Contains">
+      <Text value="1,2,3,4,5" />
+    </ExpectedResult>
+  </Usage>
+
+  <Usage t="usage.DataUsage" Of="RunNativeHelper">
+    <Result t="data.RunNativeHelperTest" FirstName="Jim">
+      <TransformAll t="text.ToLowerCase" />
+    </Result>
+    <ExpectedResult t="yesno.EqualsTo" To="name: jim black" />
+  </Usage>
+
+  <Component id="EndlessLoop" type="data.Data">
+    <xtml t="data_usage.EndlessLoop" />
+  </Component>
+
+  <Usage t="usage.DataUsage" Of="object filters">
+    <Var name="Obj" t="object.Object">
+      <Property name="Fields" t="field.Fields">
+        <Field t="field.Field1" ID="1" Title="t1" />
+        <Field t="field.Field1" ID="2" Title="t2" />
+        <Field t="field.Field1" ID="3" Title="t1" />
+      </Property>
+    </Var>
+    <Result t="text.Concat" Separator=",">
+      <Items value="%$Obj/Fields[Title='t1']/ID%" />
+    </Result>
+    <ExpectedResult value="1,3" />
+  </Usage>
+
+  <Usage t="usage.DataUsage" Of="data.Demote">
+    <Result t="data.Pipeline">
+      <Item t="text.Split" Data="a,b,c,d,e" />
+      <Aggregator t="data.Demote" Items="b,d" />
+      <Aggregator t="text.Concat" Separator="," />
+    </Result>
+    <ExpectedResult t="yesno.EqualsTo" To="a,c,e,b,d" />
+  </Usage>
+
+  <Usage t="usage.DataUsage" Of="data.ByIndexFromList">
+    <Result t="data.Pipeline">
+      <Item t="data.ByIndexFromList" Index="2">
+        <List t="text.Split" Data="a,b,c,d,e" />
+      </Item>
+    </Result>
+    <ExpectedResult t="yesno.EqualsTo" To="b" />
+  </Usage>
+
+  <Usage t="usage.DataUsage" Of="data.GroupBy">
+    <Var name="People" t="xml.Xml">
+      <people>
+        <person name="Homer" family="simpson" />
+        <person name="Charles Montgomery" family="burns" />
+        <person name="Marge" family="simpson" />
+        <person name="Bart" family="simpson" />
+      </people>
+    </Var>
+    <Result t="data.Pipeline">
+      <Item value="%$People/*%" />
+      <Aggregator t="data.GroupBy" GroupBy="%@family%">
+        <Group t="xml.WithChanges">
+          <Xml t="xml.Xml" DynamicContent="true">
+            <family name="%ID%" />
+          </Xml>
+          <Change t="xml.SetAttribute" AttributeName="members">
+            <Value t="text.Concat" Items="%Items/@name%" Separator="," />
+          </Change>
+        </Group>
+      </Aggregator>
+      <Aggregator t="xml.Wrap" HeadTag="families" />
+    </Result>
+    <ExpectedResult t="yesno.EqualsTo">
+      <To t="xml.Xml">
+        <families>
+          <family name="simpson" members="Homer,Marge,Bart" />
+          <family name="burns" members="Charles Montgomery" />
+        </families>
+      </To>
+    </ExpectedResult>
+  </Usage>
+
+  <Usage t="usage.DataUsage" Of="data.JavaScript">
+    <Result t="data.JavaScript" Code="function(data,ctx) { return 2+3; }" />
+    <ExpectedResult t="yesno.EqualsTo" To="5" />
+  </Usage>
+
+</xtml>
+
+<xtml ns="dialog_usage">
+ 
+ <Usage t="ui.ControlUsage" Of="dialog.Dialog">
+      <Description value="opens a data-bound dialog"/>
+      <Data t="xml.Xml">
+        <person name="Homer"/>
+      </Data>
+      <Control t="ui.Section" Class1="right2left">
+        <Var1 name="Language" value="hebrew"/>
+        <Control t="ui.ButtonOld" Name="btn" Text="open dialog">
+          <OnClick t="dialog.OpenDialog">
+            <Dialog t="dialog.Dialog" Title="Edit %@name%" Class="dialog_sample">
+              <Content t="ui.Document">
+                <Item t="data_items.Items" Items="%%"/>
+                <Fields t="field.XmlField" Path="@name"/>
+              </Content>
+            </Dialog>
+          </OnClick>
+        </Control>
+      </Control>
+      <RunOnControl t="uiaction.ButtonClick" RunOn="btn"/>
+      <CleanAfter t="dialog.CloseDialog"/>
+      <ExpectedResult t="yesno.Contains">
+        <Data t="dialog.TopDialogContent"/>
+        <Text value="Homer"/>
+      </ExpectedResult>
+      <TryItYourself value="change the caption of the dialog"/>
+    </Usage>
+ 
+ <Usage t="ui.ControlUsage" Of="dialog.Dialog" Name="Dialog content">
+  <Description value="opens a data-bound dialog"/>
+  <Data t="xml.Xml">
+    <person name="Homer"/>
+  </Data>
+  <Control t="dialog.DialogContent">
+    <Dialog t="dialog.Dialog" Title="Message for Marge" >
+     <Content t="ui.Text" Text="Marge, Please take out the garbage, %@name%" />
+    </Dialog>
+  </Control>
+  <ExpectedResult t="yesno.Contains">
+   <Text value="Marge, Please take out the garbage, Homer" />
+  </ExpectedResult>
+  <TryItYourself value="change the caption of the dialog"/>
+ </Usage>
+
+ <Usage t="ui.ControlUsage" Of="dialog.TogglePopup">
+   <Control t="ui.List">
+     <Control t="ui.Text" Name="text" Text="popup should be under me, but not hiding me"/>
+     <Control t="ui.ButtonOld" Name="btn" Text="open popup">
+       <OnClick t="dialog.TogglePopup">
+         <OnElement t="ui.ControlToRunOn" RunOn="text"/>
+         <Contents t="ui.List">
+           <Control t="ui.Text" Text="text in popup"/>
+           <Control t="ui.ButtonOld" Text="close">
+             <Style t="ui.ButtonAsHyperlink"/>
+             <OnClick t="dialog.ClosePopup"/>
+           </Control>
+         </Contents>
+       </OnClick>
+     </Control> 
+   </Control>
+   <RunOnControl t="uiaction.ButtonClick" RunOn="btn"/>
+   <ExpectedResult t="yesno.Contains">
+     <Data t="dialog.ContentsOfOpenPopup"/>
+     <Text value="text in popup"/>
+   </ExpectedResult>
+</Usage>
+
+<Usage t="ui.ControlUsage" Name="dialog.Dialog - click on cancel"
+  ResultType="Data">
+  <Data t="xml.Xml">
+    <person name="Homer" age="32" viewed="false"/>
+  </Data>
+  <Control t="ui.Section">
+    <Control t="ui.ButtonOld" Name="btn" Text="dialog from button">
+      <OnClick t="dialog.OpenDialog">
+        <Dialog t="dialog.Dialog" Title="Edit %@name%" Class="dialog_sample" NoTransaction="false">
+          <Content t="ui.TextControl" Name="NameText" />
+          <RunOnClose t="action.WriteValue" To="%@viewed%" Value="true" />
+        </Dialog>
+      </OnClick>
+    </Control>
+  </Control>
+  <RunOnControl t="action.RunActions">
+    <Action t="uiaction.ButtonClick" RunOn="btn" />
+    <Action t="uiaction.SetText" RunOn="NameText" Text="Marge" />
+    <Action t="dialog.CloseDialog" CloseType="Cancel" />
+  </RunOnControl>
+  <ExpectedResult t="yesno.EqualsTo" >
+    <To t="xml.Xml">
+      <person name="Homer" age="32" viewed="true"/>
+    </To>
+  </ExpectedResult>
+</Usage>
+
+<Usage t="ui.ControlUsage" Name="dialog.Dialog - click on ok" ResultType="Data">
+  <Data t="xml.Xml">
+    <person name="Homer" age="32" />
+  </Data>
+  <Control t="ui.Section">
+    <Control t="ui.ButtonOld" Name="btn" Text="dialog from button">
+      <OnClick t="dialog.OpenDialog">
+        <Dialog t="dialog.Dialog" Title="Edit %@name%" Class="dialog_sample" Height="200px">
+          <Content t="ui.TextControl" Name="NameText" />
+          <RunOnOK t="uiaction.Refresh" RunOn="show_name" />
+        </Dialog>
+      </OnClick>
+    </Control>
+    <Control t="ui.Text" Text="%@name%" Name="show_name" />
+  </Control>
+  <RunOnControl t="action.RunActions">
+    <Action t="uiaction.ButtonClick" RunOn="btn" />
+    <Action t="uiaction.SetText" RunOn="NameText" Text="Marge" />
+    <Action t="dialog.CloseDialog" CloseType="OK" />
+  </RunOnControl>
+  <ExpectedResult t="yesno.Contains">
+    <Text value="Marge" />
+  </ExpectedResult>
+</Usage>
+ 
+ <Usage t="ui.ControlUsage" Of="dialog.AskForConfirmation">
+  <Data t="xml.Xml">
+    <account name="Simpsons" />
+  </Data>
+  <Control t="ui.ButtonOld" Text="delete" Name="btn">
+     <OnClick t="dialog.AskForConfirmation" Title="delete account" Question="Are you sure you want to delete account 'Simpsons' ?" >
+        <RunOnOK t="uiaction.Alert" Text="delete" />
+     </OnClick>
+  </Control>
+  <RunOnControl t="uiaction.ButtonClick" RunOn="btn"/>
+  <CleanAfter t="dlg.CloseDialog" />
+  <ExpectedResult t="yesno.Contains" >
+   <AllText t="dlg.TopDialog" />
+   <Text value="Are you sure" />
+  </ExpectedResult>
+  <TryItYourself value="change the confiramtion question"/>
+ </Usage>
+ 
+ <Usage t="ui.ControlUsage" Name="dialog - RunOnOK with transaction work on original input">
+  <Data t="xml.Xml">
+    <person name="Homer" age="32" />
+  </Data>
+  <Control t="ui.Section">
+    <Control t="ui.ButtonOld" Name="btn" Text="open dialog">
+      <OnClick t="dialog.OpenDialog">
+        <Dialog t="dialog.Dialog" Title="Edit %@name%" >
+          <Content t="ui.TextControl" Name="NameText" Data="%@name%"/>
+          <RunOnOK t="uiaction.SetText" Text="name is %@name%" RunOn="show_name" Data="%$OriginalInput%"/>
+        </Dialog>
+      </OnClick>
+    </Control>
+    <Control t="ui.Text" Name="show_name" />
+  </Control>
+  <RunOnControl t="action.RunActions">
+    <Action t="uiaction.ButtonClick" RunOn="btn" />
+    <Action t="uiaction.SetText" RunOn="NameText" Text="Marge" />
+    <Action t="dialog.CloseDialog" CloseType="OK" />
+  </RunOnControl>
+  <ExpectedResult t="yesno.Contains">
+    <Text value="name is Marge" />
+  </ExpectedResult>
+ </Usage>
+ 
+ <Usage t="ui.ControlUsage" Of="dialog.TopDialogContent">
+  <Data t="xml.Xml">
+    <person>Homer</person>
+  </Data>
+    <Control t="ui.ButtonOld" Name="btn" Text="open dialog">
+     <OnClick t="dialog.OpenDialog">
+      <Dialog t="dialog.Dialog" />
+     </OnClick>
+    </Control>
+  <RunOnControl t="uiaction.ButtonClick" RunOn="btn"/>
+  <CleanAfter t="dialog.CloseDialog" />
+  <ExpectedResult t="yesno.EqualsTo">
+   <Data t="dialog.TopDialogContent" Part="Data" />
+    <To t="xml.Xml">
+    <person>Homer</person>
+    </To>
+  </ExpectedResult>
+ </Usage>
+ 
+ <Usage t="ui.ControlUsage" IsTest="false" Name="dialog.Dialog - open in scrolled window">
+    <Control t="ui.List">
+     <Control t="ui.Html"><div style="height:1000px"/></Control>
+      <Control t="ui.ButtonOld" Text="open dialog">
+     <OnClick t="dialog.OpenDialog">
+      <Dialog t="dialog.Dialog" Title="Edit" >
+       <Content t="ui.Text" Text="hi" />
+      </Dialog>
+     </OnClick>
+     </Control>
+    </Control>
+    <RunOnControl t="uiaction.ButtonClick" />
+ </Usage>
+
+</xtml>
+
+<xtml ns="menu_usage">
+
+  <Usage1 t="ui.ControlUsage" Name="simple context menu" ResultType="Data">
+    <Data t="xml.Xml">
+      <person name="homer"/>
+    </Data>
+    <Control t="ui.ControlWithAction">
+      <Control t="ui.Text" Text="hi %@name%" Name="summary"/>
+      <RunAfterControl t="menu.RegisterContextMenuToControl">
+        <Control t="ui.ControlToRunOn"/>
+        <Menu t="menu.ContextMenu">
+          <Item t="menu.MenuItem" Text="set as bart" Image="%$_Images%/studio/person3.gif">
+            <Action t="action.RunActions">
+              <Action t="action.WriteValue" To="%@name%" Value="bart"/>
+            </Action>
+          </Item>
+          <Item t="menu.MenuItem" Text="do nothing" Image="%$_Images%/studio/data1616.gif"/>
+        </Menu>
+      </RunAfterControl>
+    </Control>
+    <RunOnControl t="menu.RunContextMenuItem">
+      <Control t="ui.ControlToRunOn"/>
+      <MenuItemText value="set as bart"/>
+    </RunOnControl>
+    <ExpectedResult t="yesno.ItemsEqual" Item1="%@name%" Item2="bart"/>
+  </Usage1> 
+
+  <Usage t="ui.ControlUsage" Of="menu.Menu">
+    <Control t="menu.Menu">
+      <Item t="menu.MenuItem" Text="Item1">
+        <Action t="uiaction.Alert" Text="Item1"/>
+      </Item>
+      <Item t="menu.MenuItem" Text="Item2">
+        <Action t="uiaction.Alert" Text="Item2"/>
+      </Item>
+    </Control>
+    <ExpectedResult t="yesno.Contains">
+      <Text value="Item1"/>
+    </ExpectedResult>
+  </Usage>
+
+   <Usage t="ui.ControlUsage" Of="menu.DynamicMenuItems">
+    <Data t="xml.Xml">
+      <Items>
+        <Item name="option1"/>
+        <Item name="option2"/>
+      </Items>
+    </Data>
+    <Control t="menu.Menu">
+       <Item t="menu.MenuItem" Text="Item1">
+        <Action t="uiaction.Alert" Text="Item1"/>
+      </Item>
+      <Item t="menu.DynamicMenuItems" Items="%*%" Text="%@name%">
+        <Action t="uiaction.Alert" Text="%@name%"/>
+      </Item>
+    </Control>
+    <ExpectedResult t="yesno.Contains">
+      <Text value="option1"/>
+    </ExpectedResult>
+  </Usage>
+
+</xtml>
+
+<xtml ns="uiaspect_usage">
+
+  <Usage t="ui.ControlUsage" Of="uiaction.TwoItemTexts">
+    <Var name="Items" t="xml.Xml">
+      <Persons>
+        <Person name="Homer" age="405321"/>
+        <Person name="Marge" age="38"/>
+        <Person name="Bart" age="10"/>
+      </Persons>
+    </Var>
+    <Control t="ui.List">
+      <Control t="ui.ItemList" Class="mylist">
+        <Items t="data_items.Items" Items="%$Items/Person%" />
+        <Aspect t="uiaspect.ItemText" ItemText="%@name%" />
+        <Aspect t="uiaspect.ItemText" ItemText="%@age%" ID="age"/>
+        <Aspect t="uiaspect.ItemSelection" />
+      </Control>
+      <Control t="ui.ButtonOld" Text="change" Class="change">
+        <OnClick t="action.RunActions">
+          <Action t="uiaction.RefreshItemElements">
+            <ItemElements t="uiaction.SelectedItemElement" RunOn=".mylist" />
+          </Action>
+        </OnClick>
+      </Control>
+    </Control>
+    <RunOnControl t="uiaction.ButtonClick" RunOn=".change" />
+    <ExpectedResult t="yesno.Contains">
+      <Text value="Homer" />
+      <Text value="405321" />
+    </ExpectedResult>
+  </Usage>
+
+  <Usage t="ui.ControlUsage" IsTest="false" Of="uiaspect.TableColumnsDragAndDrop.RTL">
+    <Var name="Items" t="xml.Xml">
+      <Persons>
+        <Person Name="Bart" Age="5" Gender="Male" Birthday="1/11/1960" />
+        <Person Name="Homer" Age="38" Gender="Male" Birthday="11/2/1960" />
+      </Persons>
+    </Var>
+    <Control t="ui.ItemList" Class="right2left">
+      <Items t="xml.WritableXmlList" ItemList="%$Items/Person%" />
+        <Field t="field.XmlField" Path="@Name" Title="שם"/>
+        <Field t="field.XmlField" Path="@Age" Title="גיל">
+          <FieldAspect t="field_aspect.SortMethodOld" Method="numeric" />
+        </Field>
+        <Field t="field.XmlField" Path="@Gender" Title="מגדר"/>
+      <Aspect t="uiaspect.ItemSelection" />
+      <Presentation t="uiaspect.RichTable" />
+    </Control>
+  </Usage>
+
+  <Usage t="ui.ControlUsage" Of="uiaspect.Document.UIPreferences">
+      <Var name="_UIPrefXml" t="xml.Xml">
+        <UIPref>
+          <Doc1 Name_Width="365px"/>
+        </UIPref>
+      </Var>
+      <Var name="_UIPref" t="uipref.SimpleUIPreferences" Xml="%$_UIPrefXml%"/>
+      <Var name="Item" t="xml.Xml">
+        <Person Name="Homer" Age="38" Gender="Male" MainHobby="Complaining"/>
+      </Var>
+      <Control t="ui.List">
+        <Control t="ui.Document" ID="Doc1">
+          <Item t="data_items.Items" Items="%$Item%"/>
+            <Field t="field.XmlField" Path="@Name"/>
+            <Field t="field.XmlField" Path="@Age"/>
+            <Field t="field.XmlField" Path="@Gender"/>
+          <Item t="xml.XmlItems" Parent="%$Items%" Tag="Person"/>
+        </Control>
+        <Control t="ui.ButtonOld" Text="refresh">
+          <OnClick t="uiaction.Refresh" RunOn=".uipref"/>
+        </Control>
+        <Control1 t="xmlui.ReadOnlyXml" Data="%$_UIPrefXml%" Class="uipref"/>
+      </Control>
+      <ExpectedResult t="yesno.Contains">
+        <Text value="365"/>
+      </ExpectedResult>
+    </Usage>
+
+  <Usage t="ui.ControlUsage" Of="uiaspect.Table.UIPreferences.FieldSynchBug">
+    <Var name="_UIPrefXml" t="xml.Xml" DynamicContent="">
+      <UIPref>
+        <Cntr1 Table_Fields_Order="Age,Name"/>
+      </UIPref>
+    </Var>
+    <Var name="_UIPref" t="uipref.SimpleUIPreferences" Xml="%$_UIPrefXml%"/>
+    <Var name="Items" t="xml.Xml">
+      <Persons>
+        <Person Name="Homer" Age="38" Gender="Male" MainHobby="Complaining"/>
+        <Person Name="Lisa" Age="7" Gender="Female" MainHobby="Cooking"/>
+      </Persons>
+    </Var>
+    <Control t="ui.ItemList" ID="Cntr1">
+      <Items t="xml.WritableXmlList" ItemList="%$Items/Person%"/>
+      <Fields t="field.SimpleXmlFields" Paths="@Name,@Age,@Gender"/>
+      <Presentation t="uiaspect.RichTable"/>
+    </Control>
+    <ExpectedResult t="yesno.Contains">
+      <Text value="Gender"/>
+    </ExpectedResult>
+  </Usage>
+
+  <Usage t="ui.ControlUsage" Of="uiaspect.Table.UIPreferences.HiddenFields">
+    <Var name="_UIPrefXml" t="xml.Xml" DynamicContent="">
+      <UIPref>
+        <Cntr1 Table_Hidden_Fields="Age"/>
+      </UIPref>
+    </Var>
+    <Var name="_UIPref" t="uipref.SimpleUIPreferences" Xml="%$_UIPrefXml%"/>
+    <Var name="Items" t="xml.Xml">
+      <Persons>
+        <Person Name="Homer" Age="38" Gender="Male" MainHobby="Complaining"/>
+        <Person Name="Lisa" Age="7" Gender="Female" MainHobby="Cooking"/>
+      </Persons>
+    </Var>
+    <Control t="ui.ItemList" ID="Cntr1">
+      <Items t="xml.WritableXmlList" ItemList="%$Items/Person%"/>
+      <Fields t="field.SimpleXmlFields" Paths="@Name,@Age,@Gender"/>
+      <Presentation t="uiaspect.RichTable"/>
+    </Control>
+    <ExpectedResult t="yesno.NotContains">
+      <Text value="Age"/>
+    </ExpectedResult>
+  </Usage>
+
+  <Usage t="ui.ControlUsage" Of="uiaspect.RichTable.UIPreferences">
+      <Var name="_UIPrefXml" t="xml.Xml" DynamicContent="">
+        <UIPref>
+          <Cntr1 Name_ColumnWidth="256px" Table_Fields_Order=",Age,Name,Gender" Sort_Field="Age" Sort_Direction="sort_ascending"/>
+        </UIPref>
+      </Var>
+      <Var name="_UIPref" t="uipref.SimpleUIPreferences" Xml="%$_UIPrefXml%"/>
+      <Var name="Items" t="xml.Xml">
+        <Persons>
+          <Person Name="Homer" Age="38" Gender="Male" MainHobby="Complaining"/>
+          <Person Name="Lisa" Age="7" Gender="Female" MainHobby="Cooking"/>
+        </Persons>
+      </Var>
+      <Control t="ui.List">
+        <Control t="ui.ItemList" ID="Cntr1">
+          <Items t="xml.WritableXmlList" ItemList="%$Items/Person%"/>
+            <Field t="field.XmlField" Path="@Name"/>
+            <Field t="field.XmlField" Path="@Age">
+              <Type t="field_aspect.Number"/>
+              <FieldAspect t="field_aspect.CellPresentation" Content="control"/>
+            </Field>
+            <Field t="field.XmlField" Path="@Gender"/>
+          <Presentation t="uiaspect.RichTable"/>
+        </Control>
+        <Control t="ui.ButtonOld" Text="refresh">
+          <OnClick t="uiaction.Refresh" RunOn=".uipref"/>
+        </Control>
+        <Control1 t="xmlui.ReadOnlyXml" Data="%$_UIPrefXml%" Class="uipref"/>
+      </Control>
+      <ExpectedResult t="yesno.Contains">
+        <Text value="Age"/>
+        <Text value="256"/>
+        <Text value="Name"/>
+        <Text value="7"/>
+        <Text value="38"/>
+      </ExpectedResult>
+    </Usage>
+  <Usage t="ui.ControlUsage" Of="uiaspect.Filter.UIPreferences">
+      <Var name="_UIPrefXml" t="xml.Xml" DynamicContent="">
+        <UIPref>
+          <Cntr1 Filter_Field_MainHobby="Complaining"/>
+        </UIPref>
+      </Var>
+      <Var name="_UIPref" t="uipref.SimpleUIPreferences" Xml="%$_UIPrefXml%"/>
+      <Var name="Items" t="xml.Xml">
+        <Persons>
+          <Person Name="Homer" Age="38" Gender="Male" MainHobby="Complaining"/>
+          <Person Name="Lisa" Age="7" Gender="Female" MainHobby="Cooking"/>
+        </Persons>
+      </Var>
+      <Control t="ui.List">
+        <Control t="ui.ItemList" ID="Cntr1">
+          <Items t="xml.WritableXmlList" ItemList="%$Items/Person%"/>
+            <Field t="field.XmlField" Path="@MainHobby">
+              <FieldAspect t="field_aspect.Picklist">
+                <Options t="picklist.SimpleOptions" Options="Complaining,Cooking,Tennis"/>
+              </FieldAspect>
+            </Field>
+            <Field t="field.XmlField" Path="@Name"/>
+          <Presentation t="uiaspect.RichTable"/>
+          <Aspect t="uiaspect.ExposedFiltersSection" FieldIds="MainHobby">
+            <FieldIds t=""/>
+          </Aspect>
+        </Control>
+        <Control t="ui.ButtonOld" Text="refresh">
+          <OnClick t="uiaction.Refresh" RunOn=".uipref"/>
+        </Control>
+        <Control1 t="xmlui.ReadOnlyXml" Data="%$_UIPrefXml%" Class="uipref"/>
+      </Control>
+      <ExpectedResult t="yesno.And">
+        <Item t="yesno.Contains" IgnoreCase="true">
+          <Text value="cleanable_filter"/>
+          <Text value="Homer"/>
+        </Item>
+        <Item t="yesno.NotContains" Text="Lisa"/>
+      </ExpectedResult>
+    </Usage>
+
+  <Usage t="ui.ControlUsage" Of="uiaspect.RecursiveTreeDragAndDrop">
+      <Var name="Items" t="xml.Xml">
+        <a name="root" group="true">
+          <a name="group a" group="true">
+            <a name="name"/>
+            <a name="description"/>
+          </a>
+          <a name="group b" group="true">
+            <a name="group d" group="true">
+              <a name="image"/>
+              <a name="status"/>
+            </a>
+            <a name="created by"/>
+          </a>
+          <a name="group c" group="true"/>
+          <a name="group e" group="true">
+            <a name="drag me" />
+          </a>
+          <a name="team"/>
+        </a>
+      </Var>
+      <Control t="ui.ItemList">
+        <Items t="data_items.Items" Items="%$Items%">
+          <Aspect t="data_items.RecursiveNextLevel">
+            <NextLevel t="xml.XmlItems" Tag="a" Condition="%@group%"/>
+          </Aspect>
+        </Items>
+        <Presentation t="uiaspect.Tree" ItemText="%@name%" CollapseLevel="first">
+          <ItemImage t="data.IfThenElse" If="%@group%" Then="%$_Images%/studio/cube1616.gif" Else="%$_Images%/studio/person3.gif"/>
+        </Presentation>
+        <Aspect t="uiaspect.TreeDragAndDrop"/>
+        <Aspect t="uiaspect.DefaultFeatures"/>
+        <Aspect t="uiaspect.ContextMenu" />
+        <Operations t="operation.Operation" ID="xml" Title="show xml" Icon="%$_Images%/studio/xml1616.gif">
+          <Action t="xmlui.ShowXmlDialog" />
+        </Operations>
+      </Control>
+      <ExpectedResult t="yesno.Contains">
+        <Text value="group b"/>
+      </ExpectedResult>
+    </Usage>​
+
+  <Usage t="ui.ControlUsage" Of="uiaspect.Tree.RTL">
+      <Var name="Items" t="xml.Xml">
+        <a name="root" group="true">
+          <a name="group a" group="true">
+            <a name="name"/>
+            <a name="description"/>
+          </a>
+          <a name="group b" group="true">
+            <a name="group d" group="true">
+              <a name="image"/>
+              <a name="status"/>
+            </a>
+            <a name="created by"/>
+          </a>
+          <a name="group c" group="true"/>
+          <a name="group e" group="true">
+            <a name="drag me"/>
+          </a>
+          <a name="team"/>
+        </a>
+      </Var>
+      <Control t="ui.ItemList" Class="right2left">
+        <Items t="data_items.Items" Items="%$Items%">
+          <Aspect t="data_items.RecursiveNextLevel">
+            <NextLevel t="xml.XmlItems" Tag="a" Condition="%@group%"/>
+          </Aspect>
+        </Items>
+        <Presentation t="uiaspect.Tree" ItemText="%@name%">
+          <ItemImage t="data.IfThenElse" If="%@group%" Then="%$_Images%/studio/cube1616.gif" Else="%$_Images%/studio/person3.gif"/>
+        </Presentation>
+        <Aspect t="uiaspect.DefaultFeatures"/>
+      </Control>
+      <ExpectedResult t="yesno.Contains">
+        <Text value="status"/>
+      </ExpectedResult>
+    </Usage>​
+
+  <Usage t="ui.ControlUsage" Of="uiaspect.Tree">
+      <Var name="Items" t="xml.Xml">
+        <a name="root" group="true">
+          <a name="group a" group="true">
+            <a name="name"/>
+            <a name="description"/>
+          </a>
+          <a name="group b" group="true">
+            <a name="group d" group="true">
+              <a name="image"/>
+              <a name="status"/>
+            </a>
+            <a name="created by"/>
+          </a>
+          <a name="group c" group="true"/>
+          <a name="group e" group="true">
+            <a name="drag me"/>
+          </a>
+          <a name="team"/>
+        </a>
+      </Var>
+      <Control t="ui.ItemList">
+        <Items t="data_items.Items" Items="%$Items%">
+          <Aspect t="data_items.RecursiveNextLevel">
+            <NextLevel t="xml.XmlItems" Tag="a" Condition="%@group%"/>
+          </Aspect>
+        </Items>
+        <Presentation t="uiaspect.Tree" ItemText="%@name%" TextInHitArea="true">
+          <ItemImage t="data.IfThenElse" If="%@group%" Then="%$_Images%/studio/cube1616.gif" Else="%$_Images%/studio/person3.gif"/>
+        </Presentation>
+        <Aspect t="uiaspect.DefaultFeatures"/>
+      </Control>
+      <ExpectedResult t="yesno.Contains">
+        <Text value="status"/>
+      </ExpectedResult>
+    </Usage>​
+
+  <Component id="EffortsTree" type="ui.Control">
+      <xtml t="ui.ItemList">
+        <Items t="data_items.Items" Items="%%"/>
+        <Aspect t="uiaspect.ItemImage" ItemImage="%$_Images%/studio/person3.gif"/>
+        <Aspect t="uiaspect.ItemText" ItemText="%@name%"/>
+        <Aspect t="uiaspect.ItemSelection"/>
+        <Aspect t="uiaspect.NextLevelsByFields" FieldIds="Efforts"/>
+        <Aspect t="uiaspect.Indent"/>
+        <Aspect t="uiaspect.ExpandCollapse"/>
+        <Aspect t="uiaspect.Toolbar"/>
+        <Aspect t="uiaspect.Shortcuts"/>
+        <Field t="field.XmlMultipleGroup" Path="Efforts/Effort" Title="Effort">
+          <Aspect t="uiaspect.ItemImage" ItemImage="%$_Images%/studio/cube1616.gif"/>
+          <Aspect t="uiaspect.ItemText" ItemText="%@name%"/>
+          <Aspect t="uiaspect.TreeNode"/>
+          <Aspect t="uiaspect.NextLevelsByFields" FieldIds="Channels"/>
+          <Aspect t="uiaspect.ExpandCollapse"/>
+          <Aspect t="uiaspect.Shortcuts"/>
+          <Field t="field.XmlMultipleGroup" Path="Channels/Channel" Title="Channel">
+            <Aspect t="uiaspect.ItemImage" ItemImage="%$_Images%/studio/cube1616.gif"/>
+            <Aspect t="uiaspect.ItemText" ItemText="%@name%"/>
+            <Aspect t="uiaspect.TreeNode"/>
+            <Aspect t="uiaspect.Shortcuts"/>
+            <Presentation t="uiaspect.Custom"/>
+          </Field>
+          <Presentation t="uiaspect.Custom"/>
+        </Field>
+        <Presentation t="uiaspect.Custom"/>
+        <Operations1 t="operation.StdOperations"/>
+        <Aspect t="uiaspect.TreeDragAndDrop"/>
+      </xtml>
+    </Component>
+  
+  <Usage t="ui.ControlUsage" Of="uiaspect.TreeDragAndDrop">
+    <Data t="xml.Xml">
+      <Plan name="Plan">
+        <Efforts>
+          <Effort name="Cellular market">
+            <Channels>
+              <Channel name="Marketing"/>
+              <Channel name="Development"/>
+              <Channel name="Development 1"/>
+              <Channel name="Development 2"/>
+              <Channel name="Development 3"/>
+            </Channels>
+          </Effort>
+          <Effort name="OS development">
+            <Channels>
+              <Channel name="core development"/>
+              <Channel name="core development 1"/>
+              <Channel name="core development 2"/>
+              <Channel name="core development 3"/>
+              <Channel name="core development 4"/>
+            </Channels>
+          </Effort>
+        </Efforts>
+      </Plan>
+    </Data>
+    <Control t="ui.List">
+      <Control t="ui.Text" Text="1. No Scroll: Drag elements" CssStyle="font-weight:bold; font-size:14px;"/>
+      <Control t="uiaspect_usage.EffortsTree" CssStyle1="border:1px solid black;"/>
+      <Control t="ui.Text" Text="2. Inner Scroll: Scroll down inner scroll and try to drag elements" CssStyle="margin-top:20px; font-weight:bold; font-size:14px;"/>
+      <Control t="uiaspect_usage.EffortsTree" CssStyle="height:200px; width:400px; overflow-y:auto"/>
+      <Control t="ui.Html" CssStyle="height:300px;">
+        <div/>
+      </Control>
+      <Control t="ui.Text" Text="3. Page Scroll: Scroll down page scroll and try to drag elements" CssStyle="font-weight:bold; font-size:14px;"/>
+      <Control t="uiaspect_usage.EffortsTree"/>
+      <Control t="ui.List" CssStyle="position:absolute; left:300px; top:100px; border:1px solid black;">
+        <Control t="ui.Text" Text="In Position Absolute"/>
+        <Control t="uiaspect_usage.EffortsTree"/>
+      </Control>
+    </Control>
+    <ExpectedResult t="yesno.Contains">
+      <Text value="core"/>
+    </ExpectedResult>
+  </Usage>​
+
+  <Usage t="ui.ControlUsage" Of="uiaspect.NextLevelsByFields.TreeLevels">
+    <Data t="xml.Xml" DynamicContent="">
+      <Plan name="Plan">
+        <Efforts>
+          <Effort name="Cellular market">
+            <Channels>
+              <Channel name="Marketing" />
+              <Channel name="Development" />
+            </Channels>
+          </Effort>
+          <Effort name="OS development">
+            <Channels>
+              <Channel name="core development" />
+            </Channels>
+          </Effort>
+        </Efforts>
+      </Plan>
+    </Data>
+    <Control t="ui.ItemList">
+      <Items t="data_items.Items" Items="%%" />
+      <Aspect t="uiaspect.ItemImage" ItemImage="%$_Images%/studio/person3.gif" />
+      <Aspect t="uiaspect.ItemText" ItemText="%@name%" />
+      <Aspect t="uiaspect.ItemSelection" />
+      <Aspect t="uiaspect.NextLevelsByFields" FieldIds="Efforts" />
+      <Aspect t="uiaspect.Indent" />
+      <Aspect t="uiaspect.ExpandCollapse" />
+        <Field t="field.XmlMultipleGroup" Path="Efforts/Effort" Title="Effort">
+            <Presentation t="uiaspect.RichTable" />
+          <Aspect t="uiaspect.ItemImage" ItemImage="%$_Images%/studio/cube1616.gif" />
+          <Aspect t="uiaspect.ItemText" ItemText="%@name%" />
+          <Aspect t="uiaspect.TreeNode" />
+          <Aspect t="uiaspect.NextLevelsByFields" FieldIds="Channels" />
+          <Aspect t="uiaspect.ExpandCollapse" />
+          <Field t="field.XmlMultipleGroup" Path="Channels/Channel" Title="Channel">
+            <Presentation t="uiaspect.RichTable"/>
+            <Aspect t="uiaspect.ItemImage" ItemImage="%$_Images%/studio/cube1616.gif" />
+            <Aspect t="uiaspect.ItemText" ItemText="%@name%" />
+            <Aspect t="uiaspect.TreeNode" />
+          </Field>
+        </Field>
+    </Control>
+    <ExpectedResult t="yesno.Contains">
+      <Text value="core" />
+    </ExpectedResult>
+  </Usage>​
+
+
+  <Usage t="ui.ControlUsage" IsTest="false" Of="uiaspect.ContextMenu.Operations">
+    <Data t="xml.Xml">
+      <people name="people">
+        <person name="Homer" />
+        <person name="Bart" />
+        <person name="Lisa" />
+        <person name="Ned Flanders" />
+      </people>
+    </Data>
+    <Control t="ui.Section">
+      <Control t="ui.ItemList" Class="mylist">
+        <Items t="data_items.Items" Items="%person%" />
+        <Aspect t="uiaspect.ItemImage" ItemImage="%$_Images%/studio/person3.gif" />
+        <Aspect t="uiaspect.ItemText" ItemText="%@name%:" />
+        <Aspect t="uiaspect.ItemSelection" />
+        <Aspect t="uiaspect.ContextMenu" Operations="Rename,NewItem"/>
+        <Operations t="operation.Operations">
+          <Operation t="operation.StdOperations" />
+          <Operation t="operation.Operation" Title="rename %@name%" ID="Rename">
+            <Action t="action.WriteValue" To="%@name%" Value="%@name%1" />
+          </Operation>
+        </Operations>
+      </Control>
+    </Control>
+    <ExpectedResult t="yesno.Contains">
+      <Text value="rename lisa" />
+      <Text value="new" />
+    </ExpectedResult>
+  </Usage>
+
+  <Usage t="ui.ControlUsage" Of="uiaspect.ItemPicker" IsTest="false">
+      <Var name="Items" t="xml.Xml">
+        <Persons>
+          <Person Text="Bart" Birthday="1/11/1960"/>
+          <Person Text="Homer" Birthday="1/11/2001"/>
+        </Persons>
+      </Var>
+      <Control t="ui.ItemList">
+        <Presentation t="uiaspect.Table"/>
+        <Items t="data_items.Items" Items="%$Items/*%"/>
+          <Field t="field.XmlField" Path="@Text"/>
+          <Field t="field.XmlField" Path="@Birthday"/>
+        <Aspect t="uiaspect.DefaultFeatures"/>
+        <Aspect t="uiaspect.SynchSelectionWithItemDetails">
+          <OpenIn t="uiaspect.DetailsAtRight"/>
+        </Aspect>
+        <Aspect t="uiaspect.BottomLocation"/>
+        <Aspect t="uiaspect.ItemDetails">
+          <OpenIn t="uiaspect.DetailsInFixedLocation"/>
+        </Aspect>
+      </Control>
+      <RunOnControl t="uiaction.FireEvent" Event="mousedown1">
+        <RunOn t="data.Pipeline">
+          <Item t="uiaction.ElementByClass" Cls="aa_item" OnlyFirst="false"/>
+          <Aggregator t="data.Subset" From="2"/>
+        </RunOn>
+      </RunOnControl>
+      <ExpectedResult t="yesno.Contains">
+        <Text value="2001"/>
+        <Text value="2001"/>
+      </ExpectedResult>
+    </Usage>
+
+  <Usage t="ui.ControlUsage" Of="uiaspect.SelectInDetails">
+      <Var name="Items" t="xml.Xml">
+        <Persons>
+          <Person Text="Bart" Birthday="1/11/1960">
+            <Addresses>
+              <Address City="NY" Street="Broadway"/>
+              <Address City="SF" Street="Main"/>
+            </Addresses>
+          </Person>
+          <Person Text="Homer" Birthday="1/11/2001"/>
+        </Persons>
+      </Var>
+      <Control t="ui.ItemList">
+        <Items t="data_items.Items" Items="%$Items/*%"/>
+          <Field t="field.XmlField" Path="@Text"/>
+          <Field t="field.XmlField" Path="@Birthday"/>
+          <Field t="field.XmlMultipleGroup" Path="Addresses/Address" TitleForSingle="Address" Title="Addresses">
+            <Field t="field.XmlField" Path="@City"/>
+            <Field t="field.XmlField" Path="@Street"/>
+            <Presentation t="uiaspect.RichTable"/>
+            <Aspect t="uiaspect.DefaultFeatures"/>
+          </Field>
+        <Aspect t="uiaspect.ItemSelection"/>
+        <Aspect t="uiaspect.ItemDetails">
+          <OpenIn t="uiaspect.DetailsInFixedLocation" Location="right"/>
+        </Aspect>
+        <Aspect t="uiaspect.SynchSelectionWithItemDetails"/>
+        <Aspect t="uiaspect.ItemText" ItemText="%@Text%"/>
+        <Aspect t="uiaspect.RightLocation"/>
+      </Control>
+      <RunOnControl t="uiaction.FireEvent" Event="mousedown">
+          <RunOn t="uiaction.JQueryFind" Expression=".find('.fld_City:last')"/>
+      </RunOnControl>
+      <ExpectedResult t="yesno.Not">
+        <Of t="yesno.Contains">
+          <Text value="Addresses:"/>
+          <Text value="aa_selected_item&quot;"/>
+          <Text value="aa_selected_item&quot;"/>
+        </Of>
+      </ExpectedResult>
+    </Usage>
+
+  <Usage t="ui.ControlUsage" Of="uiaspect.DetailsInplace">
+      <Var name="Items" t="xml.Xml">
+        <Persons>
+          <Person Text="Bart" Birthday="1/11/1960"/>
+          <Person Text="Homer" Birthday="1/11/2001"/>
+        </Persons>
+      </Var>
+      <Control t="ui.ItemList">
+          <Field t="field.XmlField" Path="@Text"/>
+          <Field t="field.XmlField" Path="@Birthday"/>
+        <Aspect t="uiaspect.ItemSelection"/>
+        <Aspect t="uiaspect.ItemDetails">
+          <OpenIn t="uiaspect.DetailsInplace"/>
+        </Aspect>
+        <Operations t="operation.Operations">
+          <Operation t="operation.StdOperations" OpenItemDetails="true"/>
+        </Operations>
+        <Items t="xml.XmlItems" Parent="%$Items%" Tag="Person"/>
+        <Presentation t="uiaspect.RichTable" Columns="OpenItemDetails,Text,Birthday"/>
+      </Control>
+      <RunOnControl t="action.RunActions">
+        <Action t="uiaction.Click">
+          <RunOn t="ui.ElementOfClass" Cls="OpenItemDetails" Data="%$ControlElement%"/>
+        </Action>
+      </RunOnControl>
+      <ExpectedResult t="yesno.Contains">
+        <Text value="1960"/>
+      </ExpectedResult>
+    </Usage>
+
+  <Usage t="ui.ControlUsage" Of="uiaspect.DetailsInplace.Filter">
+      <Var name="Items" t="xml.Xml">
+        <Persons>
+          <Person Name="Bart" Birthday="1/11/1960"/>
+          <Person Name="Homer" Birthday="1/11/2001"/>
+        </Persons>
+      </Var>
+      <Control t="ui.ItemList">
+          <Field t="field.XmlField" Path="@Name"/>
+          <Field t="field.XmlField" Path="@Birthday"/>
+        <Aspect t="uiaspect.DefaultFeatures"/>
+        <Aspect t="uiaspect.ItemDetails">
+          <OpenIn t="uiaspect.DetailsInplace"/>
+        </Aspect>
+        <Aspect t="uiaspect.ExposedFiltersSection" FieldIds="Name" RebuildElements="true"/>
+        <Operations t="operation.Operations">
+          <Operation t="operation.StdOperations" OpenItemDetails="true"/>
+        </Operations>
+        <Items t="xml.XmlItems" Parent="%$Items%" Tag="Person"/>
+        <Presentation t="uiaspect.RichTable"/>
+      </Control>
+      <RunOnControl t="action.RunActions">
+        <Action t="uiaction.Click" RunOn=".OpenItemDetails"/>
+        <Action t="uiaction.SetText" Text="Ba" RunOn=".fld_Name_filter"/>
+      </RunOnControl>
+      <ExpectedResult t="yesno.NotContains">
+        <Text value="Birthday:"/>
+      </ExpectedResult>
+    </Usage>
+
+  <Usage t="ui.ControlUsage" Of="uiaspect.DetailsInplace.Save">
+    <Var name="Items" t="xml.Xml">
+      <Persons>
+        <Person Text="Bart" Birthday="1/11/1960"/>
+        <Person Text="Homer" Birthday="1/11/2001"/>
+      </Persons>
+    </Var>
+    <Control t="ui.ItemList">
+        <Field t="field.XmlField" Path="@Text"/>
+        <Field t="field.XmlField" Path="@Birthday"/>
+      <Aspect t="uiaspect.ItemSelection"/>
+      <Aspect t="uiaspect.Table" Columns="OpenItemDetails,Text"/>
+      <Aspect t="uiaspect.ItemDetails">
+        <OpenIn t="uiaspect.DetailsInplace"/>
+      </Aspect>
+      <Operations t="operation.Operations">
+        <Operation t="operation.StdOperations" OpenItemDetails="true"/>
+      </Operations>
+      <Items t="xml.XmlItems" Parent="%$Items%" Tag="Person"/>
+    </Control>
+    <RunOnControl t="action.RunActions">
+      <Action t="uiaction.Click">
+        <RunOn t="ui.ElementOfClass" Cls="OpenItemDetails" Data="%$ControlElement%"/>
+      </Action>
+      <Action t="uiaction.SetText" Text="Bill" RunOn="$.find('input')">
+      </Action>
+      <Action t="uiaction.Click">
+        <RunOn t="ui.ElementOfClass" Cls="details_inplace_close" Data="%$ControlElement%"/>
+      </Action>
+    </RunOnControl>
+    <ExpectedResult t="yesno.Contains">
+      <Text value="Bill"/>
+    </ExpectedResult>
+  </Usage>
+
+  <Usage t="ui.ControlUsage" Of="uiaspect.DetailsInplace.Cancel">
+    <Var name="Items" t="xml.Xml">
+      <Persons>
+        <Person Text="Bart" Birthday="1/11/1960"/>
+        <Person Text="Homer" Birthday="1/11/2001"/>
+      </Persons>
+    </Var>
+    <Control t="ui.ItemList">
+        <Field t="field.XmlField" Path="@Text"/>
+        <Field t="field.XmlField" Path="@Birthday"/>
+      <Aspect t="uiaspect.ItemSelection"/>
+      <Aspect t="uiaspect.Table" Columns="OpenItemDetails,Text"/>
+      <Aspect t="uiaspect.ItemDetails" Transactional="true">
+        <OpenIn t="uiaspect.DetailsInplace"/>
+      </Aspect>
+      <Operations t="operation.Operations">
+        <Operation t="operation.StdOperations" OpenItemDetails="true"/>
+      </Operations>
+      <Items t="xml.XmlItems" Parent="%$Items%" Tag="Person"/>
+    </Control>
+    <RunOnControl t="action.RunActions">
+      <Action t="uiaction.Click">
+        <RunOn t="ui.ElementOfClass" Cls="OpenItemDetails" Data="%$ControlElement%"/>
+      </Action>
+      <Action t="uiaction.SetText" Text="Bill" RunOn=".fld_Text">
+      </Action>
+      <Action t="uiaction.Click">
+        <RunOn t="ui.ElementOfClass" Cls="details_inplace_cancel" Data="%$ControlElement%"/>
+      </Action>
+    </RunOnControl>
+    <ExpectedResult t="yesno.NotContains">
+      <Text value="Bill"/>
+    </ExpectedResult>
+  </Usage>
+
+  <Usage t="ui.ControlUsage" Of="data_items.InPlaceOperations">
+      <Var name="Items" t="xml.Xml">
+        <Persons>
+          <Person Text="Bart" Birthday="1/11/1960"/>
+          <Person Text="Homer" Birthday="1/11/2001"/>
+        </Persons>
+      </Var>
+      <Control t="ui.ItemList">
+          <Field t="field.XmlField" Path="@Text"/>
+          <Field t="field.XmlField" Path="@Birthday"/>
+        <Aspect t="uiaspect.ItemSelection"/>
+        <Aspect t="uiaspect.Table" Columns="OpenItemDetails,Text,DeleteItem"/>
+        <Aspect t="uiaspect.Toolbar"/>
+        <Aspect t="uiaspect.ItemDetails">
+          <OpenIn t="uiaspect.DetailsInplace"/>
+        </Aspect>
+        <Operations t="operation.Operations">
+          <Operation t="operation.StdOperations" OpenItemDetails="true"/>
+        </Operations>
+        <Items t="xml.XmlItems" Parent="%$Items%" Tag="Person" ItemTypeName="Person"/>
+      </Control>
+      <ExpectedResult t="yesno.Contains">
+        <Text value="Open"/>
+        <Text value="Delete"/>
+      </ExpectedResult>
+    </Usage>
+
+  <Usage t="ui.ControlUsage" Of="uiaspect.Sort">
+    <Var name="Items" t="xml.Xml">
+      <Persons>
+        <Person Name="Bart" Age="5" Gender="Male" Birthday="1/11/1960" />
+        <Person Name="Homer" Age="38" Gender="Male" Birthday="11/2/1960" />
+        <Person Name="Marge" Age="40" Gender="Female" Birthday="2/1/1968" />
+        <Person Name="Homer" Age="38" Gender="Male" Birthday="1/1/1960" />
+        <Person Name="Bart" Age="10" Gender="Male" Birthday="1/10/1992" />
+      </Persons>
+    </Var>
+    <Var name="_UIPrefXml" t="xml.Xml">
+      <UIPref>
+        <Cntr1 Sort_Field="Age" Sort_Direction="sort_ascending"/>
+      </UIPref>
+    </Var>
+    <Var name="_UIPref" t="uipref.SimpleUIPreferences" Xml="%$_UIPrefXml%"/>
+    
+    <Control t="ui.ItemList" ID="Cntr1">
+      <Items t="xml.WritableXmlList" ItemList="%$Items/Person%" />
+        <Field1 t="field.Field1" Title="Title" FieldData="%%" ID="Name" />
+        <Field t="field.XmlField" Path="@Name" />
+        <Field t="field.XmlField" Path="@Age">
+          <FieldAspect t="field_aspect.SortMethodOld" Method="numeric" />
+        </Field>
+        <Field t="field.XmlField" Path="@Gender" />
+        <Field t="field.XmlField" Path="@Birthday">
+          <FieldAspect t="field_aspect.SortMethodOld" Method="date" />
+          <FieldAspect t="field_aspect.Control">
+            <Control t="ui.Text" Text="%%"/>
+          </FieldAspect>
+        </Field>
+      <Aspect t="uiaspect.DefaultFeatures" />
+      <Presentation t="uiaspect.RichTable" />
+    </Control>
+    <ExpectedResult t="yesno.Contains">
+      <Text value="5" />
+      <Text value="10" />
+      <Text value="38" />
+      <Text value="38" />
+      <Text value="40" />
+    </ExpectedResult>
+  </Usage>
+
+  <Usage t="ui.ControlUsage" Of="uiaspect.ItemDetails.New">
+      <Var name="Items" t="xml.Xml">
+        <Persons>
+          <Person Name="Homer" Birthday="2/1/1980" Gender="Male" MainHobby="Complaining"/>
+          <Person Name="Bart" Birthday="1/5/2000" Gender="Male" MainHobby="Disturbing"/>
+        </Persons>
+      </Var>
+      <Control t="ui.ItemList">
+        <Items t="xml.XmlItems" Parent="%$Items/%" Tag="Person"/>
+        <Operations t="operation.StdOperations"/>
+        <Aspect t="uiaspect.Table"/>
+        <Aspect t="uiaspect.Toolbar" Location="footer"/>
+        <Aspect t="uiaspect.ItemSelection"/>
+        <Aspect t="uiaspect.ItemDetails"/>
+        <Aspect t="uiaspect.TableColumnsDragAndDrop"/>
+        <Aspect t="uiaspect.DragAndDropMover"/>
+        <Fields t="field.SimpleXmlFields" Paths="@Name,@Birthday"/>
+      </Control>
+      <RunOnControl t="action.RunActions">
+        <Action t="uiaction.Click" RunOn=".NewItem"/>
+        <Action t="uiaction.SetText" Text="Bill">
+          <RunOn t="uiaction.ElementByClass" Cls="fld_Name">
+            <StartFrom t="dialog.TopDialogContent"/>
+          </RunOn>
+        </Action>
+        <Action1 t="dialog.CloseDialog" CloseType="OK"/>
+        <Action t="uiaction.ButtonClick" RunOn=".ok_button"/>
+      </RunOnControl>
+      <ExpectedResult t="yesno.Contains">
+        <Text value="Bill"/>
+        <Text value="New Person"/>
+        <Text value="Delete Person"/>
+      </ExpectedResult>
+    </Usage>
+
+  <Usage t="ui.ControlUsage" Of="uiaspect.Toolbar.Operations">
+      <Var name="Items" t="xml.Xml">
+        <Persons>
+          <Person Name="Homer" Birthday="2/1/1980" Gender="Male" MainHobby="Complaining"/>
+        </Persons>
+      </Var>
+      <Control t="ui.ItemList">
+        <Items t="xml.XmlItems" Parent="%$Items/%" Tag="Person"/>
+          <Field t="field.Field1" Title="Name" FieldData="%!@Name%" ID="Name"/>
+          <Field t="field.Field1" Title="Birthday" FieldData="%!@Birthday%" ID="@Birthday"/>
+        <Operations t="operation.StdOperations"/>
+        <Aspect t="uiaspect.Table"/>
+        <Aspect t="uiaspect.Toolbar" Location="footer"/>
+        <Aspect t="uiaspect.ItemSelection"/>
+      </Control>
+      <ExpectedResult t="yesno.Contains">
+        <Text value="New Person"/>
+        <Text value="Delete Person"/>
+      </ExpectedResult>
+    </Usage>
+
+  <Usage t="ui.ControlUsage" Of="uiaspect.Toolbar.Buttons">
+      <Var name="Items" t="xml.Xml">
+        <Persons>
+          <Person Name="Homer" Birthday="2/1/1980" Gender="Male" MainHobby="Complaining"/>
+        </Persons>
+      </Var>
+      <Control t="ui.ItemList">
+        <Items t="xml.XmlItems" Parent="%$Items%" Tag="Person"/>
+          <Field t="field.XmlField" Path="@Name"/>
+          <Field t="field.XmlField" Path="@Birthday"/>
+        <Operations t="operation.StdOperations"/>
+        <Aspect t="uiaspect.DefaultFeatures">
+          <MenuAspect t="operation.Presentation">
+            <Style t="ui.StandardButton"/>
+          </MenuAspect>
+        </Aspect>
+        <Presentation t="uiaspect.Table"/>
+      </Control>
+      <ExpectedResult t="yesno.Contains">
+        <Text value="button_outer"/>
+      </ExpectedResult>
+    </Usage>
+
+  <Usage t="ui.ControlUsage" Of="uiaspect.Table.Refresh">
+      <Var name="Items" t="xml.Xml">
+        <Persons>
+          <Person Name="Homer" Id=""/>
+        </Persons>
+      </Var>
+      <Var name="IDCounter" t="data.WritableText" DefaultValue="0"/>
+      <ExpectedResult t="yesno.Contains">
+        <Text value="Homer"/>
+        <Text value="555"/>
+      </ExpectedResult>
+      <Control t="ui.ItemList">
+        <Items t="xml.XmlItems" Parent="%$Items/%" Tag="Person"/>
+        <Aspect t="uiaspect.DefaultFeatures"/>
+        <Operations t="operation.StdOperations" OpenItemDetails="true"/>
+        <Fields t="field.SimpleXmlFields" Paths="@Name,@Id"/>
+        <Presentation t="uiaspect.Table"/>
+      </Control>
+      <RunOnControl t="action.RunActions">
+        <Action t="uiaction.Click" RunOn=".OpenItemDetails"/>
+        <Action t="uiaction.SetText" Text="555">
+          <RunOn t="uiaction.ElementByClass" Cls="fld_Id">
+            <StartFrom t="dialog.TopDialogContent"/>
+          </RunOn>
+        </Action>
+        <Action t="uiaction.ButtonClick" RunOn=".OKButton"/>
+      </RunOnControl>
+    </Usage>
+
+  <Usage t="ui.ControlUsage" Of="field_aspect.TextSummary">
+      <Var name="Items" t="xml.Xml">
+        <Persons>
+          <Person Name="Homer" Age="38" Gender="Male" MainHobby="Complaining"/>
+          <Person Name="Bart" Age="10" Gender="Male" MainHobby="Disturbing"/>
+          <Person Name="Marge" Age="10" Gender="Female" MainHobby="Cooking"/>
+          <Person Name="Lisa" Age="17" Gender="Female" MainHobby="Cooking"/>
+        </Persons>
+      </Var>
+      <Control t="ui.ItemList">
+        <Items t="data_items.Items" Items="%$Items/Person%"/>
+        <Aspect t="uiaspect.Table"/>
+          <Field t="field.XmlField" Path="@Name"/>
+          <Field t="field.XmlField" Path="@Age"/>
+          <Field t="field.XmlField" Path="@Gender">
+            <FieldAspect t="field_aspect.Picklist">
+              <Options t="picklist.SimpleOptions" Options="Male,Female"/>
+            </FieldAspect>
+          </Field>
+          <Field t="field.XmlField" Path="@NameAndAge">
+            <FieldAspect t="field_aspect.TextSummary" Text="%../@Name% %../@Age%"/>
+          </Field>
+      </Control>
+      <ExpectedResult t="yesno.Contains">
+        <Item value="Homer 38"/>
+        <Text value="Homer 38"/>
+      </ExpectedResult>
+    </Usage>
+
+  <Usage t="ui.ControlUsage" Of="field.SuggestionsFromData" IsTest="false">
+      <Var name="Items" t="xml.Xml">
+        <Persons>
+          <Person Name="Homer" Age="38" Gender="Male" MainHobby="Complaining"/>
+          <Person Name="Bart" Age="10" Gender="Male" MainHobby="Disturbing"/>
+          <Person Name="Marge" Age="10" Gender="Female" MainHobby="Cooking"/>
+          <Person Name="Lisa" Age="17" Gender="Female" MainHobby="Cooking"/>
+        </Persons>
+      </Var>
+      <Control t="ui.ItemList">
+        <Items t="data_items.Items" Items="%$Items/Person%"/>
+        <Aspect t="uiaspect.Table" Columns=""/>
+        <Aspect t="uiaspect.ExposedFiltersSection" FieldIds="Name,NameAndAge"/>
+          <Field t="field.XmlField" Path="@Name">
+            <FieldAspect t="field.SuggestionsFromData"/>
+          </Field>
+          <Field t="field.XmlField" Path="@Age"/>
+          <Field t="field.XmlField" Path="@Gender">
+            <FieldAspect t="field_aspect.Picklist">
+              <Options t="picklist.SimpleOptions" Options="Male,Female"/>
+            </FieldAspect>
+          </Field>
+          <Field t="field.XmlField" Path="@NameAndAge">
+            <FieldAspect t="field.SuggestionsFromData"/>
+            <FieldAspect t="field_aspect.TextSummary" Text="%../@Name% %../@Age%"/>
+          </Field>
+      </Control>
+      <ExpectedResult t="yesno.And">
+        <Item t="dialog.CurrentPopupContains"/>
+      </ExpectedResult>
+      <RunOnControl t="picklist.OpenPicklistPopup" FieldID="NameAndAge_filter"/>
+    </Usage>
+
+  <Usage t="ui.ControlUsage" Of="uiaspect.ExposedFiltersSection.OfCalculated">
+      <Var name="Items" t="xml.Xml">
+        <Persons>
+          <Person Name="Homer" Age="38" Gender="Male" MainHobby="Complaining"/>
+          <Person Name="Bart" Age="10" Gender="Male" MainHobby="Disturbing"/>
+          <Person Name="Marge" Age="10" Gender="Female" MainHobby="Cooking"/>
+          <Person Name="Lisa" Age="17" Gender="Female" MainHobby="Cooking"/>
+        </Persons>
+      </Var>
+      <Control t="ui.ItemList">
+        <Items t="data_items.Items" Items="%$Items/Person%"/>
+        <Aspect t="uiaspect.Table" Columns=""/>
+        <Aspect t="uiaspect.ExposedFiltersSection" FieldIds="NameAndAge"/>
+          <Field t="field.XmlField" Path="@Age"/>
+          <Field t="field.XmlField" Path="@Name"/>
+          <Field t="field.XmlField" Path="@NameAndAge">
+            <FieldAspect t="field_aspect.Calculated" Formula="%@Name% %@Age%"/>
+          </Field>
+      </Control>
+      <RunOnControl t="uiaction.SetText" Text="Homer" RunOn=".fld_NameAndAge_filter"/>
+      <ExpectedResult t="yesno.Contains" IgnoreCase="true">
+        <Text value="Homer"/>
+      </ExpectedResult>
+    </Usage>
+
+  <Usage t="ui.ControlUsage" Of="uiaspect.ExposedFiltersSection">
+      <Var name="Items" t="xml.Xml">
+        <Persons>
+          <Person Name="Homer" Age="38" Gender="Male" MainHobby="Complaining"/>
+          <Person Name="Bart" Age="10" Gender="Male" MainHobby="Disturbing"/>
+          <Person Name="Marge" Age="10" Gender="Female" MainHobby="Cooking"/>
+          <Person Name="Lisa" Age="17" Gender="Female" MainHobby="Cooking"/>
+        </Persons>
+      </Var>
+      <Control t="ui.ItemList">
+        <Items t="data_items.Items" Items="%$Items/Person%"/>
+        <Aspect t="uiaspect.Table" Columns=""/>
+        <Aspect t="uiaspect.ExposedFiltersSection" FieldIds="Name,Age,Gender"/>
+          <Field t="field.XmlField" Path="@Age"/>
+          <Field t="field.XmlField" Path="@Name"/>
+          <Field t="field.XmlField" Path="@Gender">
+            <FieldAspect t="field_aspect.Picklist">
+              <Options t="picklist.SimpleOptions" Options="Male,Female"/>
+            </FieldAspect>
+          </Field>
+      </Control>
+      <RunOnControl t="uiaction.SetText" Text="1" RunOn=".fld_Age_filter"/>
+      <ExpectedResult t="yesno.Contains" IgnoreCase="true">
+        <Text value="Filter By Name"/>
+        <Text value="Bart"/>
+        <Text value="Marge"/>
+        <Text value="Lisa"/>
+      </ExpectedResult>
+    </Usage>
+
+  <Usage t="ui.ControlUsage" Of="uiaspect.FastFind.Table">
+      <Var name="Items" t="xml.Xml">
+        <Persons>
+          <Person Name="Homer" Age="38" Gender="Male" MainHobby="Complaining"/>
+          <Person Name="Lisa" Age="7" Gender="Female" MainHobby="Cooking"/>
+        </Persons>
+      </Var>
+      <Control t="ui.ItemList">
+          <Field t="field.XmlField" Path="@Name"/>
+          <Field t="field.XmlField" Path="@Age"/>
+          <Field t="field.XmlField" Path="@Gender"/>
+        <Items t="xml.XmlItems" Parent="%$Items%" Tag="Person"/>
+        <Presentation t="uiaspect.RichTable"/>
+        <Aspect t="uiaspect.FastFind"/>
+      </Control>
+      <RunOnControl t="uiaction.SetText" Text="ho" RunOn=".fld__filter"/>
+      <ExpectedResult t="yesno.And">
+        <Item t="yesno.NotContains" Text="Lisa"/>
+        <Item t="yesno.Contains">
+          <Text value="38"/>
+        </Item>
+      </ExpectedResult>
+    </Usage>
+
+  <Usage t="ui.ControlUsage" Of="uiaspect.FastFind.Tree">
+      <Var name="Items" t="xml.Xml">
+        <a>
+          <a name="1">
+            <a name="1.1"/>
+            <a name="1.2"/>
+          </a>
+          <a name="2">
+            <a name="2.1">
+              <a name="2.1.1"/>
+              <a name="2.1.2"/>
+            </a>
+            <a name="2.2"/>
+          </a>
+          <a name="3">
+            <a name="3.1"/>
+            <a name="3.2"/>
+          </a>
+        </a>
+      </Var>
+      <Control t="ui.List">
+        <Control t="ui.ItemList" Class="mytree">
+          <Items t="xml.WritableXmlList" ItemList="%$Items/a%"/>
+          <Aspect t="uiaspect.ItemImage" ItemImage="%$_Images%/studio/person3.gif"/>
+          <Aspect t="uiaspect.ItemText" ItemText="%@name%"/>
+          <Aspect t="uiaspect.ItemSelection"/>
+          <Aspect t="uiaspect.NextLevels">
+            <NextLevel t="xml.XmlItems" Tag="a"/>
+            <NextLevelAspect t="uiaspect.ItemImage" ItemImage="%$_Images%/studio/person3.gif"/>
+            <NextLevelAspect t="uiaspect.ItemText" ItemText="%@name%:"/>
+            <NextLevelAspect t="uiaspect.ExpandCollapse"/>
+            <NextLevelAspect t="uiaspect.Indent" Lines="true"/>
+            <NextLevelAspect t="uiaspect.TreeNode"/>
+          </Aspect>
+          <Aspect t="uiaspect.ExpandCollapse"/>
+          <Aspect t="uiaspect.Indent"/>
+          <Aspect t="uiaspect.FastFind"/>
+        </Control>
+      </Control>
+      <ExpectedResult t="yesno.Contains" IgnoreCase="true">
+        <Text value="2.1"/>
+      </ExpectedResult>
+      <TryItYourself value="Change the tree to list"/>
+    </Usage>
+
+  <Usage IsTest="false" t="ui.ControlUsage" Of="ui.ItemList.Large">
+    <Var name="Items" t="data.CreateNumbers" From="1" To="1000" />
+    <Control t="ui.List">
+      <Control t="ui.ItemList">
+        <Items t="data.CreateNumbers" From="1" To="1000" />
+        <Aspect t="uiaspect.ItemImage" ItemImage="%$_Images%/studio/person3.gif" />
+        <Aspect t="uiaspect.ItemText" ItemText="%%" />
+      </Control>
+    </Control>
+    <ExpectedResult value="true" />
+  </Usage>
+
+  <Usage IsTest="false" t="ui.ControlUsage" Of="uiaspect.Table.Large">
+      <Var name="Items" t="data.CreateNumbers" From="1" To="1000"/>
+      <Control t="ui.ItemList">
+        <Items t="data_items.Items">
+          <Items t="data.CreateNumbers" From="1" To="1000"/>
+        </Items>
+        <Presentation t="uiaspect.Table"/>
+          <Field t="field.Field1" ID="f" Title="num" FieldData="%%">
+            <FieldAspect t="field.TextFilter"/>
+          </Field>
+          <Field t="field.Field1" ID="f1" Title="num" FieldData="%%"/>
+          <Field t="field.Field1" ID="f2" Title="num" FieldData="%%"/>
+          <Field t="field.Field1" ID="f3" Title="num" FieldData="%%"/>
+        <Aspect t="uiaspect.ExposedFiltersSection" FieldIds="f"/>
+      </Control>
+    </Usage>
+
+  <Usage IsTest="false" t="ui.ControlUsage" Of="uiaspect.List.Large">
+      <Control t="ui.ItemList">
+        <Items t="data_items.Items">
+          <Items t="data.CreateNumbers" From="1" To="200"/>
+        </Items>
+        <Presentation t="uiaspect.List" ItemCss=""/>
+          <Field t="field.XmlGroup" ID="f" Title="num" FieldData="%%">
+            <Field t="field.XmlField" Path="" />
+          </Field>
+        <Aspect t="uiaspect.ReadOnly" />
+        <Aspect t="uiaspect.IncrementalBuilder" ShowAll="true" ChunkLimitMSec="2000"/>      
+    </Control>
+    </Usage>
+
+  <Usage IsTest="false" t="ui.ControlUsage" Of="uiaspect.Table.LargeWithXtml">
+      <Var t="data.Pipeline" name="Items">
+        <Item t="xml.ElementOfDynamicTag" Tag="xml">
+          <Change t="xml.AddChildren">
+            <Children t="data.Pipeline">
+              <Item t="data.CreateNumbers" From="1" To="1000"/>
+              <Item t="xml.Xml" DynamicContent="true">
+                <xml value="%%"/>
+              </Item>
+            </Children>
+          </Change>
+        </Item>
+        <Item value="%*%"/>
+      </Var>
+      <Control t="ui.ItemList">
+        <Items t="data_items.Items" Items="%$Items%" />
+        <Presentation t="uiaspect.Table"/>
+          <Field t="field.Field1" ID="f" Title="num" FieldData="%@value%">
+            <FieldAspect t="field.TextFilter"/>
+          </Field>
+          <Field t="field.Field1" ID="f1" Title="num" FieldData="%@value%"/>
+          <Field t="field.Field1" ID="f2" Title="num" FieldData="%@value%"/>
+          <Field t="field.Field1" ID="f3" Title="num calculated" FieldData="%@value%">
+            <FieldAspect t="field_aspect.Calculated">
+              <Formula t="data.Math" Expression="%@value% +1"/>
+            </FieldAspect>
+          </Field>
+        <Aspect t="uiaspect.ExposedFiltersSection" FieldIds="f"/>
+      </Control>
+    </Usage>
+    
+  <Usage t="ui.ControlUsage" Of="uiaction.RefreshItemElements">
+    <Var name="Items" t="xml.Xml">
+      <Persons>
+        <Person name="Homer" />
+        <Person name="Marge" />
+        <Person name="Bart" />
+      </Persons>
+    </Var>
+    <Control t="ui.List">
+      <Control t="ui.ItemList" Class="mylist">
+        <Items t="data_items.Items" Items="%$Items/Person%" />
+        <Aspect t="uiaspect.ItemImage" ItemImage="%$_Images%/studio/person3.gif" />
+        <Aspect t="uiaspect.ItemText" ItemText="%@name%:" />
+        <Aspect t="uiaspect.ItemSelection" />
+      </Control>
+      <Control t="ui.ButtonOld" Text="change" Class="change">
+        <OnClick t="action.RunActions">
+          <Action t="xml.SetAttribute" AttributeName="name" Value="homemade">
+            <Data t="ui.ControlData" Type="data">
+              <Data t="uiaction.SelectedItemElement" RunOn=".mylist" />
+            </Data>
+          </Action>
+          <Action t="uiaction.RefreshItemElements">
+            <ItemElements t="uiaction.SelectedItemElement" RunOn=".mylist" />
+          </Action>
+        </OnClick>
+      </Control>
+    </Control>
+    <RunOnControl t="uiaction.ButtonClick" RunOn=".change" />
+    <ExpectedResult t="yesno.Contains">
+      <Text value="homemade" />
+    </ExpectedResult>
+  </Usage>
+
+  <Usage t="ui.ControlUsage" Of="uiaspect.NextLevels">
+    <Var name="Items" t="xml.Xml">
+      <a>
+        <a name="0" />
+        <a name="1">
+          <a name="1.1" />
+          <a name="1.2" />
+        </a>
+        <a name="2">
+          <a name="2.1">
+            <a name="2.1.1" />
+            <a name="2.1.2" />
+          </a>
+          <a name="2.2">
+            <a name="2.2.1" />
+            <a name="2.2.2" />
+          </a>
+        </a>
+        <a name="3" />
+      </a>
+    </Var>
+    <Control t="ui.List">
+      <Control t="ui.ItemList" Class="mytree">
+        <Aspect t="uiaspect.ItemImage" ItemImage="%$_Images%/studio/person3.gif" />
+        <Aspect t="uiaspect.ItemText" ItemText="%@name%:" />
+        <Aspect t="uiaspect.ItemSelection" />
+        <Aspect t="uiaspect.NextLevels">
+          <NextLevelAspect t="uiaspect.ItemImage" ItemImage="%$_Images%/studio/person3.gif" />
+          <NextLevelAspect t="uiaspect.ItemText" ItemText="%@name%:" />
+          <NextLevelAspect t="uiaspect.ExpandCollapse" />
+          <NextLevelAspect t="uiaspect.Indent" Lines="true" />
+          <NextLevelAspect t="uiaspect.TreeNode" />
+        </Aspect>
+        <Aspect t="uiaspect.ExpandCollapse" />
+        <Aspect t="uiaspect.Indent" Lines="true" />
+        <Items t="data_items.Items" Items="%$Items/a%" ItemTypeName="a">
+          <Aspect t="data_items.RecursiveNextLevel">
+            <NextLevel t="data_items.Items" Items="%a%" ItemTypeName="a" />
+          </Aspect>
+        </Items>
+      </Control>
+    </Control>
+    <ExpectedResult t="yesno.Contains">
+      <Text value="1.2" />
+    </ExpectedResult>
+  </Usage>
+
+  <Usage t="ui.ControlUsage" Of="uiaspect.NextLevelsLight">
+      <Var name="Items" t="xml.Xml">
+        <a>
+          <a name="0"/>
+          <a name="1">
+            <a name="1.1"/>
+            <a name="1.2"/>
+          </a>
+          <a name="2">
+            <a name="2.1">
+              <a name="2.1.1"/>
+              <a name="2.1.2"/>
+            </a>
+            <a name="2.2">
+              <a name="2.2.1"/>
+              <a name="2.2.2"/>
+            </a>
+          </a>
+          <a name="3"/>
+        </a>
+      </Var>
+      <ExpectedResult t="yesno.Contains">
+        <Text value="1.2"/>
+      </ExpectedResult>
+      <Control t="ui.ItemList" Class="mytree">
+        <Aspect t="uiaspect.ItemImage" ItemImage="%$_Images%/studio/person3.gif"/>
+        <Aspect t="uiaspect.ItemText" ItemText="%@name%:"/>
+        <Aspect t="uiaspect.ItemSelection"/>
+        <Aspect t="uiaspect.NextLevelsLight"/>
+        <Aspect t="uiaspect.ExpandCollapse"/>
+        <Aspect t="uiaspect.Indent" Lines="true"/>
+        <Aspect t="uiaspect.DragAndDropMover"/>
+        <Aspect t="uiaspect.ContextMenu"/>
+        <Aspect t="uiaspect.Toolbar"/>
+        <Items t="xml.XmlItems" Parent="%$Items%" Tag="a">
+          <Aspect t="data_items.RecursiveNextLevel">
+            <NextLevel t="xml.XmlItems" Parent="%%" Tag="a"/>
+          </Aspect>
+        </Items>
+        <Operations t="operation.Operations">
+          <Operation t="operation.Operation" ID="add" Title="add" Icon="%$_Images%/add1616.gif">
+            <Action t="operation.RunXtmlAction">
+              <Action t="action.RunActions">
+                <Action t="xml.ChangeXml" Xml="%$ChildDataItems/ParentXml%" >
+                  <Change t="xml.AddChildren">
+                    <Children t="xml.Xml" DynamicContent="">
+                      <a name="muki"/>
+                    </Children>
+                  </Change>
+                </Action>
+                <Action t="uiaction.AddItemElement" ParentElement="%$_ElemsOfOperation%">
+                  <Item t="xml.Xml" DynamicContent="">
+                    <a name="muki"/>
+                  </Item>
+                </Action>
+              </Action>
+            </Action>
+          </Operation>
+          <Operation t="operation.Operation" Title="show xml" Icon="%$_Images%/studio/xml1616.gif">
+            <Action t="operation.RunXtmlAction">
+              <Action t="xmlui.ShowXmlDialog"/>
+            </Action>
+          </Operation>
+        </Operations>
+      </Control>
+    </Usage>
+
+  <Usage t="ui.ControlUsage" Of="uiaspect.NextLevelsLight.CollapseFirstLevel">
+      <Var name="Items" t="xml.Xml">
+        <a>
+          <a name="0"/>
+          <a name="1">
+            <a name="1.1"/>
+            <a name="1.2"/>
+          </a>
+          <a name="2">
+            <a name="2.1">
+              <a name="2.1.1"/>
+              <a name="2.1.2"/>
+            </a>
+            <a name="2.2">
+              <a name="2.2.1"/>
+              <a name="2.2.2"/>
+            </a>
+          </a>
+          <a name="3"/>
+        </a>
+      </Var>
+      <Control t="ui.List">
+        <Control t="ui.ItemList" Class="mytree">
+          <Aspect t="uiaspect.ItemImage" ItemImage="%$_Images%/studio/person3.gif"/>
+          <Aspect t="uiaspect.ItemText" ItemText="%@name%:"/>
+          <Aspect t="uiaspect.ItemSelection"/>
+          <Aspect t="uiaspect.NextLevelsLight"/>
+          <Aspect t="uiaspect.ExpandCollapse" CollapseFirstLevel="true"/>
+          <Aspect t="uiaspect.Indent" Lines="true"/>
+          <Aspect t="uiaspect.DragAndDropMover"/>
+          <Items t="xml.XmlItems" Parent="%$Items%" Tag="a">
+            <Aspect t="data_items.RecursiveNextLevel">
+              <NextLevel t="xml.XmlItems" Parent="%%" Tag="a"/>
+            </Aspect>
+          </Items>
+        </Control>
+      </Control>
+      <ExpectedResult t="yesno.Contains">
+        <Text value="1.2"/>
+      </ExpectedResult>
+    </Usage>
+
+  <Usage t="ui.ControlUsage" Of="uiaspect.Tree.DeleteFromContextMenu">
+    <Var name="Items" t="xml.Xml">
+      <a>
+        <a name="to delete"/>
+        <a name="1">
+          <a name="1.1"/>
+          <a name="1.2"/>
+        </a>
+      </a>
+    </Var>
+    <Control t="ui.ItemList" Class="mytree">
+      <Items t="xml.XmlItems" Parent="%$Items%" Tag="a">
+        <Aspect t="data_items.RecursiveNextLevel">
+          <NextLevel t="xml.XmlItems" Parent="%%" Tag="a"/>
+        </Aspect>
+      </Items>
+      <Presentation t="uiaspect.Tree"/>
+      <Aspect t="uiaspect.ItemText" ItemText="%@name%"/>
+      <Aspect t="uiaspect.DefaultFeatures"/>
+      <Aspect t="uiaspect.ContextMenu"/>
+      <Operations t="operation.StdOperations"/>
+    </Control>
+    <RunOnControl t="action.RunActions">
+      <Action t="menu.RunContextMenuItem">
+        <Control t="uiaction.ElementByInnerFilter">
+          <TopElement t="ui.ControlToRunOn"/>
+          <Filter t="yesno.EqualsTo" Data="%@name%" To="to delete"/>
+        </Control>
+        <MenuItemText value="Delete a"/>
+      </Action>
+      <Action t="dlg.CloseDialog" CloseType="OK" />
+    </RunOnControl>
+    <ExpectedResult t="yesno.NotContains">
+      <Text value="to delete"/>
+    </ExpectedResult>
+
+  </Usage>
+
+  <Usage t="ui.ControlUsage" Of="uiaspect.DragAndDropMover">
+    <Var name="Items" t="xml.Xml">
+      <a>
+        <a name="1" />
+        <a name="2" />
+        <a name="3" />
+        <a name="4" />
+      </a>
+    </Var>
+    <Control t="ui.List" Class="top">
+      <Control t="ui.Text" Class="result">
+        <Text t="data.Pipeline">
+          <Item value="%$Items/a/@name%" />
+          <Aggregator t="text.Concat" Separator="," />
+        </Text>
+      </Control>
+      <Control t="ui.ItemList" Items2="%$Items/a%">
+        <Items t="xml.WritableXmlList" ItemList="%$Items/a%" />
+        <Aspect t="uiaspect.ItemImage" ItemImage="%$_Images%/studio/person3.gif" />
+        <Aspect t="uiaspect.ItemText" ItemText="%@name%" />
+        <Aspect t="uiaspect.ItemSelection" />
+        <Aspect t="uiaspect.DragAndDropMover">
+          <OnDrop t="uiaction.Refresh" RunOn="updown(.top,.result)" />
+        </Aspect>
+      </Control>
+    </Control>
+    <ExpectedResult t="yesno.Contains">
+      <Text value="1" />
+    </ExpectedResult>
+  </Usage>
+
+  <Usage t="ui.ControlUsage" Of="uiaspect.TableNoItems">
+    <Var name="Items" t="xml.Xml">
+      <Persons/>
+    </Var>
+    <Control t="ui.ItemList">
+        <Field t="field.XmlField" Path="@Age"/>
+        <Field t="field.XmlField" Path="@Gender"/>
+      <Presentation t="uiaspect.RichTable"/>
+      <Aspect t="uiaspect.Toolbar"/>
+      <Aspect t="uiaspect.DefaultFeatures"/>
+      <Operations t="operation.StdOperations"/>
+      <Items t="xml.XmlItems" Parent="%$Items%" Tag="Person" ItemTypeName="Person"/>
+    </Control>
+    <ExpectedResult t="yesno.Contains">
+      <Text value="No items available"/>
+    </ExpectedResult>
+  </Usage>
+
+  <Usage t="ui.ControlUsage" Of="uiaspect.TableNoHeader">
+      <Var name="Items" t="xml.Xml">
+        <Persons>
+          <Person Name="Homer" Age="38" Gender="Male" MainHobby="Complaining"/>
+          <Person Name="Lisa" Age="7" Gender="Female" MainHobby="Cooking"/>
+        </Persons>
+      </Var>
+      <Control t="ui.ItemList">
+        <Items t="xml.WritableXmlList" ItemList="%$Items/Person%"/>
+          <Field t="field.XmlField" Path="@Age"/>
+          <Field t="field.XmlField" Path="@Gender"/>
+        <Presentation t="uiaspect.RichTable"/>
+        <Aspect t="uiaspect.TableNoHeader"/>
+      </Control>
+      <ExpectedResult t="yesno.Contains">
+        <Text value="hidden_header"/>
+      </ExpectedResult>
+    </Usage>
+
+  <Usage t="ui.ControlUsage" Of="uiaspect.Table.ExpandableText">
+    <Var name="Items" t="xml.Xml">
+      <Persons>
+        <Person Name="Homer" Age="38" Gender="Male" MainHobby="Complaining"/>
+        <Person Name="Bart" Age="10" Gender="Male" MainHobby="Disturbing"/>
+        <Person Name="Marge" Age="40" Gender="Female" MainHobby="Cooking"/>
+        <Person Name="Lisa" Age="7" Gender="Female" MainHobby="Cooking"/>
+        <Person Name="Homer" Age="38" Gender="Male" MainHobby="Complaining"/>
+        <Person Name="Bart" Age="10" Gender="Male" MainHobby="Disturbing"/>
+        <Person Name="Marge" Age="40" Gender="Female" MainHobby="Cooking"/>
+        <Person Name="Lisa" Age="7" Gender="Female" MainHobby="Cooking"/>
+      </Persons>
+    </Var>
+    <Control t="ui.ItemList">
+      <Items t="xml.WritableXmlList" ItemList="%$Items/Person%"/>
+        <Field t="field.XmlField" Path="@Name"/>
+        <Field t="field.XmlField" Path="@Age"/>
+        <Field t="field.XmlField" Path="@Gender">
+          <FieldAspect t="field_aspect.CellPresentation" Content="expandable text"/>
+        </Field>
+      <Aspect t="uiaspect.DefaultFeatures"/>
+      <Presentation t="uiaspect.RichTable"/>
+    </Control>
+    <ExpectedResult t="yesno.Contains">
+      <Text value="Homer"/>
+      <Text value="Gender"/>
+      <Text value="Female"/>
+    </ExpectedResult>
+  </Usage>
+
+  <Usage t="ui.ControlUsage" Of="uiaspect.Table.SelectFirst">
+      <Var name="Items" t="xml.Xml">
+        <Persons>
+          <Person Name="Homer" Age="38" Gender="Male" MainHobby="Complaining"/>
+          <Person Name="Bart" Age="10" Gender="Male" MainHobby="Disturbing"/>
+          <Person Name="Marge" Age="40" Gender="Female" MainHobby="Cooking"/>
+          <Person Name="Lisa" Age="7" Gender="Female" MainHobby="Cooking"/>
+          <Person Name="Homer" Age="38" Gender="Male" MainHobby="Complaining"/>
+          <Person Name="Bart" Age="10" Gender="Male" MainHobby="Disturbing"/>
+          <Person Name="Marge" Age="40" Gender="Female" MainHobby="Cooking"/>
+          <Person Name="Lisa" Age="7" Gender="Female" MainHobby="Cooking"/>
+        </Persons>
+      </Var>
+      <Control t="ui.List" Class="top">
+        <Control t="ui.Text" Class="result">
+          <Text t="data.Pipeline">
+            <Item value="%$Items/*/@Name%"/>
+            <Aggregator t="text.Concat" Separator=","/>
+          </Text>
+        </Control>
+        <Var name="AAControlMode" value="readonly"/>
+        <Control t="ui.ItemList">
+          <Items t="xml.WritableXmlList" ItemList="%$Items/Person%"/>
+            <Field t="field.XmlField" Path="@Name"/>
+            <Field t="field.XmlField" Path="@Age"/>
+            <Field t="field.XmlField" Path="@Gender"/>
+          <Presentation t="uiaspect.RichTable"/>
+          <Aspect t="uiaspect.DefaultFeatures"/>
+          <Operations t="operation.StdOperations" OpenItemDetails="true"/>
+        </Control>
+      </Control>
+      <ExpectedResult t="yesno.Contains">
+        <Text value="Homer"/>
+        <Text value="Gender"/>
+        <Text value="Female"/>
+      </ExpectedResult>
+    </Usage>
+
+  <Usage t="ui.ControlUsage" Of="uiaspect.Table">
+      <Var name="Items" t="xml.Xml">
+        <Persons>
+          <Person Name="Homer" Age="38" Gender="Male" MainHobby="Complaining"/>
+          <Person Name="Bart" Age="10" Gender="Male" MainHobby="Disturbing"/>
+          <Person Name="Marge" Age="40" Gender="Female" MainHobby="Cooking"/>
+          <Person Name="Lisa" Age="7" Gender="Female" MainHobby="Cooking"/>
+          <Person Name="Homer" Age="38" Gender="Male" MainHobby="Complaining"/>
+          <Person Name="Bart" Age="10" Gender="Male" MainHobby="Disturbing"/>
+          <Person Name="Marge" Age="40" Gender="Female" MainHobby="Cooking"/>
+          <Person Name="Lisa" Age="7" Gender="Female" MainHobby="Cooking"/>
+        </Persons>
+      </Var>
+      <Control t="ui.List" Class="top">
+        <Control t="ui.Text" Class="result">
+          <Text t="data.Pipeline">
+            <Item value="%$Items/*/@Name%"/>
+            <Aggregator t="text.Concat" Separator=","/>
+          </Text>
+        </Control>
+        <Var name="AAControlMode" value="readonly"/>
+        <Control t="ui.ItemList">
+          <Aspect t="uiaspect.DefaultFeatures"/>
+          <Operations t="operation.StdOperations" OpenItemDetails="true"/>
+            <Field t="field.XmlField" Path="@Name"/>
+            <Field t="field.XmlField" Path="@Age">
+              <Type t="field_aspect.Number"/>
+            </Field>
+            <Field t="field.XmlField" Path="@Gender"/>
+          <Items t="xml.XmlItems" Parent="%$Items%" Tag="Person"/>
+          <Presentation t="uiaspect.Table"/>
+        </Control>
+      </Control>
+      <ExpectedResult t="yesno.Contains">
+        <Text value="Homer"/>
+        <Text value="Gender"/>
+        <Text value="Female"/>
+      </ExpectedResult>
+    </Usage>
+
+  <Usage t="ui.ControlUsage" Of="field.CustomControl">
+      <Var name="Item" t="xml.Xml">
+        <Person Name="Homer" Age="38" Gender="Male" MainHobby="Complaining"/>
+      </Var>
+      <Control t="ui.Document">
+        <Item t="data_items.Items" Items="%$Item%"/>
+          <Field t="field.CustomControl">
+            <Control t="ui.TextControl" Data="%@Name%"/>
+          </Field>
+          <Field t="field.CustomControl" ShowTitle="true" Title="Age">
+            <Control t="ui.TextControl" Data="%@Age%"/>
+          </Field>
+      </Control>
+      <ExpectedResult t="yesno.Contains">
+        <Text value="Homer"/>
+        <Text value="Age:"/>
+        <Text value="38"/>
+      </ExpectedResult>
+    </Usage>
+  
+  <Usage t="ui.ControlUsage" Of="ui.Document.Operations">
+      <Var name="Item" t="xml.Xml">
+        <Person Name="Homer" Age="38" Gender="Male" MainHobby="Complaining"/>
+      </Var>
+      <Control t="ui.Document">
+        <Item t="data_items.Items" Items="%$Item%"/>
+          <Field t="field.Field1" Title="Age" FieldData="%@Age%" Id="Age" Description="age of person">
+            <Validation t="ui.Validation" Message="Please enter a positive number for %$FieldTitle%" Level="Error">
+              <SuccessCondition t="yesno.Not">
+                <Of t="yesno.PassesCondition" Expression="%% &lt; 1"/>
+              </SuccessCondition>
+              <FieldAspect t="field_aspect.RefreshDependentFields" FieldsIds="Title1" RefreshScope="container" RefreshOn="exit field"/>
+            </Validation>
+          </Field>
+          <Field t="field.Field1" Title="Gender" FieldData="%@Gender%" Id="Gender"/>
+          <Field t="field.XmlField" Path="@MainHobby"/>
+          <Field t="field.Field1" Title="Gender2" Id="@Gender"/>
+          <Field t="field.XmlField" Path="@Title1">
+            <FieldAspect t="field_aspect.Calculated" Formula="%@Name% (%@Age%)" DependsOnFields="Age"/>
+          </Field>
+        <Aspect t="uiaspect.Toolbar"/>
+        <Operations t="operation.Operation" ID="mukk" Title="send email" />
+      </Control>
+      <ExpectedResult t="yesno.Contains">
+        <Text value="send email"/>
+      </ExpectedResult>
+    </Usage>
+
+  <Usage t="ui.ControlUsage" Of="uiaspect.ItemDetails">
+      <Var name="Items" t="xml.Xml">
+        <Persons>
+          <Person Name="Homer" Birthday="2/1/1980" Gender="Male" MainHobby="Complaining"/>
+          <Person Name="Bart" Birthday="1/5/2000" Gender="Male" MainHobby="Disturbing"/>
+        </Persons>
+      </Var>
+      <Control t="ui.ItemList">
+        <Items t="xml.XmlItems" Parent="%$Items/%" Tag="Person"/>
+          <Field t="field.XmlField" Path="@Name"/>
+          <Field t="field.XmlField" Path="@Birthday"/>
+        <Aspect t="uiaspect.Table"/>
+        <Aspect t="uiaspect.ItemDetails"/>
+        <Aspect t="uiaspect.Toolbar" Location="footer"/>
+        <Aspect t="uiaspect.ItemSelection"/>
+        <Operations t="operation.Operations">
+          <Operation t="operation.StdOperations" OpenItemDetails="true"/>
+          <Operation t="operation.Operation" Title="show xml" Icon="%$_Images%/studio/xml1616.gif">
+            <Action t="xmlui.ShowXmlDialog" Xml="%$Items%" />
+          </Operation>
+        </Operations>
+      </Control>
+      <RunOnControl t="action.RunActions">
+        <Action t="uiaction.Click" RunOn=".OpenItemDetails"/>
+      </RunOnControl>
+      <CleanAfter t="dialog.CloseDialog"/>
+      <ExpectedResult t="yesno.Contains">
+        <Data t="dialog.TopDialogContent"/>
+        <Text value="Homer"/>
+      </ExpectedResult>
+    </Usage>
+
+  <Usage t="ui.ControlUsage" Of="uiaspect.DetailsInFixedLocation">
+      <Var name="Items" t="xml.Xml">
+        <Persons>
+          <Person Name="Homer" Birthday="2/1/1980" Gender="Male" MainHobby="Complaining"/>
+          <Person Name="Bart" Birthday="1/5/2000" Gender="Male" MainHobby="Disturbing"/>
+        </Persons>
+      </Var>
+      <Control t="ui.ItemList">
+        <Items t="xml.XmlItems" Parent="%$Items%" Tag="Person"/>
+          <Field t="field.XmlField" Path="@Name"/>
+          <Field t="field.XmlField" Path="@Birthday"/>
+        <Aspect t="uiaspect.DefaultFeatures"/>
+        <Aspect t="uiaspect.Table"/>
+        <Aspect t="uiaspect.ItemDetails">
+          <OpenIn t="uiaspect.DetailsInFixedLocation"/>
+        </Aspect>
+        <Aspect t="uiaspect.BottomLocation"/>
+        <Operations t="operation.StdOperations" OpenItemDetails="true"/>
+      </Control>
+      <RunOnControl t="action.RunActions">
+        <Action t="uiaction.Click" RunOn=".OpenItemDetails"/>
+      </RunOnControl>
+      <ExpectedResult t="yesno.Contains">
+        <Text value="Homer"/>
+        <Text value="Homer"/>
+      </ExpectedResult>
+    </Usage>
+
+  <Usage t="ui.ControlUsage" Of="uiaspect.RightLocation">
+      <Var name="Items" t="xml.Xml">
+        <Persons>
+          <Person Name="Homer" Birthday="2/1/1980" Gender="Male" MainHobby="Complaining"/>
+          <Person Name="Bart" Birthday="1/5/2000" Gender="Male" MainHobby="Disturbing"/>
+        </Persons>
+      </Var>
+      <Control t="ui.ItemList">
+        <Items t="xml.XmlItems" Parent="%$Items%" Tag="Person"/>
+          <Field t="field.XmlField" Path="@Name"/>
+          <Field t="field.XmlField" Path="@Birthday"/>
+        <Aspect t="uiaspect.DefaultFeatures"/>
+        <Aspect t="uiaspect.Table"/>
+        <Aspect t="uiaspect.ItemDetails">
+          <OpenIn t="uiaspect.DetailsInFixedLocation" Location="right"/>
+        </Aspect>
+        <Aspect t="uiaspect.RightLocation" LeftExpandCollpase="true"/>
+        <Aspect t="uiaspect.SynchSelectionWithItemDetails"/>
+        <Operations t="operation.StdOperations" OpenItemDetails="true"/>
+      </Control>
+      <RunOnControl t="action.RunActions">
+        <Action t="uiaction.Click" RunOn=".OpenItemDetails"/>
+      </RunOnControl>
+      <ExpectedResult t="yesno.Contains">
+        <Text value="Homer"/>
+        <Text value="Homer"/>
+      </ExpectedResult>
+    </Usage>
+
+  <Component id="HebrewUsageTranlations" type="text.MultiLangSuite">
+    <xtml t="text.MultiLangSuite" Language="hebrew">
+      <Pattern Original="person" Tranlation="איש" />
+      <Pattern Original="Name" Tranlation="שם" />
+      <Pattern Original="Birthday" Tranlation="יומולדת" />
+      <Pattern Original="New %$Items/ItemTypeName%" Tranlation="%$Items/ItemTypeName% חדש" />
+    </xtml>
+  </Component>
+
+  <Usage t="ui.ControlUsage" Of="ui.ItemList.MultiLang">
+    <Var name="Items" t="xml.Xml">
+      <persons>
+        <person Name="Homer" Birthday="2/1/1980" Gender="Male" MainHobby="Complaining" />
+        <person Name="Bart" Birthday="1/5/2000" Gender="Male" MainHobby="Disturbing" />
+      </persons>
+    </Var>
+    <Var name="Language" value="hebrew" />
+    <Control t="ui.ItemList">
+      <Items t="xml.XmlItems" Parent="%$Items/%" Tag="person" />
+        <Field t="field.Field1" Title="Name" FieldData="%!@Name%" ID="Name" />
+        <Field t="field.Field1" Title="Birthday" FieldData="%!@Birthday%" ID="@Birthday" />
+      <Operations t="operation.StdOperations" />
+      <Aspect t="uiaspect.DefaultFeatures" />
+      <Aspect t="uiaspect.Table" />
+    </Control>
+    <ExpectedResult t="yesno.Contains">
+      <Text value="איש" />
+      <Text value="שם" />
+    </ExpectedResult>
+  </Usage>
+
+  <Usage t="ui.ControlUsage" Of="uiaspect.MultipleColumns">
+    <Var name="Item" t="xml.Xml">
+      <person name="Homer" age="50" hobby="swimming" birthday="12/1/1940" />
+    </Var>
+    <Control t="ui.Document">
+        <Item t="data_items.Items" Items="%$Item%" />
+        <Fields t="field.SimpleXmlFields" Paths="@name,@age,@hobby,@birthday,@nation"/>
+        <Presentation t="uiaspect.MultipleColumns" Columns="2" />
+    </Control>
+    <ExpectedResult t="yesno.Contains">
+      <Text value="Homer" />
+      <Text value="swimming" />
+    </ExpectedResult>
+  </Usage>
+
+  <Usage t="ui.ControlUsage" Of="uiaspect.ItemHighlight">
+      <Var name="Items" t="xml.Xml">
+        <Persons>
+          <Person Text="Marge" Birthday="1/11/1996" Age="32"/>
+          <Person Text="Maggy" Birthday="1/11/2002" Age="12"/>
+          <Person Text="Homer" Birthday="1/11/1986" Age="40"/>
+          <Person Text="Bart" Birthday="1/11/1960" Age="10"/>
+        </Persons>
+      </Var>
+      <Control t="ui.ItemList">
+          <Field t="field.XmlField" Path="@Text"/>
+          <Field t="field.XmlField" Path="@Birthday"/>
+          <Field t="field.XmlField" Path="@Age" Title="Age"/>
+        <Aspect1 t="uiaspect.Toolbar"/>
+        <Aspect1 t="uiaspect.DefaultFeatures"/>
+        <Aspect t="uiaspect.ItemHighlight">
+          <BackgroundColor t="data.IfThenElse" If="%@Age% &gt; 35" Then="red"/>
+          <FontColor t="data.IfThenElse" If="%@Age% &gt; 35" Then="white"/>
+        </Aspect>
+        <Presentation t="uiaspect.RichTable" Columns="Text,Birthday,Age,EditItem"/>
+        <Aspect t="uiaspect.ItemDetails"/>
+        <Aspect t="uiaspect.Toolbar"/>
+        <Aspect t="uiaspect.ItemSelection"/>
+        <Operations1 t="operation.StdOperations"/>
+        <Items t="xml.XmlItems" Parent="%$Items%" Tag="Person" ItemTypeName="Person"/>
+        <Operations t="operation.Operations">
+          <Operation t="operation.StdOperations"/>
+        </Operations>
+      </Control>
+      <ExpectedResult t="yesno.Contains">
+        <Text value="red"/>
+      </ExpectedResult>
+    </Usage>
+  
+  <Usage t="ui.ControlUsage" Of="uiaspect.TableInTable">
+    <Data t="xml.Xml">
+      <Efforts>
+        <Effort name="Cellular market">
+          <Channels>
+            <Channel name="Marketing" />
+            <Channel name="Development" />
+          </Channels>
+        </Effort>
+        <Effort name="OS development">
+          <Channels>
+            <Channel name="core development" />
+          </Channels>
+        </Effort>
+      </Efforts>
+    </Data>
+    <Control t="ui.ItemList">
+      <Items t="xml.XmlItems" Tag="Effort" />
+        <Field t="field.XmlField" Path="@name" />
+        <Field t="field.XmlMultipleGroup" Path="Channels/Channel" Title="Channels" TitleForSingle="Channel">
+          <Field t="field.XmlField" Path="@name" />
+          <Aspect t="uiaspect.DefaultFeatures" />
+          <Presentation t="uiaspect.RichTable" />
+          <Operations t="operation.StdOperations" />
+          <FieldAspect t="field_aspect.CellPresentation" Content="control" />
+        </Field>
+      <Aspect t="uiaspect.DefaultFeatures" />
+      <Presentation t="uiaspect.RichTable" />
+    </Control>​
+    <ExpectedResult t="yesno.Contains">
+      <Text value="Development" />
+    </ExpectedResult>
+  </Usage>
+    
+  <Usage t="ui.ControlUsage" Of="ui.Document.Toolbar" IsTest="false">
+    <Data t="xml.Xml">
+      <Efforts>
+        <Effort name="Cellular market" />
+        <Effort name="OS development" />
+      </Efforts>
+    </Data>
+    <Control t="ui.Document">
+      <Items t="xml.XmlItems" Tag="Effort" />
+      <Operations t="operation.Operation" Title="save" />
+        <Field t="field.XmlField" Path="@name" />
+        <Field t="field.XmlMultipleGroup" Path="Effort" Title="Efforts" TitleForSingle="Effort">
+          <Field t="field.XmlField" Path="@name" />
+          <Aspect t="uiaspect.DefaultFeatures" />
+          <Presentation t="uiaspect.RichTable" />
+          <Operations t="operation.StdOperations" />
+          <FieldAspect t="field_aspect.Section" />
+        </Field>
+      <Aspect t="uiaspect.Toolbar" />
+    </Control>​
+    <ExpectedResult t="yesno.Contains">
+      <Text value="save" />
+    </ExpectedResult>
+  </Usage>
+    
+  <Usage t="ui.ControlUsage" Of="uiaspect.ExpandCollapse.CollapseLevel.first" IsTest="false">
+    <Var name="Items" t="xml.Xml">
+      <a>
+        <a name="0" />
+        <a name="1">
+          <a name="1.1" />
+          <a name="1.2" />
+        </a>
+        <a name="2">
+          <a name="2.1">
+            <a name="2.1.1" />
+            <a name="2.1.2" />
+          </a>
+          <a name="2.2">
+            <a name="2.2.1" />
+            <a name="2.2.2" />
+          </a>
+        </a>
+        <a name="3" />
+      </a>
+    </Var>
+    <Control t="ui.List">
+      <Control t="ui.ItemList" Class="mytree">
+        <Aspect t="uiaspect.ItemImage" ItemImage="%$_Images%/studio/person3.gif" />
+        <Aspect t="uiaspect.ItemText" ItemText="%@name%:" />
+        <Aspect t="uiaspect.ItemSelection" />
+        <Aspect t="uiaspect.NextLevels">
+          <NextLevelAspect t="uiaspect.ItemImage" ItemImage="%$_Images%/studio/person3.gif" />
+          <NextLevelAspect t="uiaspect.ItemText" ItemText="%@name%:" />
+          <NextLevelAspect t="uiaspect.ExpandCollapse" CollapseLevel="root"/>
+          <NextLevelAspect t="uiaspect.Indent" Lines="true" />
+          <NextLevelAspect t="uiaspect.TreeNode" />
+        </Aspect>
+        <Aspect t="uiaspect.ExpandCollapse" CollapseLevel="first"/>
+        <Aspect t="uiaspect.Indent" Lines="true" />
+        <Items t="data_items.Items" Items="%$Items/a%" ItemTypeName="a">
+          <Aspect t="data_items.RecursiveNextLevel">
+            <NextLevel t="data_items.Items" Items="%a%" ItemTypeName="a" />
+          </Aspect>
+        </Items>
+      </Control>
+    </Control>
+    <ExpectedResult t="yesno.NotContains">
+      <Text value="2.1.1" />
+    </ExpectedResult>
+  </Usage>
+    
+  <Usage t="ui.ControlUsage" Of="operation.OpenSecondaryItemDetails">
+      <Var name="People" t="xml.Xml">
+        <Persons>
+          <Person Name="Bart" Age="5" Gender="Male" Birthday="1/11/1960"/>
+          <Person Name="Homer" Age="38" Gender="Male" Birthday="11/2/1960"/>
+        </Persons>
+      </Var>
+      <Var name="Selected" value="%$Items/@Selected%"/>
+      <Control t="ui.ItemList">
+        <Items t="xml.XmlItems" Parent="%$People%" Tag="Person"/>
+        <Aspect t="uiaspect.DefaultFeatures" />
+        <Aspect t="uiaspect.Table"/>
+        <Fields t="field.SimpleXmlFields" Paths="@Name,@Age"/>
+        <Operations t="operation.Operation" ID="open1" Title="open">
+          <Action t="operation.OpenSecondaryItemDetails">
+            <ItemPage t="ui.ItemPage">
+              <Field t="field.SimpleXmlFields" Paths="@Name,@Gender"/>
+            </ItemPage>
+          </Action>
+        </Operations>
+      </Control>
+      <RunOnControl t="uiaction.Click" RunOn=".open1"/>
+      <ExpectedResult t="yesno.Contains">
+        <Data t="dialog.TopDialogContent"/>
+        <Text value="Gender"/>
+      </ExpectedResult>
+      <CleanAfter t="dialog.CloseDialog"/>
+  </Usage>
+  
+  <Usage t="ui.ControlUsage" Of="operation.OpenSecondaryItemDetails.ReadOnly">
+      <Var name="People" t="xml.Xml">
+        <Persons>
+          <Person Name="Bart" Age="5" Gender="Male" Birthday="1/11/1960"/>
+          <Person Name="Homer" Age="38" Gender="Male" Birthday="11/2/1960"/>
+        </Persons>
+      </Var>
+      <Var name="Selected" value="%$Items/@Selected%"/>
+      <Control t="ui.ItemList">
+        <Items t="xml.XmlItems" Parent="%$People%" Tag="Person"/>
+        <Aspect t="uiaspect.DefaultFeatures" />
+        <Aspect t="uiaspect.Table"/>
+          <Field t="field.XmlField" Path="@Name"/>
+          <Field t="field.XmlField" Path="@Age"/>
+        <Operations t="operation.Operation" ID="open1" Title="open">
+          <Action t="operation.OpenSecondaryItemDetails" ReadOnly="true">
+            <ItemPage t="ui.ItemPage" FieldsFromList="*" />
+          </Action>
+        </Operations>
+      </Control>
+      <RunOnControl t="uiaction.Click" RunOn=".open1"/>
+      <ExpectedResult t="yesno.NotContains" Text="input">
+        <Data t="dialog.TopDialogContent"/>
+      </ExpectedResult>
+      <CleanAfter t="dialog.CloseDialog"/>
+  </Usage>
+  
+  <Usage t="ui.ControlUsage" Of="uiaspect.ExpandAllText">
+    <Data t="xml.Xml">
+      <people>
+        <person name="homer" age="40"/>
+        <person name="marge" age="38"/>
+      </people>
+    </Data>
+    <Control t="ui.ItemList">
+      <Fields t="field.SimpleXmlFields" Paths="@name,@age" />
+      <Items t="xml.XmlItems" Tag="person" />
+      <Operations t="operation.StdOperations" />
+      <Aspect t="uiaspect.DefaultFeatures" />
+      <Presentation t="uiaspect.RichTable" />
+      <Aspect t="uiaspect.CellPresentation" Content="expandable text"/>
+      <Aspect t="uiaspect.ItemDetails">
+        <OpenNewIn t="uiaspect.ExpandAllText" />
+      </Aspect>
+    </Control>
+    <RunOnControl t="uiaction.Click" RunOn=".NewItem" />
+    <ExpectedResult t="yesno.Contains">
+      <Text value="close" />
+      <Text value="close" />
+    </ExpectedResult>
+  </Usage>
+
+ <Usage t="ui.ControlUsage" Of="uiaspect.ItemImage.InTable" IsTest="false" >
+  <Var name="Items" t="xml.Xml" DynamicContent="">
+    <Teams>
+      <team _type="team" id="Serbia" Image="http://img.fifa.com/imgml/flags/s/srb.gif" vid="1"/>
+      <team _type="team" id="Argentina" Image="http://img.fifa.com/imgml/flags/s/arg.gif" vid="1"/>
+      <team _type="team" id="France" Image="http://img.fifa.com/imgml/flags/s/fra.gif" vid="1"/>
+    </Teams>
+  </Var>
+  <Control t="ui.List" Class="top">
+    <Control t="ui.Text" Class="result">
+      <Text t="data.Pipeline">
+        <Item value="%$Items/*/@Name%"/>
+        <Aggregator t="text.Concat" Separator=","/>
+      </Text>
+    </Control>
+    <Var name="AAControlMode" value="readonly"/>
+    <Control t="ui.ItemList">
+      <Aspect t="uiaspect.DefaultFeatures"/>
+      <Presentation t="uiaspect.RichTable"/>
+      <Aspect t="uiaspect.ItemImage" ItemImage="%@Image%"/>
+      <Operations t="operation.StdOperations" OpenItemDetails="true"/>
+        <Field t="field.XmlField" Path="@id"/>
+      <Items t="xml.XmlItems" Parent="%$Items%" Tag="team"/>
+    </Control>
+  </Control>
+  <ExpectedResult t="yesno.Contains">
+    <Text value="srb"/>
+    <Text value="Serbia"/>
+  </ExpectedResult>
+</Usage>
+
+<Component id="PeopleData" type="data.Data">
+  <xtml t="xml.Xml">
+    <people>
+      <person name="Homer" hobby="screaming" />
+      <person name="Marge" hobby="relaxing" />
+    </people>
+  </xtml>
+</Component>
+
+<Usage t="ui.ControlUsage" Of="uiaspect.CustomListPresentation">
+  <Data t="uiaspect_usage.PeopleData" />
+  <Control t="ui.ItemList">
+    <Items t="xml.XmlItems" Tag="person" />
+    <Fields t="field.SimpleXmlFields" Paths="@name,@hobby" />
+    <Presentation t="uiaspect.CustomListPresentation">
+      <List t="ui.Text">
+        <Text t="data.Pipeline">
+          <Item value="%$_Cntr/Items/Items/@name%" />
+          <Aggregator t="text.Concat" Separator="," Suffix="."/>
+        </Text>
+      </List>
+    </Presentation>
+  </Control>
+  <ExpectedResult t="yesno.Contains">
+    <Text value="Homer,Marge." />
+  </ExpectedResult>
+</Usage>
+
+<Usage t="ui.ControlUsage" Of="headerfooter.FastAddItem">
+    <Var name="People" t="uiaspect_usage.PeopleData"/>
+    <Control t="ui.ItemList">
+      <Items t="xml.XmlItems" Parent="%$People%" Tag="person"/>
+      <Presentation t="uiaspect.Table"/>
+      <Aspect t="uiaspect.HeaderFooter">
+        <Control t="headerfooter.FastAddItem">
+          <Page t="ui.ItemPage">
+            <Field t="field.Field1" FieldData="Add person quickly:" >
+               <FieldAspect t="field_aspect.CellPresentation" Content="text"/>
+               <FieldAspect t="field_aspect.HideTitle" />
+            </Field>
+            <Field t="field.XmlField" Path="@name">
+              <FieldAspect t="field_aspect.Mandatory" />
+            </Field>
+          </Page>
+        </Control>
+      </Aspect>
+      <Aspect t="uiaspect.DefaultFeatures"/>
+        <Field t="field.XmlField" Path="@name"/>
+        <Field t="field.XmlField" Path="@age" />
+      <Operations t="operation.StdOperations" OpenItemDetails="true"/>
+    </Control>
+    <RunOnControl t="action.RunActions">
+      <Action t="uiaction.SetText" Text="Bill" RunOn=".fld_name" />
+      <Action t="uiaction.ButtonClick" RunOn=".FastAdd" />
+    </RunOnControl>
+    <ExpectedResult t="yesno.Contains">
+      <Text value="Add person quickly:"/>
+      <Text value="Add"/>
+      <Text value="Bill"/>
+    </ExpectedResult>
+</Usage>
+
+<Usage t="ui.ControlUsage" Of="uiaspect.DetailsReplacingAll">
+      <Var name="People" t="uiaspect_usage.PeopleData"/>
+      <Control t="ui.ItemList">
+        <Items t="xml.XmlItems" Parent="%$People%" Tag="person"/>
+        <Presentation t="uiaspect.Table"/>
+        <Aspect t="uiaspect.DefaultFeatures"/>
+        <Fields t="field.SimpleXmlFields" Paths="@name,@age"/>
+        <Operations t="operation.StdOperations" OpenItemDetails="true"/>
+        <Aspect t="uiaspect.ItemDetails">
+          <OpenIn t="uiaspect.DetailsReplacingAll" AutoToolbar="false"/>
+          <ItemPage t="ui.ItemPage" FieldsFromList="*">
+            <Field t="field.CustomControl">
+              <Control t="ui.ButtonOld" Text="Back" Class="MyBack">
+                <OnClick t="operation.SaveAndCloseInItemDetails"/>
+              </Control>
+            </Field>
+          </ItemPage>
+        </Aspect>
+      </Control>
+      <RunOnControl t="action.RunActions">
+        <Action t="uiaction.Click" RunOn=".OpenItemDetails"/>
+        <Action t="uiaction.ButtonClick" RunOn=".MyBack"/>
+      </RunOnControl>
+      <ExpectedResult t="yesno.Contains">
+        <Text value="Homer"/>
+        <Text value="Marge"/>
+      </ExpectedResult>
+    </Usage>
+
+<Usage t="ui.ControlUsage" Of="ui.Document.ItemDetails">
+  <Data t="xml.Xml">
+    <person name="Homer" age="12"/>
+  </Data>
+  <Control t="ui.Document">
+    <Fields t="field.SimpleXmlFields" Paths="@name,@age" />
+    <Aspect t="uiaspect.DefaultFeatures" />
+    <Operations t="operation.OpenItemDetails" />
+  </Control>
+  <RunOnControl t="uiaction.Click" RunOn=".OpenItemDetails"></RunOnControl>
+  <CleanAfter t="dialog.CloseDialog"/>
+  <ExpectedResult t="yesno.Contains">
+    <Data t="dialog.TopDialogContent" />
+    <Text value="Homer" />
+  </ExpectedResult>
+</Usage>
+
+<Usage t="ui.ControlUsage" Of="uiaspect.ItemDetails.OpenItemInUrl">
+      <RunBefore t="uiaction.SetUrlFragment" Attribute="people_open" Value="Marge"/>
+      <Control t="ui.ItemList" ID="people">
+        <Fields t="field.SimpleXmlFields" Paths="@name,@hobby"/>
+        <Aspect t="uiaspect.DefaultFeatures"/>
+        <Aspect t="uiaspect.ItemDetails" ItemIdentifier="%@name%" KeepOpenItemInUrl="true"/>
+        <Operations t="operation.OpenItemDetails"/>
+        <Items t="data_items.Items" ItemTypeName="person">
+          <Items t="data.Pipeline">
+            <Item t="uiaspect_usage.PeopleData"/>
+            <Item value="%*%"/>
+          </Items>
+        </Items>
+        <Presentation t="uiaspect.Table"/>
+      </Control>
+      <CleanAfter t="dialog.CloseDialog"/>
+      <ExpectedResult t="yesno.Contains">
+        <Data t="dialog.TopDialogContent"/>
+        <Text value="Marge"/>
+      </ExpectedResult>
+    </Usage>
+
+</xtml>
+ 
+</xtml>

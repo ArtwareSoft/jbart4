@@ -1,0 +1,229 @@
+<xtml package="true">
+
+<xtml ns="itemlist_style">
+
+  <Type id="View" style="true" />
+
+  <Component id="Simple" type="itemlist_style.View">
+    <xtml t="ui.CustomStyle">
+      <Html><![CDATA[<div><div class="aa_item"/></div>]]></Html>
+      <Javascript><![CDATA[function(itemlist) {
+       aa_itemlist(itemlist);
+}]]></Javascript>
+    <Css><![CDATA[#this>.aa_item {} #this{}]]></Css> 
+    </xtml>
+  </Component>
+
+<Component id="JBartTable" type="itemlist_style.View">
+  <Param name="MinWidth" Default="540px" slider="true" sliderUnit="px" />
+  <Param name="Padding" Default="5px" slider="true" sliderUnit="px" />
+  <xtml t="ui.CustomStyle">
+    <Html><![CDATA[<div>
+<table>
+  <thead>
+    <tr><th class="aa_header_field"><span class="aa_table_title"/><span class="sortArrow"/></th></tr>
+  </thead>
+  <tbody>
+  <tr class="aa_item">
+    <td class="aa_cell" />
+  </tr>
+  </tbody>
+</table>
+</div>
+]]></Html>
+    <Javascript><![CDATA[function(itemlist) {
+    aa_itemlist_as_table(itemlist, { showHeaders: true, titleClass: 'aa_table_title' } );
+}]]></Javascript>
+    <Css><![CDATA[#this >table { 
+color: #404040;
+min-width: %$MinWidth%;
+border: 1px #ccc solid;
+border-collapse: collapse;
+border-spacing: 0px;
+border: 1px solid #CCC;
+}
+#this>table>tbody>tr.aa_details_inplace>td {
+  background: #FAFADC;
+} 
+#this>table>tbody>tr>td {
+vertical-align:top; 
+border-bottom: 1px solid #ccc;
+border-top: 0px;
+border-left: 1px solid #ccc;
+border-right: 0px;
+padding: %$Padding%;
+color: #404040;
+border-collapse: collapse;
+border-spacing: 0px;
+}
+
+
+#this>table>thead>tr>th { 
+  border-left: 1px solid #CCC;
+  border-bottom: 1px solid #CCC;
+  background: #eee;
+  padding: 4px 5px;
+}
+#this>table>thead>tr>th>.aa_table_title {
+  padding-right: 5px;
+  font-weight: bold;
+  font-size: 11px;
+  color: #666;
+} 
+
+#this>table>thead>tr>th>.sortArrow { padding-right: 10px; cursor:default; }
+#this>table>thead>tr>th.sort_ascending >.sortArrow { background: url(_jbartImages_/css/sort2.gif) no-repeat 0 5px; }
+#this>table>thead>tr>th.sort_descending >.sortArrow { background: url(_jbartImages_/css/sort1.gif) no-repeat 0 5px;}
+]]></Css>
+  </xtml>
+</Component>​
+  
+<Component id="JBartTableNoHeader" type="itemlist_style.View">
+  <Param name="MinWidth" Default="540px" slider="true" sliderUnit="px"/>
+  <xtml t="ui.CustomStyle">
+    <Html><![CDATA[<div>
+<table>
+  <tbody>
+  <tr class="aa_item">
+    <td class="aa_cell" />
+  </tr>
+  </tbody>
+</table>
+</div>
+]]></Html>
+    <Javascript><![CDATA[function(itemlist) {
+    aa_itemlist_as_table(itemlist, { showHeaders: true } );
+}]]></Javascript>
+    <Css><![CDATA[#this >table { 
+color: #404040;
+min-width: %$MinWidth%;
+border: 1px #ccc solid;
+border-collapse: collapse;
+border-spacing: 0px;
+border: 1px solid #CCC;
+}
+#this>table>tbody>tr.aa_details_inplace>td {
+  background: #FAFADC;
+} 
+#this>table>tbody>tr>td {
+vertical-align:top; 
+border-bottom: 1px solid #ccc;
+border-top: 0px;
+border-left: 1px solid #ccc;
+border-right: 0px;
+padding: 5px;
+color: #404040;
+border-collapse: collapse;
+border-spacing: 0px;
+}
+]]></Css>
+  </xtml>
+</Component>​
+
+  <Component id="HorizontalScroll" type="itemlist_style.View">
+    <Param name="ItemWidth" Default="145px" slider="true" sliderUnit="px" />
+    <Param name="ItemHeight" Default="195px" slider="true" sliderUnit="px" />
+    <Param name="ItemsToShow" Default="5" slider="true" sliderMin="0" />
+    <xtml t="ui.CustomStyle">
+      <Html><![CDATA[<div>
+  <div class="left">
+    <div class="left_arrow arrow" />
+  </div>
+  <div class="body">
+    <div class="body_inner">
+      <div class="aa_item"/>
+    </div>
+  </div>
+  <div class="right">
+    <div class="right_arrow arrow" />    
+  </div>
+</div>]]></Html>
+      <Javascript><![CDATA[function(itemlist) {
+  aa_horizontal_scroll_itemlist(itemlist,{
+    itemWidth: '%$ItemWidth%',
+    itemHeight: '%$ItemHeight%',
+    itemsToShow: '%$ItemsToShow%',
+    arrowHeight: '20px',
+    arrowWidth: '20px',
+    arrowMargin: '40px'
+  });       
+}]]></Javascript>
+    <Css><![CDATA[      
+#this>.body {
+  overflow: hidden;
+}
+#this >.body>.body_inner{
+  position: relative;
+  overflow: hidden;
+  width: 50000px;
+}
+#this {
+  position:relative;
+}
+#this>div>.arrow {
+  position:absolute;
+  cursor:pointer;
+  opacity:0.5;
+  width: 20px;
+  height: 20px;
+}
+#this>div>.arrow.disabled {
+  cursor: auto;
+}
+#this>.left>.left_arrow {
+  background: url('_jbartImages_/jbart_icons.png') no-repeat 0 0;
+}
+#this>.right>.right_arrow {
+  background: url('_jbartImages_/jbart_icons.png') no-repeat -20px 0;
+}
+#this>.left>.left_arrow:hover {
+  background-position: 0 -20px;
+}
+#this>.right>.right_arrow:hover {
+  background-position: -20px -20px;
+}
+#this>.left>.left_arrow.disabled {
+  background-position: 0 -40px;
+}
+#this>.right>.right_arrow.disabled {
+  background-position: -20px -40px;
+}
+#this>.body>.body_inner>.aa_item {
+  float: left;
+  overflow: hidden;
+} 
+#this>div{
+  display: inline-block;
+}
+]]></Css> 
+    </xtml>
+  </Component>
+
+  <Component id="CustomStyle" type="itemlist_style.View" customPT="true" hidden="true">
+    <Param name="Html" codemirror="true" light="false"/>
+    <Param name="Css" codemirror="true" light="false"/>
+    <Param name="Javascript" codemirror="true" light="false"/>
+    <ParamGenerator t="bart_dt.StyleGenerator" />
+    <xtml t="ui.CustomStyle" Html="%$Html%" Css="%$Css%" Javascript="%$Javascript%" />
+  </Component>
+
+</xtml>
+
+<xtml ns="text_as_item">
+  <Type id="Style" />
+
+  <Component id="Default" type="text_as_item.Style">
+    <xtml t="ui.CustomStyle">
+      <Html><![CDATA[<div/>]]></Html>
+      <Css><![CDATA[#this { cursor: pointer; color:#333; }
+        #this:not(.in_table) { padding-top: 10px; clear: both; }
+        #this.in_table { padding:3px; } ]]></Css>
+      <Javascript><![CDATA[function (showMoreObject) {
+        aa_text_as_item(showMoreObject);
+}]]></Javascript>
+    </xtml>
+  </Component>
+  
+</xtml>
+
+</xtml>

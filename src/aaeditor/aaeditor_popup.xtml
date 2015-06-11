@@ -1,0 +1,711 @@
+<xtml ns="aaeditor" light="false">
+
+  <Component id="XPathEditor" type="field_aspect.Aspect">
+    <Param name="XmlItems" />
+    <Param1 name="SuggestDownToLeafs" type="data.Boolean" ><Default value="true" /></Param1>
+    <xtml t="field_aspect.Aspects" >
+        <FieldAspect t="field_aspect.CustomSuggestionBox"  >
+          <OnChangeAtEndOfText t="action.RunActions">
+            <Var name="HalfWrittenPart" t="text.Split" Separator="/" Part="Last" />
+            <Var name="TextForCalculation" t="data.Pipeline">
+              <Item t="text.RemoveSuffix" Suffix="%$HalfWrittenPart%"/>
+              <Item t="text.RemoveSuffix" Suffix="/"/>
+            </Var>
+            <Var name="CurrentElements" t="data.Pipeline">
+              <Item value="%$XmlItems%" />
+              <Item t="xml.XPath" XPath="%$TextForCalculation%" />
+            </Var>
+            <Action t="field_aspect.OpenSuggestionBoxList" HalfWrittenPart="%$HalfWrittenPart%">
+               <Options t="data.List">
+                <Item t="data.Pipeline" Remark="attributes">
+                  <Item value="%$CurrentElements%" />
+                  <Item t="xml.Attributes"/>
+                  <Item t="xml.AttributeName"/>
+                  <Item value="@%%" />
+                  <Aggregator t="data.MakeUnique" />
+                </Item>
+                <Item t="data.Pipeline" Remark="elements">
+                  <Item value="%$CurrentElements%" />
+                  <Item value="%*%" />
+                  <Item t="xml.Tag"/>
+                  <Aggregator t="data.MakeUnique" />
+                </Item>
+               </Options>
+               <OptionLabel value="%%" />
+               <OptionDescription t="text.Concat" Separator=",">
+                 <Items t="data.Pipeline">
+                   <Item value="%$CurrentElements/{}%" />
+                   <Aggregator t="data.MakeUnique"/>
+                 </Items>
+               </OptionDescription>
+               <OptionImage value="%$_Images%/studio/yesno1616.gif"/>
+              </Action>
+           </OnChangeAtEndOfText>
+           <OnAfterTextAdded1 t="field_aspect.AddTextToSuggestionBox" Text="/" TriggerOnAfterTextAdded="false">
+               <Var name="CurrentElement" value="%$XmlItems/{}%" />
+               <Condition t="yesno.And">
+                 <Item value="%$SuggestDownToLeafs%" />
+                 <Item t="yesno.NotEmpty">
+                   <Value t="data.Pipeline">
+                     <Item value="%$CurrentElement%" />
+                     <Item t="data.List">
+                       <Item value="%*%" />
+                       <Item t="xml.Attributes" />
+                     </Item>
+                   </Value>
+                 </Item>
+               </Condition>
+           </OnAfterTextAdded1>
+          <OnCtrlSpace t="field_aspect.TriggerSuggestionBoxPopup" TextToSimulate="%%" TextPatternToAdd="%%"/>
+        </FieldAspect>
+        <FieldAspect t="field_aspect.OnClick">
+          <Action t="field_aspect.TriggerSuggestionBoxPopup" TextToSimulate="%%" TextPatternToAdd="%%" />
+        </FieldAspect>
+    </xtml>
+  </Component>
+  
+  <Component id="EditPrimitiveTextBoxAspect" type="field_aspect.Aspect">
+      <Param name="Context" script="true">
+        <Default value="%$_Context%"/>
+      </Param>
+      <Param name="Param"/>
+      <Param name="OnlyPrimitive" type="data.Boolean"/>
+      <Param name="OnSelectComponent" type="action.Action" script="true"/>
+      <Param name="Simple" type="data.Boolean" />
+      <xtml t="field_aspect.Aspects" >
+        <Var name="EnumValues" t="data.Switch" Value="%$Param/@type%">
+          <Case If="enum">
+            <Then t="data.FirstSucceeding">
+              <Item value="%$Param/value%"/>
+              <Item t="data.ListByCommas" List="%$Param/@Options%" />
+            </Then>
+          </Case>
+          <Case If="dynamic_enum">
+            <Then t="xtml.RunXtml" Xtml="%$Param/Options%"/>
+          </Case>
+          <Case If="dynamic_enum_multi">
+            <Then t="xtml.RunXtml" Xtml="%$Param/Options%"/>
+          </Case>
+        </Var>
+        <FieldAspect t="object.SetProperty" Object="%$_Field%" Property="SourceParam" Value="%$_ParamXml%"/>
+        <FieldAspect t="field_aspect.Css" Class="primitive_text_box" />
+        <FieldAspect t="field_aspect.OnKeyUp">
+          <Action t="field_dt.RefreshPreview">
+            <Condition t="yesno.And">
+              <Item value="%$KeyCode% == '13'" />
+              <Item t="yesno.IsEmpty" Value="%$_XtmlTreeObj%" />
+            </Condition>
+          </Action>
+        </FieldAspect>
+        <FieldAspect t="field_aspect.CustomSuggestionBox" Name="suggestion_box">
+          <OnChangeAtEndOfText t="data.Switch">
+            <Var name="HalfWrittenPart" t="aaeditor.EditPrimitiveHalfWrittenPart" />
+            <Var name="TextForCalculation" t="text.RemoveSuffix" Suffix="%$HalfWrittenPart%"/>
+            <Case Remark="component">
+              <IfCondition t="yesno.And">
+                <Item t="text.StartsWith" With="="/>
+                <Item t="yesno.NotEmpty" Value="%$Param%"/>
+                <Item t="yesno.Not" Of="%$OnlyPrimitive%" />
+              </IfCondition>
+              <Then t="data.IfThenElse">
+                <Var name="Type" t="text.FirstSucceeding">
+                  <Item value="%$Param/@type%"/>
+                  <Item value="data.Data"/>
+                </Var>
+                <If t="yesno.Contains">
+                  <Text value="."/>
+                </If>
+                <Then Remark="with namespace" t="field_aspect.OpenSuggestionBoxList" FilterItemsDifferantThanHalfWrittern="false" HalfWrittenAlwaysOnStart="false" OptionLabel="%%" OptionImage="%$_Images%/studio/integer.gif">
+                  <HalfWrittenPart t="text.Substring" Start="2"/>
+                  <Options t="aaeditor.ComponentsOfType" Type="%$Type%" IncludeAdvancedComponents="true">
+                    <TextFilter t="text.Substring" Start="2"/>
+                  </Options>
+                  <OnSelect t="xtml.UseParam" Param="OnSelectComponent"/>
+                </Then>
+                <Else Remark="no namespace" t="field_aspect.OpenSuggestionBoxList" FilterItemsDifferantThanHalfWrittern="false" HalfWrittenAlwaysOnStart="false" OptionImage="%$_Images%/studio/integer.gif">
+                  <HalfWrittenPart t="text.Substring" Start="2"/>
+                  <Options t="aaeditor.ComponentsOfType" Type="%$Type%">
+                    <TextFilter t="text.Substring" Start="2"/>
+                  </Options>
+                  <OptionLabel t="data.JavaScript" Code="function(data) { return aa_component_title(data); }"/>
+                  <OnSelect t="xtml.UseParam" Param="OnSelectComponent"/>
+                </Else>
+              </Then>
+            </Case>
+            <Case Remark="enum">
+              <IfCondition t="yesno.And">
+                <Item t="yesno.NotEmpty" Value="%$EnumValues%"/>
+                <Item t="yesno.NotContains" Text="\%"/>
+                <Item t="yesno.Not" Of="%$OnlyPrimitive%" />
+              </IfCondition>
+              <Then t="field_aspect.OpenSuggestionBoxList" OptionLabel="%%" Options="%$EnumValues%" HalfWrittenPart="%%" HalfWrittenAlwaysOnStart="false" OptionImage="%$_Images%/studio/boolean.gif">
+                <OnSelect t="xtml.UseParam" Param="OnSelectComponent">
+                  <Var name="_Enum" value="true"/>
+                </OnSelect>
+              </Then>
+            </Case>
+            <Case1 Remark="Aggregator, only =">
+              <IfCondition t="yesno.And">
+                <Item t="yesno.Contains" >
+                  <Text value="\%"/>
+                </Item>
+                <Item t="yesno.ItemsEqual" Item1="%$HalfWrittenPart%">
+                  <Item2 value="="/>
+                </Item>
+                <Item1 t="yesno.NotEmpty">
+                  <Value t="data.Pipeline">
+                    <Item t="xtml.UseParam" Param="Context" />
+                    <Item value="%Input/Items%" />
+                  </Value>
+                </Item1>
+              </IfCondition>
+              <Then t="field_aspect.OpenSuggestionBoxList" OptionLabel="%%" HalfWrittenAlwaysOnStart="false" OptionImage="%$_Images%/studio/boolean.gif">
+                <Options t="data.ListByCommas" List="Count,Sum,Max,Min,Average"/>
+                <HalfWrittenPart t="text.RemovePrefix" Data="%$TextForCalculation%">
+                  <Prefix value="="/>
+                </HalfWrittenPart>
+                <OnSelect t="action.RunActions">
+                  <Action t="field_aspect.AddTextToSuggestionBox" Text="(Items/" TriggerOnAfterTextAdded="true" />
+                </OnSelect>
+              </Then>
+            </Case1>
+            <Case1 Remark="Aggregator, Fields">
+              <IfCondition t="yesno.And">
+                <Item t="text.MatchesRegex" Text="%$TextForCalculation%" Expression="\%=[a-zA-Z]+[(]Items/" />
+                <Item t="yesno.Contains" >
+                  <Text value="\%"/>
+                </Item>
+                <Item1 t="yesno.NotEmpty">
+                  <Value t="data.Pipeline">
+                    <Item t="xtml.UseParam" Param="Context"/>
+                    <Item value="%Input/Items%"/>
+                  </Value>
+                </Item1>
+              </IfCondition>
+              <Then t="field_aspect.OpenSuggestionBoxList" OptionLabel="%FieldName%" OptionImage="%$_Images%/studio/boolean.gif" HalfWrittenPart1="%$TextForCalculation%" OptionDescription="%Desc%">
+                <Var name="Ctx" t="xtml.UseParam" Param="Context"/>
+                <Options t="xtml_dt.AggregatorFields" Items="%$Ctx/Input/Items%" />
+                <OnSelect t="field_aspect.AddTextToSuggestionBox" Text=")\%"/>
+              </Then>
+            </Case1>
+            <Case>
+            	<IfCondition t="yesno.NotContains" Text="\%" AllText="%$TextForCalculation%" />
+            	<Then t="action.RunActions" Remark="Do nothing"/>
+            </Case>
+            <Default t="action.Switch" Remark="primitive">
+              <Var name="Ctx" t="xtml.UseParam" Param="Context"/>
+              <Var name="Values" t="aaeditor.EditPrimitiveAssistValues" Context="%$Ctx%" Text="%$TextForCalculation%"/>
+              <Data value="%$Values%"/>
+              <Case Remark="vars list">
+                <IfCondition t="yesno.ItemsEqual" Item1="%%" Item2="___VARS LIST"/>
+                <Then t="field_aspect.OpenSuggestionBoxList" HalfWrittenPart="%$HalfWrittenPart%">
+                  <Options t="data.List">
+                    <Item t="data.Pipeline">
+                      <Condition t="yesno.Not" Of="%$Simple%" />
+                      <Item t="xtml.PartsOfContext" Context="%$Ctx/context%" Part="Param Names"/>
+                      <Item value="_PARAM__%%"/>
+                    </Item>
+                    <Item t="data.Pipeline">
+                      <Item t="xtml.PartsOfContext" Context="%$Ctx/context%">
+                        <Part t="data.IfThenElse" If="%$Simple%" Then="Global Variable Names" Else="Variable Names" />
+                      </Item>
+                      <Item value="_VAR__%%"/>
+                      <Aggregator t="data.ReverseOrder"/>
+                    </Item>
+                  </Options>
+                  <OptionLabel t="text.RemovePrefix" Separator="__"/>
+                  <OptionDescription t="data.Switch" Value="%$txt%">
+                    <Value t="data.RuntimeObjectType"/>
+                    <Var name="Txt" t="xtml.RunDynamicText" Context="%$Ctx/context%" Input="%$Ctx/Input%">
+                      <Text t="data.Pipeline">
+                        <Item t="text.RemovePrefix" Separator="__"/>
+                        <Item value="\%$%%\%"/>
+                      </Text>
+                    </Var>
+                      <Case If="text" Then="%%"/>
+                      <Case If="xml">
+                        <Then t="data.Pipeline">
+                          <Item t="xml.Tag"/>
+                          <Item value="&lt;%% ..."/>
+                        </Then>
+                      </Case>
+                      <Case If="html">
+                        <Then t="data.Pipeline">
+                          <Item t="xml.Tag"/>
+                          <Item value="&lt;%% ..."/>
+                        </Then>
+                      </Case>
+                      <Case If="struct">
+                        <Then t="data.Pipeline">
+                          <Item t="data.StructEntryNames"/>
+                          <Aggregator t="text.Concat" Separator="," Prefix="(" Suffix=")"/>
+                        </Then>
+                      </Case>
+                  </OptionDescription>
+                  <OptionImage t="data.IfThenElse" Then="%$_Images%/studio/integer.gif" Else="%$_Images%/studio/yesno1616.gif">
+                    <If t="text.StartsWith" With="_PARAM__"/>
+                  </OptionImage>
+                </Then>
+              </Case>
+              <Case Remark="attributes of element">
+                <IfCondition t="yesno.And">
+                  <Item t="xml.IsElement"/>
+                  <Item t="yesno.OR">
+                    <Item t="yesno.IsEmpty" Value="%*%"/>
+                    <Item t="text.StartsWith" Text="%$HalfWrittenPart%" With="@"/>
+                  </Item>
+                </IfCondition>
+                <Then t="field_aspect.OpenSuggestionBoxList" HalfWrittenPart="%$HalfWrittenPart%">
+                  <Options t="data.Pipeline">
+                    <Item t="xml.Attributes"/>
+                    <Item t="xml.AttributeName"/>
+                    <Aggregator t="data.MakeUnique"/>
+                  </Options>
+                  <OptionLabel value="@%%"/>
+                  <OptionDescription t="text.Concat" Separator=",">
+                    <Items t="data.Pipeline">
+                      <Item value="%$Values/@{}%"/>
+                      <Aggregator t="data.MakeUnique"/>
+                    </Items>
+                  </OptionDescription>
+                  <OptionImage value="%$_Images%/studio/yesno1616.gif"/>
+                </Then>
+              </Case>
+              <Case Remark="xml element">
+                <IfCondition t="yesno.And">
+                  <Item t="xml.IsElement"/>
+                  <Item t="yesno.IsEmpty" Value="%$HalfWrittenPart%"/>
+                </IfCondition>
+                <Then t="field_aspect.OpenSuggestionBoxPopup">
+                  <Control t="aaeditor.DataPopupControl">
+                    <UpdateValue t="field_aspect.AddTextToSuggestionBox" Text="%%"/>
+                  </Control>
+                </Then>
+              </Case>
+              <Case Remark="xml element : half written">
+                <IfCondition t="yesno.And">
+                  <Item t="xml.IsElement"/>
+                  <Item t="yesno.NotEmpty" Value="%$HalfWrittenPart%"/>
+                </IfCondition>
+                <Then t="field_aspect.OpenSuggestionBoxList" HalfWrittenPart="%$HalfWrittenPart%">
+                  <Options t="data.Pipeline">
+                    <Item value="%*%"/>
+                    <Item t="xml.Tag"/>
+                    <Aggregator t="data.MakeUnique"/>
+                  </Options>
+                  <OptionLabel value="%%"/>
+                  <OptionImage value="%$_Images%/studio/yesno1616.gif"/>
+                </Then>
+              </Case>
+              <Case>
+                <IfCondition t="yesno.ItemsEqual" Item1="%Type%" Item2="List"/>
+                <Then t="field_aspect.OpenSuggestionBoxList" HalfWrittenPart="%$HalfWrittenPart%" Options="%List%" OptionLabel="%Value%" OptionDescription="%Desc%" OptionImage="%$_Images%/studio/yesno1616.gif"/>
+              </Case>
+              <Case Remark="Struct">
+                <IfCondition t="yesno.IsStruct"/>
+                <Then t="field_aspect.OpenSuggestionBoxList" OptionLabel="%%">
+                  <Options t="data.StructEntryNames"/>
+                  <OptionDescription t="data.Pipeline">
+                    <Item value="%$Values/{}%"/>
+                    <Item t="data.Switch">
+                      <Case If="text" Then="%%"/>
+                      <Case If="xml">
+                        <Then t="data.Pipeline">
+                          <Item t="xml.Tag"/>
+                          <Item value="&lt;%% ..."/>
+                        </Then>
+                      </Case>
+                      <Case If="html">
+                        <Then t="data.Pipeline">
+                          <Item t="xml.Tag"/>
+                          <Item value="&lt;%% ..."/>
+                        </Then>
+                      </Case>
+                      <Case If="struct">
+                        <Then t="data.Pipeline">
+                          <Item t="data.StructEntryNames"/>
+                          <Aggregator t="text.Concat" Separator="," Prefix="(" Suffix=")"/>
+                        </Then>
+                      </Case>
+                      <Value t="data.RuntimeObjectType"/>
+                    </Item>
+                  </OptionDescription>
+                </Then>
+              </Case>
+              <Default t="field_aspect.CloseSuggestionBox" />
+            </Default>
+          </OnChangeAtEndOfText>
+          <OnUpdate t="action.RunActions">
+            <Action t="object.RunMethod" Object="%$_XtmlDt%" Method="OnUpdate"/>
+            <Action t="field_dt.RefreshPreview" />
+            <Action t="uiaction.Refresh" RunOn=".text_preview"/>
+            <Action t="uiaction.Refresh" RunOn=".text_dynamic_preview"/>
+            <Action t="action.IfThenElse">
+              <If t="yesno.NotEmpty"/>
+              <Then t="uiaction.AddClass" Cls="irrelevant" RunOn=".component_suggestion_box"/>
+              <Else t="uiaction.RemoveClass" Cls="irrelevant" RunOn=".component_suggestion_box"/>
+            </Action>
+          </OnUpdate>
+          <OnAfterTextAdded t="action.RunActions">
+            <Action t="uiaction.Hide" RunOn="updown(.xtml_dt_primitive,.xtml_dt_primitive_hint)"/>
+            <Action t="action.Switch">
+              <Var name="Ctx" t="xtml.UseParam" Param="Context"/>
+              <Var name="DynamicText1" t="aaeditor.DynamicTextOpenPart"/>
+              <Var name="DynamicText2" t="aaeditor.DynamicTextOpenPart" Data="%$DynamicText1%" Type="{}"/>
+              <Var name="DynamicText" t="text.FirstSucceeding">
+                <Item value="%$DynamicText2%"/>
+                <Item value="%$DynamicText1%"/>
+              </Var>
+              <Var name="DynamicValue" t="xtml.RunDynamicText" Context="%$Ctx/context%" Input="%$Ctx/Input%" Text="\%%$DynamicText%\%">
+                <Condition t="yesno.NotEmpty" Value="%$DynamicText%"/>
+              </Var>
+              <Case>
+                <IfCondition t="yesno.OR" Data="%$DynamicValue%">
+                  <Item t="xml.HasAttributes"/>
+                  <Item t="yesno.IsStruct"/>
+                  <Item t="yesno.NotEmpty" Value="%*%"/>
+                </IfCondition>
+                <Then t="field_aspect.AddTextToSuggestionBox" Text="/" TriggerOnAfterTextAdded="false"/>
+              </Case>
+              <Case>
+                <IfCondition t="yesno.NotEmpty" Value="%$DynamicValue%"/>
+                <Then t="field_aspect.AddTextToSuggestionBox" TriggerOnAfterTextAdded1="false">
+                  <Text t="data.Pipeline">
+                    <Item t="data.IfThenElse" Then="}" Else="\%">
+                      <If t="yesno.NotEmpty" Value="%$DynamicText2%"/>
+                    </Item>
+                    <Item t="data.IfThenElse" Then="%%']\%" Else="%%" Remark="closing '] if needed">
+                      <If t="text.MatchesRegex" Text="%$DynamicText1%" Expression=".*\[[^']*'[^'\]]*"/>
+                    </Item>
+                  </Text>
+                </Then>
+              </Case>
+              <Case>
+                <IfCondition t="text.MatchesRegex" Text="%$DynamicText%" Expression=".*\[[a-zA-Z @]+" Remark="e.g %$List[@att"/>
+                <Then t="action.RunActions">
+                  <Action t="field_aspect.AddTextToSuggestionBox" Text=" = '"/>
+                  <Action t="uiaction.SetCssProperty" Property="display" Value="inline" RunOn="updown(.xtml_dt_primitive,.xtml_dt_primitive_hint)"/>
+                  <Action t="uiaction.SetText" RunOn="updown(.xtml_dt_primitive,.xtml_dt_primitive_hint)" Text="use { for dynamic value"/>
+                </Then>
+              </Case>
+            </Action>
+          </OnAfterTextAdded>
+          <OnCtrlSpace t="action.IfThenElse">
+            <Var name="Ctx" t="xtml.UseParam" Param="Context"/>
+            <If t="yesno.OR" Data="%$Ctx/Input%">
+              <Item t="xml.IsAttribute"/>
+              <Item t="yesno.ItemsEqual" Item2="text">
+                <Item1 t="data.RuntimeObjectType"/>
+              </Item>
+            </If>
+            <Then t="field_aspect.AddTextToSuggestionBox" Text="\%\%" TriggerOnAfterTextAdded="false"/>
+            <Else t="field_aspect.TriggerSuggestionBoxPopup" TextToSimulate="\%" TextPatternToAdd="\%%%\%"/>
+          </OnCtrlSpace>
+        </FieldAspect>
+        <FieldAspect t="field_aspect.Resizer" RememberLastWidth="false" />
+      </xtml>
+    </Component>  
+  
+  <Component id="EditPrimitiveTextBox" type="ui.Control">
+      <Param name="Context" script="true">
+        <Default value="%$_Context%"/>
+      </Param>
+      <Param name="Param"/>
+      <Param name="OnlyPrimitive" type="data.Boolean"/>
+      <Param name="OnSelectComponent" type="action.Action" script="true"/>
+      <Param name="Simple" type="data.Boolean">
+        <Default value="true"/>
+      </Param>
+      <xtml t="xtml_dt_tree.HandlePreviewTimeout" MessageTextClass="hypelink_text" MessageClass="xtml_local_preview_cut_off" 
+              TextPattern="%%&lt;/BR&gt; Ctrl-Space will recalc with no limits" Class="edit_primitive_text_box_wrapper" AttachCtrlSpace="true">
+        <Control t="ui.List" >
+          <Control t="field.ShowFieldControl" Item="%$Text%">
+            <Var name="_TreeCntr" value="%$_Cntr%"/>
+            <Field t="field.XmlField" Path="" ID="primitive_text_box">
+              <FieldAspect t="field_aspect.HideTitle"/>
+              <FieldAspect t="field_aspect.Css" Class="aa_param_%$_ParamXml/@name%" OnElement="cell"/>
+              <FieldAspect t="field_aspect.Css" Class="aa_primitive_param_%$_ParamXml/@name%" />
+              <FieldAspect t="aaeditor.EditPrimitiveTextBoxAspect" Param="%$Param%" OnlyPrimitive="%$OnlyPrimitive%" Simple="%$Simple%">
+                <Context t="xtml.UseParam" Param="Context"/>
+                <OnSelectComponent t="xtml.UseParam" Param="OnSelectComponent"/>
+              </FieldAspect>
+            </Field>
+          </Control>
+          <Control t="field.ShowFieldControl" Class="timeoutmessage">
+            <Field t="control.Button" ID="_Button" Title="Button" HideTitle="true">
+              <Style t="btn.HyperlinkWithImage"/>
+              <Image t="img.Image" Url="%$_Images%/studio/timer.gif">
+                <AdjustSize t="img.Center"/>
+              </Image>
+              <FieldAspect t="field_feature.CssClass" ClassName="xtml_local_preview_cut_off"/>
+              <FieldAspect t="field_feature.Css" Css="padding: 5px 15px; display: inline-block; border: 1px solid #ccc; margin-top: 2px;"/>
+              <Action t="action.RunActions">
+                <Action t="object.SetBooleanProperty" Object="%$_XtmlTreeObj%" Property="CalcPreviewWithNoLimits" Value="true"/>
+                <Action t="object.RunMethod" Method="CleanContent" Object="%$ContextCalculator%"/>
+                <Action t="xtml.UseParam" Param="Context" />
+                <Action t="object.SetBooleanProperty" Object="%$_XtmlTreeObj%" Property="CalcPreviewWithNoLimits" Value=""/>
+                <Action t="uiaction.Focus" RunOn="updown(.edit_primitive_text_box_wrapper,.fld_primitive_text_box)"/>
+                <Action t="uiaction.Hide" RunOn="up(.timeoutmessage)" />
+                <Action t="field_aspect.TriggerSuggestionBoxPopup" TextToSimulate="%%" TextPatternToAdd="%%" RunOn="updown(.edit_primitive_text_box_wrapper,.fld_primitive_text_box)"/>
+              </Action>
+            </Field>
+          </Control>
+        </Control>
+      </xtml>
+      <Param name="Text">
+        <Default value="%%"/>
+      </Param>
+    </Component>
+  
+  <Component id="EditPrimitiveHalfWrittenPart" type="data.Data" internal="true" execution="native" />
+  
+  <Component id="EditPrimitiveAssistValues" type="data.Data">
+      <Param name="Context"/>
+      <Param name="Text"/>
+      <xtml t="data.Switch">
+        <Data t="data.Pipeline">
+          <Item t="aaeditor.DynamicTextOpenPart" Data="%$Text%"/>
+          <Item t="data.IfThenElse" Then="%$InnerPart%" Else="%%">
+            <Var name="InnerPart" t="aaeditor.DynamicTextOpenPart" Type="{}"/>
+            <If t="yesno.NotEmpty" Value="%$InnerPart%"/>
+          </Item>
+        </Data>
+        <Case If="__EMPTY" Then="%$Context/Input%"/>
+        <Case>
+          <IfCondition t="yesno.IsEmpty"/>
+        </Case>
+        <Case Then="___VARS LIST">
+          <IfCondition t="text.EndsWith" With="$"/>
+        </Case>
+        <Case Remark="value of variable">
+          <IfCondition t="text.EndsWith" With="/"/>
+          <Then t="xtml.RunDynamicText" Context="%$Context/context%" Input="%$Context/Input%">
+            <Text t="data.Pipeline">
+              <Item t="text.RemoveSuffix" Suffix="/"/>
+              <Item value="\%%%\%"/>
+            </Text>
+          </Then>
+        </Case>
+        <Case>
+          <IfCondition t="yesno.And">
+            <Item t="text.EndsWith" Text="]"/>
+            <Item t="yesno.Not">
+              <Of t="yesno.IsSingleValue">
+                <Value t="xtml.RunDynamicText" Input="%$Context/Input%" Context="%$Context/context%">
+                  <Text t="data.Pipeline">
+                    <Item t="text.RemoveSuffix" Suffix="["/>
+                    <Item value="\%%%\%"/>
+                  </Text>
+                </Value>
+              </Of>
+            </Item>
+          </IfCondition>
+          <Then t="data.Struct">
+            <Item Name="Type" Value="List"/>
+            <Item Name="List">
+              <Value t="data.Pipeline">
+                <Var name="Values" t="xtml.RunDynamicText" Input="%$Context/Input%" Context="%$Context/context%">
+                  <Text t="data.Pipeline">
+                    <Item t="text.RemoveSuffix" Suffix="["/>
+                    <Item value="\%%%\%"/>
+                  </Text>
+                </Var>
+                <Item t="data.Pipeline">
+                  <Item value="%$Values%"/>
+                  <Item t="xml.Attributes"/>
+                  <Item t="xml.AttributeName"/>
+                  <Aggregator t="data.MakeUnique"/>
+                </Item>
+                <Item t="data.Struct">
+                  <Item Name="Value" Value="@%%"/>
+                  <Item Name="Desc">
+                    <Value t="text.Concat" Separator=",">
+                      <Items t="data.Pipeline">
+                        <Item value="%$Values/@{}%"/>
+                        <Aggregator t="data.MakeUnique"/>
+                      </Items>
+                    </Value>
+                  </Item>
+                </Item>
+              </Value>
+            </Item>
+            <Item Name="PutAfter" Value="='"/>
+          </Then>
+        </Case>
+      </xtml>
+    </Component>
+  
+  <Component id="EditPrimitiveTextPreview" type="ui.Control">
+    <Param name="Context"><Default value="%$_Context%" /></Param>
+      <xtml t="ui.List">
+        <Control t="ui.List" Class="text_dynamic_preview">
+          <Control t="ui.Text" Class="text_dynamic_preview_text">
+            <Condition t="yesno.Contains">
+              <Text value="\%"/>
+              <Text value="{"/>
+              <Text value="}"/>
+            </Condition>
+            <Text t="aaeditor.CalculatePrimitiveInnerParts" Text="%%" Context="%$Context/context%" Input="%$Context/Input%"/>
+          </Control>
+        </Control>
+        <Control t="ui.List" Class="text_preview">
+          <Control t="ui.Text" CssStyle="display: block; overflow: hidden; max-width: 260px; max-height: 12px;">
+            <Text t="xtml.RunDynamicText" Text="%%" Context="%$Context/context%" Input="%$Context/Input%" />
+            <Condition t="yesno.Contains">
+              <Text value="\%"/>
+              <Text value="\%"/>
+            </Condition>
+          </Control>
+        </Control>
+        <Layout t="ui.LineBreak" IncludeSpacing="false"/>
+      </xtml>
+  </Component>
+  
+  <Component id="EditPrimitiveTextWithPreview" type="ui.Control">
+      <Param name="Context" script="true">
+        <Default value="%$_Context%"/>
+      </Param>
+      <Param name="DisableLargeText" type="data.Boolean" />
+      <xtml t="ui.List" Class="xtml_dt_primitive">
+        <Control t="ui.List">
+          <Control t="aaeditor.EditPrimitiveTextBox" Simple="false">
+            <Context t="xtml.UseParam" Param="Context" />
+          </Control>
+          <Control t="ui.ButtonOld" Image="%$_Images%/openmenu.gif">
+            <Style t="ui.ButtonAsImage"/>
+            <OnClick t="menu.OpenContextMenu" >
+              <Var name="_CurrentFocus" t="data.Empty" Remark="fix focus bug" />
+              <Menu t="menu.ContextMenu" >
+                <Item t="menu.MenuItem" Text="add data item ..." Image="%$_Images%/add1616.gif">
+                  <Condition t="yesno.NotEmpty" Value="%$Context/Input%"/>
+                  <Action RunOn="updown(.xtml_dt_primitive,.fld_primitive_text_box)" t="field_aspect.TriggerSuggestionBoxPopup" TextToSimulate="\%" TextPatternToAdd="\%%%"/>
+                </Item>
+                <Item t="menu.MenuItem" Text="add variable ..." Image="%$_Images%/studio/balls1616.png">
+                  <Condition t="yesno.NotEmpty">
+                    <Value t="xtml.PartsOfContext" Context="%$Context/context%" Part="Variable Names"/>
+                  </Condition>
+                  <Action RunOn="updown(.xtml_dt_primitive,.fld_primitive_text_box)" t="field_aspect.TriggerSuggestionBoxPopup" TextToSimulate="\%$" TextPatternToAdd="\%$%%"/>
+                </Item>
+                <Item t="menu.MenuItem" Text="edit as large text ..." Image="%$_Images%/studio/file1616.png" >
+                  <Condition t="yesno.Not" Of="%$DisableLargeText%" />
+                  <Action t="action.RunActions" >
+                    <Action t="dialog.ClosePopup" />
+                    <Action t="aaeditor.OpenPrimitiveAsDialog" Context="%$Context%">
+                      <RunOnOK t="action.RunActions" Data="%$OriginalInput%">
+                         <Action t="aaeditor.WriteValue" To="%$AAEditorState/SelectedInTree%">
+                           <Value t="xml.WithChanges">
+                             <Xml t="xml.ByTag" Tag="aaeditor">
+                               <Change t="xml.SetAttribute" AttributeName="valuetype" Value="primitive"/>
+                               <Change t="xml.SetAttribute" AttributeName="type" Value="data.Data"/>
+                               <Change t="xml.SetAttribute" AttributeName="primitive" Value="%$AsText%"/>
+                             </Xml>
+                           </Value>
+                         </Action>
+                         <Action t="aaeditor.Refresh" SelectedInTree="true" GlobalPreview="true" LocalPreview="true"/>
+                     </RunOnOK>
+                    </Action>
+                  </Action>
+                </Item>
+              </Menu>
+            </OnClick>
+          </Control>
+          <Layout t="ui.Horizontal" VerticalAlign="middle" />
+        </Control>
+        <Control t="aaeditor.PrimitiveTextPreview" Text="%%">
+          <Context t="xtml.UseParam" Param="Context" />
+        </Control>
+        <Layout t="ui.LineBreak" IncludeSpacing="false"/>
+      </xtml>
+    </Component>
+  
+  <Component id="PrimitiveTextPreview" type="ui.Control">
+      <Param name="Context"  ><Default value="%$_Context%" /></Param>
+      <Param name="Text"><Default value="%%" /></Param>
+      <xtml t="ui.List">
+        <Control t="ui.List" Class="text_dynamic_preview">
+          <Control t="ui.Text" Class="text_dynamic_preview_text">
+            <Condition t="yesno.Contains" Data="%$Text%">
+              <Text value="\%"/>
+              <Text value="{"/>
+              <Text value="}"/>
+            </Condition>
+            <Text t="aaeditor.CalculatePrimitiveInnerParts" Text="%$Text%" Context="%$Context/context%" Input="%$Context/Input%"/>
+          </Control>
+        </Control>
+        <Control t="ui.List" Class="text_preview">
+          <Control t="ui.Text" CssStyle="display: block; overflow: hidden; max-width: 260px; max-height: 12px;">
+            <Condition t="yesno.Contains" Data="%$Text%">
+              <Text value="\%"/>
+              <Text value="\%"/>
+            </Condition>
+            <Text t="data.Switch" Default="%$Result%%" >
+              <Var name="Result" t="xtml.RunDynamicText" Text="%$Text%" Context="%$Context/context%" Input="%$Context/Input%"/>
+              <Case Remark="single element">
+                <IfCondition t="yesno.And">
+                  <Item t="xml.IsElement" Data="%$Result%"/>
+                  <Item t="yesno.IsEmpty">
+                    <Value t="text.Text" Text="%$Result%"/>
+                  </Item>
+                  <Item t="yesno.IsSingleValue" Value="%$Result%"/>
+                </IfCondition>
+                <Then value="(%$Tag% ...)">
+                  <Var name="Tag" t="xml.Tag" Data="%$Result%"/>
+                </Then>
+              </Case>
+              <Case Then="%$Result%">
+                <IfCondition t="yesno.OR">
+                  <Item t="yesno.IsEmpty" Value="%$Result%"/>
+                  <Item t="yesno.IsSingleValue" Value="%$Result%"/>
+                </IfCondition>
+              </Case>
+              <Case>
+                <Then value="%$Values%">
+                  <Var name="Values" t="data.Pipeline">
+                    <Item value="%$Result%"/>
+                    <Aggregator t="text.Concat" Separator=","/>
+                  </Var>
+                </Then>
+                <IfCondition t="yesno.And">
+                  <Item t="yesno.Not">
+                    <Of t="yesno.IsSingleValue" Value="%$Result%"/>
+                  </Item>
+                  <Item t="yesno.ItemsNotEqual" Item2="0">
+                    <Item1 t="text.Length" Data="%$Result%"/>
+                  </Item>
+                </IfCondition>
+              </Case>
+              <Case Then="(%$Count% Items)">
+                <IfCondition t="yesno.Not">
+                  <Of t="yesno.IsSingleValue" Value="%$Result%"/>
+                </IfCondition>
+              </Case>
+              <Var name="Count" t="data.Pipeline">
+                <Item value="%$Result%"/>
+                <Aggregator t="data.Count"/>
+              </Var>
+            </Text>
+          </Control>
+        </Control>
+        <Control t="ui.List">
+          <Control t="ui.Text" Class="xtml_dt_primitive_hint" />
+        </Control>
+        <Layout t="ui.LineBreak" IncludeSpacing="false"/>
+      </xtml>
+    </Component>
+  
+  <Component id="CalculatePrimitiveInnerParts" type="data.Data" execution="native">
+    <Param name="Text" />
+    <Param name="Context" />
+    <Param name="Input" />
+  </Component>
+  
+  <Component id="DynamicTextOpenPart" type="data.Data" execution="native" >
+    <Param name="Type" type="enum">
+      <Default value="%" />
+      <value>%</value>
+      <value>{}</value>
+    </Param>
+  </Component>
+
+ 
+</xtml>

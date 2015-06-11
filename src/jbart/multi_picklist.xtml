@@ -1,0 +1,356 @@
+<xtml package="true">
+
+<xtml ns="fld_type">
+
+  <Component id="MultiplePicklist" type="field_type.Type" execution="native" editable="true">
+    <Param name="Options" type="editable_picklist.Options">
+      <Default t="editable_picklist.OptionsByCommas" />
+    </Param>
+    <Param name="Style" type="multiple_picklist.Style">
+      <Default t="multiple_picklist.JBartMultiplePicklist" />
+    </Param>
+    <Param name="AllowValueNotInOptions" type="data.Boolean" description="Not supported by all styles"/>
+  </Component>
+
+</xtml>
+
+<xtml ns="multiple_picklist">
+
+<Component id="JBartMultiplePicklist" type="multiple_picklist.Style">
+  <Param name="Width" Default="150px" slider="true" sliderUnit="px"/>
+  <xtml t="ui.CustomStyle">
+    <Html><![CDATA[<div>
+  <div class="aa_mpicklist_div">
+    <div class="aa_mpicklist_items">
+      <div class="aa_mpicklist_item">
+        <div class="aa_mpicklist_item_del" />
+        <div class="aa_mpicklist_item_text" />
+      </div>
+    </div>
+    <div class="aa_mpicklist_input_div">
+      <input class="aa_mpicklist_search" />
+    </div>
+    <div style="clear:both" />
+  </div>
+  <div class="aa_mpicklist_popup">
+    <div>
+      <div class="aa_picklist_item">
+        <div class="aa_picklist_item_image" />
+        <div class="aa_picklist_item_text" />
+      </div>
+      <div class="aa_picklist_no_results" />
+      <div class="aa_picklist_show_all" />
+    </div>
+  </div>
+</div>]]></Html>
+    <Javascript><![CDATA[function render(mpicklist) { 
+  aa_multi_picklist(mpicklist);
+}]]></Javascript>
+    <Css><![CDATA[.aa_mpicklist_div { width: %$Width%; border: 1px solid #BDC7D8; }
+#this.active .aa_mpicklist_div { border-color: #5897fb; }      
+.aa_mpicklist_item { 
+  float:left;
+  height: 13px;
+  border: 1px solid #aaa; 
+  padding:2px 3px 4px 3px;
+  background-color: #E4E4E4; 
+  border-radius: 3px;
+  box-shadow: 0 0 2px white inset, 0 1px 0 rgba(0, 0, 0, 0.05);
+  margin: 3px 3px 3px 3px;
+  background-image: -webkit-gradient(linear, 0\% 0\%, 0\% 100\%, color-stop(20\%, #F4F4F4), color-stop(50\%, #F0F0F0), color-stop(52\%, #E8E8E8), color-stop(100\%, #EEE));
+}
+.aa_mpicklist_item_text { display: inline-block; color: #333; line-height: 13px; font: 13px arial; }
+
+.aa_mpicklist_item_del {
+background: url('_jbartImages_/jbart_icons.png') -65px -4px no-repeat; 
+ display: inline-block; 
+width: 13px; height: 13px; vertical-align: top; cursor: pointer; 
+margin-top: 2px;
+}
+.aa_mpicklist_search { border:none; padding-left:5px;  height: 24px; margin-top:2px; float:left; box-sizing: border-box;
+  background: transparent;
+}
+
+#popup.aa_mpicklist_popup {
+  padding: 0 0 2px 0;
+  box-shadow: 2px 2px 7px 1px rgba(50,50,50,0.5);
+  overflow-y: auto;
+  overflow-x: hidden;
+  font:12px times;
+  background: white;
+  border: 1px solid gray;
+  min-height:50px;
+  max-height:200px;
+}
+#popup.aa_mpicklist_popup:focus {
+  outline: none;
+}
+.ie #popup.aa_mpicklist_popup {
+  border: 1px solid black;
+}
+#popup.aa_mpicklist_popup.aa_hide_searchbox .aa_picklist_popup_input {
+  display: none;
+}
+#popup.aa_mpicklist_popup .aa_picklist_popup_input {
+  font-size: 11px;
+  width: 100\%;
+  box-sizing: border-box;
+  height: 22px;
+  padding-top: 3px;
+  padding-right: 3px;
+  padding-bottom: 3px;
+  padding-left: 3px;
+  border-top:none;
+  border-left:none;
+  border-right:none;
+  border-bottom: 1px solid rgba(82, 168, 236, 0.8);
+  outline: none;
+}
+#popup.aa_mpicklist_popup .aa_picklist_popup_input:focus {
+  outline: 0;
+}
+#popup.aa_mpicklist_popup .aa_picklist_item {
+  cursor: pointer;
+  width: 100\%;
+  height:18px;
+  clear: both;
+}
+#popup.aa_mpicklist_popup .aa_picklist_item:focus {
+  outline: none;
+}
+#popup.aa_mpicklist_popup .aa_picklist_item_image {
+  float:left;
+  padding: 1px 5px 0 3px;
+}
+#popup.aa_mpicklist_popup .aa_picklist_item_image img {
+  height:14px;
+}
+#popup.aa_mpicklist_popup .aa_picklist_item.selected {
+  background: #D9E8FB;
+}
+#popup.aa_mpicklist_popup .aa_picklist_item_text {
+  cursor:pointer;
+  padding-top: 2px;
+  padding-right: 4px;
+  padding-bottom: 2px;
+  padding-left: 4px;
+  white-space: nowrap;
+}
+#popup.aa_mpicklist_popup .aa_highlight {
+  color: blue;
+}
+#popup.aa_mpicklist_popup .aa_picklist_no_results {
+  padding: 3px 5px;
+}
+#popup.aa_mpicklist_popup .aa_picklist_show_all {
+  padding: 5px 5px;
+  cursor: pointer;
+  color: #333;
+}
+#this.aa_focus .aa_mpicklist_div { 
+border-color: rgba(82, 168, 236, 0.8);
+outline: 0;
+outline: thin dotted 9;
+box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(82, 168, 236, 0.6);
+}
+.aa_mpicklist_search:focus {
+ box-shadow: none;
+ outline:none;
+ border:none; 
+}        
+]]></Css>
+  </xtml>
+</Component>
+
+</xtml>
+
+<xtml ns="multiple_picklist">
+
+  <Type id="Style" style="true" />
+  <Type id="StyleForBase" style="true" />
+
+  <Component id="MultiPicklistBaseArea" type="field.Fields" execution="native" light="false">
+    <Param name="Title" titleField="true" />
+    <Param name="ID" advanced="always" idField="true" />
+    <Param name="MultiPicklistApiObject" />
+    <Param name="Style" type="multiple_picklist.StyleForBase" />
+    <Param name="PopupStyle" type="popup.Style" script="true"/>
+    <Param name="PopupContents" type="ui.Page" script="true"/>
+    <Param name="SearchFilterType" type="itemlist_filter.FilterType">
+      <Default t="itemlist_filter.Text" />
+    </Param>
+    <NativeHelper name="OpenPopup" t="popup.OpenPopup">
+      <Contents t="xtml.UseParam" Param="PopupContents" />
+      <Style t="xtml.UseParam" Param="PopupStyle" />
+      <Feature value="%$_MultiPicklistBase/PopupFeatures%" />
+    </NativeHelper>
+  </Component>
+
+  <Component id="JBartMultiBaseArea" type="multiple_picklist.StyleForBase">
+    <xtml t="ui.CustomStyle">
+      <Html><![CDATA[<div>
+  <div>
+    <div class="aa_item">
+       <div class="close" />
+       <div class="text"/>
+    </div>
+    <div class="search_input_li">
+      <input class="search_input" autocomplete="off" tabindex="0" />
+    </div>
+  </div>
+  <div style="clear:both;" />
+  </div>]]></Html>
+      <Css><![CDATA[
+#this { width: 300px; border: 1px solid #AAA; }
+#this.active { border-color: #5897fb; }      
+#this>div>div { float: left; }
+#this>div>.aa_item { 
+  height: 13px;
+  border: 1px solid #aaa; 
+  padding:2px 3px 4px 3px;
+  background-color: #E4E4E4; 
+  border-radius: 3px;
+  box-shadow: 0 0 2px white inset, 0 1px 0 rgba(0, 0, 0, 0.05);
+  margin: 3px 3px 3px 3px;
+  background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, color-stop(20%, #F4F4F4), color-stop(50%, #F0F0F0), color-stop(52%, #E8E8E8), color-stop(100%, #EEE));
+}
+#this>div>div>.text { display: inline-block; color: #333; line-height: 13px; font: 13px arial; }
+
+#this>div>div:hover>.close { 
+}
+#this>div>div>.close {
+background: url('_jbartImages_/jbart_icons.png') -65px -4px no-repeat; 
+ display: inline-block; 
+width: 13px; height: 13px; vertical-align: top; cursor: pointer; 
+margin-top: 2px;
+}
+#this input { border:none; padding-left:5px; }
+]]></Css>
+      <Javascript><![CDATA[function(multipicklistBase) {
+  var jControl = jQuery(multipicklistBase.control);
+  
+  aa_multipicklistbase(multipicklistBase,{
+    itemElement: jControl.find('.aa_item')[0],
+    itemInnerElements: function(item) {
+      return {
+        itemTextElement: jQuery(item).find('.text')[0],
+        itemCloseElement: jQuery(item).find('.close')[0],
+      }
+    },
+    searchElement: jControl.find('.search_input')[0]
+  });
+}]]></Javascript>
+    </xtml>
+  </Component>
+  
+<Component id="Checkboxes" type="multiple_picklist.Style">
+  <xtml t="ui.CustomStyle">
+    <Css><![CDATA[#this .aa_option {
+  float: left;
+  white-space:absolute;
+  margin-right: 12px;
+}
+#this .aa_option_text {
+  cursor: default;
+  color:#666666;
+  padding-left: 2px;
+  padding-top:2px;
+  vertical-align: top;
+  display: inline-block;
+}
+input { margin-left: 0; }]]></Css>
+    <Html><![CDATA[<div>
+  <div class="aa_option">
+    <input type="checkbox" class="aa_option_checkbox" />
+    <span class="aa_option_text" />
+  </div>        
+  <div style="clear:both"/>
+</div>]]></Html>
+    <Javascript><![CDATA[function(multi_picklist) {
+  aa_picklist_checkboxes(multi_picklist);
+}]]></Javascript>
+  </xtml>
+</Component>
+
+  <Component id="JBartMultiplePicklistOld" type="multiple_picklist.Style">
+    <xtml t="ui.CustomStyleByField">
+      <Field t="multiple_picklist.MultiPicklistBaseArea" Title="picklist base" MultiPicklistApiObject="%$ApiObject%">
+        <Style t="multiple_picklist.JBartMultiBaseArea" />
+        <PopupStyle t="popup.PicklistPopup" />
+        <PopupContents t="field.InnerPage" Title="popup contents">
+          <Field t="field.ItemListContainer" Title="Options" ID="Picklist_options">
+            <Items t="itemlist.Items">
+              <Items t="object.RunMethod" Object="%$ApiObject%" Method="OptionsLeft" />
+            </Items>
+            <FieldAspect t="field_aspect.HandleEvent" Event="load">
+               <Action t="object.RunMethod" Object="%$ApiObject/Field%" Method="OnOpenPopup" />
+            </FieldAspect>
+            <Field t="field.ItemList" Title="Options List" ID="Picklist_options_list">
+              <Field t="field.Layout" ID="Horizontal" Title="Horizontal">
+                <Layout t="layout.HorizontalCss3" Spacing="0px" />
+                <FieldAspect t="field_aspect.OnClick">
+                  <Action t="multiple_picklist.PicklistSelect">
+                    <Option t="itemlist_item.ItemOfList" Result="item">
+                      <Item t="itemlist_item.SelectedItem" />
+                    </Option>
+                  </Action>
+                </FieldAspect>
+                <FieldAspect t="field_feature.Css">
+                  <Css><![CDATA[#this { cursor: pointer; width: 100%; }
+            ]]></Css>
+                </FieldAspect>
+                <Field t="fld.Field" FieldData="%image%" ID="image" Title="Option Image">
+                  <FieldType t="fld_type.Image">
+                    <Image t="image.Image" Url="%%" KeepImageProportions="true" Width="16px" Height="16px" />
+                    <Style t="image.PlainImage" />
+                  </FieldType>
+                  <FieldAspect t="field_feature.Css">
+                    <Css><![CDATA[#this { padding-left:3px; padding-right:3px; padding-top:5px; }
+            ]]></Css>
+                  </FieldAspect>
+                  <FieldAspect t="field_aspect.Hidden">
+                    <OnCondition t="field_aspect.CheckConditionForEveryItem" WhenHidden="Do not render" ShowCondition="%image% != ''" />
+                  </FieldAspect>
+                </Field>
+                <Field t="fld.Field" FieldData="%text%" Title="Option Text">
+                  <FieldType t="fld_type.Text">
+                    <Style t="uitext.PlainText" />
+                  </FieldType>
+                  <FieldAspect t="field_feature.Css">
+                    <Css><![CDATA[#this { cursor:pointer; padding-top: 2px; padding-right: 4px; padding-bottom: 2px; padding-left: 4px; }]]></Css>
+                  </FieldAspect>
+                  <FieldAspect t="field_aspect.HighlightSubTextOnFilter">
+                    <HighlightCss><![CDATA[#this { color: blue; } ]]></HighlightCss>
+                  </FieldAspect>                      
+                </Field>
+              </Field>
+              <View t="itemlist_style.Simple" />
+              <FieldAspect t="itemlist_aspect.ItemSelection" KeyboardSupport="true" AlwaysOneSelected="false"
+                MouseSupport="mouse hover">
+              </FieldAspect>
+              <FieldAspect t="itemlist_aspect.ShowTextWhenNoItems" Text="No results match your search">
+                <Style t="ui.CustomStyle">
+                  <Html><![CDATA[<div />]]></Html>
+                  <Css><![CDATA[#this { padding-bottom: 3px; padding-left: 5px; }]]></Css>
+                  <Javascript><![CDATA[function(textObj) { 
+  textObj.$el.html(textObj.text);
+}]]></Javascript>
+                </Style>
+              </FieldAspect>
+              <FieldAspect t="itemlist_aspect.LongList" MaxTimeToRenderItems="200" TextForShowMore="show more...">
+              </FieldAspect>
+            </Field>
+            <Layout t="layout.Default" />
+          </Field>
+        </PopupContents>
+      </Field>
+    </xtml>
+  </Component>
+  
+  <Component id="PicklistSelect" type="action.Action" execution="native" light="false">
+    <Param name="Option" Default="%%" />
+  </Component>
+  
+</xtml>
+
+</xtml>

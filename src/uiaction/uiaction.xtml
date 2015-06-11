@@ -1,0 +1,434 @@
+<xtml ns="uiaction">
+ <Type id="UsageAction">
+    <ComponentAspect t="component_aspect.Image" Image="%$_Images%/studio/run.gif" />
+ </Type>
+ 
+ <Component id="Click" type="action.Action,uiaction.UsageAction" lightTypes="uiaction.UsageAction">
+  <Param name="RunOn">
+    <Field t="bart_dt.RunOnDT" />
+    <EditorField t="bart_dt.RunOnDT" />
+  </Param>
+  <xtml t="uiaction.FireEvent" Event="click" ForOnlyOneElement="true"/>
+ </Component>
+ 
+ <Component id="MouseDown" type="action.Action,uiaction.UsageAction" lightTypes="uiaction.UsageAction">
+  <Param name="RunOn"> <Field t="bart_dt.RunOnDT" /> </Param>
+  <xtml t="uiaction.FireEvent" Event="mousedown"/>
+ </Component>
+ 
+ <Component id="KeyDown" type="action.Action,uiaction.UsageAction" lightTypes="uiaction.UsageAction">
+  <Param name="RunOn"> <Field t="bart_dt.RunOnDT" /> </Param>
+  <Param name="KeyCode"> <Field t="bart_dt.RunOnDT" /> </Param>
+  <xtml t="uiaction.FireEvent" Event="keydown"/>
+ </Component>
+  
+ <Component id="MouseUp" type="action.Action,uiaction.UsageAction" lightTypes="uiaction.UsageAction">
+  <Param name="RunOn"> <Field t="bart_dt.RunOnDT" /> </Param>
+  <xtml t="uiaction.FireEvent" Event="mouseup"/>
+ </Component>
+ 
+ <Component id="ButtonClick" type="action.Action,uiaction.UsageAction" execution="native" lightTypes="uiaction.UsageAction">
+   <Param name="RunOn">
+    <Field t="bart_dt.RunOnDT" />
+  </Param>
+ </Component>
+ 
+  <Component id="ClickOnTab" type="action.Action" light="false">
+    <xtml t="uiaction.FireEvent" Event="mousedown"/>
+  </Component>
+ 
+ <Component id="Refresh" type="action.Action" execution="native" light="false">
+   <Param name="RunOn" essential="true" />
+   <Param name="RunOnControl" type="action.Action" advanced="true" />
+ </Component>
+
+ <Component id="FireEvent" type="action.Action" execution="native" description="" light="false">
+      <Param name="Event" essential="true"/>
+      <Param name="MouseButton"/>
+      <Param name="KeyCode"/>
+      <Param name="ForOnlyOneElement" type="data.Boolean">
+        <Default value="true"/>
+      </Param>
+    </Component>
+
+ <Component id="MouseRightClick" type="action.Action" light="false">
+   <xtml t="action.RunActions">
+     <Action t="uiaction.FireEvent" Event="mousedown" MouseButton="right"/>
+     <Action t="uiaction.FireEvent" Event="mouseup" MouseButton="right"/>
+   </xtml>
+ </Component>
+
+ <Component id="ControlElementToRunOn" type="data.Data" execution="native"/>
+
+ <Component id="Alert" type="action.Action" execution="native" light="false">
+  <Param name="Text" essential="true" /> 
+ </Component>
+
+ <Component id="GoToUrl" type="action.Action" execution="native" hidden="true" light="false" >
+  <Param name="Url" essential="true" />
+ </Component>
+
+ <Component id="SetUrlFragment" type="action.Action" light="false">
+      <Param name="Fragment"/>
+      <Param name="Attribute" essential="true"/>
+      <Param name="Value" essential="true"/>
+      <xtml t="action.IfThenElse">
+        <If t="yesno.NotEmpty" Value="%$Fragment%"/>
+        <Then t="uiaction.GoToUrl">
+          <Url t="data.Pipeline">
+            <Item t="data.Url"/>
+            <Item t="text.Replace" Find="#.*" ReplaceWith="" UseRegex="true"/>
+            <Item t="text.Concat" Suffix="#%$Fragment%"/>
+          </Url>
+        </Then>
+        <Else t="uiaction.SetUrlFragment">
+          <Fragment t="bart_url.NewUrlFragment" Proposed="?%$Attribute%=%$Value%">
+            <Current t="ui.UrlFragment"/>
+          </Fragment>
+        </Else>
+      </xtml>
+    </Component>
+  
+ <Component id="MobileScrollToElement" type="action.Action" execution="native" light="false">
+   <Param name="Element"><Default value="%$ControlElement%" /></Param>
+ </Component>
+ 
+ <Component id="DataItemsOfItemInTree" type="data.Data" execution="native" description="The data items of a tree node">
+   <Param name="ItemElement" />
+ </Component>
+ 
+ <Component id="SelectionChangedByData" type="action.Action" visibility="internal" light="false">
+ 	<Param name="NewSelected" />
+ 	<xtml t="xtml.RunXtml" Xtml="%$MasterDetailContext/SelectionChanged%" Input="%$NewSelected%" ForceInputParam="true" />
+ </Component>
+ 
+ <Component id="Focus" type="action.Action" execution="native">
+   <Param name="OnFirstInput" type="data.Boolean" />
+ </Component>
+ 
+ <Component id="MoveSelection" type="action.Action" execution="native" light="false">
+  <Param name="Direction" type="enum" >
+   <value>One Up</value>
+   <value>One Down</value>
+  </Param>
+ </Component>
+ 
+ <Component id="RemoveClass" type="action.Action" light="false">
+  <Param name="Cls" essential="true" />
+  <xtml t="ui.RunJavaScript" Expression="jQuery(element).removeClass(ajaxart.getVariable(context, 'Cls')[0]);" >
+   <Var name="Cls" value="%$Cls%" />
+  </xtml>
+ </Component>
+
+ <Component id="HasClass" type="data.Boolean" execution="native">
+  <Param name="Cls" essential="true" />
+ </Component>
+  
+ <Component id="SetEnabling" type="action.Action" execution="native" light="false">
+  <Param name="Enable" type="data.Boolean" />
+ </Component>
+ 
+ <Component id="Show" type="action.Action" execution="native" light="false"/>
+ <Component id="Hide" type="action.Action" execution="native" light="false" />
+ 
+ <Component id="SetCssProperty" type="action.Action" light="false">
+  <Param name="Property" essential="true" />
+  <Param name="Value" essential="true" />
+  <xtml t="ui.RunJavaScript" type="action.Action" Expression="if(element != null) jQuery(element).css('%$Property%','%$Value%');">
+   <Condition t="yesno.NotEmpty" Data="%$Property%" />
+  </xtml>
+ </Component>
+ 
+ <Component id="SetMessageBarText" type="action.Action" light="false">
+  <Param name="Hide" type="data.Boolean" ><Default value="false" /></Param>
+  <Param name="Text" />
+  <Param name="MessageBarType" ><Default value="notification" /></Param>
+  <Param name="Type" type="enum">
+   <value>Error</value>
+   <value>Warning</value>
+   <value>Info</value>
+   <value>Success</value>
+   <Default value="Error" />
+  </Param>
+  
+  <xtml t="action.RunActions" RunOn=".%$MessageBarType%" RunOn1="updown(.ajaxart,.%$MessageBarType%)" >
+  	<Action t="action.RunActionOnItems" Items="%$ControlElement%" >
+	  	<Action t="action.IfThenElse" If="%$Hide%" RunOn="%%" >
+	      <Then t="uiaction.Hide" />
+	      <Else t="action.RunActions">
+		      <Action t="uiaction.SetText" RunOn=".message_bar_text" >
+		     	<Text t="text.MultiLang" Pattern="%$Text%" Dynamic="true" />
+		      </Action>
+		      <Action t="uiaction.RemoveClass" Cls="Error Warning Success Info"  /> 
+		      <Action t="uiaction.AddClass" Cls="%$Type%" />  
+		      <Action t="uiaction.Show" />
+	      </Else>
+	   </Action>
+   </Action>
+   <Action t="uiaction.HideMessageBarOnUserClick" >
+   	<Condition t="yesno.ItemsEqual" Item1="%$MessageBarType%" Item2="notification" />
+   </Action>
+   <Action t="dialog.FixTopDialogPosition" />
+  </xtml>
+ </Component>
+ 
+ <Component id="HideMessageBarOnUserClick" execution="native" light="false">
+ </Component>
+ 
+ <Component id="RunEvent" type="action.Action" execution="native" light="false">
+   <Param name="VarName"/>
+   <Param name="Action"/>
+ </Component>
+ 
+ <Component id="ReloadPage" type="action.Action" light="false" execution="native" />
+ 
+ <Component id="FindFirstInput" execution="native"/>
+ 
+ <Component id="JQueryFind" type="data.Data" execution="native">
+   <Param name="Expression" essential="true" />
+   <Param name="LogOnEmptyResult" type="data.Boolean"><Default value="true" /></Param>
+   <Param name="All" type="data.Boolean"/>
+   <Param name="RunOnData" type="data.Boolean"/>
+   <Param name="RunOnScreen" type="data.Boolean" essential="true"/>
+ </Component>
+ 
+ <Component id="RegisterOnPageClose" type="action.Action" execution="native" light="false">
+   <Param name="ShowMessageIf" type="data.Boolean" script="true"/>
+   <Param name="Message" type="data.Data" script="true"/>
+ </Component>
+  
+ <Component id="UpdateBrowserTitle" type="action.Action" execution="native">
+   <Param name="Title" essential="true" />
+ </Component>
+ 
+ <Component id="RefreshCurrentPropertySheet" type="action.Action" light="false">
+  <xtml t="uiaction.Refresh" RunOn="up(.aapropertysheet)" />
+ </Component>
+ 
+ <Component id="MakeCssInline" type="ui.Control" execution="native">
+ 	<Param name="Control" type="ui.Control" />
+ 	<Param name="CssReplacer" />
+ </Component>
+
+  <Component id="Validate" type="action.Action" light="false">
+    <Param name="Input">
+      <Default t="data.Same"/>
+    </Param>
+    <Param name="OnSuccess" type="action.Action" script="true"/>
+    <Param name="OnFailure" type="action.Action" script="true"/>
+    <Param name="MandatoryMessage" script="true">
+      <Default t="ui.MandatoryMessage"/>
+    </Param>
+    <Param name="ExtraValidation" type="ui.Validation" script="true"/>
+    <Param name="TopItem" ><Default t="uiaction.GoUp" TopClass="ajaxart" /></Param>
+    <xtml t="action.RunActions">
+      <Var name="OriginalControlElement" value="%$ControlElement%" />
+      <Action t="action.RunActions" RunOn="%$TopItem%">
+      <Var name="MandatoryErrors" t="data.WritableText"/>
+      <Var name="ValidationError" t="data.WritableText"/>
+      <Action t="uiaction.Show" RunOn=".field_desc"/>
+      <Action t="uiaction.Hide" RunOn=".validation_message"/>
+      <Action t="ui.RunInControlContext" RunOn="down(.field_control)" Remark="mandatory" Mode="copy control variables">
+        <Item t="action.RunActions">
+          <Condition t="yesno.And">
+            <Item t="uiaction.HasClass" Cls="mandatory"/>
+            <Item t="yesno.IsEmpty"/>
+          </Condition>
+          <Action t="uiaction.AddClass" Cls="error aa_mandatory_error"/>
+          <Action t="action.WriteValue" To="%$MandatoryErrors%">
+            <Value t="data.AddToCommaSeparated" List="%$MandatoryErrors%" ToAdd="%$FieldTitle%"/>
+          </Action>
+        </Item>
+      </Action>
+      <Action t="server.CallServer" Remark="valiadtions">
+        <Call t="ui.RunInControlContext" RunOn="down(.field_control)" Mode="copy control variables">
+          <Item t="xtml.RunXtml" Xtml="%$_Field/Validation%">
+            <Condition t="yesno.NotEmpty"/>
+          </Item>
+        </Call>
+        <Call t="xtml.UseParam" Param="ExtraValidation" Remark="extra validations">
+          <Var name="_ValidationContext" t="xtml.Params">
+            <ScriptParam name="OnError" t="action.WriteValue" To="%$ValidationError%" Value="%%"/>
+          </Var>
+        </Call>
+        <Call t="server.ImmediateResult" Remark="avoid empty calls"/>
+        <OnSuccess t="action.Switch">
+          <Case>
+            <IfCondition t="yesno.NotEmpty" Value="%$MandatoryErrors%"/>
+            <Then t="action.RunActions">
+              <Action t="uiaction.SetMessageBarText" MessageBarType="validation" RunOn="%$TopItem%">
+                <Text t="xtml.UseParam" Param="MandatoryMessage">
+                  <Var name="FieldTitle" t="text.Concat" Separator=", ">
+                    <Items t="data.ListByCommas" List="%$MandatoryErrors%"/>
+                    <LastSeparator t="text.MultiLang" Pattern=" and "/>
+                  </Var>
+                </Text>
+              </Action>
+              <Action t="xtml.UseParam" Param="OnFailure" RunOn="%$OriginalControlElement%"/>
+            </Then>
+          </Case>
+          <Case>
+            <IfCondition t="yesno.NotEmpty" Value="%$ValidationError%"/>
+            <Then t="action.RunActions">
+              <Action t="uiaction.SetMessageBarText" RunOn="%$TopItem%" MessageBarType="validation" Text="%$ValidationError%"/>
+              <Action t="xtml.UseParam" Param="OnFailure" RunOn="%$OriginalControlElement%"/>
+            </Then>
+          </Case>
+          <Default t="xtml.UseParam" Param="OnSuccess" RunOn="%$OriginalControlElement%"/>
+        </OnSuccess>
+        <OnFailure t="uiaction.SetMessageBarText" RunOn="%$TopItem%" MessageBarType="validation" Text="error on validation"/>
+      </Action>
+      </Action>
+    </xtml>
+  </Component>
+  
+   <Component id="ShowValidationError" type="action.Action" light="false">
+    <Param name="SourceControl" ><Default value="%$ControlElement%" /></Param>
+    <Param name="Message" />
+   	<xtml t="action.RunActions">
+		<Action t="uiaction.Hide" RunOn="updown(.value,.field_desc)" />
+		<Action t="uiaction.Show" RunOn="updown(.value,.validation_message)" />
+		<Action t="uiaction.SetText" Text="%$Message%" RunOn="updown(.value,.validation_message)" />
+		<Action t="uiaction.AddClass" Cls="error" />
+		<Action t="action.WriteValue" To="%$ValidationError%" Value="%$Message%" />
+	</xtml>
+   </Component>
+   
+   <Component id="ValidateField" type="action.Action" hidden="true" light="false" >
+   	<xtml t="xtml.RunXtml" Xtml="%$_Field/Validation%" >
+   		<Condition t="yesno.NotEmpty" />
+   	</xtml>
+   </Component>
+    
+   <Component id="CleanFieldValidation" type="action.Action" hidden="true" light="false">
+   		<xtml t="action.RunActions" >
+				<Action t="uiaction.Show" RunOn="updown(.value,.field_desc)" />
+				<Action t="uiaction.Hide" RunOn="updown(.value,.validation_message)" />
+				<Action t="uiaction.RemoveClass" Cls="error aa_mandatory_error" />
+				<Action t="uiaction.Hide" RunOn="updown(.ajaxart,.message_bar.validation)" />
+				<Action t="uiaction.Hide" RunOn="updown(.validation_section,.message_bar.validation)" />
+		</xtml>
+   </Component>
+  
+   <Component id="RefreshItemElements" type="action.Action" execution="native" light="false">
+      <Param name="ItemElements" type="data.Data"><Default value="%$_ElemsOfOperation%"/></Param>
+   </Component>
+   
+   <Component id="SelectedItemElement" type="data.Data" execution="native"/>
+   <Component id="DeleteItemElements" type="action.Action" light="false" execution="native" Description="Takes care for the new selection">
+      <Param name="ItemElements" type="data.Data"/>
+   </Component>
+   <Component id="AddItemElement" type="action.Action" light="false" execution="native" uses="RunOn" >
+      <Param name="Item" type="data.Data"/>
+      <Param name="ParentElement"/>
+      <Param name="SelectIt" type="data.Boolean"><Default value="true"/></Param>
+      <Param name="DoOnAddedElement" type="action.Action" script="true" />
+   </Component>
+   <Component id="CheckAll" type="action.Action" execution="native" light="false" uses="RunOn" >
+      <Param name="Select" type="data.Boolean"/>
+   </Component>
+   
+  <Component id="RefreshAfterDataItemsChanged" type="action.Action" light="false" execution="native" />
+  
+  <Component id="SetBrowserIcon" type="action.Action" light="false" execution="native">
+    <Param name="Icon" />
+  </Component>
+    
+  <Component id="AddCssForBody" type="action.Action" execution="native">
+    <Param name="Css" css="true" />
+  </Component>
+    
+ <Component id="RefreshAllItemsInItemList" type="action.Action" light="false" execution="native"/>
+    
+ <Component id="DownloadFile" type="action.Action" light="false" execution="native" >
+ 	<Param name="Url" essential="true" />
+ </Component>
+ 
+  <Component id="BindHashChangeEvent" type="action.Action" light="false" execution="native" >
+  	<Param name="Action" type="action.Action" script="true" />
+  </Component>
+  
+  <Component id="RunXtmlAction" type="uiaction.UsageAction">
+    <Param name="Action" type="action.Action" script="true" essential="true" />
+    <xtml t="xtml.UseParam" Param="Action" />
+  </Component>
+  
+  <Component id="RunUsageActions" type="uiaction.UsageAction" decorator="Action">
+    <Param name="Action" type="uiaction.UsageAction[]" script="true" essential="true" />
+    <xtml t="xtml.UseParamArray" Param="Action" />
+  </Component>
+
+  <Component id="RunInCurrentDialog" type="uiaction.UsageAction" decorator="Action">
+    <Param name="Action" type="uiaction.UsageAction" script="true" essential="true" />
+    <Param name="CloseDialog" type="data.Boolean" />
+    <xtml t="action.RunActions" >
+      <RunOn t="dialog.TopDialogContent"/>
+      <Action t="xtml.UseParam" Param="Action" />
+      <Action t="dlg.CloseDialog" CloseType="OK" Condition="%$CloseDialog%" />
+    </xtml>
+  </Component>
+  
+  <Component id="RefreshOriginatedItem" type="action.Action" light="false">
+    <xtml t="uiaction.RefreshItemElements" RunOn="up(.aa_item)">
+      <ItemElements t="data.Pipeline">
+        <Item value="%$ControlElement%"/>
+        <Aggregator t="data.First"/>
+      </ItemElements>
+    </xtml>
+  </Component>
+  
+  <Component id="RefreshOriginatedContainer" type="action.Action" light="false"> 
+    <xtml t="uiaction.Refresh" RunOn="up(.aa_container)" />
+  </Component>
+  
+  <Component id="ExpandText" type="action.Action" execution="native" light="false">
+    <Param name="ItemElement" />
+  </Component>
+
+  <Component id="PutInputValuesInHtmlForTests" type="uiaction.UsageAction" execution="native" />
+
+  <Component id="SimulateTreeDragBegin" type="action.Action,uiaction.UsageAction" execution="native" lightTypes="uiaction.UsageAction">
+    <Param name="RunOn" description="Item Element e.g. $.find('.fld_Folders').find('.aa_item').slice(1,2)"/>
+  </Component>
+  <Component id="SimulateTreeDragEnd" type="action.Action,uiaction.UsageAction" execution="native" lightTypes="uiaction.UsageAction">
+    <Param name="RunOn" description="PlaceHolder e.g. $.find('.aa_move_place_holder').slice(2,3)"/>
+  </Component>
+  
+  <Component id="FilterContainer" type="action.Action" execution="native" light="false">
+    <Param name="FilterQueryXml" description="xml identifying the filter query"/>
+    <Param name="Cntr" description="field or page id for the container. e.g. fld_Teams, or Page_Teams" advanced="true"/>
+  </Component>
+  
+  <Component id="AddCssClass" type="action.Action" execution="native" light="false">
+    <Param name="Class" essential="true" />
+    <Param name="AddTo" essential="true" type="dynamic_enum_multi">
+      <Options t="data.Pipeline">
+         <Item t="bart_dt.AllFieldIDs" />
+        <Item value="%Options%" />
+        <Item value="%code%" />
+       </Options>
+     </Param>
+  </Component>
+
+  <Component id="ScrollIntoView" type="action.Action" execution="native">
+    <Param name="FieldID" essential="true" type="dynamic_enum">
+     <Options t="data.Pipeline">
+       <Item t="bart_dt.AllFieldIDs" FieldPT="" />
+       <Item value="%Options%" />
+       <Item value="%code%" />
+     </Options>
+   </Param>
+  </Component>
+
+  <Component id="AddTextToTextboxCursor" type="action.Action" execution="native">
+    <Param name="Text" />
+    <Param name="Textbox" essential="true" type="dynamic_enum">
+     <Options t="data.Pipeline">
+       <Item t="bart_dt.AllFieldIDs" FieldPT="" />
+       <Item value="%Options%" />
+       <Item value="%code%" />
+     </Options>
+   </Param>
+  </Component>
+
+</xtml>

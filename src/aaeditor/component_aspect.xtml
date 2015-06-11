@@ -1,0 +1,22 @@
+<xtml ns="component_aspect">
+
+<Type id="Aspect" />
+
+<Component id="Image" type="component_aspect.Aspect">
+  <Param name="Image"/>
+  <xtml t="object.SetProperty" Object="%$_Component%" Property="Image" Value="%$Image%" />
+</Component>
+
+<Component id="Operations" type="component_aspect.Aspect">
+  <Param name="Operation" type="operation.Operations[]"/>
+  <xtml t="object.SetProperty" Object="%$_Component%" Property="Operations" Value="%$Operation%" />
+</Component>
+
+<Component id="EditControl" type="component_aspect.Aspect">
+  <Param name="Control" type="ui.Control" script="true"/>
+  <xtml t="object.SetMethod" Object="%$_Component%" Method="Control">
+    <Xtml t="xtml.UseParam" Param="Control" />
+  </xtml>
+</Component>
+
+</xtml>

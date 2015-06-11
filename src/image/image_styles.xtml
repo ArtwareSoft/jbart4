@@ -1,0 +1,135 @@
+<xtml package="true">
+
+  <xtml ns="image_style">
+
+  	<Component id="Default" type="img.Style">
+  		<xtml t="ui.CustomStyle">
+  			<Html><![CDATA[<div/>]]></Html>
+  			<Css><![CDATA[#this {}]]></Css>
+  			<Javascript><![CDATA[function(imageObject) {
+	aa_image(imageObject.image, { el: imageObject.el });
+}]]></Javascript>
+  		</xtml>
+  	</Component>
+
+  </xtml>
+
+  <xtml ns="editableimage_style">
+
+  	<Component id="Default" type="editable_image.Style">
+  		<Param name="Question" Default="Enter image url:" />
+  		<xtml t="ui.CustomStyle" Question="%$Question%">
+  			<Html><![CDATA[<div/>]]></Html>
+  			<Css><![CDATA[
+#this { cursor: pointer;   border: 1px solid transparent;
+}
+#this:hover {
+  border-color: #bbb;
+}
+#this.aa_empty_image { 
+} 
+]]></Css>
+  			<Javascript><![CDATA[function(editableImage) {
+	aa_editableImage_default(editableImage);
+}]]></Javascript>
+  		</xtml>
+  	</Component>
+
+<Component id="TextAndPreview" type="editable_image.Style">
+  <Param name="TextBoxWidth" Default="300px" slider="true" sliderUnit="px" />
+  <xtml t="ui.CustomStyle" TextBoxWidth="%$TextBoxWidth%">
+    <Html><![CDATA[<div class="image_drop_area">
+  <div class="aa_drop_sink_mask">drop image here ...</div>
+  <input></input>
+  <span/>
+</div>]]></Html>
+    <Css><![CDATA[#this input {
+  height:20px;
+  border:1px solid #ccc;
+  padding:5px;
+  border-radius:3px;
+  vertical-align:top;
+  font-size:11px;
+}
+#this input:focus {
+  border-color:rgba(82, 168, 236, 0.8);
+  outline:0;
+  outline:thin dotted 9;
+  box-shadow:inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(82, 168, 236, 0.6);
+}
+#this span {
+  cursor:pointer;
+  border:1px solid transparent;
+  display:inline-block;
+}
+.aa_drop_sink_mask {
+  z-index:99;
+  display:none;
+  position:absolute;
+  border-width:4px;
+  border-style:dashed;
+  border-color:#43ff2e;
+  font-size:16px;
+  font-family:'Comic Sans MS', cursive;
+  text-align:center;
+}
+#this.uploading, #this.uploading * {
+  cursor:wait;
+}]]></Css>
+    <Javascript><![CDATA[function(editableImage) {
+  aa_editableImageTextAndPreview(editableImage, {} );
+}
+]]></Javascript>
+  </xtml>
+</Component>
+
+<Component id="EditInPopup" type="editable_image.Style">
+  <Param name="TextBoxWidth" Default="300px" slider="true" sliderUnit="px" />
+  <xtml t="ui.CustomStyle" TextBoxWidth="%$TextBoxWidth%">
+    <Html><![CDATA[<div class="image_drop_area">
+  <div class="aa_drop_sink_mask">drop image here ...</div>
+  <div class="main_image_wrapper"/>
+  <div class="popup">
+    <input/>
+  </div>
+</div>]]></Html>
+    <Css><![CDATA[#popup input {
+  height:20px;
+  border:1px solid #ccc;
+  padding:5px;
+  border-radius:3px;
+  vertical-align:top;
+  font-size: 11px;
+}
+#popup input:focus {
+  border-color: rgba(82, 168, 236, 0.8);
+  outline: 0;
+  outline: thin dotted 9;
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(82, 168, 236, 0.6);
+}
+.main_image_wrapper {
+  cursor: pointer;
+  border: 1px solid transparent;
+  display:inline-block;
+}
+.aa_drop_sink_mask {
+  z-index:99;
+  display: none;
+  position: absolute;
+  border-width: 4px;
+  border-style: dashed;
+  border-color: #43ff2e;
+  font-size: 16px;
+  font-family: 'Comic Sans MS', cursive;
+  text-align: center;
+}
+]]></Css>
+    <Javascript><![CDATA[function(editableImage) {
+  aa_editableImageInPopup(editableImage, {} );
+}
+]]></Javascript>
+  </xtml>
+</Component>
+</xtml>
+
+</xtml>

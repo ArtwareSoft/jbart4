@@ -1,0 +1,70 @@
+<xtml package="true">
+<xtml ns="parser">
+
+<Component id="RemoveSection" type="data.Data" execution="native">
+  <Param name="BeginPattern" essential="true"/>
+  <Param name="EndPattern" essential="true"/>
+  <Param name="Html" Default="%%"/>
+</Component>
+
+<Component id="ExtractBody" type="data.Data" execution="native">
+  <Param name="Html" Default="%%"/>
+</Component>
+
+<Component id="RemoveHtmlScripts" type="data.Data">
+  <Param name="Html" Default="%%"/>
+  <xtml t="parser.RemoveSection" Html="%$Html%" BeginPattern="&lt;script" EndPattern="&lt;/script&gt;"/>
+</Component>
+
+<Component id="RemoveHtmlRemarks" type="data.Data">
+  <Param name="Html" Default="%%"/>
+  <xtml t="parser.RemoveSection" Html="%$Html%" BeginPattern="&lt;!--" EndPattern="--&gt;"/>
+</Component>
+
+<Component id="RemoveHtmlTags" type="data.Data">
+  <Param name="Html" Default="%%"/>
+  <xtml t="parser.RemoveSection" Html="%$Html%" BeginPattern="&lt;" EndPattern="&gt;"/>​
+</Component>
+
+<Component id="CleanHtml" type="data.Data">
+      <Param name="Html" Default="%%"/>
+      <xtml t="data.Pipeline">
+        <Item value="%$Html%"/>
+        <Item t="parser.RemoveHtmlRemarks"/>
+        <Item t="parser.ExtractBody"/>
+        <Item t="parser.RemoveHtmlScripts"/>
+      </xtml>
+</Component>
+
+   <Component id="PreviewHtml" type="field.Fields" execution="native">
+      <Param name="Title" titleField="true" />
+      <Param name="Html" />
+      <Param name="Style" type="preview_html.Style"><Default t="preview_html.Simple" /></Param>
+      <Param name="FieldAspect" type="field.FieldAspect[]" light="false" script="true" />
+      <Param name="ID" idField="true" />
+   </Component>
+
+</xtml>
+
+  <xtml ns="preview_html">
+    <Type id="Style" />
+
+    <Component id="Simple" type="audioplayer.Style">
+      <Param name="Width" Default="300px" slider="true" sliderUnit="px" />
+      <Param name="Height" Default="300px" slider="true" sliderUnit="px" />
+      <Param name="Border" type="data.Boolean" />
+      <xtml t="ui.CustomStyle" Border="%$Border%">
+        <Html><![CDATA[<div />]]></Html>
+        <Css><![CDATA[#this iframe {
+    width: %$Width%;
+    height: %$Height%;        
+  }]]></Css>
+        <Javascript><![CDATA[function render(htmlPreview) { 
+    aa_htmlPreview(htmlPreview);
+  }]]></Javascript>
+      </xtml>
+    </Component>
+
+  </xtml>
+
+</xtml>

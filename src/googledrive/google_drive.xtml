@@ -1,0 +1,462 @@
+<xtml ns="google_drive" light="false">
+
+    <Component id="StudioDialogScrollbarCss" type="field.FieldAspect" light="false">
+      <xtml t="appfeature.CssForHtmlHead">
+      <Css><![CDATA[
+.jbstudio_dlg *::-webkit-scrollbar {
+width: 8px;
+height: 8px;
+}
+
+.jbstudio_dlg *::-webkit-scrollbar-thumb {
+background: #CAE4CE;
+}
+
+.jbstudio_dlg *::-webkit-scrollbar-track {
+}
+]]></Css>
+    </xtml>
+    </Component>
+
+    <Component id="StudioCollapseFieldAspect" type="field.FieldAspect" light="false">
+      <xtml t="field_aspect.Aspects">
+      	<FieldAspect t="field_feature.CssClass" ClassName="studio_collapsed">
+        	<ConditionForClass t="data.SessionStorage" Key="studio_collapsed" />
+        </FieldAspect>
+      	<FieldAspect t="field_feature.CssClass" ClassName="studio_collapsed_placeholder" />
+      </xtml>    	
+    </Component>
+
+    <Component id="TopAreaFieldAspect" type="field.FieldAspect" light="false">
+      <xtml t="field_aspect.Aspects">
+        <FieldAspect t="field_feature.CssClass" ClassName="jbstudio_dlg" />
+        <FieldAspect t="field_feature.Css">
+          <Css><![CDATA[#this { position:fixed;top:0;left:0;right:0; z-index: 1999; }]]></Css>
+        </FieldAspect>        
+      </xtml>
+    </Component>
+
+<Component id="ControlToOpenGoogleDrive" type="field.Fields" light="false" dtsupport="false">
+  <xtml t="control.Button" Title="Open Google Drive" HideTitle="true" ID="_gd_open_google_drive">
+    <Style t="ui.CustomStyle" base="btn.BlueButton">
+      <Html><![CDATA[<div title="Open Google Drive" >
+ <a href="//drive.google.com" target="_blank">
+   <div class="docs-drive-logo"></div>
+  </a>
+</div>]]></Html>
+      <Css><![CDATA[#this {
+  background-color: #4285f4;
+  height: 60px;
+  width: 40px;
+  position:relative;
+}
+.localhost #this {
+  background-color: #26A88E;
+}
+a {
+  cursor: pointer;
+}
+.docs-drive-logo {
+  background: url(//ssl.gstatic.com/docs/common/product/drive2.svg) center no-repeat;
+  height: 60px;
+  width: 40px;
+}]]></Css>
+      <Javascript><![CDATA[function render(button) {
+}]]></Javascript>
+    </Style>
+  </xtml>
+</Component>
+
+<Component id="MainMenu" type="field.Fields" light="false" dtsupport="false">
+  <Param name="Field" type="field.Fields[]" script="true"/>
+  <xtml t="control.Layout" Title="Main Menu" ID="studio_main_menu">
+    <Layout t="layout.HorizontalHtmlTable" Spacing="" VerticalAlign="top"/>
+    <FieldAspect t="field_feature.Css">
+      <Css><![CDATA[#this { margin:-2px 0 0 -3px; } ]]></Css>
+    </FieldAspect>
+    <Field t="xtml.UseParamArray" Param="Field"/>
+  </xtml>
+</Component>
+
+    <Component id="Toolbar" type="field.Fields" light="false" >
+      <Param name="Field" type="field.Fields[]" script="true" />
+      <xtml t="control.Layout" Title="toobar" ID="studio_main_toolbar">
+        <Layout t="ui.CustomStyle" base="layout.Default">
+          <Html><![CDATA[<div><div class="gdrive_toolbar1"><div class="gdrive_toolbar2"><div class="field"/><div style="clear:both;"/></div></div></div>]]></Html>
+          <Css><![CDATA[
+#this {  
+  position:relative; 
+  background:#F5F5F5;
+  height: 34px;
+  border-top: 1px solid #E5E5E5;
+  border-bottom: 1px solid #D9D9D9;
+}
+.gdrive_toolbar1 {
+  border-top: 1px solid #fff;  
+}
+.gdrive_toolbar2 {
+  padding-left:52px;
+}
+#this>div>div>.field {  
+  float:left; 
+  padding:2px 0 3px 0;  
+}
+#this>div>div>.field * {  float: left;}]]></Css>
+          <Javascript><![CDATA[function(layout) {  aa_layout(layout); }]]></Javascript>
+        </Layout>
+        <Field t="xtml.UseParamArray" Param="Field" />
+      </xtml>
+    </Component>
+
+    <Component id="ToggleStudioCollapse" type="action.Action" execution="native" />
+
+    <Component id="ExpandCollapseToolbarButtons" type="field.Fields" light="false">
+    	<xtml t="control.Button" ID="studio_toggle_button" Title="Toggle Controls">
+        <Style t="google_drive.StudioToolbarIcon"/>
+        <Image t="data.IfThenElse">
+        	<If t="data.SessionStorage" Key="studio_collapsed" />
+        	<Then t="gstudio.StudioSmallImage" PositionInSprite="16,0"/>
+        	<Else t="gstudio.StudioSmallImage" PositionInSprite="32,0"/>
+        </Image>
+        <ButtonText t="data.IfThenElse" Then="Expand Controls" Else="Collapse Controls">
+        	<If t="data.SessionStorage" Key="studio_collapsed" />
+        </ButtonText>
+        <Action t="google_drive.ToggleStudioCollapse" />
+          <FieldAspect t="field_feature.Css">
+            <Css><![CDATA[#wrapper {  position:absolute;  top:3px;  right:10px;}]]></Css>
+          </FieldAspect>
+      </xtml>
+    </Component>
+
+  <Component id="InLocalHost" type="data.Boolean" execution="native" />
+
+<Component id="NameAndShareBar" type="field.Fields" hidden="true">
+  <Param name="MainItemName"/>
+  <Param name="UploadAction" t="action.Action" script="true"/>
+  <Param name="RenamePopupTitle" Default="Rename"/>
+  <xtml t="control.Layout" Title="">
+    <Field t="control.Button" ID="studio_topname" Title="Top Name">
+      <Action t="google_drive.RenameMainItem" MainItemName="%$MainItemName%" PopupTitle="%$RenamePopupTitle%"/>
+      <FieldAspect t="field_aspect.Title" Title="%$MainItemName%"/>
+      <Style t="google_drive.StudioWidgetNameStyle"/>
+    </Field>
+    <Field t="control.Button" ID="studio_share" Title="Share">
+      <ButtonText t="data.IfThenElse" Then="Upload" Else="Share">
+        <If t="google_drive.InLocalHost"/>
+      </ButtonText>
+      <Action t="action.IfThenElse">
+        <If t="google_drive.InLocalHost"/>
+        <Then t="xtml.UseParam" Param="UploadAction"/>
+        <Else t="google_drive.OpenShareSettingsDialog"/>
+      </Action>
+      <Style t="ui.CustomCss" base="btn.JBart">
+        <Style t="btn.JBart"/>
+        <Css><![CDATA[#this {
+  cursor: pointer;
+  text-transform:capitalize;
+  text-align: center;
+  color:White;
+  background:#0F52BA;
+  text-transform:capitalize;
+  font: bold 11px arial;
+  border-radius: 2px;
+  padding-top: 0px;
+  padding-right: 14px;
+  padding-bottom: 1px;
+  padding-left: 14px;
+  margin: 0;
+  border: 1px solid #586E9E;
+  box-shadow:  .03em .03em .05em 0px rgba(0,0,0,0.4);
+  background-image: -webkit-linear-gradient(-90deg, #5987A8 0\% , #0F52BA 100\% );
+  vertical-align: middle;
+  line-height: 28px;
+}
+#this:hover {
+  background-image: -webkit-linear-gradient(-90deg, #75B2DD 0\% , #0F52BA 100\% );
+}
+#this:active {
+  background:#5987A8;
+  background-image: -webkit-linear-gradient(90deg, #C04000 0\% , #FF5A36 39\% , white 100\% );
+  outline: 0;
+  background-image: none;
+}
+]]></Css>
+      </Style>
+      <FieldAspect t="field_feature.Layout">
+        <Css><![CDATA[#this {  position:absolute;  top:10px;  right:16px;}]]></Css>
+      </FieldAspect>
+    </Field>
+    <Field t="control.Button" ID="studio_publish" Title="Publish">
+      <Condition t="yesno.NotEmpty" Value="%$_InstanceEditor%" />
+      <Action t="gstudio_deploy.OpenDeployPopup" />
+      <FieldAspect t="field_feature.Layout">
+        <Css><![CDATA[#this {  position:absolute;  top:10px;  right:106px;}]]></Css>
+      </FieldAspect>
+    </Field>
+    <Layout t="ui.CustomCss" base="layout.Default">
+      <Style t="layout.Default"/>
+      <Css><![CDATA[#this {
+}]]></Css>
+    </Layout>
+  </xtml>
+</Component>
+
+  <Component id="OpenShareSettingsDialog" type="action.Action" execution="native" />
+
+<Component id="StudioWidgetNameStyle" type="btn.Style">
+  <xtml t="ui.CustomStyle">
+    <Css><![CDATA[#this {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font: 18px arial;
+  margin-top: 0px;
+  margin-right: 4px;
+  margin-left: 3px;
+  max-width: 920px;
+  min-width: 40px;
+  display:inline-block;
+  cursor:pointer;
+}
+#this:hover {
+  background:#eee;
+}
+]]></Css>
+    <Html><![CDATA[<div />]]></Html>
+    <Javascript><![CDATA[function render(button) {
+  aa_button(button);
+}]]></Javascript>
+  </xtml>
+</Component>
+
+  <Component id="RenameMainItem" type="action.Action">
+    <Param name="MainItemName" />
+    <Param name="PopupTitle" Default="Rename" />
+      <xtml t="popup.OpenPopup" PopupTitle="%$PopupTitle%">
+        <Contents t="field.InnerPage" Title="Rename Widget">
+          <Layout t="layout.Default"/>
+          <Field t="control.Layout" ID="Dialog_Data" Title="Dialog Data">
+            <Layout t="layout.Vertical" Spacing="0"/>
+            <Field t="control.Label" ID="Label" Title="Label" Text="Enter a new widget name:">
+              <Style t="ui.CustomCss" base="uitext.PlainText">
+                <Style t="uitext.PlainText"/>
+                <Css><![CDATA[#this { font-family:Arial, Helvetica; font-size: 13px; padding-top: 2px; }]]></Css>
+              </Style>
+            </Field>
+            <Field t="fld.Field" FieldData="%%" ID="newname" Title="Newname">
+              <FieldType t="fld_type.EditableText">
+                <Style t="ui.CustomCss" base="editable_text.JBartTextbox">
+                  <Style t="editable_text.JBartTextbox"/>
+                  <Css><![CDATA[#this {
+  background:url(images/css/shadow2.png) repeat-x scroll 0 0 transparent;
+  font-size: 13px;
+  width: 259px;
+  height: 16px;
+  padding-top: 3px;
+  padding-right: 3px;
+  padding-bottom: 3px;
+  padding-left: 3px;
+  margin-top: 15px;
+  border: 1px solid #BDC7D8;
+}
+#this:focus {
+  box-shadow:  inset 0 1px 1px 0px rgba(0, 0, 0, 0.075),  0 0 8px 0px rgba(82, 168, 236, 0.6);
+  border-color: rgba(82, 168, 236, 0.8);
+  outline: 0;
+  outline: thin dotted 9;
+}
+#this.placeholder {
+  color:#8B8B8B;
+}
+#this.aa_error {
+  background: #fbebeb; 
+  border: 1px solid #feb2b2; 
+  color: #ec643d !important;  
+}]]></Css>
+                </Style>
+              </FieldType>
+              <FieldAspect t="field_aspect.Mandatory" ErrorMessage="Please provide a widget name"/>
+              <FieldAspect t="field_feature.HandleEvent">
+                <Event t="field_feature.EnterPressed"/>
+                <Action t="operation.ClickOnButton" Button="gstudio_rename_OK"/>
+              </FieldAspect>
+            </Field>
+            <Field t="control.Layout" ID="Horizontal" Title="Buttons">
+              <Layout t="layout.HorizontalHtmlTable" Spacing="10px"/>
+              <Field t="control.Button" ID="gstudio_rename_OK" Title="OK" HideTitle="true">
+                <Style t="btn.JBart"/>
+                <Action t="popup.CloseContainingPopup" ExitMode="OK">
+                  <DoOnExit t="action.RunActions">
+                    <Action t="action.WriteValue" Value="%%" To="%$MainItemName%"/>
+                    <Action t="field.RefreshField" FieldID="studio_topname"/>
+                  </DoOnExit>
+                </Action>
+              </Field>
+              <Field t="control.Button" ID="Cancel" Title="Cancel">
+                <Style t="btn.JBartGrey"/>
+                <Action t="popup.CloseContainingPopup"/>
+              </Field>
+              <FieldAspect t="field_feature.Css">
+                <Css><![CDATA[#this { margin-top: 23px; }]]></Css>
+              </FieldAspect>
+            </Field>
+            <FieldAspect t="field_aspect.FieldData">
+              <FieldData t="data.WritableText" DefaultValue="%$MainItemName%" />
+            </FieldAspect>
+          </Field>
+        </Contents>
+        <Style t="gstudio.GoogleDrivePopup"/>
+      </xtml>
+    </Component>
+
+    <Component id="MainMenuButton" type="field.Fields" light="false" dtsupport="false">
+      <Param name="ID" advanced="always" essential="true" idField="true" />
+      <Param name="Title" titleField="true"/>
+      <Param name="ButtonText" script="true" advanced="true" description="Button text can be different than the title" />
+      <Param name="Tooltip" script="true" advanced="true"/>
+      <Param name="Image" type="img.Image"/>
+      <Param name="Action" type="action.Action" script="true" essential="true" />
+      <Param name="Disabled" script="true" type="data.Boolean.promoted" />
+      <Param name="FieldAspect" type="field.FieldAspect[]" light="false" script="true"/>
+      <Param name="Field" type="field.Fields[]" script="true" />
+      <xtml t="control.Button" ID="%$ID%" Title="%$Title%">
+        <ButtonText t="text.FirstSucceeding">
+          <Item t="xtml.UseParam" Param="ButtonText" />
+          <Item value="%$Title%" />
+        </ButtonText>
+        <Tooltip t="xtml.UseParam" Param="Tooltip" />
+        <Action t="xtml.UseParam" Param="Action" />
+        <Disabled t="xtml.UseParam" Param="Disabled" />
+        <Style t="google_drive.StudioMainMenuButton"/>
+        <FieldAspect t="popup_field_aspect.ToolbarPopup" ToolbarID="studio_mainmenu">
+          <PopupStyle t="google_drive.StudioMenuStyle"/>
+          <Contents t="field.InnerPage" Title="Inner">
+            <Layout t="layout.Default"/>
+            <Field t="xtml.UseParamArray" Param="Field" />            
+          </Contents>
+        </FieldAspect>
+        <FieldAspect t="xtml.UseParamArray" Param="FieldAspect" />
+      </xtml>
+    </Component>
+
+<Component id="StudioMainMenuButton" type="btn.Style">
+      <xtml t="ui.CustomStyle">
+        <Css><![CDATA[#this {
+  background: #fff;
+  cursor:pointer;
+  font: 13px arial;
+  padding: 5px 7px;
+  color: #000;
+  text-decoration: none;
+  height:16px;
+  border: 1px solid transparent;
+  -webkit-user-select: none; 
+  -moz-user-select: none;
+}
+#this:hover {
+  background:#eee;
+}
+#this.toolbarPopupOpen {
+  border: 1px solid rgba(0,0,0,0.2);
+  border-bottom:none;
+  box-shadow: 0 2px 4px solid rgba(0,0,0,0.2);
+  background: #fff;
+}]]></Css>
+        <Html><![CDATA[<div />]]></Html>
+        <Javascript><![CDATA[function render(button) {
+  aa_button(button);
+}]]></Javascript>
+      </xtml>
+    </Component>
+
+<Component id="StudioMenuStyle" type="popup.Style">
+  <xtml t="ui.CustomStyle">
+    <Html><![CDATA[<div>
+ <div class="aa_popup_frame">
+  <div class="aa_popup_contents" />
+  <div class="aa_popup_remove_top_border" /> 
+</div>
+ </div>]]></Html>
+    <Css><![CDATA[#this>.aa_popup_frame {
+  background:#fff;
+  min-width:280px;
+  min-height:30px;
+  box-shadow: 2px 2px 3px #d5d5d5;
+  padding:3px 0;
+  border: 1px solid rgb(213, 213, 213);
+}
+#this>.aa_popup_frame>.aa_popup_contents {
+  
+}
+#this>.aa_popup_frame:focus {
+  outline: none;
+}
+.aa_popup_remove_top_border {
+  background: #fff;
+  height:3px;
+  position: absolute;
+  top:-2px;
+  left:0;
+}
+]]></Css>
+    <Javascript><![CDATA[function show(popup) {
+    aa_popup(popup,{
+      screenCover: true,
+      features: [
+        aa_popup_feature_closeOnEsc()
+      ],
+      defaultLocation: aa_popupNearLauncherLocation(),
+      closeWhenClickingOutside: true
+    });
+    $(popup.frameElement).find('.aa_popup_remove_top_border').width( $(popup.launchingElement).outerWidth()-2 );
+}]]></Javascript>
+  </xtml>
+</Component>
+
+<Component id="StudioToolbarIcon" type="btn.Style">  <xtml t="ui.CustomStyle">    <Css><![CDATA[#this {
+  cursor:pointer;
+  opacity:0.8;
+  width:20px;
+  height:20px;
+  margin:2px;
+  border:1px solid transparent;
+  display:inline-block;
+}
+#this:hover {
+  opacity:1;
+  border:1px solid #C6C6C6;
+}
+#this:active {
+  opacity:1;
+}
+#this>div {
+  margin-left:2px;
+  margin-top:2px;
+}
+#this.checked {
+  box-shadow:inset 0 1px 2px rgba(0, 0, 0, .1);
+  background-color:#eee;
+  background-image:-webkit-linear-gradient(top, #eee, #e0e0e0);
+  border-color:#ccc;
+}
+#this.disabled {
+  opacity:0.3;
+}]]></Css>    <Html><![CDATA[<div/>]]></Html>    <Javascript><![CDATA[function render(button) {
+    aa_setImage(button.el,button.image,{ removeIfNoImage: false });
+    button.$el.click(function(e) { 
+      aa_buttonRunAction(button,e);
+    });
+    button.$el.attr('title',button.text);
+}]]></Javascript>  </xtml></Component>
+
+    <Component id="WidgetDeployID" type="data.Data" execution="native" >
+      <Param name="DebugIDInLocalhost" Default="debug_instance" />
+    </Component>
+
+    <Component id="UploadFileToGoogleCloudStorage" type="action.Action" execution="native">
+      <Param name="FileName" />
+      <Param name="Content" />
+      <Param name="Bucket" />
+      <Param name="ContentType" Default="text/plain"/>
+    </Component>
+
+</xtml>

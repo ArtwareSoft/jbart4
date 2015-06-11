@@ -1,0 +1,31 @@
+<xtml package="true">
+
+<xtml ns="control">
+
+  <Component id="Button" type="field.Fields" execution="native" image="%$_Images%/studio/button.png">
+    <Param name="ID" advanced="always" essential="true" idField="true" />
+    <Param name="Title" titleField="true"/>
+    <Param name="ButtonText" script="true" advanced="true" description="Button text can be different than the title"/>
+    <Param name="Tooltip" advanced="true"/>
+    <Param name="Image" type="img.Image"/>
+    <Param name="Action" type="action.Action" script="true" essential="true" />
+    <Param name="Style" type="btn.Style" script="true">
+      <Default t="btn.JBart"/>
+    </Param>
+    <Param name="Disabled" type="data.Boolean.promoted" />
+    <Param name="HideTitle" type="data.Boolean" advanced="true" Default="true" />
+    <Param name="FieldAspect" type="field.FieldAspect[]" light="false" script="true"/>
+  </Component>
+
+</xtml>
+
+<xtml ns="field_feature">
+
+  <Component id="AsyncButtonProperties" type="field.FieldAspect" context="FieldComponent=control.Button">
+    <Param name="TextForWaiting" Default="waiting..." />
+    <xtml t="object.SetTextProperty" Object="%$_Field%" Property="TextForWaiting" Value="%$TextForWaiting%" />
+  </Component>
+
+</xtml>
+
+</xtml>

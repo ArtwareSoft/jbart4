@@ -1,0 +1,22 @@
+<xtml ns="date">
+  
+  <Component id="Now" type="data.Data" execution="native">
+      <Param name="TimeZone" type="enum" Options="local,GMT,GMT+1,GMT+2,GMT+3,GMT+4,GMT+5,GMT+6,GMT+7,GMT+8,GMT+9,GMT+10,GMT+11,GMT-1,GMT-2,GMT-3,GMT-4,GMT-5,GMT-6,GMT-7,GMT-8,GMT-9,GMT-10,GMT-11"/>
+      <Param name="Format" type="enum" Options="milliseconds,std,with time,with time and seconds" essential="true">
+        <Default value="milliseconds"/>
+      </Param>
+  </Component>
+
+  <Component id="Today" type="data.Data" >
+    <Param name="Format" type="enum" Options="milliseconds,std,with time">
+      <Default value="milliseconds" />
+    </Param>
+    <xtml t="date.Now" Format="%$Format%" TimeZone="%$TimeZone%"/>
+  </Component>
+
+  <Component id="GreaterThan" type="yesno.Boolean" execution="native">
+    <Param name="Date" essential="true" />
+    <Param name="GreaterThan" essential="true"/>
+  </Component>
+  
+</xtml>

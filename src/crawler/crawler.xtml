@@ -1,0 +1,202 @@
+<xtml package="true">
+<xtml ns="crawler">
+  <Type id="Project" />
+  <Type id="Queue" />
+  <Type id="Service" />
+  <Type id="ServiceAspect" />
+  <Type id="Sample" />
+  <Type id="Parser" />
+  <Type id="QueueItem" />
+  <Type id="QueueItemContextVar" />
+
+  <Component id="Project" type="crawler.Project">
+    <Param name="DataResource" type="jbart.DataResource[]" />
+    <Param name="Queue" type="crawler.Queue[]" />
+    <xtml t="object.Object">
+      <Property name="Queues" t="xtml.UseParamArray" Param="Queue" />
+    </xtml>
+  </Component>
+
+  <Component id="Queue" type="crawler.Queue" execution="native" summaryLabel="%@ID%">
+    <Param name="ID" description="AlphaNumeric - No Spaces allowed">
+      <Field t="fld.Field" FieldData="%!@ID%" ID="ID" Title="ID">
+        <FieldType t="fld_type.EditableText">
+          <Style t="editable_text.JBartTextbox" Width="160px"/>
+        </FieldType>
+        <FieldAspect t="field_feature.HandleEvent">
+          <Event t="field_feature.Update"/>
+          <Action t="gstudio.Refresh" />
+        </FieldAspect>
+      </Field>
+    </Param>
+    <Param name="Description" />
+    <Param name="SampleItem" type="crawler.QueueItem" />
+    <Param name="Service" type="crawler.Service" />
+  </Component>
+
+<Component id="QueueItem" type="crawler.QueueItem,data.Data" execution="native">
+  <Param name="Value" essential="true"/>
+  <Param name="ContextVar" type="crawler.QueueItemContextVar[]" essential="true"/>
+</Component>
+
+<Component id="QueueItemContextVar" type="crawler.QueueItemContextVar" execution="native">
+  <Param name="VarName" essential="true"/>
+  <Param name="Value" essential="true"/>
+</Component>
+
+  <Component id="Parser" type="crawler.Parser" execution="native">
+    <Param name="OutputQueueItems" type="data.Data">
+      <Default t="data.Pipeline">
+        <Item t="text.Extract" />
+      </Default>
+    </Param>
+  </Component>
+
+  <Component id="Service" type="crawler.Service" execution="native" >
+    <Param name="Description" />
+    <Param name="ParserData" type="async_data.Data">
+      <Default t="http.HttpCall" Url="%%">
+        <Aspect t="http.JBartCrossDomainProxy" />
+      </Default>
+    </Param>
+    <Param name="Parser" type="crawler.Parser">
+      <Default t="crawler.Parser" />
+    </Param>
+    <Param name="OutputQueue" type="dynamic_enum">
+      <Options t="crawler.QueueIDs"/>
+    </Param>
+    <Param name="Aspect" type="crawler.ServiceAspect[]" />
+    <Param name="SampleInput" type="crawler.Sample[]" />
+  </Component>
+
+<Component id="Sample" type="crawler.Sample" execution="native" summaryLabel="%@Name%">
+  <Param name="Name"/>
+  <Param name="Url"/>
+  <Param name="File"/>
+  <Param name="Description"/>
+  <Param name="DT">
+    <Field t="crawler_studio.ShowSampleButton"/>
+  </Param>
+</Component>
+
+  <Component id="QueueIDs" type="data.Data">
+    <xtml t="data.Pipeline">
+      <Item value="%$_AppContext/Queues%" />
+      <Item value="%ID%" />
+    </xtml>
+  </Component>
+
+  <Component id="QueueContents" type="data.Data">
+    <Param name="QueueID" />
+    <xtml value="%$Queues/Queue[#{$QueueID}]/live/*%" />
+  </Component>
+
+  <Component id="EmptyQueue" type="action.Action" execution="native">
+    <Param name="QueueID" />
+  </Component>
+
+  <Component id="AddToQueue" type="action.Action" execution="native">
+    <Param name="QueueID" />
+    <Param name="Value" />
+    <Param name="AddIfNotAlreadyAdded" type="data.Boolean" Default="true" />
+  </Component>
+
+  <Component id="AddToOutputQueue" type="action.Action">
+    <Param name="Value" />
+    <Param name="AddIfNotAlreadyAdded" type="data.Boolean" Default="true" />
+    <xtml t="crawler.AddToQueue" QueueID="%$OutputQueueID%" Value="%$Value%" AddIfNotAlreadyAdded="%$AddIfNotAlreadyAdded%" />
+  </Component>
+
+  <Component id="InputQueueItem" type="data.Data">
+    <xtml value="%$InputQueueItem%" />
+  </Component>
+
+<Component id="InputQueueItemVariable" type="data.Data">
+  <Param name="VarName" essential="true"/>
+  <xtml value="%$InputQueueItemContext/{$VarName}%"/>
+</Component>
+
+  <Component id="SampleContents" type="data.Data" execution="native">
+    <Param name="Sample" />
+  </Component>
+
+  <Component id="IsQueueRunning" type="data.Boolean" execution="native">
+    <Param name="QueueID" type="dynamic_enum">
+      <Options t="crawler.QueueIDs" />
+    </Param>
+  </Component>
+
+  <Component id="StartQueue" type="action.Action" execution="native">
+    <Param name="QueueID" type="dynamic_enum">
+      <Options t="crawler.QueueIDs" />
+    </Param>
+  </Component>
+
+  <Component id="QueuePreviewResults" type="action.Action" execution="native">
+    <Param name="QueueID" type="dynamic_enum">
+      <Options t="crawler.QueueIDs" />
+    </Param>
+  </Component>
+
+  <Component id="StopQueue" type="action.Action" execution="native">
+    <Param name="QueueID" type="dynamic_enum">
+      <Options t="crawler.QueueIDs" />
+    </Param>
+  </Component>
+
+  <Component id="StartAllQueues" type="action.Action" execution="native" />
+
+<Component id="WriteCrawlerResult" type="action.Action" execution="native">
+  <Param name="Key" essential="true"/>
+  <Param name="Path" Default="@val" essential="true"/>
+  <Param name="Value" essential="true"/>
+  <Param name="WriteAs" type="enum" Options="normal,cdata,inner xml" Default="normal" />
+</Component>
+
+<Component id="CrawlerResult" type="data.Data" execution="native">
+  <Param name="Key" essential="true"/>
+  <Param name="Path" essential="true"/>
+</Component>
+
+  <Component id="XmlToCSV" type="data.Data" execution="native">
+    <Param name="XmlItems" />
+    <Param name="Separator" Default="," />
+  </Component>
+
+</xtml>
+<xtml ns="crawler_aspect">
+
+<Component id="WriteOutputQueueItemsToCrawlerResult" type="crawler.ServiceAspect" execution="native">
+  <Param name="Key" />
+  <Param name="Path" Default="@val" />
+  <Param name="Value" Default="%%" />
+  <NativeHelper name="Write" t="crawler.WriteCrawlerResult" Key="%$Key%" Path="%$Path%" Value="%$Value%" />
+</Component>
+
+<Component id="DoNotForwardQueueContext" type="crawler.ServiceAspect" execution="native" />
+
+<Component id="ParallelHttpCalls" type="crawler.ServiceAspect" execution="native">
+  <Param name="NumberOfQueueItems" Default="5" />
+</Component>
+
+</xtml>
+
+<xtml ns="crawler_in_parser">
+
+<Component id="WriteCrawlerResult" type="data.Data" execution="native">
+  <Param name="Key" />
+  <Param name="Path" />
+  <Param name="Value" Default="%%" />
+  <Param name="WriteAs" type="enum" Options="normal,cdata,inner xml" Default="normal" />
+</Component>
+
+<Component id="AddToQueue" type="data.Data" execution="native">
+  <Param name="Queue" essential="true" type="dynamic_enum">
+    <Options t="crawler.QueueIDs"/>
+  </Param>
+  <Param name="Value" Default="%%" essential="true"/>
+</Component>
+
+</xtml>
+
+</xtml>

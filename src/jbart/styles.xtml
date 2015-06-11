@@ -1,0 +1,2604 @@
+<xtml package="true">
+
+  <xtml ns="jbart">
+  
+    <Component id="TextboxCss" type="data.Data">
+      <xtml t="data.FirstSucceeding">
+        <Item><![CDATA[
+         #this { border:1px solid #BDC7D8; font-size:11px; padding:3px; height: 16px; width: 150px;background:url(%$_Images%/css/shadow2.png) repeat-x scroll 0 0 transparent;} 
+         #this.readonly { border:none !important; }
+         #this.selected { background: #D9E8FB !important}
+        ]]></Item>
+      </xtml>
+    </Component>
+    
+  </xtml>
+  <xtml ns="ui">
+
+    <Component id="CustomStyle" type="data.Data" customPT="true" execution="native">
+      <Param name="Html" codemirror="true" light="false"/>
+      <Param name="Css" codemirror="true" light="false"/>
+      <Param name="Javascript" codemirror="true" light="false"/>
+    </Component>
+    
+    <Component id="CustomCss" type="data.Data" execution="native" customPT="true">
+      <Param name="Style" light="false" />
+      <Param name="Css" codemirror="true" light="false"/>
+    </Component>
+    
+    <Component id="CustomStyleByField" type="data.Data" image="%$_Images%/studio/star1616.gif" customPT="true" execution="native">
+      <Param name="Field" type="field.Fields" light="false" script="true" />
+    </Component>
+    
+  </xtml>
+  
+  <xtml ns="style" jbart="true">
+
+    <Type id="SectionStyle" style="true" image_width="160px" tile_width="180px" />
+    <Component id="YellowBox" type="style.SectionStyle">
+      <xtml value="aa_yellowbox" />
+    </Component>
+    <Component id="ThickTitle1" type="style.SectionStyle" Image="%$_Images%/styles/ThickTitle1.png">
+      <xtml value="thick_title1" />
+    </Component>
+
+</xtml>
+
+  <xtml ns="transition" jbart="true">
+    <Type id="Transition" />
+    <Component id="Fade" type="transition.Transition" execution="native" >
+      <Param name="Duration" description="time in miliseconds" Default="300" />
+    </Component>
+    <Component id="LeftSlide" type="transition.Transition" execution="native" >
+      <Param name="Duration" description="time in miliseconds" Default="300" />
+      <Param name="Background" Default="white" />
+    </Component>
+    <Component id="RightSlide" type="transition.Transition" execution="native" >
+      <Param name="Duration" description="time in miliseconds" Default="300" />
+      <Param name="Background" Default="white" />
+      <Param name="CoverLeftMargin" type="data.Boolean" Default="true" />
+    </Component>
+  </xtml>
+
+  <xtml ns="searchbox_old" jbart="true">
+    <Type id="Style" style="true" />
+
+  <Component id="Round" type="searchbox_old.Style">
+    <xtml t="ui.CustomStyle">
+      <Html><![CDATA[<input />]]></Html>
+      <Css><![CDATA[#this { 
+color:#565656; 
+font: 12px Arial; width: 300px; 
+border-radius: 8px; 
+padding: 6px 0 6px 10px; }
+]]></Css>
+    </xtml>
+  </Component>
+    
+  </xtml>
+  
+  <xtml ns="button" jbart="true">
+    <Type id="Style" style="true" />
+
+  <Component id="Arrow" type="button.Style">
+    <Param name="Direction" type="enum" Options="Left,Right,Top,Bottom" Default="Left"/>
+    <Param name="Color" Default="black"/>
+    <Param name="Size" Default="10" slider="true" />
+    <Param name="BackgroundColor" Default="white" advanced="true"/>
+  
+    <xtml t="ui.CustomStyle">
+      <Html><![CDATA[<div class="aa_button_clickable"/>]]></Html>
+      <Css><![CDATA[#this { color:black; width:0px; height:0px;border-style: solid;
+    }
+  #this:hover { cursor: pointer; }
+  ]]></Css>
+      <Javascript><![CDATA[function(button) {
+    button.setOnClick('.aa_button_clickable',button.Action);
+    var sides = ['Left','Right','Top','Bottom'];
+    var size = parseInt('%$Size%' || '10');
+    var jbtn = jQuery(button);
+    for(var i=0;i<sides.length;i++) {
+       var side = sides[i];
+       if (side == 'Left') 
+        side = 'Right';
+       else if (side == 'Right')
+        side = 'Left';
+       if (sides[i] == '%$Direction%') {
+          jbtn.css('border' + side + 'Width','' + (size +1) + 'px');
+          jbtn.css('border' + side + 'Color','%$Color%');
+       } else {
+          jbtn.css('border' + side + 'Width','' + size + 'px');
+          jbtn.css('border' + side + 'Color','%$BackgroundColor%');
+       }
+    }
+  }]]></Javascript>
+    </xtml>
+  </Component>​
+
+    <Component id="Hyperlink" type="button.Style">
+      <Param name="Spacing" Default="4px" />
+      <Param name="Color" Default="blue" />
+      <xtml t="ui.CustomStyle"
+        Html="&lt;span class=&quot;aa_button_clickable&quot;&gt;&#xd;  &lt;span class=&quot;aa_button_img&quot;/&gt;&#xd;  &lt;span class=&quot;aa_button_text&quot;/&gt;&#xd;&lt;/span&gt;"
+        Css="#this { color: %$Color% ;cursor:pointer;text-decoration: none;font-family:&quot;lucida grande&quot;,tahoma,verdana,arial,sans-serif;&#xa;font-size:11px; padding-left1:7px; paddding-right: 7px; }&#xa;#this &gt;.aa_button_text:hover { text-decoration: underline }&#xa;#this .aa_button_img img { cursor:pointer; padding-bottom:2px; padding-right: %$Spacing%; vertical-align:middle; }"
+        Javascript="function(button) {&#xa;  button.setInnerHTML('.aa_button_text',button.text);  &#xa;  button.setImageSource('.aa_button_img',button.image);  &#xa;  button.setOnClick('.aa_button_clickable',button.Action);&#xa;}" />
+    </Component>
+    
+    <Component id="JBartButton" type="button.Style" styleGuide="jbart">
+      <xtml t="ui.CustomStyle" Html="&lt;span class=&quot;aa_button_clickable&quot; tabindex=&quot;1&quot;&gt;&#xd;  &lt;span class=&quot;aa_outer_btn&quot;&gt;&#xd;    &lt;span class=&quot;aa_button_text&quot;/&gt;&#xd;  &lt;/span&gt;&#xd;  &lt;br/&gt;&#xd;&lt;/span&gt;" Css="#this br { line-height:25px; }&#xa;&#xa;#this .aa_outer_btn { height:25px; cursor:pointer; color:black;color2:rgb(31,73,125); font-family: Arial; font-size:12px; float:left; background:url(%$_Images%/css/button.png) no-repeat left top; padding:0 0 0 6px; }&#xa;&#xa;#this .aa_button_text { height:18px; float:left; background:url(%$_Images%/css/button.png) no-repeat right top; padding:4px 15px 3px 6px; }&#xa;&#xa;#this.pressed .aa_outer_btn { background-position:0 -28px; }&#xa;#this.pressed .aa_button_text { background-position:100\% -28px; padding:5px 15px 2px 6px; }&#xa;" Javascript="function(button) {&#xa;  button.setInnerHTML('.aa_button_text',button.text);  &#xa;  &#xa;  button.setOnClick('.aa_button_clickable',button.Action,true);&#xa;}"/>
+    </Component>
+
+  <Component id="GreenButton" type="button.Style">
+            <xtml t="ui.CustomStyle">
+              <Html><![CDATA[<button />]]></Html>
+              <Css><![CDATA[#this { cursor: pointer; font-family: arial; text-align: center; color:White; 
+  background:#86B300; font-weight:bold; font-size: 13px; border-radius: 6px; 
+  padding-top: 0px; padding-right: 25px; padding-bottom: 3px; padding-left: 25px; 
+  border: 1px solid #6A8C01; text-shadow:  0 1px 0 #668910; 
+  box-shadow:  .03em .03em .05em 0px rgba(0,0,0,0.4); 
+  background-image: -webkit-linear-gradient(-90deg, #86B300 0% , #6A8D00 100% ); 
+  min-width: 56px; -webkit-border-radius: 6px; -moz-border-radius: 6px; 
+  -khtml-border-radius: 6px; vertical-align: middle; line-height: 32px; 
+  -moz-box-shadow: .03em .03em .05em rgba(0,0,0,0.4); 
+  -webkit-box-shadow: .03em .03em .05em rgba(0,0,0,0.4); }
+#this:hover { transition: background-position 0.1s linear; }
+#this:active { background:#6A8C01; outline: 0; }
+]]></Css>
+              <Javascript><![CDATA[function(button) {
+  button.$el.html(button.text);  
+  button.el.onclick = aa_runActionOnClick(button.Action);
+}]]></Javascript>
+            </xtml>
+  </Component>
+
+  <Component id="JBartHyperlink" type="button.Style">
+    <Param name="Spacing" Default="4px" />
+    <Param name="Color" Default="blue" />
+    <xtml t="ui.CustomStyle"
+      Html="&lt;span class=&quot;aa_button_clickable&quot;&gt;&#xd;  &lt;span class=&quot;aa_button_img&quot;/&gt;&#xd;  &lt;span class=&quot;aa_button_text&quot;/&gt;&#xd;&lt;/span&gt;"
+      Css="#this { color: %$Color% ;cursor:pointer;text-decoration: none;font-family:&quot;lucida grande&quot;,tahoma,verdana,arial,sans-serif;&#xa;font-size:11px; padding-left1:7px; paddding-right: 7px; }&#xa;#this &gt;.aa_button_text:hover { text-decoration: underline }&#xa;#this .aa_button_img img { cursor:pointer; padding-bottom:2px; padding-right: %$Spacing%; vertical-align:middle; }"
+      Javascript="function(button) {&#xa;  button.setInnerHTML('.aa_button_text',button.text);  &#xa;  button.setImageSource('.aa_button_img',button.image);  &#xa;  button.setOnClick('.aa_button_clickable',button.Action);&#xa;}" />
+  </Component>
+
+  <Component id="LightHyperlink" type="button.Style">
+    <xtml t="ui.CustomStyle"
+      Html="&lt;span class=&quot;aa_button_clickable&quot;&gt;&#xd;  &lt;span class=&quot;aa_button_img&quot;/&gt;&#xd;  &lt;span class=&quot;aa_button_text&quot;/&gt;&#xd;&lt;/span&gt;"
+      Javascript="function(button) {&#xa;  button.setInnerHTML('.aa_button_text',button.text);  &#xa;  button.setImageSource('.aa_button_img',button.image);  &#xa;  button.setOnClick('.aa_button_clickable',button.Action);&#xa;}">
+      <Css><![CDATA[#this { 
+color: #333; cursor:pointer;text-decoration: none;font: 10px Arial; paddding-left: 4px; }
+#this >.aa_button_text:hover { text-decoration: underline }
+#this .aa_button_img img { cursor:pointer; padding-bottom:2px; padding-right: 4px; vertical-align:middle; }
+      ]]></Css>      
+      </xtml>
+  </Component>
+
+  <Component id="GreenHyperlink" type="button.Style">
+    <xtml t="ui.CustomStyle">
+      <Html><![CDATA[<span class="aa_button_clickable">
+  <span class="aa_button_text"/>
+</span>]]></Html>
+      <Css><![CDATA[#this { 
+  cursor:pointer; 
+  color:#6C8C2A;
+  font: 12px arial;
+  text-decoration: underline; 
+}
+
+]]></Css>
+      <Javascript><![CDATA[function(button) {
+  button.setInnerHTML('.aa_button_text',button.text);  
+  button.setOnClick('.aa_button_clickable',button.Action);
+}]]></Javascript>
+    </xtml>
+  </Component>
+
+  <Component id="LightHyperlink" type="button.Style">
+    <xtml t="ui.CustomStyle"
+      Html="&lt;span class=&quot;aa_button_clickable&quot;&gt;&#xd;  &lt;span class=&quot;aa_button_img&quot;/&gt;&#xd;  &lt;span class=&quot;aa_button_text&quot;/&gt;&#xd;&lt;/span&gt;"
+      Javascript="function(button) {&#xa;  button.setInnerHTML('.aa_button_text',button.text);  &#xa;  button.setImageSource('.aa_button_img',button.image);  &#xa;  button.setOnClick('.aa_button_clickable',button.Action);&#xa;}">
+      <Css><![CDATA[#this { 
+color: #333; cursor:pointer;text-decoration: none;font: 10px Arial; paddding-left: 4px; }
+#this >.aa_button_text:hover { text-decoration: underline }
+#this .aa_button_img img { cursor:pointer; padding-bottom:2px; padding-right: 4px; vertical-align:middle; }
+      ]]></Css>      
+      </xtml>
+  </Component>
+
+<Component id="LinkWithText" type="button.Style">
+  <Param name="Font" Default="font-family: arial; font-size:12px;" />
+  <xtml t="ui.CustomStyle">
+    <Html>
+<![CDATA[<div/>]]>
+    </Html>
+    <Css>
+<![CDATA[#this { %$Font%; }
+
+.aa_btn_link { color: blue ;
+  cursor:pointer;
+  text-decoration: none;
+  paddding-right: 7px; 
+}
+.aa_btn_link:hover { text-decoration: underline; }
+
+]]>
+    </Css>
+    <Javascript>
+<![CDATA[function(button) {
+  button.setInnerHTML('',button.text);
+  jQuery(button).find('a').addClass('aa_btn_link');
+  button.setOnClick('.aa_btn_link',button.Action);
+}]]>
+    </Javascript>
+  </xtml>
+</Component>
+
+  <Component id="Orange" type="button.Style">
+    <xtml t="ui.CustomStyle">
+      <Html><![CDATA[<button/>]]></Html>
+      <Css><![CDATA[#this { cursor:pointer; font-family:Arial, Helvetica; color:#003d71; font-size: 13.5px; 
+  border-radius: 4px; padding-top: 10px; padding-right: 14px; padding-bottom: 10px; 
+  padding-left: 14px; border: 1px solid #ff9a02; 
+  text-shadow:  0em 0.1em 0.1em #ffc66f; 
+  background-image: -webkit-linear-gradient(-90deg, #ffc56c 0% , #ff9a02 100% ); 
+  }
+#this:hover { 
+  background-image: -webkit-linear-gradient(-90deg, #ffe9ce 0% , #ff9a02 100% ); 
+  }
+#this:active { 
+  background-image: -webkit-linear-gradient(90deg, #ffc56c 0% , #ff9a02 100% ); 
+  }
+.arrow { background-color:#0000B8; width: 3px; height: 12px; 
+  border-top: 6px solid #FFFFFF; border-bottom: 6px solid #FFFFFF; }
+]]></Css>
+      <Javascript><![CDATA[function(button) {  
+  button.$el.text(button.text);
+ button.setOnClick('',button.Action);
+}]]></Javascript>
+    </xtml>
+  </Component>
+ 
+<Component id="MobileButton2" type="button.Style">
+  <xtml t="ui.CustomStyle">
+    <Html><![CDATA[<button class="aa_button_clickable aa_button_text" tabindex="1"/>]]></Html>
+    <Css><![CDATA[#this { font-family: sans-serif; text-overflow: ellipsis; color:#505C77; 
+  font-weight:bold; text-overflow: ellipsis; font-size: 12px; 
+  border: #CCC solid 1px; white-space:absolute; 
+  background-color: #FDFEFE;
+  background-image:-webkit-gradient( linear, left top, left bottom, from(#FDFEFE), to(#F0F1F2) ); 
+  min-width: 32px; -webkit-border-radius: 4px; padding: 7px 8px 8px; 
+  cursor: pointer; -webkit-text-size-adjust: none; -webkit-user-select: none; }
+]]></Css>
+    <Javascript><![CDATA[function(button) {
+  button.setInnerHTML('.aa_button_text',button.text);  
+  /*button.onclick = function() { alert(2); }*/
+button.setOnClick('.aa_button_clickable',button.Action);
+}]]></Javascript>
+  </xtml>
+</Component>
+
+<Component id="Red" type="button.Style">
+  <xtml t="ui.CustomStyle">
+    <Html><![CDATA[<button />]]></Html>
+    <Css><![CDATA[#this {
+border: 1px solid;
+background-color: #650d0d;
+background-image: -webkit-gradient(linear, 0 0, 0 100\%, from(#5b0a0a), to(#bd1717));
+background-image: -moz-linear-gradient(top, #5b0a0a, #bd1717);
+background-image: -ms-linear-gradient(top, #5b0a0a, #bd1717);
+background-image: -webkit-linear-gradient(top, #5b0a0a, #bd1717);
+background-image: -o-linear-gradient(top, #5b0a0a, #bd1717);
+background-image: linear-gradient(top, #5b0a0a, #bd1717);
+background-repeat: repeat-x;
+border-color: #030303;
+filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
+text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+color: white;
+padding: 9px 14px;
+font-size: 15px;
+line-height: normal;
+border-radius: 5px;
+-moz-border-radius: 5px;
+border-radius: 5px;
+text-align:center;
+cursor: pointer;
+-webkit-appearance: button;
+}
+#this:hover { 
+background-image: -webkit-gradient(linear, 0 0, 0 100\%, from(#bd1717), to(#5b0a0a));
+}
+#this:active { background-color: #890e12; background-image: none;}
+]]>
+    </Css>
+    <Javascript>
+<![CDATA[function(button) {
+  button.setInnerHTML('',button.text);  
+  button.setOnClick('',button.Action);
+}]]>
+    </Javascript>
+  </xtml>
+</Component>​
+
+  <Component id="NativeButton" type="button.Style">
+    <xtml t="ui.CustomStyle">
+      <Html><![CDATA[<button />]]></Html>
+      <Css><![CDATA[
+#this {}
+#this:hover {}
+#this:active {}]]></Css>
+      <Javascript><![CDATA[function(button) {
+  button.setInnerHTML('',button.text);  
+  button.setOnClick('',button.Action);
+}]]></Javascript>
+    </xtml>
+  </Component>
+  
+    <Component id="ImageOnly" type="button.Style">
+      <xtml t="ui.CustomStyle" Html="&lt;span class=&quot;aa_button_img aa_button_clickable&quot;/&gt;" Css="#this { cursor: pointer }" Javascript="function(button) {&#xa;  button.setAttribute('title',button.tooltip);&#xa;  button.setImageSource('.aa_button_img',button.image);  &#xa;  button.setOnClick('.aa_button_clickable',button.Action);&#xa;}"/>
+    </Component>
+
+  <Component id="MobileNative" type="button.Style" styleGuide="jbartMobile" >
+    <Param name="BackgroundColor">
+      <Default value="#2070e9;" />
+    </Param>
+    <Param name="Color" advanced="true">
+      <Default value="white" />
+    </Param>
+    <Param name="PressedBackgroundColor" advanced="true">
+      <Default value="rgba(0,0,0,.64)" />
+    </Param>
+    <Param name="TextShadow" advanced="true">
+      <Default value="rgba(0,0,0,.4) 0 -1px 0" />
+    </Param>
+    <Param name="LineHeight" advanced="true">
+      <Default value="29px" />
+    </Param>
+    <Param name="MinWidth">
+      <Default value="30px" />
+    </Param>
+    <xtml t="ui.CustomStyle" Html="&lt;button class=&quot;aa_button_clickable aa_button_text&quot; tabindex=&quot;1&quot;/&gt;"
+      Css="#this &#xa;{&#xa;min-width: %$MinWidth%; cursor:pointer; background: -webkit-gradient(linear, left top, left bottom,color-stop(0, rgba(255,255,255,0.25)),color-stop(0.1, rgba(255,255,255,.4)),color-stop(1, rgba(255,255,255,.1)) ),-webkit-gradient(linear, left top, left bottom,from(transparent),to(rgba(0,0,64,.05)) );&#xa;  -webkit-border-radius: 5px;&#xa;  border: solid 1px rgba(0,0,0,.25);&#xa;  border-top-color: rgba(0,0,0,.6);&#xa;  -webkit-box-sizing: border-box;&#xa;  -webkit-box-shadow: 0 1px 0 rgba(255,255,255,.3);&#xa;  font-family: inherit;&#xa;font-size: 12px;&#xa;font-weight: bold;&#xa;text-shadow: %$TextShadow%;&#xa;text-decoration: none;&#xa;text-align: center;&#xa;line-height: %$LineHeight%;&#xa;color: %$Color%;&#xa;  background-color: %$BackgroundColor%;&#xa;background-repeat: no-repeat;&#xa;background-position: top left, bottom left;&#xa;-webkit-background-size: 100\% 14px, 100\%;&#xa;}&#xa;&#xa;#this:disabled {&#xa;color: rgba(255,255,255,0.65)&#xa;}&#xa;#this:active:not(:disabled) {&#xa;background-color: %$PressedBackgroundColor%;&#xa;}&#xa;"
+      Javascript="function(button) {&#xa;  button.setInnerHTML('.aa_button_text',button.text);  &#xa;button.setOnClick('.aa_button_clickable',button.Action);&#xa;}" />
+  </Component>​
+    
+  <Component id="MobileButton1" type="button.Style">
+  <xtml t="ui.CustomStyle" Html="&lt;button class=&quot;aa_button_clickable aa_button_text&quot; tabindex=&quot;1&quot;/&gt;" Javascript="function(button) {&#xa;  button.setInnerHTML('.aa_button_text',button.text);  &#xa;button.setOnClick('.aa_button_clickable',button.Action);&#xa;}">
+    <Css>
+<![CDATA[#this 
+{
+min-width: 30px; cursor:pointer; 
+background: -webkit-gradient(linear, left top, left bottom,color-stop(0, rgba(255,255,255,0.25)),color-stop(0.1, rgba(255,255,255,.4)),color-stop(1, rgba(255,255,255,.1)) ),-webkit-gradient(linear, left top, left bottom,from(transparent),to(rgba(0,0,64,.05)) );
+  -webkit-border-radius: 5px;
+  border: solid 1px rgba(0,0,0,.25);
+  border-top-color: rgba(0,0,0,.6);
+  -webkit-box-sizing: border-box;
+  -webkit-box-shadow: 0 1px 0 rgba(255,255,255,.3);
+  font-family: inherit;
+font-size: 12px;
+font-weight: bold;
+text-shadow: #DDD 1px 1px 0;
+text-decoration: none;
+text-align: center;
+padding:3px 8px;
+color: #222;
+background-color: #87CBFF;
+background-repeat: no-repeat;
+background-position: top left, bottom left;
+-webkit-background-size: 100\% 14px, 100\%;
+}
+
+#this:disabled {
+color: rgba(255,255,255,0.65)
+}
+#this:active:not(:disabled) {
+background-color: rgba(0,0,0,.64);
+}
+]]>
+    </Css>
+  </xtml>
+  </Component>
+  
+      <Component id="ToolbarButton" type="button.Style">
+      <Param name="InOutline" type="data.Boolean" />
+      <xtml t="ui.CustomStyle" Javascript="function(button) {&#xa;  if ('true' == '%$InOutline%') button.$el.addClass('outline'); button.setInnerHTML('.aa_button_text',button.text);  &#xa;  button.setImageSource('.aa_button_img',button.image);  &#xa;  button.setOnClick('.aa_button_clickable',button.Action);&#xa;}" Html="&lt;div class=&quot;aa_button_clickable&quot;&gt;&#xa;  &lt;div class=&quot;aa_button_img&quot;/&gt;&#xa;  &lt;div class=&quot;aa_button_text&quot;/&gt;&#xa;&lt;/div&gt;">
+        <Css><![CDATA[
+#this:hover { opacity:1; } 
+#this { 
+opacity:0.7; padding: 4px 1px; border:1px solid #ddd; cursor:pointer;
+width: 67px; 
+border-radius: 8px; margin-right: 2px; background: #FBFBFB; text-align: center; 
+}
+#this >.aa_button_text { padding: 6px 0 3px; font: 11px tahoma;}
+#this.outline {
+  padding: 2px 1px; width: 40px;
+  border: none;
+}
+#this.outline >.aa_button_text {
+  padding-top: 2px;
+}
+]]></Css>
+      </xtml>
+    </Component>
+    
+    <Component id="StudioBarButton" type="button.Style">
+      <xtml t="ui.CustomStyle" Javascript="function(button) {&#xa;  button.setInnerHTML('.aa_button_text',button.text);  &#xa;  button.setImageSource('.aa_button_img',button.image);  &#xa;  button.setOnClick('.aa_button_clickable',button.Action);&#xa;}" Html="&lt;div class=&quot;aa_button_clickable&quot;&gt;&#xa;  &lt;div class=&quot;aa_button_img&quot;/&gt;&#xa;  &lt;div class=&quot;aa_button_text&quot;/&gt;&#xa;&lt;/div&gt;">
+        <Css>
+          <![CDATA[
+          #this { opacity:0.85; white-space: nowrap;}
+          #this:hover { opacity:1; }
+	        #this { padding: 5px 1px 3px 1px; cursor:pointer;text-decoration: none;font-family:"lucida grande",tahoma;
+	        font-size:11px; width: 67px;margin-right: 2px; text-align: center; }
+	        #this >.aa_button_text { padding-top: 5px; color1: #444; color:#EEE; }
+	        #this >.aa_button_img { height:24px; }]]>
+        </Css>
+        
+      </xtml>
+    </Component>
+   
+    <Component id="FacebookMobile" type="button.Style" styleGuide="jbartMobile">
+        <xtml t="ui.CustomStyle" Html="&lt;button class=&quot;aa_button_clickable aa_button_text&quot; tabindex=&quot;1&quot;/&gt;" Javascript="function(button) {&#xa;  button.setInnerHTML('.aa_button_text',button.text);  &#xa;button.setOnClick('.aa_button_clickable',button.Action);&#xa;}">
+          <Css>
+<![CDATA[#this 
+{
+min-width: 32px;
+color: #505C77;
+text-shadow: 0 1px 0 rgba(255, 255, 255, .6);
+  background: -webkit-gradient( linear, left top, left bottom, from(#FDFEFE), to(#F0F1F2) );
+-webkit-box-shadow: inset 0 1px 0 white, 0 1px 0 rgba(0, 0, 0, .08);
+-webkit-background-clip: padding-box;
+border: solid 1px;
+-webkit-border-radius: 4px;
+-webkit-box-sizing: border-box;
+display: inline-block;
+font-weight: bold;
+line-height: 27px;
+overflow: hidden;
+padding: 0 8px;
+text-overflow: ellipsis;
+white-space: nowrap;
+box-sizing: border-box;  
+font-size: 12px;
+cursor: pointer;
+text-align: center;
+font-family: sans-serif;
+-webkit-text-size-adjust: none;
+-webkit-user-select: none;
+border-color: #CCC;
+}
+
+#this:disabled {
+color1: rgba(255,255,255,0.65)
+}
+#this:active:not(:disabled) {
+background-color1: rgba(0,0,0,.64);
+}
+]]>
+          </Css>
+        </xtml>
+    </Component>
+
+  </xtml>
+  
+  <xtml ns="itemlist" style="true">
+  
+  <Type id="Style" />
+
+  <Component id="Tiles" type="itemlist.Style" hidden="true">
+      <Param name="Height">
+        <Default value="150px"/>
+      </Param>
+      <Param name="Width">
+        <Default value="200px"/>
+      </Param>
+      <xtml t="ui.CustomStyle" Html="&lt;div&gt;&#xd;  &lt;div class=&quot;item aa_box_vertical&quot;&gt;&#xd;    &lt;div class=&quot;imgdiv&quot;&gt;&#xd;      &lt;div class=&quot;itemimg&quot;/&gt;&#xd;    &lt;/div&gt;&#xd;    &lt;div class=&quot;right aa_box_vertical&quot;&gt;&#xd;      &lt;div class=&quot;itemtext&quot;/&gt;&#xd;      &lt;div class=&quot;more_fields&quot;/&gt;&#xd;    &lt;/div&gt;&#xd;  &lt;/div&gt;&#xd;&lt;/div&gt;" Css="#this { width: 100\% }&#xa;#this .item { float:left; padding: 0 10px 10px 0; }&#xa;#this .fields { font-size:12px;  font-family: 'Arial'; }&#xa;#this .itemtext { font-family: 'Arial'; font-weight: bold; padding: 10px 0 0 0; text-align: center;}&#xa;#this .imgdiv { text-align: center; }&#xa;#this .item { height:%$Height%; width:%$Width%; overflow:hidden; } &#xa; #cntr .PartialViewSummary { padding: 15px 10px;  }​" Javascript="function(itemlist) {  itemlist.setItemsOld('.item',function(item) {     item.setInnerHTML('.itemtext',item.name);    item.setImageSource('.itemimg',item.image);    item.setFields('.more_fields');  });}"/>
+    </Component>
+
+  <Component id="LeftMaster" type="itemlist.Style" hidden="true">
+    <Param name="Spacing" Default="5px" />
+    <Param name="Border">
+      <Default value="border-right: 1px solid black" />
+    </Param>
+    <xtml t="ui.CustomStyle"
+      Html="&lt;div class=&quot;aa_box_vertical&quot;&gt;&#xd;  &lt;div class=&quot;item aa_box_horizontal&quot;&gt;&#xd;    &lt;div class=&quot;imgdiv&quot;&gt;&#xd;      &lt;img class=&quot;itemimg&quot;/&gt;&#xd;    &lt;/div&gt;&#xd;    &lt;div class=&quot;right aa_box_vertical&quot;&gt;&#xd;      &lt;div class=&quot;itemtext&quot;/&gt;&#xd;      &lt;div class=&quot;more_fields&quot;/&gt;&#xd;    &lt;/div&gt;&#xd;  &lt;/div&gt;&#xd;&lt;/div&gt;"
+      Css="#this { %$Border%; width: 260px; overflow:hidden;}&#xa;#this .item {  border-bottom: 1px solid #ccc; padding: 5px 5px 5px 0; width:260px }&#xa;#this .itemtext { font-weight: bold; padding-bottom: 10px; }&#xa;#this .imgdiv { padding-right: %$Spacing% }&#xa;&#xa;#this .aa_selected_item { padding: 5px 0;&#xa;background: -webkit-gradient(linear, right top, right bottom, color-stop(0.6,#fff), color-stop(1,#0096db)); background: -moz-linear-gradient(center top , #fff 60\%, #0096DB 100\%); &#xa;}"
+      Javascript="function(itemlist) {  itemlist.setItemsOld('.item',function(item) {     item.setInnerHTML('.itemtext',item.name);    item.setImageSource('.itemimg',item.image);    item.setFields('.more_fields');  });}" />
+  </Component>​
+
+  <Component id="HorizontalHtmlTable" type="itemlist.Style">
+    <Param name="Spacing" Default="0" slider="true" />
+    <xtml t="ui.CustomStyle">
+      <Html><![CDATA[<div><table cellpadding="0" cellspacing="0"><tbody>
+  <tr>
+    <td class="item" />
+  </tr>
+  </tbody></table></div>]]></Html>
+      <Css><![CDATA[#this >table>tbody>tr>td { vertical-align: top; padding:0; padding-right: %$Spacing%px; }
+#this >table>tbody>tr>td:last-child { padding-right: 0;}]]></Css>
+      <Javascript><![CDATA[function(itemlist) { 
+    itemlist.setItems({
+      itemElement: '.item',
+      initItem: function(item) {     
+        item.setFields('');
+      }
+    });
+  }]]></Javascript>
+    </xtml>
+  </Component>
+  ​
+    <Component id="VerticalItems" type="itemlist.Style" hidden="true">
+      <Param name="StyleForItem"><Default value="padding-bottom: 10px"/></Param>
+      <xtml t="ui.CustomStyle" Html="&lt;div class=&quot;aa_box_vertical&quot;&gt;&#xa;  &lt;div class=&quot;item&quot;&gt;&#xa;    &lt;div class=&quot;more_fields&quot;/&gt;  &#xa;  &lt;/div&gt;&#xa;&lt;/div&gt;" Css="#this .item {  %$StyleForItem% }&#xa;&#xa;" Javascript="function(itemlist) {  &#xa;    itemlist.setItemsOld('.item',function(item) {     &#xa;       item.setFields('.more_fields');  &#xa;    });&#xa;}"/>
+    </Component>​
+
+     <Component id="TilesBox1" type="itemlist.Style" hidden="true">
+      <xtml t="ui.CustomStyle" Html="&lt;div&gt;&#xa;  &lt;div class=&quot;item aa_box_vertical&quot;&gt;&#xa;    &lt;div class=&quot;imgdiv&quot;&gt;&#xa;      &lt;div class=&quot;itemimg&quot;/&gt;&#xa;    &lt;/div&gt;&#xa;    &lt;div class=&quot;right aa_box_vertical&quot;&gt;&#xa;      &lt;div class=&quot;itemtext aa_text&quot;/&gt;&#xa;      &lt;div class=&quot;more_fields&quot;/&gt;&#xa;    &lt;/div&gt;&#xa;  &lt;/div&gt;&#xa;&lt;/div&gt;" Css="#this .item { width:%$Width%; height:%$Height%; overflow:hidden; }&#xa;#this { width: 100\%;  }&#xa;#this .item { border:1px solid lightgray; border-radius:10px; margin:5px 5px 0 0px; float:left; padding: 5px 10px 10px 10px;  }&#xa;#this .itemtext { font-family: 'Arial';margin-bottom:5px; max-width:150px; font-weight: bold; padding: 10px 0 0 0; text-align1: center;}&#xa;#this .imgdiv { float: left; margin:10px 10px 0 0px; }" Javascript="function(itemlist) {  itemlist.setItemsOld('.item',function(item) {     item.setInnerHTML('.itemtext',item.name);    item.setImageSource('.itemimg',item.image);    item.setFields('.more_fields');  });}"/>
+      <Param name="Height">
+        <Default value="80px"/>
+      </Param>
+      <Param name="Width">
+        <Default value="250px"/>
+      </Param>
+    </Component>
+
+  <Component id="SimpleList" type="itemlist.Style">
+    <xtml t="ui.CustomStyle">
+      <Javascript>
+<![CDATA[function(itemlist) { 
+  itemlist.setItemsOld('.item',function(item) {     
+    item.setFields('.fields');  
+});}]]>
+      </Javascript>
+      <Html>
+<![CDATA[
+<div><div class="item fields" /></div>
+]]>
+      </Html>
+    </xtml>
+  </Component>
+
+     <Component id="TilesBox2" type="itemlist.Style" hidden="true">
+      <xtml t="ui.CustomStyle" Html="&lt;div&gt;&#xa;  &lt;div class=&quot;item aa_box_vertical&quot;&gt;&#xa;&lt;div class=&quot;itemtext&quot;/&gt;&#xa;&lt;table cellspacing=0 cellpadding=0&gt;&lt;tr&gt;&lt;td&gt;&lt;div class=&quot;imgdiv&quot;&gt;&#xa;      &lt;div class=&quot;itemimg&quot;/&gt;&#xa;    &lt;/div&gt;&#xa;&lt;/td&gt;&lt;td class=&quot;fields&quot;&gt;&#xa;    &lt;div class=&quot;right aa_box_vertical&quot;&gt;&#xa;&lt;div class=&quot;more_fields&quot;/&gt;&#xa;    &lt;/div&gt;&#xa;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&#xa;  &lt;/div&gt;&#xa;&lt;/div&gt;&#xa;&lt;/div&gt;" Css="#this .item { width:300px; height:130px; }&#xa;#this { width: 100\%;  }&#xa;#this .fields { font-size:12px;  font-family: 'Arial'; }&#xa;#this .fields { vertical-align:top; }&#xa;#this .content {-webkit-box-orient: horizontal;  }&#xa;#this .item { border:1px solid #EDEDED; border-radius:10px; margin:5px 5px 0 0px; float:left; padding: 5px 10px 10px 10px;   }&#xa;#this .itemtext { font-family: 'Arial';font-size:13px; color:#112566; margin-bottom:5px; max-width:300px; font-weight: bold; padding: 10px 0 0 0; text-align1: center;}&#xa;#this .itemtext { text-shadow: 1px 1px 1px lightgray; }&#xa;#this .imgdiv { margin-right:10px;}" Javascript="function(itemlist) {  itemlist.setItemsOld('.item',function(item) {     item.setInnerHTML('.itemtext',item.name);    item.setImageSource('.itemimg',item.image);    item.setFields('.more_fields');  });}"/>
+    </Component>
+
+     <Component id="TilesBox3" type="itemlist.Style" hidden="true">
+      <xtml t="ui.CustomStyle" Html="&lt;div&gt;&#xa;  &lt;div class=&quot;item aa_box_vertical&quot;&gt;&#xa;&lt;div class=&quot;itemtext aa_text&quot;/&gt;&#xa;&lt;table cellspacing=0 cellpadding=0&gt;&lt;tr&gt;&lt;td&gt;&lt;div class=&quot;imgdiv&quot;&gt;&#xa;      &lt;div class=&quot;itemimg&quot;/&gt;&#xa;    &lt;/div&gt;&#xa;&lt;/td&gt;&lt;td class=&quot;fields&quot;&gt;&#xa;    &lt;div class=&quot;right aa_box_vertical&quot;&gt;&#xa;&lt;div class=&quot;more_fields&quot;/&gt;&#xa;    &lt;/div&gt;&#xa;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&#xa;  &lt;/div&gt;&#xa;&lt;/div&gt;&#xa;&lt;/div&gt;" Css="#this .item { width:300px; height:130px; position:relative; overflow: hidden; }&#xa;#this { width: 100\%; }&#xa;#this .fields { vertical-align:top; padding-top: 10px;  }&#xa;#this .fields { font-size:12px;  font-family: 'Arial'; }#this .content {-webkit-box-orient: horizontal; }&#xa;#this .item { border:1px solid #EDEDED; border-radius:10px; margin:10px 10px 0 0px; float:left; padding: 5px 10px 10px 10px; }&#xa;#this .item { box-shadow: 2px 2px 3px 1px lightgray; }&#xa;#this .itemtext { font-family: 'Arial'; font-size:13px; color:#112566; margin-bottom:5px; max-width:300px; font-weight: bold; padding: 10px 0 0 0; text-align1: center;}&#xa;#this .itemtext { text-shadow: 1px 1px 1px lightgray; }&#xa;#this .imgdiv { margin-right:10px;}" Javascript="function(itemlist) {  itemlist.setItemsOld('.item',function(item) {     item.setInnerHTML('.itemtext',item.name);    item.setImageSource('.itemimg',item.image);    item.setFields('.more_fields');  });}"/>
+      <Param name="Height">
+        <Default value="130px"/>
+      </Param>
+      <Param name="Width">
+        <Default value="300px"/>
+      </Param>
+    </Component>
+
+  <Component id="Tiles" type="itemlist.Style">
+    <Param name="Width" Default="300px" advanced="true" />
+    <Param name="Height" Default="130px" advanced="true"/>
+    <Param name="Shadow" Default="2px 2px 3px 1px lightgray" advanced="true"/>
+    <Param name="Border" Default="1px solid #EDEDED" advanced="true"/>
+    <Param name="BorderRadius" Default="10px" advanced="true"/>
+    <xtml t="ui.CustomStyle">
+      <Html>
+<![CDATA[<div>
+  <div class="item aa_box_vertical">
+<div class="fields"/>
+</div>
+</div>]]>
+      </Html>
+      <Css>
+<![CDATA[#this .item { width:%$Width%; height:%$Height%; position:relative; overflow: hidden; }
+#this>div>.fields { vertical-align:top; padding-left:5px; padding-top: 10px;  }
+#this>div>.fields { font-size:12px;  font-family: 'Arial'; }
+#this>.item { border: %$Border%; border-radius:%$BorderRadius%; margin:10px 10px 0 0px; float:left; padding: 5px 10px 10px 10px; box-shadow: %$Shadow%; }
+]]>
+      </Css>
+      <Javascript><![CDATA[function(itemlist) { 
+  itemlist.setItemsOld('.item',function(item) {     
+    item.setFields('.fields');  
+});}]]>
+      </Javascript>
+    </xtml>
+  </Component>
+          
+     <Component id="Tiles1" type="itemlist.Style">
+        <xtml t="ui.CustomStyle" Html="&lt;div&gt;&#xa;  &lt;div class=&quot;item aa_box_vertical&quot;&gt;&#xa;&lt;div class=&quot;fields&quot;/&gt;&#xa;&lt;/div&gt;&#xa;&lt;/div&gt;" Css="#this .item { width:300px; height:130px; position:relative; overflow: hidden; }&#xa;#this { width: 100\%; }&#xa;  #this .fields { vertical-align:top; padding-left:5px; padding-top: 10px;  }&#xa;#this .fields { font-size:12px;  font-family: 'Arial'; }#this .content {-webkit-box-orient: horizontal; }&#xa;#this .item { border:1px solid #EDEDED; border-radius:10px; margin:10px 10px 0 0px; float:left; padding: 5px 10px 10px 10px; }&#xa;#this .item { box-shadow: 2px 2px 3px 1px lightgray; }&#xa;#this .itemtext { font-family: 'Arial'; font-size:13px; color:#112566; margin-bottom:5px; max-width:300px; font-weight: bold; padding: 10px 0 0 0; text-align1: center;}&#xa;#this .itemtext { text-shadow: 1px 1px 1px lightgray; }&#xa;#this .imgdiv { margin-right:10px;}" Javascript="function(itemlist) { &#xa;  itemlist.setItemsOld('.item',function(item) {     item.setInnerHTML('.itemtext',item.name);    item.setImageSource('.itemimg',item.image);    item.setFields('.fields');  });}"/>
+     </Component>
+     
+     <Component id="Tiles2" type="itemlist.Style">
+        <xtml t="ui.CustomStyle" Html="&lt;div&gt;&#xa;  &lt;div class=&quot;item aa_box_vertical&quot;&gt;&#xa;&lt;div class=&quot;fields&quot;/&gt;&#xa;&lt;/div&gt;&#xa;&lt;/div&gt;" Css="#this .item { width:300px; height:120px; position:relative; overflow: hidden; }&#xa;#this { width: 100\%; }&#xa;#this .fields { vertical-align:top; padding-left:5px; padding-top: 10px;  }&#xa;#this .fields { font-size:12px;  font-family: 'Arial'; }#this .content {-webkit-box-orient: horizontal; }&#xa;#this .item { border:1px solid lightgray; border-radius:10px; margin:5px 5px 0 0px; float:left; padding: 5px 10px 10px 10px;  }&#xa;" Javascript="function(itemlist) { &#xa;  itemlist.setItemsOld('.item',function(item) {     item.setInnerHTML('.itemtext',item.name);    item.setImageSource('.itemimg',item.image);    item.setFields('.fields');  });}"/>
+     </Component>
+
+     <Component id="TilesNoBox" type="itemlist.Style">
+        <xtml t="ui.CustomStyle" Html="&lt;div&gt;&#xa;  &lt;div class=&quot;item aa_box_vertical&quot;&gt;&#xa;&lt;div class=&quot;fields&quot;/&gt;&#xa;&lt;/div&gt;&#xa;&lt;/div&gt;" Css="#this .item { width:300px; height:120px; position:relative; overflow: hidden; }&#xa;#this { width: 100\%; }&#xa;#this .fields { vertical-align:top; padding-left:5px; padding-top: 10px;  }&#xa;#this .fields { font-size:12px;  font-family: 'Arial'; }#this .content {-webkit-box-orient: horizontal; }&#xa;#this .item { margin:5px 5px 0 0px; float:left; padding: 5px 10px 10px 10px;  }&#xa;" Javascript="function(itemlist) { &#xa;  itemlist.setItemsOld('.item',function(item) {     item.setInnerHTML('.itemtext',item.name);    item.setImageSource('.itemimg',item.image);    item.setFields('.fields');  });}"/>
+     </Component>
+     
+     <Component id="Line1" type="itemlist.Style">
+		      <xtml t="ui.CustomStyle" Html="&lt;div&gt;&#xa;  &lt;div class=&quot;item aa_box_vertical&quot;&gt;&#xa;&lt;div class=&quot;fields&quot;/&gt;&#xa;&lt;/div&gt;&#xa;&lt;/div&gt;" Javascript="function(itemlist) { &#xa;  itemlist.setItemsOld('.item',function(item) {     item.setInnerHTML('.itemtext',item.name);    item.setImageSource('.itemimg',item.image);    item.setFields('.fields');  });}">
+		        <Css>
+		<![CDATA[#this .item { width:500px; height:100px; position:relative; overflow: hidden; }
+		#this { width: 100\%; }
+		  #this .item { background1:#FCFDFF; padding:10px; border-bottom:1px solid lightgray;}
+		  #cntr .aa_filters { border-bottom:2px solid lightgray; } 
+		    #cntr .fld__filter { border-radius:10px; padding-left:8px; }
+		      
+		#this .item { background-image: -webkit-linear-gradient(bottom, #FFFFFF 10\%, #D3F0EE 70\%, #FFFFFF 90\%);}
+		  
+		]]>
+		        </Css>
+		      </xtml>
+     </Component>
+     
+     <Component id="Tiles3" type="itemlist.Style">
+        <xtml t="ui.CustomStyle" Html="&lt;div&gt;&#xa;  &lt;div class=&quot;item aa_box_vertical&quot;&gt;&#xa;&lt;div class=&quot;fields&quot;/&gt;&#xa;&lt;/div&gt;&#xa;&lt;/div&gt;" Css="#this .item { background:white; width:300px; height:120px; position:relative; overflow: hidden; }&#xa;  #this .item { border:1px solid #CECECE; border-radius:5px; }&#xa;    #cntr{ width: 100\%; background:#F7F7F7; border: 1px solid #E2E2E2; padding:10px; }&#xa;#cntr .aa_listtop {  }&#xa;#this .fields { vertical-align:top; padding-left:5px; padding-top: 10px;  }&#xa;#this .fields { font-size:12px;  font-family: 'Arial'; }#this .content {-webkit-box-orient: horizontal; }&#xa;#this .item { margin:5px 5px 0 0px; float:left; padding: 5px 10px 10px 10px;  }&#xa;&#xa;" Javascript="function(itemlist) { &#xa;  itemlist.setItemsOld('.item',function(item) {     item.setInnerHTML('.itemtext',item.name);    item.setImageSource('.itemimg',item.image);    item.setFields('.fields');  });}"/>
+     </Component>
+
+     <Component id="MobileTiles" type="itemlist.Style">
+      <xtml t="ui.CustomStyle">
+        <Html>
+<![CDATA[<div>
+  <div class="item aa_box_vertical">
+<div class="fields"/>
+</div>
+</div>]]>
+        </Html>
+        <Css>
+<![CDATA[#this>.item { vertical-align:top; display:inline-block; color:black; background-color:white; width: 97px; height: 120px;}
+#this { margin-left: 3px; font-family: 'Arial'; font-size: 12px; width: 100\%; padding: 0 0 0 3px; }
+#this>.item>.fields { vertical-align:top; }
+#cntr>*>.PartialViewSummary { height: 20px;padding: 15px 10px; color:#555; background: #F7F7F7; }
+#cntr>*>.PartialViewSummary .aa_show_all_items { padding-left: 20px; }
+]]>
+        </Css>
+        <Javascript>
+<![CDATA[function(itemlist) { 
+  itemlist.setItemsOld('.item',function(item) {     item.setInnerHTML('.itemtext',item.name);    item.setImageSource('.itemimg',item.image);    item.setFields('.fields');  });}]]>
+        </Javascript>
+<![CDATA[]]>
+      </xtml>
+     </Component>
+
+     <Component id="MobileList1" type="itemlist.Style">
+      <xtml t="ui.CustomStyle" Html="&lt;div&gt;&#xa;  &lt;div class=&quot;item aa_box_vertical&quot;&gt;&#xa;&lt;div class=&quot;fields&quot;/&gt;&#xa;&lt;/div&gt;&#xa;&lt;/div&gt;" Javascript="function(itemlist) { &#xa;  itemlist.setItemsOld('.item',function(item) {     item.setInnerHTML('.itemtext',item.name);    item.setImageSource('.itemimg',item.image);    item.setFields('.fields');  });}">
+        <Css>
+<![CDATA[#this .item { position:relative; overflow: hidden; }
+#this { width: 100\%; }
+#this .fields { vertical-align:top;   }
+#this .fields { font-size:12px;  font-family: 'Arial'; }
+#this .item { border-bottom: 1px solid #CCC; }
+#this .item { padding:5px 5px 5px 7px; }
+  #this .item { background-image1: -webkit-gradient(
+  linear,
+  left bottom,
+  left top,
+  color-stop(0.06, #EEE),
+  color-stop(0.38, #F8F8F8),
+  color-stop(0.70, #F8F8F8)
+);}
+#cntr .PartialViewSummary { height: 20px;padding: 15px 10px; color:#555; background: #F7F7F7; }
+#cntr .PartialViewSummary .aa_show_all_items { padding-left: 20px; }
+]]>
+        </Css>
+      </xtml>
+      </Component>
+
+    <Component id="SearchResults" type="itemlist.Style">
+                    <xtml t="ui.CustomStyle" Html="&#13;&#10;&lt;div&gt;&lt;div class=&quot;item fields&quot; /&gt;&lt;/div&gt;&#13;&#10;" Javascript="function(itemlist) { &#13;&#10;  itemlist.setItemsOld('.item',function(item) {     &#13;&#10;    item.setFields('.fields');  &#13;&#10;});}">
+                      <Css>
+<![CDATA[#this .item { height: 20px; border-bottom:1px solid #ccc; 
+padding-top:3px; width:100\%; }
+#this .item { 
+background-image1: -webkit-gradient(
+  linear,
+  left bottom,
+  left top,
+  color-stop(0.07, #F0F0F0),
+  color-stop(0.38, #D8D8D8),
+  color-stop(0.99, #F0F0F0)
+);
+}
+]]>
+                      </Css>
+                    </xtml>
+    </Component>
+
+<Component id="Light_Horizontal" type="itemlist.Style">
+  <xtml t="ui.CustomStyle">
+    <Html>
+<![CDATA[
+<div>
+  <div class="item aa_box_vertical">
+    <div class="fields"/>
+  </div>
+</div>
+]]>
+    </Html>
+    <Css>
+<![CDATA[
+#this .item { width:70px; height:10px; position:relative; overflow: hidden; }
+#this { width: 100\%; }
+#this .fields { vertical-align:top; padding-left:5px; padding-top: 2px;  }
+#this .fields { font-size:12px;  font-family: 'Arial'; }#this .content {-webkit-box-orient: horizontal; }
+#this .item { border:1px solid #EDEDED; border-radius:10px; margin:10px 10px 0 0px; float:left; padding: 5px 10px 10px 10px; }
+#this .item { box-shadow: 2px 2px 3px 1px lightgray; }
+#this .itemtext { font-family: 'Arial'; font-size:13px; color:#112566; margin-bottom:5px; max-width:300px; font-weight: bold; padding: 10px 0 0 0; text-align1: center;}
+#this .itemtext { text-shadow: 1px 1px 1px lightgray; }
+#this .imgdiv { margin-right:10px;}
+]]>
+    </Css>
+    <Javascript>
+<![CDATA[
+function(itemlist) {
+  itemlist.setItemsOld('.item',function(item) {    
+    item.setInnerHTML('.itemtext',item.name);
+    item.setImageSource('.itemimg',item.image);
+    item.setFields('.fields');
+  });
+}
+]]>
+    </Javascript>
+  </xtml>
+</Component>
+
+<Component id="HorizontalSlider" type="itemlist.Style">
+  <Param name="Width" Default="660" slider="true" />
+  <Param name="ItemWidth" Default="200"  slider="true" />
+  <xtml t="ui.CustomStyle">
+    <Html>
+<![CDATA[<div>
+  <div class="aa_scroll_btn prev">
+    <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif">
+  </div>  
+  <div class="aa_slider_top">
+    <div class="aa_slider_body">
+        <div class="aa_item"/>
+    </div>
+  </div>
+  <div class="aa_scroll_btn next">
+    <img src="//s.ytimg.com/yt/img/pixel-vfl3z5WfW.gif" />
+  </div>  
+</div>]]>
+    </Html>
+    <Css>
+<![CDATA[#this>div.aa_slider_top { float: left; position: relative; overflow: hidden; }
+#this>div>div.aa_slider_body { position: relative; overflow: hidden; width:30000px;  }
+
+#this>div>div>div.aa_item { 
+  width:%$ItemWidth%; overflow: hidden; float: left; 
+  padding: 5px 10px 10px 10px;
+}
+
+#this .aa_scroll_btn { 
+  float:left; 
+  border-bottom-color: #AAA;
+  background-color: #E0E0E0;
+  height: 80px; width: 26px;
+  margin:22px 0;
+  border: 1px solid #999;
+  background-image: -webkit-linear-gradient(top,white 0,#E0E0E0 100\%);
+  background-image: linear-gradient(to bottom,white 0,#E0E0E0 100\%);  
+  box-shadow: inset 0 0 1px #fff;
+  cursor: pointer;
+  border-radius: 3px;
+}
+#this .aa_scroll_btn.next { margin-left:10px; }
+#this .aa_scroll_btn.prev { margin-right:10px; }
+
+#this .aa_scroll_btn img {
+  border: 1px solid transparent;
+  border-width: 8px 8px 8px 0px;
+  border-right-color: #999;
+  margin: 33px 0 0 7px;
+}
+#this .aa_scroll_btn.next img {
+  border-width: 8px 0px 8px 8px;
+  border-left-color: #999;
+  margin: 33px 0 0 9px;
+}]]>
+    </Css>
+    <Javascript>
+<![CDATA[function(itemlist) { 
+  itemlist.sliderWidth = parseInt('%$Width%'.match(/[0-9]+/)[0]);
+  jQuery(itemlist).find('>.next,>.prev').each(function() { ajaxart_disableSelection(this) });
+                                                                   
+  itemlist.bind('widthChanged',function(eventProps) {
+    itemlist.sliderWidth = eventProps.width - 100; 
+    jQuery(itemlist).find('>div>.aa_slider_top').width(itemlist.sliderWidth);
+  });
+  
+  itemlist.setItems({
+    itemElement: '.aa_item',
+    initItem: function(item) {     
+      item.setFields();
+    }
+  });
+  jQuery(itemlist).find('>.aa_slider_top').width(itemlist.sliderWidth);
+  var body = jQuery(itemlist).find('>div>.aa_slider_body');
+  var currLeft = 0;
+  body.css('left','0');
+  jQuery(itemlist).find('>.prev').click(function() {
+    if (currLeft > - itemlist.sliderWidth) {
+      body.animate( { left: '0'} ,'slow');
+      currLeft = 0;
+      return;
+    } else {
+      body.animate( { left: '+='+itemlist.sliderWidth },'slow');
+      currLeft += itemlist.sliderWidth;
+    }
+  });
+  jQuery(itemlist).find('>.next').click(function() {
+    var lastItem= jQuery(itemlist).find('>div>.aa_slider_body>div:last');
+    var lastLeft = lastItem[0].offsetLeft + currLeft;
+    if (lastLeft + lastItem.outerWidth(true) <= itemlist.sliderWidth ) return;
+    
+    body.animate( { left: '-='+itemlist.sliderWidth },'slow');
+    currLeft -= itemlist.sliderWidth;
+  });
+  
+  itemlist.bind('clearItems',function() {
+     currLeft = 0;
+     body.css('left','0');
+  });
+}                      
+]]>
+    </Javascript>
+  </xtml>
+</Component>​
+
+  </xtml>
+
+  <xtml ns="layout" jbart="true">
+
+    <Type id="Style" customPT="layout.CustomStyle"/>
+
+    <Component id="Vertical" type="layout.Style" >
+      <Param name="Spacing" Default="0" slider="true" sliderUnit="px" />
+      <xtml t="ui.CustomStyle">
+        <Html>
+    <![CDATA[<div>
+      <div class="field"/>
+    </div>]]>
+        </Html>
+        <Css>
+    <![CDATA[#this {} #this >.field:not(:last-child) { margin-bottom: %$Spacing%; }
+    ]]>
+        </Css>
+  <Javascript><![CDATA[function(layout) {
+  aa_layout(layout);
+}]]></Javascript>
+      </xtml>
+    </Component>​
+
+    <Component id="Horizontal" type="layout.Style">
+      <Param name="Spacing" Default="0" slider="true" />
+      <xtml t="ui.CustomStyle" Spacing="%$Spacing%">
+      <Css><![CDATA[#this { }
+      #this >.field { }]]></Css>
+      <Html><![CDATA[<div><div class="field"/></div>]]></Html>
+  <Javascript><![CDATA[function(layout) {
+  var spacing = layout.params.Spacing;
+  aa_horizontalBoxLayout(layout,{ spacing: spacing });
+}]]></Javascript>      
+    </xtml>
+    </Component>​
+
+<Component id="HorizontalHtmlTable" type="layout.Style">
+      <Param name="Spacing" Default="0" slider="true" sliderUnit="px" />
+      <Param name="VerticalAlign" type="enum" Options="top,middle,bottom" Default="top" />
+      <xtml t="ui.CustomStyle">
+        <Html><![CDATA[<table celpadding="0" cellspacing="0"><tbody>
+  <tr>
+    <td class="field" />
+  </tr>        
+</tbody></table>]]></Html>
+  <Css><![CDATA[#this >tbody>tr>td { vertical-align: %$VerticalAlign%; padding:0; }
+#this >tbody>tr>td:not(:last-child) { padding-right: %$Spacing%;}]]></Css>
+  <Javascript><![CDATA[function(layout) {
+  aa_layout(layout);
+}]]></Javascript>
+      </xtml>
+    </Component>
+
+  <Component id="HorizontalRightToLeft" type="layout.Style">
+    <Param name="Spacing" Default="5px" slider="true" sliderUnit="px" />
+    <xtml t="ui.CustomStyle">
+      <Html><![CDATA[<div>
+  <div class="field"/>
+  <div style="clear:both" />
+</div>]]></Html>
+      <Css><![CDATA[#this { }
+#this >.field { float:right; margin-left:%$Spacing%; }]]></Css>
+  <Javascript><![CDATA[function(layout) {
+  aa_layout(layout);
+}]]></Javascript>
+    </xtml>
+  </Component>​
+
+    <Component id="HorizontalOrVertical" type="layout.Style">
+      <Param name="HorizSpacing" Default="0" slider="true" />
+      <Param name="VerticalSpacing" Default="0" slider="true" />
+      <Param name="IsVertical" type="data.Boolean" primitive="true" />
+      <xtml t="ui.CustomStyle" HorizSpacing="%$HorizSpacing%" IsVertical="%$IsVertical%">
+      <Css><![CDATA[#this {} #this.aa_vertical >.field:not(:last-child) { margin-bottom: %$VerticalSpacing%px; }]]></Css>
+      <Html><![CDATA[<div><div class="field"/></div>]]></Html>
+  <Javascript><![CDATA[function(layout) {
+    aa_horizontalVerticalLayout(layout);
+}]]></Javascript>      
+    </xtml>
+    </Component>​
+
+    <Component id="HorizontalCss3" type="layout.Style" light="false">
+      <Param name="Spacing" Default="0" slider="true" />
+      <xtml t="ui.CustomStyle" Spacing="%$Spacing%">
+      <Css><![CDATA[#this {  }
+      #this >.field {  }]]></Css>
+      <Html><![CDATA[<div><div class="field"/></div>]]></Html>
+  <Javascript><![CDATA[function(layout) {
+  aa_horizontalBoxLayout(layout,{ spacing: layout.params && layout.params.Spacing });
+}]]></Javascript>      
+    </xtml>
+    </Component>​
+
+    <Component id="CustomStyle" type="layout.Style" customPT="true">
+      <Param name="Html" codemirror="true" light="false"/>
+      <Param name="Css" codemirror="true" light="false"/>
+      <Param name="Javascript" codemirror="true" light="false"/>
+      <ParamGenerator t="bart_dt.StyleGenerator" />
+      <xtml t="ui.CustomStyle" Html="%$Html%" Css="%$Css%" Javascript="%$Javascript%" />
+    </Component>
+
+    <Component id="Default" type="layout.Style">
+      <xtml t="ui.CustomStyle">
+        <Css><![CDATA[#this {}]]></Css>
+        <Html><![CDATA[<div><div class="field"/></div>]]></Html>
+        <Javascript><![CDATA[function(layout) {
+  aa_layout(layout);
+}]]></Javascript>
+      </xtml>
+    </Component>
+
+  </xtml>
+  
+  <xtml ns="group" jbart="true">
+
+    <Type id="Style" style="true" />
+
+<Component id="PropertySheet" type="group.Style,propertysheet.Style">
+  <Param name="PropertiesWidth" Default="80px" advanced="true" slider="true" sliderUnit="px" />
+  <Param name="VerticalSpacing" Default="8px" advanced="true" slider="true" sliderUnit="px" />
+  <Param name="IndentationOfPicklistOptions" Default="8px" advanced="true" slider="true" sliderUnit="px" />
+  <xtml t="ui.CustomStyle">
+    <Html>
+<![CDATA[
+<table cellspacing="0" cellpadding="0">
+  <tr class="field">
+    <td class="field_title"/>
+    <td class="field_contents"/>
+  </tr>
+</table>
+]]>
+    </Html>
+    <Css>
+<![CDATA[#this>tbody>tr>.field_title { width: %$PropertiesWidth%; padding-right: 5px; vertical-align:top; padding:4px 5px 0 0; color: gray; font-family:"lucida grande",tahoma,verdana,arial,sans-serif; font-size:11px;}
+#this>tbody>tr>.field_contents { vertical-align: top; padding-bottom: %$VerticalSpacing%; }
+#this>tbody>.field_for_more_options>.field_contents { padding-bottom: 0px; }
+#this>tbody>tr.aa_indent>td { padding-left:%$IndentationOfPicklistOptions%; }
+#this>tbody>tr:last-child >.field_contents { padding-bottom: 0px; }
+#this>tbody>tr>td>.field_description { color:rgb(140,140,140); width: 140px; font-style:italic; margin-top:2px; font-family:"lucida grande",tahoma,verdana,arial,sans-serif; font-size:11px; white-space: normal; }
+#this>tbody>tr.aa_mandatory>.field_title { font-weight: bold; }]]>
+    </Css>
+    <Javascript>
+<![CDATA[function(group) {
+  aa_propertysheet_old(group,{}); 
+}
+]]>
+    </Javascript>
+  </xtml>
+</Component>​
+
+<Component id="LightBluePropertySheet" type="group.Style,propertysheet.Style">
+  <xtml t="ui.CustomStyle">
+    <Html>
+<![CDATA[
+<table cellspacing="0" cellpadding="0">
+  <tr class="field">
+    <td class="field_title"/>
+    <td class="field_contents"/>
+  </tr>
+</table>
+]]>
+    </Html>
+    <Css>
+<![CDATA[#this>tbody>tr>.field_title { 
+  color:#668799; 
+  width: 125px; padding-top: 4px; 
+  padding-right: 5px; padding-bottom: 0px; 
+  padding-left: 0px; vertical-align:top; 
+  font: arial 12px;
+  font-weight: bold;
+}
+#this>tbody>tr>.field_contents { padding-bottom: 24px; vertical-align: top; }
+#this>tbody>.field_for_more_options>.field_contents { padding-bottom: 0px; }
+#this>tbody>tr.aa_indent>td { padding-left: 8px; }
+#this>tbody>tr:last-child >.field_contents { padding-bottom: 0px; }
+#this>tbody>tr>td>.field_description { 
+  font-family:"lucida grande",tahoma,verdana,arial,sans-serif; 
+  color:rgb(140,140,140); font-style:italic; 
+  font-size: 11px; margin-top: 2px; 
+  white-space: normal; }
+#this>tbody>tr.aa_mandatory>.field_title { font-weight:bold; }
+​]]>
+    </Css>
+    <Javascript>
+<![CDATA[function(group) {
+  aa_propertysheet_old(group,{}); 
+}
+]]>
+    </Javascript>
+  </xtml>
+</Component>​
+
+<Component id="ReadOnlyPropertySheet" type="propertysheet.Style">
+  <Param name="PropertiesWidth" Default="80px" advanced="true" slider="true" sliderUnit="px" />
+  <Param name="VerticalSpacing" Default="8px" advanced="true" slider="true" sliderUnit="px" />
+  <Param name="IndentationOfPicklistOptions" Default="8px" advanced="true" slider="true" sliderUnit="px" />
+  <xtml t="ui.CustomStyle">
+    <Html>
+<![CDATA[
+<table cellspacing="0" cellpadding="0">
+  <tr class="field">
+    <td class="field_title"/>
+    <td class="field_contents"/>
+  </tr>
+</table>
+]]>
+    </Html>
+    <Css>
+<![CDATA[#this>tbody>tr>.field_title { width: %$PropertiesWidth%; padding-right: 5px; vertical-align:top; padding:0px 5px 0 0; color: gray; font-family:"lucida grande",tahoma,verdana,arial,sans-serif; font-size:11px;}
+#this>tbody>tr>.field_contents { vertical-align: top; padding-bottom: %$VerticalSpacing%; }
+#this>tbody>.field_for_more_options>.field_contents { padding-bottom: 0px; }
+#this>tbody>tr.aa_indent>td { padding-left:%$IndentationOfPicklistOptions%; }
+#this>tbody>tr:last-child >.field_contents { padding-bottom: 0px; }
+#this>tbody>tr>td>.field_description { color:rgb(140,140,140); font-style:italic; margin-top:2px; font-family:"lucida grande",tahoma,verdana,arial,sans-serif; font-size:11px; white-space: normal; }
+#this>tbody>tr.aa_mandatory>.field_title { font-weight: bold; }]]>
+    </Css>
+    <Javascript>
+<![CDATA[function(group) { 
+  aa_propertysheet_old(group,{}); 
+}
+]]>
+    </Javascript>
+  </xtml>
+</Component>​
+
+<Component id="TitlesAboveFields" type="group.Style,propertysheet.Style">
+  <Param name="HorizontalSpacing" Default="15px" slider="true" sliderUnit="px" />
+  <Param name="VerticalSpacing" Default="8px" slider="true" sliderUnit="px" />
+  <xtml t="ui.CustomStyle">
+      <Html>
+<![CDATA[
+<div>
+  <div class="field field_row">
+    <div class="field_title"/>
+    <div class="field_contents"/>
+  </div>
+  <div style="clear: both;"/>
+</div>
+]]>
+      </Html>
+      <Css>
+<![CDATA[#this>.field { float: left;}
+#this>.field:not(:first-child) { padding-left:%$HorizontalSpacing%; }
+#this>.field>.field_title { 
+  padding-bottom:3px; 
+  color: #666;
+  font-weight: bold;
+  font-size: 11px;
+  font-family: "lucida grande",tahoma,verdana,arial,sans-serif;
+}
+#this>.field>.field_contents { vertical-align: top; padding-bottom: %$VerticalSpacing%; }
+#this {}
+]]>
+      </Css>
+      <Javascript>
+<![CDATA[function(group) { 
+  group.addFields('.field',function(field) {
+      var title = field.HideTitle ? '' : field.Title+':';
+      if (!field.Title) title = '';
+      field.setInnerHTML('.field_title',title);
+      field.setControl('.field_contents'); 
+})}
+]]>
+    </Javascript>
+  </xtml>
+</Component>​
+
+
+
+<Component id="MobilePropertySheet" type="group.Style,propertysheet.Style" styleGuide="jbartMobile">
+      <xtml t="ui.CustomStyle">
+        <Css>
+<![CDATA[#this { 
+  border: 1px solid #DDD;
+padding: 0;
+-webkit-box-shadow: rgba(255, 255, 255, 0.7) 0 1px 0;
+-webkit-border-radius: 0.4em;
+border-radius: 0.4em;
+overflow: hidden;
+background-color: #EEE;
+font-family: "Helvetica Neue", HelveticaNeue, "Helvetica-Neue", Helvetica, "BBAlpha Sans", sans-serif;
+font-weight: normal;
+font-size: 114\%;
+  background:white;
+}
+#this >.field {
+  overflow: hidden;
+position: relative;
+min-height: 2.5em;
+border-bottom: 1px solid #DDD;
+-webkit-box-orient: horizontal;
+-webkit-box-align: stretch;
+display: -webkit-box;
+-webkit-border-top-right-radius: 0.4em;
+border-top-right-radius: 0.4em;
+}
+#this >.field >.field_title {
+  -webkit-border-top-left-radius: 0.4em;
+border-top-left-radius: 0.4em;
+  font-size: .8em;
+font-weight: bold;
+  font-size: 114\%;
+  width: 35\%;
+color: #333;
+text-shadow: rgba(255, 255, 255, 0.25) 0 0.08em 0;
+background-color: #F7F7F7;
+padding: 0.6em;
+border-top: 1px solid white;
+display: block;
+color: #333;
+text-shadow: rgba(255, 255, 255, 0.25) 0 0.08em 0;  
+  font-family: "Helvetica Neue", HelveticaNeue, "Helvetica-Neue", Helvetica, "BBAlpha Sans", sans-serif;
+}
+#this >.field >.field_contents {
+  color:#666;
+  -webkit-user-select: text;
+  -webkit-box-sizing: border-box;
+box-sizing: border-box;
+  min-height: 2.5em;
+  width: 200px;
+display: block;
+  border-radius:0.4em;
+-webkit-appearance: none;
+-webkit-border-radius1: 0;
+border-radius: 0;
+padding: .4em;
+border1: 0;
+-webkit-box-flex: 1;
+-webkit-box-sizing: border-box;
+box-sizing: border-box;
+-webkit-user-select: none;
+-webkit-text-size-adjust: none;
+font-size: 114\%;
+}
+]]>
+        </Css>
+        <Html>
+<![CDATA[
+<div>
+  <div class="field">
+    <div class="field_title"/>
+    <div class="field_contents"/>
+  </div>
+</div>
+]]>
+        </Html>
+        <Javascript>
+<![CDATA[function(group) {
+  aa_propertysheet_old(group,{}); 
+}
+]]>
+        </Javascript>
+      </xtml>
+   </Component>
+      
+    <Component id="Vertical" type="group.Style">
+      <Param name="CssOnElement" Default="margin-bottom:5px;"/>
+      <xtml t="ui.CustomStyle" Html="&lt;div&gt;&#xd;  &lt;div class=&quot;field&quot;/&gt;&#xd;&lt;/div&gt;" Css="#this >.field {%$CssOnElement%; }" Javascript="function(group) { &#xa;  group.addFields('.field',function(field) &#xa;     { &#xa;      field.setControl('.field'); &#xa;      }&#xa;  );&#xa;;}"/>
+    </Component>​
+
+<Component id="Horizontal" type="group.Style" light="false">
+  <Param name="Spacing" Default="0" slider="true" sliderUnit="" />
+  <xtml t="ui.CustomStyle">
+    <Html>
+<![CDATA[<div>
+  <div class="field"/>
+</div>]]>
+    </Html>
+    <Css>
+<![CDATA[#this >.field { float:left;}
+>.field:not(:last-child) { margin-right: %$Spacing%;}
+]]>
+    </Css>
+    <Javascript>
+<![CDATA[function(group) { 
+   group.addFields('.field',function(field) { 
+      field.setControl('.field'); 
+   });
+;}]]>
+    </Javascript>
+  </xtml>
+</Component>​
+
+<Component id="HorizontalHtmlTable" type="group.Style">
+      <Param name="Spacing" Default="0" slider="true" sliderUnit="" />
+      <xtml t="ui.CustomStyle">
+        <Html><![CDATA[<table celpadding="0" cellspacing="0"><tbody>
+  <tr>
+    <td class="field" />
+  </tr>        
+</tbody></table>]]></Html>
+  <Css><![CDATA[#this >tbody>tr>td { padding:0; vertical-align: top;  }
+#this >tbody>tr>td:not(:last-child) { padding-right: %$Spacing%px;}]]></Css>
+  <Javascript><![CDATA[function(group) {
+	group.addFields('.field',function(field) { 
+      field.setControl('.field'); 
+    })
+;}]]></Javascript>
+      </xtml>
+    </Component>​
+    
+    <Component id="HorizontalWebkit" type="group.Style">
+      <Param name="Spacing" Default="0" slider="true" sliderUnit="" />
+      <xtml t="ui.CustomStyle" Javascript="function(group) { &#xa;  group.addFields('.field',function(field) &#xa;     { &#xa;      field.setControl('.field'); &#xa;      }&#xa;  );&#xa;;}">
+      <Css><![CDATA[#this { display: -webkit-box;  -webkit-box-orient: horizontal; }
+      #this >.field { margin-right:%$Spacing%;  }]]></Css>
+      <Html><![CDATA[<div><div class="field"/></div>]]></Html>
+    </xtml>
+    </Component>​
+
+    <Component id="Default" type="group.Style">
+      <xtml t="ui.CustomStyle">
+	      <Html><![CDATA[<div><div class="field"/></div>]]></Html>
+	      <Css><![CDATA[]]></Css>
+	      <Javascript><![CDATA[function(group) {
+	  group.addFields('.field',function(field) { field.setControl('.field'); });}]]>
+	      </Javascript>
+      </xtml>
+    </Component>
+
+    <Component id="HtmlLayout" type="group.Style">
+      <Param name="Html">
+        <FieldAspect t="field_dt.CodeMirrorPopupFieldEditor" />
+      </Param>
+      <Param name="Css">
+        <FieldAspect t="field_dt.CodeMirrorPopupFieldEditor" />
+      </Param>
+      <Param name="Javascript">
+        <FieldAspect t="field_dt.CodeMirrorPopupFieldEditor" Default="function(group) { &#xa;  group.addManualFields('.field_',function(field) &#xa;     { &#xa;      field.setControl(field); &#xa;      }&#xa;  );&#xa;;}"/>
+      </Param>
+      <Param name="DynamicDataInHtml" type="data.Boolean" description="use jBartData(FieldID) or jBartRawData(xpath) in the html" Default="true" />
+      <ParamGenerator1 t="bart_dt.StyleGenerator" />
+      <xtml t="object.Object">
+        <TextProperty name="Html" value="%$Html%" />
+        <TextProperty name="Css" value="%$Css%" />
+        <TextProperty name="Javascript" value="%$Javascript%" />
+        <TextProperty name="DynamicDataInHtml" value="%$DynamicDataInHtml%" />
+      </xtml> 
+    </Component>
+    
+    <Component id="CustomStyle" type="group.Style" customPT="true">
+      <Param name="Html" codemirror="true" light="false"/>
+      <Param name="Css" codemirror="true" light="false"/>
+      <Param name="Javascript" codemirror="true" light="false"/>
+      <ParamGenerator t="bart_dt.StyleGenerator" />
+      <xtml t="object.Object">
+        <TextProperty name="Html" value="%$Html%" />
+        <TextProperty name="Css" value="%$Css%" />
+        <TextProperty name="Javascript" value="%$Javascript%" />
+      </xtml> 
+    </Component>
+    
+  </xtml>
+    
+  <xtml ns="tabcontrol">
+  
+  <Type id="Style" style="true"/>
+
+<Component id="Links" type="tabcontrol.Style">
+  <xtml t="ui.CustomStyle">
+    <Html>
+<![CDATA[<div>
+  <div>
+    <div class="aatabs_tab">
+      <div class="aatabs_tab_image"/>
+      <div class="aatabs_tab_text"/>
+    </div>
+  </div>
+  <div class="aatabs_contents"/>
+</div>]]>
+    </Html>
+    <Css>
+<![CDATA[#this >div>.aatabs_tab { float: left; color:#002FA7; font-size: 11px; 
+  padding: 0 17px 0 0; }
+#this >div>div>div.aatabs_tab_text { cursor: pointer; }
+#this >div>div.aa_selected_tab { font-weight:bold; text-decoration:underline; }
+#this >div>div { }
+#this >div>div>div.aatabs_tab_image { float: left; }
+#this >.aatabs_contents { padding: 5px 0 15px 0; border-top:  1px solid #ddd; 
+  clear: both; }
+.right2left #this >div>div.aatabs_tab { float: right; padding: 6px 6px 4px 15px; }
+.right2left #this >div>div>div.aatabs_tab_image { float: right; }
+.right2left #this >div>div>div.aatabs_tab_text { float: right; padding: 0 5px 0 0; }
+]]>
+    </Css>
+    <Javascript>
+<![CDATA[function(tabcontrol) {
+ tabcontrol.addTabs('.aatabs_tab','.aatabs_contents',
+   function(tab) {        
+      tab.setInnerHTML('.aatabs_tab_text',tab.Title);         
+      tab.setImageSource('.aatabs_tab_image',tab.Image);   
+   tab.setOnClick('',tab.Select); });
+}]]>
+    </Javascript>
+  </xtml>
+</Component>​
+  <Component id="BlueTabs" type="tabcontrol.Style">
+  <xtml t="ui.CustomStyle">
+    <Css>
+<![CDATA[#this >div>div.aatabs_tab { font-size: 93\%; font-family: arial; float: left; padding: 6px 15px 4px 6px; cursor: pointer;
+  background: rgb(60,143,228); margin-right:2px; color: black; min-width:30px; 
+  border-top-left-radius:6px; border-top-right-radius:6px; 
+}
+#this >div>div>div.aatabs_tab_text { padding:0 0 0 5px; float:left; color: white }
+#this >div>div>div.aa_tabs_control_in_tab { float:left; }
+#this >div>div.aa_selected_tab  { background: rgb(31,112,195); color: white }
+#this >div>div>div.aatabs_tab_image { float: left }
+#this >.aatabs_contents { clear: both; padding:5px 0 15px 0; border-top: 1px solid #ddd }
+.right2left #this >div>div.aatabs_tab { float: right; padding: 6px 6px 4px 15px;  }
+.right2left #this >div>div>div.aatabs_tab_image { float: right}
+.right2left #this >div>div>div.aatabs_tab_text { float: right; padding:0 5px 0 0;}
+]]>
+    </Css>
+    <Html>
+<![CDATA[<div>
+  <div>
+    <div class="aatabs_tab">
+      <div class="aatabs_tab_image"/>
+      <div class="aatabs_tab_text"/>
+    </div>
+  </div>
+  <div class="aatabs_contents"/>
+</div>]]>
+    </Html>
+<![CDATA[]]>
+    <Javascript>
+<![CDATA[function(tabcontrol) {
+ tabcontrol.addTabs('.aatabs_tab','.aatabs_contents',
+   function(tab) {        
+      tab.setInnerHTML('.aatabs_tab_text',tab.Title);         
+      tab.setImageSource('.aatabs_tab_image',tab.Image);   
+   tab.setOnClick('',tab.Select); });
+}]]>
+    </Javascript>
+  </xtml>  </Component>
+
+<Component id="BreadCrumbs" type="tabcontrol.Style">
+  <xtml t="ui.CustomStyle">
+    <Html><![CDATA[<div>
+  <div>
+    <div class="aatabs_tab">
+      <div class="aatabs_tab_text"/>
+      <div class="aatabs_separator">&gt;</div>
+    </div>
+  </div>
+  <div class="aatabs_contents"/>
+</div>]]></Html>
+    <Css><![CDATA[#this >div>div.aatabs_tab { cursor: pointer; font-family: arial; color:black; 
+  display: inline-block; }
+#this >div>div>div.aatabs_tab_text { color:#B1B1B1; display: inline-block; }
+#this >div>div>div.aatabs_separator { padding-right: 5px; padding-left: 5px; 
+  display: inline-block; }
+#this >div>div:last-child>div.aatabs_separator { display: none; }
+#this >div>div.aa_selected_tab .aatabs_tab_text { color:#658698; font-weight:bold; }
+#this >.aatabs_contents { background-color:#EFEEEE; padding-top: 15px; 
+  padding-bottom: 15px; padding-left: 15px; margin-top: 14px; 
+  border-top: 1px solid #CBCBCB; 
+  border-bottom: 1px solid #85B113; clear: both; }
+]]></Css>
+    <Javascript><![CDATA[function(tabcontrol) {
+ tabcontrol.addTabs('.aatabs_tab','.aatabs_contents',
+   function(tab) {        
+      tab.setInnerHTML('.aatabs_tab_text',tab.Title);         
+      tab.setOnClick('',tab.Select); 
+   });
+}]]></Javascript>
+  </xtml>
+</Component>​
+  <Component id="LeftBlueTabs" type="tabcontrol.Style">
+    <xtml t="ui.CustomStyle" Html="&lt;div class=&quot;aa_box_horizontal&quot;&gt;&#xd;  &lt;div class=&quot;aa_box_vertical&quot;&gt;&#xd;    &lt;div class=&quot;aatabs_tab aa_box_horizontal&quot;&gt;&#xd;      &lt;img src=&quot;&quot; class=&quot;aatabs_tab_image&quot;/&gt;&#xd;      &lt;div class=&quot;aatabs_tab_text&quot;/&gt;&#xd;    &lt;/div&gt;&#xd;  &lt;/div&gt;&#xd;  &lt;div class=&quot;aatabs_contents&quot;/&gt;&#xd;&lt;/div&gt;"     Javascript="function(tabcontrol) {&#xa; tabcontrol.addTabs('.aatabs_tab','.aatabs_contents',&#xa;   function(tab) {        &#xa;      tab.setInnerHTML('.aatabs_tab_text',tab.Title);         &#xa;      tab.setImageSource('.aatabs_tab_image',tab.Image);   &#xa;   tab.setOnClick('',tab.Select); });&#xa;}">
+      <Css><![CDATA[
+#this >div>.aatabs_tab { 
+  cursor: pointer; color:black; 
+  padding-top: 6px; padding-right: 12px; padding-bottom: 6px; 
+  padding-left: 12px; min-width:80px; }
+#this >div>div>.aatabs_tab_text { padding-top: 0px; padding-right: 0px; padding-bottom: 0px; 
+  padding-left: 5px; }
+#this >div>.aa_selected_tab { color:white; background-color:#A9E4F4; }
+#this >.aatabs_contents { padding-top: 15px; padding-right: 15px; 
+  padding-bottom: 15px; padding-left: 15px; 
+  border: 1px solid #E6EEF4; }
+#this>.aa_box_vertical { background: #E8F7E8; } }
+​      ]]></Css>
+    </xtml>
+  </Component>​    
+    
+  <Component id="MobileTopTabs" type="tabcontrol.Style" styleGuide="jbartMobile">
+  <xtml t="ui.CustomStyle">
+    <Html>
+<![CDATA[<div class="aatab_control">
+  <div class="tabs">
+    <div class="aatabs_tab">
+      <div class="aatabs_tab_image_div">
+        <img class="aatabs_tab_image" />
+        <span class="aatabs_tab_indication" />
+      </div>
+      <span class="aatabs_tab_text"/>
+    </div>
+  </div>
+  <div class="aatabs_contents_wrapper">
+    <div class="aatabs_contents"/>
+  </div>
+</div>]]>
+    </Html>
+    <Javascript>
+<![CDATA[function(tabcontrol) {
+ tabcontrol.addTabs('.aatabs_tab','.aatabs_contents',
+   function(tab) {        
+      tab.setInnerHTML('.aatabs_tab_text',tab.Title);         
+      tab.setImageSource('.aatabs_tab_image',tab.Image);   
+      tab.setOnClick('',tab.Select); 
+     if (tab.NumericIndication) {
+        tab.setInnerHTML('.aatabs_tab_indication',tab.NumericIndication);
+        jQuery(tab).find(".aatabs_tab_indication")[0].style.display = 'inline';
+     }
+      else
+        jQuery(tab).find(".aatabs_tab_indication")[0].style.display = 'none';
+   });
+  tabcontrol.jbFixSize = function() {
+    var window_width = aa_screen_size(true).width;
+    var tabs_count = 0;
+    jQuery(tabcontrol).find('.aatabs_tab').each(function() { 
+      if (this.style.display != 'none')
+        tabs_count++ 
+    });
+    var width = Math.max(32, Math.floor(window_width/tabs_count)-1);
+    jQuery(tabcontrol).find('.aatabs_tab').css("width",width + "px");
+    var body = document.body;
+    if (jQuery('.studio_simulator').length > 0)
+      body = jQuery('.studio_simulator')[0];
+  };
+    tabcontrol.jbFixSize ();
+/*  aa_addOnAttach(tabcontrol, function() {
+//  });*/
+  window.addEventListener("resize", tabcontrol.jbFixSize , false);
+  jBart.bind(tabcontrol, 'TabsChanged', tabcontrol.jbFixSize);
+  tabcontrol.OnBeforeSelect = function() {
+    window.scrollTo(0,1);   // 
+  }
+}]]>
+    </Javascript>
+    <Css>
+<![CDATA[#this .aatabs_tab_indication {
+  background: rgb(182,224,0);
+  width:18px;
+  position:absolute;
+  text-align:center;
+  border-radius:18px;
+  font-weight1:bold;
+  margin-top:8px;
+  margin-left:-10px;
+}
+#this {
+  background: rgb(245,245,245);
+}
+
+#this >.tabs{
+  display: -webkit-box;
+ -webkit-box-orient: horizontal;
+ -webkit-box-pack1: center;
+ -webkit-box-direction: normal;
+  background:rgb(64,78,89);
+  height:52px;
+}
+#this .aatabs_tab { 
+  background:rgb(64,78,89);
+  border-bottom:1px solid rgb(36,41,45);
+  border1:1px solid green;
+}
+#this .aatabs_tab:not(:last-child) {
+  border-right:1px solid rgb(36,41,45);
+}
+#this .aatabs_tab_text { 
+  display: block;
+  text-align: center;
+  color:rgb(204,204,204);
+  font-weight:bold;
+}
+#this .aa_selected_tab .aatabs_tab_text {
+  color: rgb(216,216,216);
+}
+#this  .aatabs_tab.aa_selected_tab  { 
+  background: rgb(245,245,245);
+  border-bottom: 1px solid rgb(245,245,245);
+}
+#this .aa_selected_tab:last-child  { 
+  border-right: 1px solid rgb(245,245,245);
+}
+#this .aatabs_tab_image_div {
+  margin:auto;
+  text-align:center;
+  position:relative;
+  width:auto;
+}
+#this .aatabs_tab_image_div { padding-top:5px;}
+#this .aatabs_contents { background:rgb(245,245,245); }
+]]>
+    </Css>
+  </xtml>
+    </Component>
+
+  <Component id="HiddenTabs" type="tabcontrol.Style">
+    <xtml t="ui.CustomStyle">
+      <Html><![CDATA[<div>
+  <div>
+    <div class="aatabs_tab" />
+  </div>
+  <div class="aatabs_contents"/>
+</div>]]></Html>
+      <Css><![CDATA[#this >div>div.aatabs_tab { display: none; }]]></Css>
+      <Javascript><![CDATA[function(tabcontrol) {
+ tabcontrol.addTabs('.aatabs_tab','.aatabs_contents',
+   function(tab) {        
+  });
+}]]></Javascript>
+    </xtml>
+  </Component>
+    
+  </xtml>
+  
+  <xtml ns="uitext">
+    <Type id="Style" />
+    
+    <Component id="PlainText" type="uitext.Style">
+      <xtml t="ui.CustomStyle" Html="&lt;div /&gt;" Css="#this { }" >
+        <Javascript><![CDATA[function(textObj) { 
+  aa_textLabel(textObj);
+}]]></Javascript><![CDATA[]]>
+      </xtml> 
+    </Component>
+
+    <Component id="Message" type="uitext.Style">
+      <xtml t="ui.CustomStyle" Html="&lt;div /&gt;">
+        <Css><![CDATA[
+#this {
+border: 1px solid rgb(190, 190, 84);
+background: rgb(245, 245, 174);
+padding: 4px;
+}          
+]]></Css>          
+        <Javascript><![CDATA[function(textObj) { 
+  aa_textLabel(textObj);
+}]]></Javascript><![CDATA[]]>
+      </xtml> 
+    </Component>
+    
+    <Component id="Bold14" type="uitext.Style">
+      <xtml t="ui.CustomStyle">
+        <Css><![CDATA[#this { font: 14px arial; font-weight:bold; color: #222; }]]></Css>
+        <Html><![CDATA[<div/>]]></Html>
+        <Javascript><![CDATA[function(textObj) { 
+  aa_textLabel(textObj);
+}]]></Javascript><![CDATA[]]>
+      </xtml> 
+    </Component>
+
+  <Component id="ItemTitle" type="uitext.Style" hidden="true">
+    <xtml t="ui.CustomStyle">
+      <Html><![CDATA[<div/>]]></Html>
+      <Css><![CDATA[#this { 
+    font: 13px Arial;
+    color:#112566; font-weight:bold; 
+    padding-bottom:5px;
+    text-shadow: 1px 1px 1px lightgray;
+  }]]></Css>
+      <Javascript><![CDATA[function(object) { 
+    object.el.innerHTML = object.text; 
+  }]]></Javascript>
+    </xtml>
+  </Component>
+
+  <Component id="LightGreyArial12" type="uitext.Style">
+    <xtml t="ui.CustomStyle">
+      <Html><![CDATA[<div />]]></Html>
+      <Css><![CDATA[#this { font-family:Arial, Helvetica; color:#666666; font-size: 12px; }
+]]></Css>
+      <Javascript><![CDATA[function(textObj) { 
+  aa_textLabel(textObj);
+}]]></Javascript>
+    </xtml>
+  </Component>
+          
+    <Component id="SmallText" type="uitext.Style">
+      <xtml t="ui.CustomStyle" Html="&lt;div /&gt;" Css="#this { font: 11px Arial; }" Javascript="function(object) { object.control.innerHTML = object.text; }" /> 
+    </Component>
+    
+  <Component id="CodeMirror" type="uitext.Style">
+    <Param name="Width" Default="400px" slider="true" sliderUnit="px" />
+    <Param name="Height" Default="200px" slider="true" sliderUnit="px" />
+    <Param name="Mode" type="enum" Options="javascript,xml,css,htmlmixed" Default="javascript"/>
+    <Param name="LineNumbers" type="data.Boolean" Default="false"/>
+    <Param name="LineWrapping" type="data.Boolean" Default="true"/>
+    <Param name="EnableFullScreen" type="data.Boolean" Default="true"/>
+    <xtml t="ui.CustomStyle">
+      <Html><![CDATA[<div/>]]></Html>
+      <Css><![CDATA[#this { min-width: %$Width%; min-height: %$Height%; } #this .CodeMirror { border: 1px solid #FFEFD5; }]]></Css>
+      <Javascript><![CDATA[
+        function(textbox) {
+          var settings = {
+            value: textbox.text,
+            lineNumbers: %$LineNumbers%,
+            lineWrapping: %$LineWrapping%,
+            height: '%$Height%',
+            width: '%$Width%',
+            mode: '%$Mode%',
+            readOnly: true
+          };
+          if (%$EnableFullScreen%)
+            aa_enableFullScreenForCodeMirror(settings);
+          var cm = aa_codemirror(settings);
+          textbox.el.appendChild(cm);
+        }
+]]></Javascript>
+    </xtml>
+  </Component>
+
+    <Component id="TextArea" type="data.Data">
+      <xtml t="ui.CustomStyle">
+        <Html><![CDATA[<textarea />]]></Html>
+        <Css><![CDATA[#this { width: 530px; height: 80px; }
+    ]]></Css>
+        <Javascript><![CDATA[function(textObj) { 
+      textObj.$el.val(textObj.text);
+    }]]></Javascript>
+      </xtml>
+    </Component>​
+    
+    <Component id="YellowBox" type="uitext.Style">
+      <xtml t="ui.CustomStyle">
+        <Html><![CDATA[<div />]]></Html>
+        <Css><![CDATA[#this {
+      color:#778994; 
+      font-family: Arial;
+      font-size: 12px;
+      padding-left: 24px;
+      line-height: 20px;
+      padding:10px 20px;
+      background: #fff7d3;
+      border: 1px solid #feb600; 
+    }]]></Css>
+        <Javascript><![CDATA[function(text) { text.setInnerHTML('',text.text); }]]></Javascript>
+      </xtml>
+    </Component>
+    
+  </xtml>
+  
+  <xtml ns="section">
+
+    <Type id="Style" />
+    
+          <Component id="WixFieldsSection" type="section.Style">
+            <xtml t="ui.CustomStyle">
+              <Html><![CDATA[<div>
+  <div class="section_body"/>
+</div>]]></Html>
+              <Css><![CDATA[#this {
+background: #FFFFFF;
+border: 1px solid #D4D4D4;
+border-radius: 4px 4px 4px 4px;
+padding: 15px 14px;
+margin: 14px 10px 14px 10px;
+}
+]]></Css>
+              <Javascript><![CDATA[function(section) { aa_section(section);}]]></Javascript>
+            </xtml>
+          </Component>
+          
+    <Component id="Default" type="section.Style">
+      <Param name="Color" Default="#3764A0" />
+      <Param name="BorderBottom" Default="2px solid #99BBE8" />
+      <xtml t="ui.CustomStyle" Html="&lt;div&gt;&#xd;  &lt;div class=&quot;section_title&quot;/&gt;&#xd;  &lt;div class=&quot;section_body&quot;/&gt;&#xd;&lt;/div&gt;">
+      <Javascript>
+<![CDATA[function(section) {  
+  aa_section(section);
+}]]>
+      </Javascript>
+      <Css>
+<![CDATA[#this >.section_title {font-family: tahoma,arial,helvetica,sans-serif;font-size: 12px;font-weight: bold;color: %$Color%; 
+border-bottom: %$BorderBottom%;
+padding: 3px 0;
+margin-bottom: 5px;}
+]]></Css>
+      </xtml>
+    </Component>
+
+  <Component id="Grey" type="section.Style">
+    <Param name="LineWidth" Default="400px" slider="true" sliderUnit="px" />
+    <xtml t="ui.CustomStyle">
+      <Html><![CDATA[<div>
+  <div class="section_title_top">
+    <div class="section_title"/>
+  </div>
+  <div class="section_body"/>
+</div>]]></Html>
+      <Css><![CDATA[#this >.section_title_top>.section_title { 
+  font-family: arial;
+  color:#384023; 
+  font-weight:bold; font-size: 12px; 
+  padding-top: 3px; 
+  padding-right: 0; 
+  padding-bottom: 5px; 
+  padding-left: 0; 
+  border-bottom: 1px solid #CFD2D2;
+}
+#this >.section_title_top { 
+  margin-bottom: 10px; 
+  width: %$LineWidth%;
+}
+]]></Css>
+      <Javascript><![CDATA[function(section) {  
+  aa_section(section);
+}]]></Javascript>
+    </xtml>
+  </Component>
+
+<Component id="GreySmall" type="section.Style">
+  <xtml t="ui.CustomStyle" base="section.Grey">
+    <Html><![CDATA[<div>
+  <div class="section_title_top">
+    <div class="section_title"/>
+  </div>
+  <div class="section_body"/>
+</div>]]></Html>
+    <Css><![CDATA[#this >.section_title_top>.section_title {
+  padding-bottom: 3px;
+  color: #666;
+  font-weight: bold;
+  font-size: 11px;
+  font-family: "lucida grande",tahoma,verdana,arial,sans-serif;
+}
+#this >.section_title_top {
+}
+]]></Css>
+    <Javascript><![CDATA[function(section) {  
+  aa_section(section);
+}]]></Javascript>
+  </xtml>
+</Component>
+
+  <Component id="GreyGreen" type="section.Style">
+    <xtml t="ui.CustomStyle">
+      <Html><![CDATA[<div>
+    <div class="section_body"/>
+  </div>]]></Html>
+      <Css><![CDATA[#this {
+    background-color:#EFEEEE; 
+    padding-top: 15px; 
+    padding-bottom: 15px; 
+    padding-left: 15px; 
+    border-bottom: 1px solid #85B113; 
+  }]]></Css>
+      <Javascript><![CDATA[function(section) {    aa_section(section);}]]></Javascript>
+    </xtml>
+  </Component>
+  
+  <Component id="JBartClean" type="section.Style" styleguide="jbart">
+    <xtml t="ui.CustomStyle">
+      <Html>
+<![CDATA[<div>
+  <div class="section_title"/>
+  <div class="section_body"/>
+</div>]]>
+      </Html>
+      <Css>
+<![CDATA[#this >.section_title {
+  font: 18px arial;
+  font-weight: bold;color: #3764A0; 
+  padding: 3px 0;
+  margin-bottom: 5px;}
+]]>
+      </Css>
+      <Javascript>
+<![CDATA[function(section) {  
+  aa_section(section);
+}]]>
+      </Javascript>
+<![CDATA[]]>
+    </xtml>
+  </Component>
+
+  <Component id="BlackUnderline" type="section.Style" styleguide="jbart">
+    <xtml t="ui.CustomStyle">
+      <Html>
+<![CDATA[<div>
+  <div class="section_title"/>
+  <div class="section_body"/>
+</div>]]>
+      </Html>
+      <Css>
+<![CDATA[#this >.section_title {
+  color:#39404A; 
+  font: 14px arial;
+  padding-top: 3px; 
+  padding-right: 0; 
+  padding-bottom: 5px; 
+  padding-left: 0; 
+  border-bottom: 1px solid #87B203;
+}
+#this >.section_body {
+  padding: 20px;
+  background: #F0EFEF;
+}
+]]>
+      </Css>
+      <Javascript>
+<![CDATA[function(section) {  
+  aa_section(section);
+}]]>
+      </Javascript>
+<![CDATA[]]>
+    </xtml>
+  </Component>
+
+    <Component id="DefaultNoUnderline" type="section.Style">
+      <xtml t="ui.CustomStyle" Html="&lt;div&gt;&#xd;  &lt;div class=&quot;section_title&quot;/&gt;&#xd;  &lt;div class=&quot;section_body&quot;/&gt;&#xd;&lt;/div&gt;" Css="#this &gt;.section_title {font-family: tahoma,arial,helvetica,sans-serif;font-size: 12px;font-weight: bold;color: #3764A0; &#xa;&#xa;padding: 3px 0;&#xa;margin-bottom: 5px;}" Javascript="function(section) {   aa_section(section);
+}" />
+    </Component>
+
+    <Component id="DefaultWithImage" type="section.Style">
+      <xtml t="ui.CustomStyle" Html="&lt;div&gt;&#xd;  &lt;div class=&quot;section_title&quot;/&gt;&#xd;  &lt;div class=&quot;section_body&quot;/&gt;&#xd;&lt;/div&gt;" Css="#this &gt;.section_title {font-family: tahoma,arial,helvetica,sans-serif;font-size: 12px;font-weight: bold;color: #3764A0; &#xa;border-bottom: 2px solid #99BBE8;&#xa;padding: 3px 0;&#xa;margin-bottom: 5px;}" Javascript="function(section) {    aa_section(section);
+}" />
+    </Component>
+
+    <Component id="DefaultExpandCollapse" type="section.Style">
+      <xtml t="ui.CustomStyle" Html="&lt;div&gt;&#xa;  &lt;div class=&quot;section_header&quot;&gt;&#xa;    &lt;span class=&quot;toggle_button&quot;/&gt;&#xa;    &lt;span class=&quot;section_image&quot;/&gt;&#xa;    &lt;span class=&quot;section_title&quot;/&gt;&#xa;  &lt;/div&gt;&#xa;  &lt;div class=&quot;section_body&quot;/&gt;&#xa;&lt;/div&gt;" Css="#this &gt;div&gt;.toggle_button { display:inline-block; height: 14px;  width:9px; padding-lef1t:9px; background:url('%$_Images%/css/collapse.gif') no-repeat;}&#xa;#this.collapsed &gt;div&gt;.toggle_button { background:url('%$_Images%/css/expand.gif') no-repeat; }&#xa;#this &gt;.section_header { &#xa;  cursor:pointer;  &#xa;  border-bottom: 2px solid #99BBE8;margin-bottom: 5px;&#xa;}&#xa;#this &gt;div&gt;.section_title { display: inline-block; padding-left: 2px; font-family: tahoma,arial,helvetica,sans-serif;&#xa;  font-size: 12px;font-weight: bold;color: #3764A0; vertical-align: top; }&#xa;" Javascript="function(section) { &#xa;   section.setImageSource('.section_image',section.Image);&#xa;   section.setInnerHTML('.section_title',section.Title); &#xa;   section.addSectionBody('.section_body');&#xa;   if (section.collapsed) section.$el.addClass('collapsed');&#xa;&#xa;  section.$el.find('.section_header').click(function() {&#xa;    section.$el.toggleClass('collapsed');&#xa;    if ( section.$el.hasClass('collapsed') )&#xa;     section.$el.find('.section_body').animate({height: 'hide'},400);   &#xa;   else &#xa;     section.$el.find('.section_body').animate({height: 'show'},400);  });&#xa;&#xa;   section.updateCollapsed( section.$el.hasClass('collapsed') );&#xa;}"/>
+    </Component>​
+
+    <Component id="ExpandCollapseNoUnderline" type="section.Style">
+      <xtml t="ui.CustomStyle" Html="&lt;div&gt;&#xa;  &lt;div class=&quot;section_header&quot;&gt;&#xa;    &lt;span class=&quot;toggle_button&quot;/&gt;&#xa;    &lt;span class=&quot;section_image&quot;/&gt;&#xa;    &lt;span class=&quot;section_title&quot;/&gt;&#xa;  &lt;/div&gt;&#xa;  &lt;div class=&quot;section_body&quot;/&gt;&#xa;&lt;/div&gt;" Css="#this &gt;div&gt;.toggle_button { display:inline-block; height: 14px;  width:9px; padding-lef1t:9px; background:url('%$_Images%/css/collapse.gif') no-repeat;}&#xa;#this.collapsed &gt;div&gt;.toggle_button { background:url('%$_Images%/css/expand.gif') no-repeat; }&#xa;#this &gt;.section_header { &#xa;  cursor:pointer;  &#xa;  margin-bottom: 5px;&#xa;}&#xa;#this &gt;div&gt;.section_title { display: inline-block; padding-left: 2px; font-family: tahoma,arial,helvetica,sans-serif;&#xa;  font-size: 12px;font-weight: bold;color: #3764A0; vertical-align: top; }&#xa;" Javascript="function(section) { &#xa;   section.setImageSource('.section_image',section.Image);&#xa;   section.setInnerHTML('.section_title',section.Title); &#xa;   section.addSectionBody('.section_body');&#xa;   if (section.collapsed) section.$el.addClass('collapsed');&#xa;&#xa;  section.$el.find('.section_header').click(function() {&#xa;    section.$el.toggleClass('collapsed');&#xa;    if ( section.$el.hasClass('collapsed') )&#xa;     section.$el.find('.section_body').animate({height: 'hide'},400);   &#xa;   else &#xa;     section.$el.find('.section_body').animate({height: 'show'},400);  });&#xa;&#xa;   section.updateCollapsed( section.$el.hasClass('collapsed') );&#xa;}"/>
+    </Component>
+
+  <Component id="YellowBox" type="section.Style">
+    <xtml t="ui.CustomStyle">
+      <Html><![CDATA[<div>
+  <div class="section_body"/>
+</div>]]></Html>
+      <Css><![CDATA[#this { background:#FDFDDD; padding-top: 10px; padding-right: 10px; padding-bottom: 10px; 
+  padding-left: 10px; border: 1px solid #FC6; }
+]]></Css>
+      <Javascript><![CDATA[function(section) {  section.setInnerHTML('.section_title',section.Title);  section.addSectionBody('.section_body');}]]></Javascript>
+    </xtml>
+  </Component>
+
+    <Component id="LightBlue" type="section.Style">
+      <xtml t="ui.CustomStyle">
+    <Html><![CDATA[<div>
+  <div class="section_body"/>
+</div>]]></Html>
+    <Css><![CDATA[#this {
+  border:1px solid #1B9BEC;
+  background-color: #E8F5FD;
+  padding:15px;
+  width: 260px;
+}
+#this>.section_body {
+}]]></Css>
+    <Javascript><![CDATA[function(section) {  
+  section.addSectionBody('.section_body');
+}]]></Javascript>
+</xtml>
+    </Component>
+    
+    <Component id="MobileBlue" type="section.Style" styleGuide="jbartMobile">
+    <xtml t="ui.CustomStyle" Javascript="function(section) {  &#xd;&#xa;  section.setInnerHTML('.section_title',section.Title);  &#xd;&#xa;  section.addSectionBody('.section_body');&#xd;&#xa;}">
+      <Css>
+<![CDATA[#this >.section_title {
+  border-top:1px solid #ccc;
+  font-family: arial1,helvetica,sans-serif;
+  font-size: 15px;
+  color: #3764A0; 
+  padding: 5px 6px;
+  margin-top:10px;
+  margin-bottom: 4px;
+  font-weight:bold;
+  color:#12619E;
+}
+#this >.section_body {
+padding:0 6px; 
+}]]>
+      </Css>
+      <Html>
+<![CDATA[<div>
+  <div class="section_title"/>
+  <div class="section_body"/>
+</div>]]>
+      </Html>
+    </xtml>
+    </Component>
+    
+        <Component id="MobileBlack" type="section.Style" styleGuide="jbartMobile">
+    <xtml t="ui.CustomStyle" Javascript="function(section) {  &#xd;&#xa;  section.setInnerHTML('.section_title',section.Title);  &#xd;&#xa;  section.addSectionBody('.section_body');&#xd;&#xa;}">
+      <Css>
+<![CDATA[#this >.section_title {
+  font-family: arial,helvetica,sans-serif;
+  font-size: 13px;
+  color: #3764A0; 
+  padding: 3px;
+  margin-bottom: 5px;
+  background: -webkit-gradient(linear, left top, left bottom,
+    color-stop(9\%,#000000), color-stop(50\%,#0f0f0f), color-stop(95\%,#000000));  
+  color:white;
+}
+#this >.section_body {
+padding:0 6px; 
+}]]>
+      </Css>
+      <Html>
+<![CDATA[<div>
+  <div class="section_title"/>
+  <div class="section_body"/>
+</div>]]>
+      </Html>
+      </xtml>
+    </Component>
+    
+    <Component id="FacebookMobile" type="section.Style" styleGuide="facebook">
+    <xtml t="ui.CustomStyle" Javascript="function(section) {  &#xa;  section.setInnerHTML('.section_title',section.Title);  &#xa;  section.addSectionBody('.section_body');&#xa;}">
+      <Css>
+<![CDATA[#this >.section_title {
+font-size: 16px;
+line-height: 20px;
+border-top: solid 1px #D0D1D7;
+border-bottom: solid 1px #BABCC5;
+color: #5F6167;
+background: #EAEDF2;
+background: -webkit-gradient( linear, left bottom, left top, color-stop(0.3, #ECEEF2), color-stop(1, #F1F2F5));
+font-weight: bold;
+text-shadow: white 0 1px 0;
+padding-left: 8px;
+height: 20px;
+font-family: Helvetica, sans-serif;
+}
+#this >.section_body {
+padding:3px 6px; 
+}]]>
+      </Css>
+      <Html>
+<![CDATA[<div>
+  <div class="section_title"/>
+  <div class="section_body"/>
+</div>]]>
+      </Html>
+    </xtml>
+    </Component>
+    
+  </xtml>
+  
+  <xtml ns="textarea" jbart="true">
+  
+    <Type id="Style" style="true" customPT="textarea.CustomStyle" />
+
+    <Component id="Default" type="textarea.Style">
+      <Param name="Height" Default="40px" slider="true" sliderUnit="px" />
+      <Param name="Width" Default="100%" slider="true" sliderUnit="px" />
+      <xtml t="textarea.CustomStyle">
+        <Html><![CDATA[<textarea />]]></Html>
+        <Css><![CDATA[#this { width: %$Width%; height: %$Height%; }]]></Css>
+        <Javascript><![CDATA[function(textarea) {
+  textarea.initTextArea(textarea);
+}]]></Javascript> 
+      </xtml>
+    </Component>
+
+    <Component id="AutoHeight" type="textarea.Style">
+      <Param name="Width" Default="100%" />
+      <xtml t="textarea.CustomStyle">
+        <Html><![CDATA[<textarea />]]></Html>
+        <Css><![CDATA[#this { width: %$Width%; }]]></Css>
+        <Javascript><![CDATA[function(textarea) {
+  textarea.initTextArea(textarea);
+  textarea.jbFixAutoHeight = function() {
+      this.style.overflow = 'hidden';
+      this.style.height = "1px";
+      this.style.height = (ajaxart.isFireFox ? this.scrollHeight+3 : this.scrollHeight )+"px";
+  };     
+  aa_addOnAttach(textarea,function() {
+    textarea.jbFixAutoHeight(); 
+  });
+  jQuery(textarea).keyup(function() { textarea.jbFixAutoHeight(); });
+  textarea.bind('refresh',function() { textarea.jbFixAutoHeight();});
+}
+]]></Javascript> 
+      </xtml>
+    </Component>
+
+<Component id="CustomStyle" type="textarea.Style" customPT="true">
+      <Param name="Html" codemirror="true" light="false"/>
+      <Param name="Css" codemirror="true" light="false"/>
+      <Param name="Javascript" codemirror="true" light="false"/>
+      <ParamGenerator t="bart_dt.StyleGenerator" />
+      <xtml t="object.Object">
+        <TextProperty name="Html" value="%$Html%" />
+        <TextProperty name="Css" value="%$Css%" />
+        <TextProperty name="Javascript" value="%$Javascript%" />
+      </xtml> 
+    </Component>
+  
+  </xtml>
+  
+  <xtml ns="header" jbart="true">
+  
+    <Type id="Style" style="true" customPT="header.CustomStyle" />
+    
+    <Component id="FacebookHeader" type="header.Style" styleGuide="facebook">
+        <xtml t="ui.CustomStyle" Html="&lt;div&gt;&#xd;  &lt;div class=&quot;field&quot;/&gt;&#xd;&lt;/div&gt;" Javascript="function(group) { &#xa;  group.addFields('.field',function(field) &#xa;     { &#xa;      field.setControl('.field'); &#xa;      }&#xa;  );&#xa;;}">
+          <Css>
+<![CDATA[#this >.field { float:left; margin-right: 3px;}
+#this {   
+  background-color: #F2F2F2;
+  padding: 5px 3px;
+  border-color: #CCC;
+  height:32px;
+  margin-bottom:5px;
+}
+]]>
+          </Css>
+        </xtml>
+    </Component>
+    
+    <Component id="SimpleHeader" type="header.Style">
+        <xtml t="ui.CustomStyle" Javascript="function(group) { &#xa;  group.addFields('.field',function(field) &#xa;     { &#xa;      field.setControl('.field'); &#xa;      }&#xa;  );&#xa;;}">
+          <Html>
+            <![CDATA[<table cellspacing="0" cellpadding="0"><tr><td class="field"/></tr></table>
+            ]]>
+          </Html>
+          <Css>
+<![CDATA[#this >.field { margin-right: 3px;}
+#this {   
+  margin-bottom:15px;
+}
+]]>
+          </Css>
+        </xtml>
+    </Component>
+
+<Component id="CustomStyle" type="header.Style" customPT="true">
+      <Param name="Html" codemirror="true" light="false"/>
+      <Param name="Css" codemirror="true" light="false"/>
+      <Param name="Javascript" codemirror="true" light="false"/>
+      <ParamGenerator t="bart_dt.StyleGenerator" />
+      <xtml t="object.Object">
+        <TextProperty name="Html" value="%$Html%" />
+        <TextProperty name="Css" value="%$Css%" />
+        <TextProperty name="Javascript" value="%$Javascript%" />
+      </xtml> 
+    </Component>
+    
+  </xtml>
+  
+  <xtml ns="text_field">
+
+    <Type id="Style" customPT="text_field.CustomStyle" />
+
+    <Component id="JBartText" type="text_field.Style">
+      <xtml t="ui.CustomStyle" >
+      <Html><![CDATA[
+<div>
+  <input />
+  <div />
+</div>
+      ]]>
+      </Html>
+      <Css><![CDATA[
+input#this {
+border: 1px solid #BDC7D8;
+font-size: 11px;
+padding: 3px;
+width: 150px;
+height: 16px;
+background: url(%$_Images%/css/shadow2.png) repeat-x scroll 0 0 transparent;
+}
+div#this {
+font-size:12px;
+ }
+       ]]>
+      </Css>
+      <Javascript><![CDATA[
+function render(textbox) {
+  if (textbox.readonly) {
+    return jQuery(textbox).find(">div").html(textbox.text)[0];
+  }
+  else {
+    var out = jQuery(textbox).find('>input')[0] || textbox.control;
+    textbox.initInput(out);
+    return out; 
+  }
+}       ]]>
+      </Javascript>
+      </xtml>
+    </Component>
+
+    <Component id="ModernTextbox" type="text_field.Style">
+      <xtml t="ui.CustomStyle" >
+      <Html><![CDATA[
+<div>
+  <input />
+  <div />
+</div>
+      ]]>
+      </Html>
+      <Css><![CDATA[
+#this>input {
+color:#565656; font-size: 12px; width: 180px; 
+  border-radius: 8px; padding: 6px 0 6px 10px;
+border: 1px solid #BDC7D8;
+}
+#this>div{ font-size:12px; }]]>
+      </Css>
+      <Javascript><![CDATA[
+function render(textbox) {
+  if (textbox.readonly) {
+    return jQuery(textbox).find(">div").html(textbox.text)[0];
+  }
+  else {
+    var out = jQuery(textbox).find('>input');
+    textbox.initInput(out[0]);
+    return out[0]; 
+  }
+}       ]]>
+      </Javascript>
+      </xtml>
+    </Component>
+      
+	    <Component id="CustomStyle" type="text_field.Style" customPT="true">
+	      <Param name="Html" codemirror="true" light="false"/>
+	      <Param name="Css" codemirror="true" light="false"/>
+	      <Param name="Javascript" codemirror="true" light="false"/>
+	      <ParamGenerator t="bart_dt.StyleGenerator" />
+	      <xtml t="ui.CustomStyle" Html="%$Html%" Css="%$Css%" Javascript="%$Javascript%" />
+	    </Component>
+      
+  </xtml>
+  
+    <xtml ns="propertysheet">
+    
+<Component id="Modern" type="propertysheet.Style">
+  <xtml t="propertysheet.CustomStyle">
+    <Html>
+<![CDATA[<div>
+  <div class="field field_contents" />
+</div>
+]]>
+    </Html>
+    <Css>
+<![CDATA[#this>.field_description { font-family:times; color:rgb(140,140,140); 
+  font-style:italic; font-size: 11px; margin: 2px 0 0 0; 
+  white-space: normal; }
+#this input { border-radius: 5px; padding: 8px 8px 8px 8px; min-width:200px; 
+  font: 12px arial; }
+.empty_text { color:#8B8B8B; font-style:italic; }
+#this >div { margin: 0 0 7px 0; }
+]]>
+    </Css>
+    <Javascript>
+<![CDATA[function render(group) { 
+  group.addFields('.field',function(field) {
+    var jFieldContents = jQuery(field);
+    field.setControl(''); 
+    if (field.Field.Description) {
+      jFieldContents.append('<div class="field_description"/>');
+      field.setInnerHTML('.field_description',field.Field.Description);  
+    }
+    field.setPlaceholderForMoreFields(function(fieldForOptions) {
+      jQuery(fieldForOptions).addClass('field_for_more_options').find('>.field_title').remove();
+      var jContents = jQuery(fieldForOptions).find('>.field_contents').attr('colspan',2).append('<div class="field_options_page"/>');
+      fieldForOptions.setOptionsPage('.field_options_page');
+    });
+    aa_addDescriptionForEmptyText(field,field.Title,'empty_text');
+  });
+}
+]]>
+    </Javascript>
+  </xtml>
+</Component>​
+    
+      <Type id="Style" style="true" customPT="propertysheet.CustomStyle" />
+	    <Component id="CustomStyle" type="propertysheet.Style" customPT="true">
+	      <Param name="Html" codemirror="true" light="false"/>
+	      <Param name="Css" codemirror="true" light="false"/>
+	      <Param name="Javascript" codemirror="true" light="false"/>
+	      <ParamGenerator t="bart_dt.StyleGenerator" />
+	      <xtml t="ui.CustomStyle" Html="%$Html%" Css="%$Css%" Javascript="%$Javascript%" />
+	    </Component>
+    </xtml>
+  
+  <xtml ns="itemlist_scroll">
+
+      <Type id="Style" customPT="itemlist_scroll.CustomStyle" />
+
+      <Component id="BrowserScroll" type="itemlist_scroll.Style">
+        <xtml t="itemlist_scroll.CustomStyle">
+          <Html><![CDATA[<div/>]]></Html>
+          <Css><![CDATA[
+#this::-webkit-scrollbar { width: 10px; height:10px; }
+#this::-webkit-scrollbar-track { -webkit-box-shadow1: inset 0 0 8px blue;  border-radius: 5px; }
+#this::-webkit-scrollbar-thumb { border-radius: 5px; -webkit-box-shadow: inset 0 0 6px green; }
+          ]]></Css>
+          <Javascript><![CDATA[function(scroll) {
+  scroll.init({
+    requiresDivWrapper: false,
+    refresh: function() {
+      jQuery(scroll.topDiv).css('overflow','auto');
+      scroll.fixSize( scroll.topDiv );
+    }
+  });
+}]]></Javascript>
+        </xtml>
+      </Component>
+
+      <Component id="HorizontalSlider" type="itemlist_scroll.Style">
+        <Param name="ButtonsPosition" Default="20px" slider="true" sliderUnit="px" />
+        <xtml t="itemlist_scroll.CustomStyle">
+          <Html><![CDATA[<div/>]]></Html>
+          <Css><![CDATA[
+.slide {
+font-family: arial;
+text-decoration: none;
+margin-top: %$ButtonsPosition%;
+width: 40px;
+height: 40px;
+font-size: 60px;
+font-weight: 100;
+line-height: 30px;
+color: white;
+text-align: center;
+background: #222;
+border: 3px solid #777;
+border-radius: 23px;
+opacity: 0.5;
+cursor: pointer;
+}
+.slide:hover { opacity: 0.9; }
+.left_slide { margin-right: 10px; }
+.right_slide { margin-left: 10px; }
+          ]]></Css>
+          <Javascript><![CDATA[function(scroll) {
+  scroll.init({
+    requiresDivWrapper: true,
+    refresh: function() {
+      jQuery(scroll.topDiv).css('overflow','hidden').css('float','left');
+      var prev = jQuery('<div class="slide left_slide" style="float:left">').text('‹');
+      var next = jQuery('<div class="slide right_slide" style="float:left">').text('›');
+      
+      next.click(function() {
+        var width = jQuery(scroll.topDiv).width();
+        jQuery(scroll.topDiv).animate({ scrollLeft: '+=' + width },1000);
+      });
+      prev.click(function() {
+        var width = jQuery(scroll.topDiv).width();
+        jQuery(scroll.topDiv).animate({ scrollLeft: '-=' + width },1000);
+      });
+      jQuery(scroll.divWrapper).css('position','relative').prepend(prev).append(next);
+      if (scroll.ScrollHeight) scroll.ScrollHeight.apply(scroll.topDiv);
+      if (scroll.ScrollWidth) scroll.ScrollWidth.apply(scroll.topDiv,100);
+    }
+  });
+}]]></Javascript>
+        </xtml>
+      </Component>
+
+      <Component id="CustomStyle" type="itemlist_scroll.Style" customPT="true">
+        <Param name="Html" codemirror="true" light="false"/>
+        <Param name="Css" codemirror="true" light="false"/>
+        <Param name="Javascript" codemirror="true" light="false"/>
+        <ParamGenerator t="bart_dt.StyleGenerator" />
+        <xtml t="ui.CustomStyle" Html="%$Html%" Css="%$Css%" Javascript="%$Javascript%" />
+      </Component>
+  
+  </xtml>
+  
+  <xtml ns="line">
+    <Type id="Style" />
+    
+    <Component id="Default" type="line.Style">
+      <xtml t="ui.CustomStyle">
+    <Html><![CDATA[<div>
+  <div class="border1"/>
+  <div class="border2"/>
+  <div class="border3"/>
+</div>
+]]></Html>
+    <Css><![CDATA[.border1 { border-bottom: 1px solid #E9E8E8; }
+.border2 { border-bottom: 1px solid #D8D8D8; }
+.border3 { border-bottom: 1px solid #fff; }
+]]></Css>
+    <Javascript><![CDATA[function(line) { } ]]></Javascript>
+    </xtml>
+    </Component>
+  
+  </xtml>
+
+  <xtml ns="dragndrophandle">
+  
+  <Type id="Style" style="true"/>
+
+  <Component id="Default" type="dragndrophandle.Style">
+    <xtml t="ui.CustomStyle">
+      <Html><![CDATA[<img src="%$_Images%/drag_handle.png" />]]></Html>
+      <Css><![CDATA[#this { display:block; opacity:0.4; cursor:move; }]]></Css>
+      <Javascript><![CDATA[function render(obj) {
+obj.el.ondragstart = function() { return false; };
+}]]></Javascript>
+    </xtml>
+  </Component>​
+</xtml>
+
+<xtml ns="imagegallery">
+  
+  <Type id="Style" />
+
+  <Component id="ImageWithNextPrevButtons" type="imagegallery.Style">
+      <Param name="Height" Default="250" slider="true" sliderUnit="" />
+      <Param name="Width" Default="500" slider="true" sliderUnit="" />
+      <xtml t="ui.CustomStyle" Height="%$Height%" Width="%$Width%">
+        <Css><![CDATA[#this .visible {
+  overflow:hidden;
+  margin-top: 14px;
+  margin-right: 14px;
+  margin-bottom: 14px;
+  margin-left: 14px;
+}
+#this .images {
+  -webkit-transition: margin-left 1s;
+}
+#this .button {
+  cursor: pointer;
+  position:absolute;
+  top:150px;
+  width:21px;
+  height:21px;
+  opacity: 0.8;
+}
+#this .button.disable {
+  display:none;
+  cursor: default;
+  color:#ddd;
+}
+#this .prev {
+  left:5px;
+  background: url('%$_Images%/wix/Portfolio/images_prev_button.png');
+}
+#this .next {
+  background: url('%$_Images%/wix/Portfolio/images_next_button.png');
+  right:5px;
+}
+#this .frame {
+  position:relative;
+  border: 1px solid #C9C9C9;
+  box-shadow:  0 0 2px 0px  grey;
+}
+#this .circles {
+  text-align:center;
+  margin-top:20px;
+}
+#this .circle {
+  display:inline-block;
+  width:15px;
+  height:15px;
+  border-radius:7px;
+  background:#A7A9AC;
+  margin:0 5px;
+  cursor:pointer;
+}
+#this .circle.current {
+  cursor:default;
+  background: #EC008C;
+}
+]]></Css>
+        <Html><![CDATA[<div>
+  <div class="frame">
+    <div class="visible">
+      <table class="images" cellspacing="0" cellpadding="0">
+        <tr>
+        </tr>
+      </table>
+    </div>
+    <div class="prev button" />
+    <div class="next button" />
+  </div>
+  <div class="circles">
+  </div>
+</div>]]></Html>
+        <Javascript><![CDATA[function(imagegallery) { 
+  aa_ImageWithNextPrevButtons(imagegallery,{
+    width: imagegallery.params.Width,
+    height: imagegallery.params.Height
+  });
+}]]></Javascript>
+      </xtml>
+    </Component>
+
+  <Component id="Roundabout" type="imagegallery.Style">
+    <Param name="ImageWidth" Default="500"  slider="true" sliderUnit="" />
+    <Param name="ImageHeight" Default="300"  slider="true" sliderUnit="" />
+  <xtml t="ui.CustomStyle">
+    <Html><![CDATA[<div>
+  <ul/>
+</div>
+]]></Html>
+    <Css><![CDATA[
+#this {
+  width: %$ImageWidth%px;
+  height: %$ImageHeight%px;
+  padding: 10px 50px 50px 50px;
+  margin-top: 60px;
+}
+#this .roundabout-holder {
+  width: %$ImageWidth%px;
+  height: %$ImageHeight%px;
+  margin-top: 0px;
+  margin-right: auto;
+  margin-bottom: 0px;
+  margin-left: auto;
+  list-style:none;
+}
+#this .roundabout-moveable-item>a {
+  display:block;
+  overflow:hidden;
+  height:100\%;
+  width:100\%;
+}
+#this .roundabout-moveable-item {
+  background:#f9f9f9;
+  width: %$ImageWidth%px;
+  height: %$ImageHeight%px;
+  padding-top: 5px;
+  padding-right: 5px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  border: 1px solid #aaaaaa;
+  -webkit-border-radius:5px;
+  -moz-border-radius:5px;
+}
+#this .roundabout-moveable-item img{
+  cursor:pointer;
+}
+#this .roundabout-moveable-item:not(.roundabout-in-focus) img{
+  cursor:pointer;
+}
+#this .roundabout-in-focus:hover {
+  background:#f9f9f9;
+  -webkit-box-shadow:0px 0px 20px #787878;
+  -moz-box-shadow:0px 0px 20px #787878;
+}
+#this .roundabout-holder.single-image {
+  padding-left:0px;
+}
+]]></Css>
+    <Javascript><![CDATA[function(imagegallery) {
+      aa_roundabout(imagegallery, { width: %$ImageWidth%, height: %$ImageHeight% });
+  };
+]]></Javascript>
+  </xtml>
+</Component>
+
+          <Component id="Simple" type="imagegallery.Style">
+            <xtml t="ui.CustomStyle">
+              <Html><![CDATA[<div><img /></div>]]></Html>
+              <Css><![CDATA[#this {
+}]]></Css>
+              <Javascript><![CDATA[function(imagegallery) { 
+  if (imagegallery.images.length == 0) return;
+  var currentImage = 0;
+  function replaceImage() {
+    var imageObj = imagegallery.images[++currentImage % imagegallery.images.length];
+    imagegallery.$el.find("img").attr("src",imageObj.url).attr("title",imageObj.title);
+    setTimeout( replaceImage, 3000 );
+  }
+  replaceImage();
+}]]></Javascript>
+            </xtml>
+          </Component>
+
+</xtml>
+
+<xtml ns="audioplayer">
+
+  <Type id="Style" />
+
+  <Component id="Simple" type="audioplayer.Style">
+    <xtml t="ui.CustomStyle">
+      <Html><![CDATA[<div>
+  <div class="button" />
+  <div class="no_audio">No Audio</div>
+  <audio>
+      Your browser does not support the audio element.
+  </audio>
+</div>]]></Html>
+      <Css><![CDATA[#this {}
+#this .no_audio { display:none; }
+#this .button { cursor:pointer; background:url(http://png.findicons.com/files/icons/1686/led/16/control_play.png); height:16px; width:16px; }
+#this .button.playing { background:url(http://png.findicons.com/files/icons/1581/silk/16/control_pause.png); }
+        ]]></Css>
+      <Javascript><![CDATA[function render(audioplayer) { 
+        aa_audioPlayer(audioplayer);
+        }]]></Javascript>
+    </xtml>
+  </Component>
+
+  <Component id="NativePlayer" type="audioplayer.Style">
+    <xtml t="ui.CustomStyle">
+      <Html><![CDATA[<div>
+  <div class="button" />
+  <audio controls>
+      Your browser does not support the audio element.
+  </audio>
+</div>]]></Html>
+      <Css><![CDATA[#this {} ]]></Css>
+      <Javascript><![CDATA[function render(audioplayer) { 
+        aa_audioPlayer(audioplayer);
+        }]]></Javascript>
+    </xtml>
+  </Component>
+
+</xtml>
+
+<xtml ns="iframe_style">
+ 
+ <Type id="Style" />
+
+  <Component id="Simple" type="iframe_style.Style">
+    <Param name="Width" Default="300px" slider="true" sliderUnit="px" />
+    <Param name="Height" Default="300px" slider="true" sliderUnit="px" />
+    <Param name="Border" type="data.Boolean" />
+    <xtml t="ui.CustomStyle" Border="%$Border%">
+      <Html><![CDATA[<iframe />]]></Html>
+      <Css><![CDATA[#this {
+  width: %$Width%;
+  height: %$Height%;        
+}]]></Css>
+      <Javascript><![CDATA[function render(iframe) { 
+  iframe.el.setAttribute('src',iframe.url);
+  if (iframe.params.Border != 'true') iframe.el.setAttribute('frameborder','false');
+}]]></Javascript>
+    </xtml>
+  </Component>
+
+
+</xtml>
+
+<xtml ns="hyperlink_style">
+ 
+ <Type id="Style" />
+
+  <Component id="Simple" type="hyperlink_style.Style">
+    <xtml t="ui.CustomStyle" Border="%$Border%">
+      <Html><![CDATA[<a />]]></Html>
+      <Css><![CDATA[#this {
+}]]></Css>
+      <Javascript><![CDATA[function render(link) { 
+  link.$el.text(link.title).attr('href',link.link).attr('title',link.tooltip).attr('target',link.target);
+}]]></Javascript>
+    </xtml>
+  </Component>
+
+
+</xtml>
+
+</xtml>

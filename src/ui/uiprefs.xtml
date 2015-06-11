@@ -1,0 +1,54 @@
+<xtml ns="uipref" light="false">
+
+<Type id="UIPreferences" />
+
+<Component id="SimpleUIPreferences" type="uipref.UIPreferences">
+  <Param name="Xml"/>
+  <xtml t="object.Object">
+    <Method name="GetProperty" t="data.Pipeline">
+      <Item value="%$Xml%"/>
+      <Item value="%{$Prefix}%"/>
+      <Item value="%@{$Property}%"/>
+    </Method>
+    <Method name="SetProperty" t="action.WriteValue" Value="%$Value%">
+      <To t="data.Pipeline">
+        <Item value="%$Xml%"/>
+        <Item value="%!{$Prefix}%"/>
+        <Item value="%!@{$Property}%"/>
+      </To>
+    </Method>
+  </xtml>
+</Component>
+
+<Component id="InCookies" type="uipref.UIPreferences" execution="native" />
+
+<Component id="PrefValue" type="data.Data" execution="native" >
+	<Param name="Prefix" />
+	<Param name="Property" />
+</Component>
+
+<Component id="SetPrefValue" type="action.Action" execution="native" >
+	<Param name="Prefix" />
+	<Param name="Property" />
+	<Param name="Value" />
+</Component>
+
+<Component id="CleanPrefValues" type="action.Action">
+  <Param name="Prefix" />
+  <xtml t="object.RunMethod" Object="%$_UIPref%" Method="CleanPrefValues">
+    <Var name="Prefix" value="%$Prefix%" />
+  </xtml>
+</Component>
+
+<Component id="OverrideUIPrefs" type="action.Action">
+  <Param name="UIPrefs" />
+  <Param name="Prefix" />
+  <xtml t="action.RunActionOnItems" >
+    <Items t="xml.Attributes" AlsoEmpty="false" Data="%$UIPrefs%"/>
+    <Action t="uipref.SetPrefValue" Prefix="%$Prefix%" Value="%%">
+      <Property t="xml.AttributeName" />
+    </Action>
+  </xtml>
+</Component>
+
+</xtml>

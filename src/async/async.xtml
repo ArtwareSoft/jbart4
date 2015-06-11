@@ -1,0 +1,136 @@
+<xtml package="true">
+
+  <xtml ns="async_data">
+
+    <Type id="Data" />
+    <Type id="StreamingData" />
+
+  </xtml>
+
+  <xtml ns="async">
+
+  	<Component id="RunOnNextTimer" type="action.Action" execution="native">
+  	  <Param name="Milliseconds" Default="300" />
+  	  <Param name="Action" type="action.Action" script="true" />
+  	</Component>
+
+    <Component id="HttpPost" type="action.Action,async_data.Data" execution="native" light="false" deprecated="true" description="post http request via url">
+      <Param name="Url" essential="true"/>
+      <Param name="PostData" type="server.PostData[]"/>
+      <Param name="PostContentType" Default="application/x-www-form-urlencoded; charset=UTF-8"/>
+      <Param name="ResultFormat" type="enum" Options="xml,html,text"/>
+      <Param name="TunnelRequest" type="data.Boolean" description="Avoid crossdomain problems during dev. by using the proxy service"/>
+      <Param name="Headers" description="JSON Format"/>
+      <Param name="Timeout" description="In MSec"/>
+      <Param name="OnError" type="action.Action" script="true" />
+      <Param name="OnSuccess" type="action.Action" script="true" />
+    </Component>
+
+    <Component id="HttpGet" type="action.Action,async_data.Data" execution="native" description="post http request via url" light="false" deprecated="true">
+      <Param name="Url" essential="true"/>
+      <Param name="ResultFormat" type="enum" Options="xml,html,text"/>
+      <Param name="TunnelRequest" type="data.Boolean" description="Avoid crossdomain problems during dev. by using the proxy service"/>
+      <Param name="Headers" description="JSON Format"/>
+      <Param name="Timeout" description="In MSec"/>
+      <Param name="OnError" type="action.Action" script="true" />
+      <Param name="OnSuccess" type="action.Action" script="true" />
+    </Component>
+
+    <Component id="SyncData" type="async_data.Data">
+      <Param name="Query" />
+      <xtml value="%$Query%" />
+    </Component>
+
+    <Component id="RunAsyncActions" type="action.Action" execution="native">
+      <Param name="Action" type="action.Action[]" script="true" essential="true"/>
+      <Param name="OnError" type="action.Action" script="true"/>
+      <Param name="StopOnError" type="data.Boolean" Default="true" />
+      <Param name="ProgressStyle" type="async_ui.AsyncProgress" />
+    </Component>
+
+    <Component id="RunActionAndAlwaysReturnSuccess" type="action.Action" execution="native">
+      <Param name="Action" type="action.Action" script="true" essential="true"/>
+      <Param name="OnError" type="action.Action" script="true"/>
+      <Param name="OnSuccess" type="action.Action" script="true"/>
+    </Component>
+
+    <Component id="RunAsyncActionOnItems" type="action.Action" execution="native">
+      <Param name="Items" essential="true"/>
+      <Param name="Action" type="action.Action[]" script="true" essential="true"/>
+      <Param name="OnError" type="action.Action" script="true"/>
+      <Param name="StopOnError" type="data.Boolean" Default="true" />
+      <Param name="ProgressStyle" type="async_ui.AsyncProgress" />
+    </Component>
+
+    <Component id="PipelineAsyncActions" type="action.Action" execution="native" description="binding output of action to the input of the next">
+      <Param name="Action" type="action.Action[]" script="true" />
+      <Param name="OnError" type="action.Action" script="true" />
+      <Param name="StopOnError" type="data.Boolean" Default="true" />
+    </Component>
+
+  	<Component id="RunInParallel" type="action.Action" execution="native">
+  	  <Param name="Action" type="action.Action[]" script="true" />
+      <Param name="OnError" type="action.Action" script="true" />
+      <Param name="OnSuccess" type="action.Action" script="true" />
+  	</Component>
+
+    <Component id="RunOnAsycData" type="action.Action" execution="native">
+      <Param name="InputData" type="async_data.Data" script="true" />
+      <Param name="Action" type="action.Action" script="true" />
+    </Component>
+
+    <Component id="DataOnNextTimer" type="async_data.Data" execution="native">
+      <Param name="Milliseconds" Default="300" />
+      <Param name="ResultData" script="true" />
+    </Component>
+
+    <Component id="AsyncActionBeforeLoad" type="field.FieldAspect" execution="native">
+      <Param name="Action" type="action.Action" />
+      <Param name="LoadingText" Default="Loading..." />
+      <Param name="LoadingStyle" type="loading_style.Style">
+        <Default t="loading_style.Default"/>
+      </Param>    
+      <Param name="TextForError" Default="An error has occurred..." />
+      <Param name="ShowLoadingTextInStudio" type="data.Boolean" />
+    </Component>
+
+    <Component id="JBartWidgetUsage" type="usage.Usage" execution="native">
+      <Param name="Name"/>
+      <Param name="Page" type="jbart.MyWidgetPage" />
+      <Param name="WaitForAsyncActionsToEnd" type="data.Boolean" Default="false" />
+      <Param name="RunOnControl" type="uiaction.UsageAction" script="true"/>
+      <Param name="ExpectedResult" type="usage.PassesUsage" script="true" />
+      <Param name="CleanAfter" type="action.Action" script="true"/>
+      <Param name="RunInAllTests" type="data.Boolean"/>
+      <Param name="AssignedTo" />
+      <Param name="DataForPage" />
+    </Component>
+
+    <Component id="SaveFileInLocalComputer" type="action.Action" light="false" execution="native">
+      <Param name="FilePath" /> 
+      <Param name="FileContents" />
+      <Param name="AlsoCreateDirectory" type="data.Boolean" Default="false" />
+    </Component>
+
+  </xtml>
+
+  <xtml ns="async_ui">
+    <Type id="AsyncProgress" />
+
+    <Component id="ChangeCursorForProgress" type="async_ui.AsyncProgress">
+      <xtml t="ui.CustomStyle">
+        <Css><![CDATA[#this {
+  cursor:progress;
+}
+#this * {
+  cursor:progress !important;
+}]]></Css>
+        <Html><![CDATA[]]></Html>
+        <Javascript><![CDATA[function init(progressObject) {
+  aa_asyncui_progressByCssOnBody(progressObject);
+}]]></Javascript>
+      </xtml>
+    </Component>
+
+  </xtml>
+</xtml>

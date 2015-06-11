@@ -1,0 +1,451 @@
+<xtml package="true">
+
+<xtml ns="itemlist">
+  <Type id="Items" />
+  
+  <Component id="Items" type="itemlist.Items" autoexpand="true">
+    <Param name="Items" />
+    <xtml value="%$Items%" />
+  </Component>
+  
+  <Component id="XmlItems" type="itemlist.Items" autoexpand="true" execution="native">
+    <Param name="ParentXml" Default="%%" />
+    <Param name="Tag" Default="*" />
+    <Param name="Filter" type="data.Data" script="true" />
+    <Param name="AutoFirstItem" type="xmlitems.AutoAddFirstItem" description="when empty shows a first item that is being added only at the first change" />
+  </Component>
+
+</xtml>
+
+<xtml ns="xmlitems">
+    <Type id="AutoAddFirstItem"/>
+
+    <Component id="AutoFirstItem" type="xmlitems.AutoAddFirstItem" execution="native">
+      <Param name="DefaultXml" />
+      <Param name="ItemsCount" Default="1" />
+      <Param name="OnAdded" type="action.Action" script="true" />
+    </Component>
+
+</xtml>
+
+<xtml ns="field">
+
+  <Component id="ItemListContainer" type="field.Fields" image="%$_Images%/studio/library.png">
+    <Param name="ID" advanced="always" essential="true" idField="true" />
+    <Param name="Title" essential="true" autoaspects="false" titleField="true" />
+    <Param name="Items" type="itemlist.Items" script="true">
+      <Default t="itemlist.Items" />
+    </Param>
+    <Param name="HideTitle" type="data.Boolean" boolfeature="true" />
+    <Param name="Layout" type="layout.Style" script="true">
+      <Default t="layout.Default" />
+    </Param>
+    <Param name="SectionStyle" type="section.Style" description="Select a section style to make it a section" />
+    <Param name="Field" type="field.Fields[]" script="true" light="false" essential="true"/>
+    <Param name="FieldAspect" type="field.FieldAspect[]" script="true" light="false" />
+    <xtml t="control.Layout" ID="%$ID%" Title="%$Title%" HideTitle="%$HideTitle%" SectionStyle="%$SectionStyle%">
+      <Layout t="xtml.UseParam" Param="Layout" />
+      <Field t="xtml.UseParamArray" Param="Field" />
+      <FieldAspect t="field_aspect.ItemListContainer">
+        <Items t="xtml.UseParam" Param="Items" />
+      </FieldAspect>
+      <FieldAspect t="xtml.UseParamArray" Param="FieldAspect" />
+    </xtml>
+    
+  </Component>
+
+  <Component id="ItemList" type="field.Fields" execution="native" image="%$_Images%/studio/books.gif">
+    <Param name="ID" advanced="always" essential="true" idField="true" />
+    <Param name="Title" essential="true" autoaspects="false" titleField="true" />
+    <Param name="View" type="itemlist_style.View">
+      <Default t="itemlist_style.Simple" />
+    </Param>
+    <Param name="SectionStyle" type="section.Style" description="Select a section style to make it a section" />
+    <Param name="Field" type="field.Fields[]" script="true" light="false" essential="true"/>
+    <Param name="FieldAspect" type="field.FieldAspect[]" script="true" light="false" />
+  </Component>
+
+  <Component id="DragAndDropItemsHandle" type="field.Fields" execution="native" >
+    <Param name="ID" advanced="always" essential="true" idField="true" />
+    <Param name="Title" essential="true" autoaspects="false" titleField="true" />
+    <Param name="Style" type="dragndrophandle.Style" >
+      <Default t="dragndrophandle.Default" />
+    </Param>
+    <Param name="CssForDraggedElement" css="true">
+      <Default><![CDATA[{ opacity: 0.9;}]]></Default>
+    </Param>
+    <Param name="CssForDraggedSpace" css="true" Default="{ }"/>
+    <Param name="FieldAspect" type="field.FieldAspect[]" script="true" light="false" />
+  </Component>
+
+</xtml>
+
+<xtml ns="field_aspect">
+
+  <Component id="ItemListContainer" type="field.FieldAspect" execution="native" context="FieldComponent=field.ItemList,FieldComponent=control.Layout" fieldImage="%$_Images%/studio/library.png">
+    <Param name="Items" type="itemlist.Items">
+      <Default t="itemlist.Items" />
+    </Param>
+  </Component>
+  
+  <Component id="CustomizeTableHeader" type="field.FieldAspect" execution="native" context="InItemList=true">
+    <Param name="Css" css="true">
+      <Default><![CDATA[#this { } 
+.title {}]]></Default>
+    </Param>
+    <Param name="ColSpan" />
+  </Component>
+
+  <Component id="ShowOnlyOnItemHover" type="field.FieldAspect" description="Shows the control only when the user hovers the item" context="InItemList=true">
+    <Param name="Css" css="true">
+      <Default><![CDATA[#this { display: none !important;}
+#item:hover #this { display: block !important; }]]></Default>
+    </Param>
+    <xtml t="field_feature.Css" Css="%$Css%" />
+  </Component>
+  
+  <Component id="PopupOfTableHeader" type="field.FieldAspect" execution="native" description="Shows a popup for the field table header" context="InItemList=true">
+    <Param name="PopupStyle" type="popup.Style">
+      <Default t="popup.InfoHoverPopup" />
+    </Param>
+    <Param name="OpenPopup" type="field_aspect_popup.OpenPopupStrategy">
+      <Default t="field_aspect_popup.OpenOnHover" />
+    </Param>
+    <Param name="PopupContents" type="ui.Page" script="true">
+      <Default t="field.InnerPage" />
+    </Param>
+    <Param name="PopupTitle" />
+    <Param name="PopupFeature" type="popup.Feature[]" />
+    <NativeHelper name="OpenPopup" t="popup.OpenPopup" PopupTitle="%$PopupTitle%" Style="%$PopupStyle%">
+      <Contents t="xtml.UseParam" Param="PopupContents" />
+      <Feature t="xtml.UseParamArray" Param="PopupFeature" />
+    </NativeHelper>
+  </Component>
+  
+  <Component id="SortType" type="field.FieldAspect" description="Defines how this field is sorted" context="InItemList=true">
+    <Param name="SortType" type="itemsort.SortType">
+      <Default t="itemsort.Lexical" />
+    </Param>
+    <xtml t="object.SetProperty" Object="%$_Field%" Property="SortType" Value="%$SortType%" IsSingleProperty="true" />
+  </Component>
+  
+  <Component id="ItemListSelectionWithKeyboard" type="field.FieldAspect" execution="native" desctription="Up and down keys change item list selection" context="FieldComponent=field.ItemList,inFilterGroup=true">
+    <Param name="EnterActivatesItemClick" type="data.Boolean" Default="true" />
+  </Component>
+
+</xtml>
+
+<xtml ns="itemlist_aspect">
+
+  <Component id="ItemSelection" type="field.FieldAspect" execution="native" context="FieldComponent=field.ItemList">
+    <Param name="Css" css="true">
+      <Default><![CDATA[{ background: #D9E8FB; }]]></Default>
+    </Param>
+    <Param name="OnSelect" type="action.Action" script="true" />
+    <Param name="KeyboardSupport" type="data.Boolean" Default="true" />
+    <Param name="MouseSupport" type="enum" Options="mouse down,mouse click,mouse hover,none" Default="mouse click" />
+    <Param name="AlwaysOneSelected" type="data.Boolean" Default="true" />
+    <Param name="SelectedByDefault" type="itemlist.FindSelected" script="true"/>
+  </Component>
+
+  <Component id="UpdateOnAddOrDeleteItem" type="field.FieldAspect" execution="native" description="Handles UI operations of add and delete" context="FieldComponent=field.ItemList" />
+  
+  <Component id="RefreshOnSelectionChange" type="field.FieldAspect" execution="native" description="Refreshed when the selection changes. Useful for toolbars and item details" context="InItemListContainer=true">
+    <Param name="SelectedItemAsData" type="data.Boolean" Default="true" />
+    <Param name="HideWhenNoSelection" type="data.Boolean" Default="false"/>
+  </Component>
+  
+  <Component id="RefreshOnItemsChange" type="field.FieldAspect" execution="native" description="Refreshes when the items change (filter or sort). Useful for summary text" context="InItemListContainer=true" />
+  
+  <Component id="CssForItem" type="field.FieldAspect" execution="native" description="Set style for an item, potentialy on condition" context="FieldComponent=field.ItemList">
+    <Param name="Css" css="true" hideTitle="true" Default="#this {}" />
+    <Param name="ConditionOnItem" type="data.Boolean.promoted">
+      <Default t="data.Always" />
+    </Param>
+  </Component>
+  
+  <Component id="CssClassForItem" type="field.FieldAspect" execution="native" context="FieldComponent=field.ItemList">
+    <Param name="CssClass" />
+    <Param name="ConditionOnItem" type="data.Boolean.promoted">
+      <Default t="data.Always" />
+    </Param>
+  </Component>
+  
+  <Component id="ItemClick" type="field.FieldAspect"  execution="native" description="Do something when clicking on an item in an itemlist" context="FieldComponent=field.ItemList">
+    <Param name="OnClick" type="action.Action" />
+    <Param name="Css" css="true" styleTitle="Css">
+      <Default><![CDATA[#this:hover { cursor: pointer; } ]]></Default>
+    </Param>
+  </Component>
+  
+  <Component id="FilterGroup" type="field.FieldAspect"  execution="native" description="Add to a layout to define it as a filter group" fieldImage="%$_Images%/studio/filter.png">
+     <Param name="StorageForQuery" type="prefstorage.PrefStorage" />
+  </Component>
+
+  <Component id="Filter" type="field.FieldAspect" category="filter" execution="native" description="Add this to the filter field" context="inFilterGroup=true">
+    <Param name="FieldData" script="true" description="Field Data to filter" />
+    <Param name="FilterType" type="itemlist_filter.FilterType">
+      <Default t="itemlist_filter.Text" />
+    </Param>
+    <Param name="ImmediateFilter" type="data.Boolean" Default="true" /> 
+  </Component>
+  
+  <Component id="TableColumnDragAndDrop" type="field.FieldAspect" description="Adds Drag and Drop to table columns" execution="native" context="FieldComponent=field.ItemList">
+    <Param name="CssForDraggedElement" css="true">
+      <Default><![CDATA[{ opacity: 0.5; border: solid 1px gray; border-radius: 3px; background:transparent url(%$_Images%/css/shadow_bottom_s.png) bottom right no-repeat; padding:0px 10px 10px 0px;}]]></Default>
+    </Param>
+    <Param name="CssForDraggedSpace" css="true" Default="{ }"/>
+  </Component>
+
+  <Component id="LongList" type="field.FieldAspect" description="Allows showing large number of items in a responsive way" execution="native" context="FieldComponent=field.ItemList">
+    <Param name="MaxTimeToRenderItems" Default="500" Description="After this amount of milliseconds, put Show More text" />
+    <Param name="MaxItemsPerPage" Default="" Description="" />
+    <Param name="TextForShowMore" Default="Show More Items..." />
+    <Param name="Style" type="text_as_item.Style">
+      <Default t="text_as_item.Default" /> 
+    </Param>
+    <Param name="ShowAllItemsOnTimer" type="data.Boolean" description="Shows all items without a show more button" />
+  </Component>
+  
+  <Component id="DragAndDropItems" type="field.FieldAspect"  description="Allows Drag and Drop to the items" execution="native" context="FieldComponent=field.ItemList">
+    <Param name="CssForDraggedElement" css="true">
+      <Default><![CDATA[{ opacity: 0.9; }]]></Default>
+    </Param>
+    <Param name="CssForDraggedSpace" css="true" Default="{ }"/>
+    <Param name="OnDrop" type="action.Action" script="true" />
+  </Component>
+
+  <Component id="ShowTextWhenNoItems" type="field.FieldAspect"  description="Shows a text in the table when there are no items" execution="native" context="FieldComponent=field.ItemList">
+    <Param name="Text" Default="No items available" />
+    <Param name="TextWhenNoItemsMatchFilter" Default="" />
+    <Param name="Style" type="text_as_item.Style"><Default t="text_as_item.Default" /></Param>
+  </Component>
+  
+  <Type id="FindSelected" description="Retrieves the selected item, given a list of items"/>
+  
+  <Component id="SelectedItemByFilter" type="itemlist.FindSelected" execution="native">
+    <Param name="Filter" type="data.Data" script="true" />
+  </Component>
+
+  <Component id="SelectedItemByTextValue" type="itemlist.FindSelected" execution="native">
+    <Param name="Value" type="data.Data" />
+    <Param name="ItemValue" type="data.Data" Default="%%" />
+  </Component>
+  
+</xtml>
+
+<xtml ns="itemsort">
+  <Type id="SortType" />
+  
+  <Component id="SortItems" type="field.FieldAspect" description="Sorts the items in the itemlist container" execution="native" context="ItemListContainer=true">
+    <Param name="ItemValueToSort" script="true" description="Sort by it. e.g. %@price%"/>
+    <Param name="SortType" type="itemsort.SortType">
+      <Default t="itemsort.Lexical" />
+    </Param>
+    <Param name="SortDirection" type="enum" Options="ascending,descending" Default="descending" />
+  </Component>
+  
+  <Component id="Lexical" type="itemsort.SortType" execution="native" />
+  <Component id="Numeric" type="itemsort.SortType" execution="native" />
+  
+  <Component id="PromoteValues" type="itemsort.SortType" execution="native">
+    <Param name="ValuesToPromote" description="e.g. (high,medium)" />
+  </Component>
+
+  <Component id="TableColumnSort" type="field.FieldAspect" description="Sorts the table by clicking on the columns" execution="native" context="FieldComponent=field.ItemList">
+    <Param name="KeepSortState" type="prefstorage.PrefStorage" />
+    <Param name="DefaultSortType" type="itemsort.SortType" light="false">
+      <Default t="itemsort.Lexical" />
+    </Param>
+  </Component>
+
+</xtml>
+
+<xtml ns="itemlist_filter">
+  <Type id="FilterType" />
+  
+  <Component id="ExactMatch" type="itemlist_filter.FilterType" execution="native" description="Usually used by picklists">
+    <Param name="ValuesMultiple" type="data.Boolean" description="Multiple values are separated by commas"/>
+    <Param name="QueryMultiple" type="data.Boolean" description="Multiple values are separated by commas"/>
+  </Component>
+  
+  <Component id="Text" type="itemlist_filter.FilterType" execution="native" />
+  <Component id="TextWords" type="itemlist_filter.FilterType" execution="native" />
+  <Component id="NumberGTOrEquals" type="itemlist_filter.FilterType" execution="native" />
+  
+  <Component id="ValuesFromItems" type="picklist.OptionsProvider" execution="native" description="The picklist options of the field to filter" />
+  
+  <Component id="Occurrences" type="field.FieldAspect" category="filter" execution="native" description="Adds occurrences to filters" context="inFilterGroup=true">
+    <Param name="ShowFilteredOccurrences" type="data.Boolean" Default="true" />
+    <Param name="SortByOccurrences" type="data.Boolean" Default="true" />
+    <Param name="Style" type="occurrences.Style">
+      <Default t="occurrences.Default" />
+    </Param>
+  </Component>
+  
+</xtml>
+
+<xtml ns="itemlist_item">
+  <Type id="ItemIdentifier" />
+  
+  <Component id="ItemOfList" type="data.Data" execution="native">
+    <Param name="Item" type="itemlist_item.ItemIdentifier" />
+    <Param name="Result" type="enum" Options="item,element" Default="item" />
+  </Component>
+  
+  <Component id="ItemInContext" type="itemlist_item.ItemIdentifier" execution="native" description="The item of ControlElement (the control being clicked/hovered/etc.)" />
+  <Component id="SelectedItem" type="itemlist_item.ItemIdentifier" execution="native" description="The selected item in the list" />
+  <Component id="SpecificItem" type="itemlist_item.ItemIdentifier" execution="native">
+    <Param name="Item" />
+  </Component>
+  <Component id="LastItem" type="itemlist_item.ItemIdentifier" execution="native" />
+  <Component id="SpecificItemByFilter" type="itemlist_item.ItemIdentifier" execution="native" description="Select the item by passing a filter (e.g. id in the url)">
+    <Param name="ItemFilter" type="data.Data" script="true"/>
+  </Component>
+  <Component id="ItemLaunchingThePopup" type="itemlist_item.ItemIdentifier" execution="native" description="The item from which the current popup was opened" />
+</xtml>
+
+<xtml ns="itemlist_action">
+
+  <Component id="RefreshItem" type="action.Action" execution="native">
+    <Param name="Item" type="itemlist_item.ItemIdentifier">
+      <Default t="itemlist_item.ItemInContext" />
+    </Param>
+  </Component>
+  
+  <Component id="ClickOnItem" type="action.Action" execution="native">
+    <Param name="Item" type="itemlist_item.ItemIdentifier">
+      <Default t="itemlist_item.ItemInContext" />
+    </Param>
+    <Param name="NoTransitions" type="data.Boolean" />
+    <Param name="ExtraVariable" type="ui.EventExtraVariable[]" />
+  </Component>
+  
+  <Component id="DeleteItem" type="action.Action" execution="native">
+    <Param name="Item" type="itemlist_item.ItemIdentifier" >
+      <Default t="itemlist_item.ItemInContext" />
+    </Param>
+  </Component>
+
+  <Component id="DeleteSelectedItem" type="action.Action" light="false" >
+    <xtml t="itemlist_action.DeleteItem">
+      <Item t="itemlist_item.SelectedItem" />
+    </xtml>
+  </Component>
+
+  <Component id="AddItemToItemList" type="action.Action" execution="native">
+    <Param name="Item" Default="%%" />
+    <Param name="ItemList" description="Id of itemlist to add to" Default="" />
+    <Param name="Location" type="itemlist_action.AddItemLocation">
+      <Default t="itemlist_action.AsLastItem" />
+    </Param>
+    <Param name="DoOnAddedItem" type="action.Action" script="true" />
+  </Component>
+  
+  <Type id="AddItemLocation" />
+  <Component id="AsFirstItem" type="itemlist_action.AddItemLocation" execution="native" />
+  <Component id="AsLastItem" type="itemlist_action.AddItemLocation" execution="native" />
+  <Component id="BeforeOrAfterAnItem" type="itemlist_action.AddItemLocation" execution="native">
+    <Param name="ItemIdentifier" script="true" />
+    <Param name="SpecificItemID" />
+    <Param name="Location" type="enum" Options="before,after" Default="after" />
+  </Component>
+
+  <Component id="ToggleDetailsInplace" type="action.Action" execution="native">
+    <Param name="DetailsField" Default="Details" description="field id" />
+    <Param name="Item" type="itemlist_item.ItemIdentifier" advanced="true">
+      <Default t="itemlist_item.ItemInContext" />
+    </Param>
+    <Param name="CloseOtherInplaceDetails" type="data.Boolean" />
+  </Component>
+  
+  <Component id="OpenDetailsReplacingAll" type="action.Action" execution="native">
+    <Param name="Details" type="ui.Page">
+      <Default t="field.InnerPage" Title="Details" />
+    </Param>
+    <Param name="Item" type="itemlist_item.ItemIdentifier" advanced="true">
+      <Default t="itemlist_item.ItemInContext" />
+    </Param>
+    <Param name="Transition" type="transition.ReplaceTransitionStyle" description="Master and detail must be of the same size"/>
+    <Param name="ItemList" type="dynamic_enum" advanced="true">
+       <Options t="bart_dt.AllFieldIDs" FieldPT="field.ItemList" OnlyCodes="true" />
+    </Param>
+    <Param name="FieldToReplace" type="dynamic_enum" advanced="true">
+     <Options t="bart_dt.AllFieldIDs" IncludePages="true" OnlyCodes="true" />
+    </Param>
+  </Component>
+  
+  <Component id="CloseDetailsReplacingAll" type="action.Action" execution="native" >
+    <Param name="Transition" type="transition.ReplaceTransitionStyle" description="Master and detail must be of the same size"/>
+    <Param name="AutoScrollToMasterItem" type="data.Boolean" Default="true" />
+  </Component>
+ 
+  <Component id="NextItemOfDetailsReplacingAll" type="data.Data" execution="native">
+    <Param name="FilterForNextItem" type="data.Boolean" script="true" Default="true" />
+  </Component>
+
+  <Component id="PrevItemOfDetailsReplacingAll" type="data.Data" execution="native">
+    <Param name="FilterForPrevItem" type="data.Boolean" script="true" Default="true" />
+  </Component>
+
+  <Component id="DetailsReplacingAllGotoNextItem" type="action.Action">
+    <Param name="Transition" type="transition.ReplaceTransitionStyle" description="Detail items must be of the same size"/>
+    <Param name="FilterForNextItem" type="data.Boolean" script="true" Default="true" />
+    <xtml t="itemlist_action.DetailsReplacingAllGotoItem">
+      <Item t="itemlist_action.NextItemOfDetailsReplacingAll">
+        <FilterForNextItem t="xtml.UseParamAsBoolean" Param="FilterForNextItem" />
+      </Item>
+    </xtml>
+  </Component>
+
+  <Component id="DetailsReplacingAllGotoPrevItem" type="action.Action">
+    <Param name="Transition" type="transition.ReplaceTransitionStyle" description="Detail items must be of the same size"/>
+    <Param name="FilterForPrevItem" type="data.Boolean" script="true" Default="true" />
+    <xtml t="itemlist_action.DetailsReplacingAllGotoItem">
+      <Item t="itemlist_action.PrevItemOfDetailsReplacingAll">
+        <FilterForPrevItem t="xtml.UseParamAsBoolean" Param="FilterForPrevItem" />
+      </Item>
+    </xtml>
+  </Component>
+
+  <Component id="DetailsReplacingAllGotoItem" type="action.Action" execution="native">
+    <Param name="Item" />
+    <Param name="Transition" type="transition.ReplaceTransitionStyle" description="Detail items must be of the same size" />
+  </Component>
+
+  <Component id="ChangeItemsOfItemlist" type="action.Action" light="false" execution="native">
+    <Param name="Items" type="itemlist.Items">
+      <Default t="itemlist.Items" />
+    </Param>
+    <Param name="ItemListContainer" />    
+  </Component>
+
+</xtml>
+
+<xtml ns="occurrences">
+  <Type id="Style" customPT="occurrences.CustomStyle" />
+  
+<Component id="Default" type="occurrences.Style">
+  <xtml t="ui.CustomStyle">
+    <Html><![CDATA[<span/>]]></Html>
+    <Javascript><![CDATA[function (occObject) {
+  var text = occObject.count;
+  if (occObject.filteredOccurrences) text = occObject.filteredCount + ' of ' + occObject.count;
+  occObject.el.innerHTML = '&lrm; (' + text + ')';         
+  occObject.optionTextEl.appendChild(occObject.el);
+}]]></Javascript>
+    <Css/>
+  </xtml>
+</Component>
+  
+  <Component id="CustomStyle" type="occurrences.Style" customPT="true">
+    <Param name="Html" codemirror="true" light="false"/>
+    <Param name="Css" codemirror="true" light="false"/>
+    <Param name="Javascript" codemirror="true" light="false"/>
+    <ParamGenerator t="bart_dt.StyleGenerator" />
+    <xtml t="ui.CustomStyle" Html="%$Html%" Css="%$Css%" Javascript="%$Javascript%" />
+  </Component>
+  
+</xtml>
+
+</xtml>

@@ -1,0 +1,164 @@
+<xtml ns="http">
+
+	<Type id="Aspect" />
+	<Type id="PostData" />
+
+  <Component id="HttpCall" type="action.Action,async_data.Data" description="Http GET or http POST" execution="native" summaryLabel="%@Url%">
+    <Param name="Url" essential="true"/>
+    <Param name="Aspect" type="http.Aspect[]" script="true" />
+    <Param name="OnSuccess" type="action.Action" script="true" />
+  </Component>
+
+  <Component id="RawPost" type="http.Aspect" description="POST with post data as string" execution="native">
+  	<Param name="RawData" />
+    <Param name="ContentType" Default="text/plain; charset=utf-8" />
+  </Component>
+
+  <Component id="PostForm" type="http.Aspect" description="POST with post data as string" execution="native">
+  	<Param name="PostData" type="http.PostData[]" />
+  	<Param name="UseStoredCookies" type="data.Boolean" Default="false" />
+    <Param name="UseStoredHiddenInputs" type="data.Boolean" Default="false" />
+  	<Param name="ContentType" Default="application/x-www-form-urlencoded; charset=UTF-8" />
+  </Component>
+
+  <Component id="UseStoredCookies" type="http.Aspect" execution="native" />
+
+  <Component id="HttpHeader" type="http.Aspect" execution="native">
+  	<Param name="Name" />
+  	<Param name="Value" />
+  </Component>
+
+  <Component id="PassResultHeadersThroughProxy" type="http.Aspect" execution="native">
+    <Param name="HeadersToPass" description="e.g., Content-Type,Content-Length"/>
+  </Component>
+  <Component id="ForceProxyEncoding" type="http.Aspect" execution="native">
+    <Param name="Encoding" description="e.g., windows-1255"/>
+  </Component>
+
+  <Component id="RetryOnServerUnavailable" type="http.Aspect" execution="native">
+  	<Param name="MaxTries" Default="5" />
+  </Component>
+
+  <Component id="IdentifyError" type="http.Aspect" execution="native">
+  	<Param name="ErrorObject" script="true" description="For success return empty"/>
+  </Component>
+
+  <Component id="PreviewModeResult" type="http.Aspect" execution="native">
+    <Param name="Result" />
+  </Component>
+
+  <Component id="CacheKiller" type="http.Aspect" execution="native" />
+
+  <Component id="EnsureLoggedIn" type="http.Aspect" execution="native">
+  	<Param name="MustLoginIndication" type="data.Boolean" script="true" description="Get the http result as input, and returns true if you must login" />
+  	<Param name="DoLogin" type="action.Action" script="true" />
+    <NativeHelper name="Aspects" t="http.UseStoredCookies" />
+  </Component>
+
+  <Component id="StoreFormHiddenData" type="http.Aspect" execution="native">
+  	<Param name="StoreCookies" type="data.Boolean" Default="true" />
+  	<Param name="StoreHiddenInputs" type="data.Boolean" Default="true" />
+  </Component>
+
+  <Component id="HttpDomainStoredData" type="data.Data" execution="native">
+  	<Param name="SampleUrlForDomain" />
+  </Component>
+
+  <Component id="StoreSessionCookies" type="http.Aspect" description="Stores the response cookies">
+  	<xtml t="http.StoreFormHiddenData" StoreCookies="true" StoreHiddenInputs="false" />
+  </Component>
+
+<Component id="WriteResultValue" type="http.Aspect" execution="native">
+  <Param name="To" essential="true"/>
+  <Param name="ProcessResults" Default="%%"/>
+</Component>
+
+<Component id="Log" type="http.Aspect" execution="native">
+  <Param name="OnCondition" type="data.Boolean" script="true" Default="true"/>
+  <Param name="Message" Default="%$_Url% %%"/>
+</Component>
+
+<Component id="OnSuccess" type="http.Aspect" execution="native">
+  <Param name="Action" type="action.Action" essential="true"/>
+</Component>
+
+  <Component id="ResultAsPlainText" type="http.Aspect" execution="native" />
+  <Component id="ResultAsJsonToXml" type="http.Aspect" execution="native">
+    <Param name="TopTag" Default="Top" />
+  </Component>
+
+  <Component id="ResultFormat" type="http.Aspect" execution="native">
+  	<Param name="Format" type="enum" Options="xml,html,text" />
+  </Component>
+
+  <Component id="JSONPCrossDomainProxy" type="http.Aspect" execution="native">
+    <Param name="BaseUrl" Default="//jbartdb.appspot.com/jbart_db.js"/>
+  </Component>
+
+  <Component id="WithHttpCredentials" type="http.Aspect" execution="native" />
+
+  <Component id="JBartCrossDomainProxy" type="http.Aspect" execution="native">
+    <Param name="BaseUrlForStudio" Default="//jbartcrawler.herokuapp.com/?op=httpCall"/>
+    <Param name="BaseUrlForProduction" Default="//jbartdb.appspot.com/bart.php?op=httpCall"/>
+    <Param name="NoProxyInNodeJS" type="data.Boolean" Default="true" />
+    <Param name="ExtendedHttpResult" type="data.Boolean" Default="false" Description="Can use response headers" />
+    <Param name="BaseUrlForLocalhostStudio" Default="//localhost/?op=httpCall"/>
+  </Component>
+
+  <Component id="WaitForFirewallBlock" type="http.Aspect" execution="native" doc="http://jb-letmesee.appspot.com/LetMeSee/p80kd9kkn6.html?roomid=veqqih&amp;notracking=true&amp;autoitem=m8il">
+    <Param name="IdentifyBlocking" type="data.Boolean" script="true" description="gets the http result content as input, return true for blocking"/>
+    <Param name="Timeout" Default="300000" />
+  </Component>
+
+  <Component id="Cookie" type="http.Aspect" execution="native" description="Adds a cookie to the request" summaryLabel="%@CookieName%">
+    <Param name="CookieName" />
+    <Param name="Value" />
+  </Component>
+
+  <Component id="OnError" type="http.Aspect" execution="native">
+    <Param name="Action" type="action.Action" />
+  </Component>
+
+  <Component id="PostData" type="http.PostData" summaryLabel="%@Name%">
+  	<Param name="Name" />
+  	<Param name="Value" />
+  	<xtml t="object.Object">
+  		<TextProperty name="Name" value="%$Name%" />
+  		<TextProperty name="Value" value="%$Value%" />
+  	</xtml>
+  </Component>
+
+  <Component id="ImageDimentions" type="async_data.Data" execution="native" summaryLabel="%@ImageUrl%">
+    <Param name="ImageUrl" essential="true"/>
+  </Component>
+
+  <exmaple>
+		<Xtml t="http.HttpCall" Url="facebook.com?search=John+Snow">
+			<Aspect t="sample.EnsureFacebookLogin" />
+		</Xtml>
+
+		<Component id="EnsureFacebookLogin" type="http.Aspect">
+			<xtml t="http.EnsureLoggedIn">
+				<MustLoginIndication t="yesno.Contains">
+					<Text value="You must login to " />
+				</MustLoginIndication>
+				<DoLogin t="async.RunAsyncActions">
+					<Action t="http.HttpCall" Url="facebook.com?login.php">
+						<Aspect t="http.StoreFormHiddenData" StoreCookies="true" StoreHiddenInputs="true" />
+						<Aspect t="http.JBartCrossDomainProxy" />
+					</Action>
+					<Action t="http.HttpCall" Url="facebook.com?login.php">
+						<Aspect t="http.PostForm" UseStoredHiddenInputs="true" UseStoredCookies="true">
+							<PostData t="http.PostData" Name="email" Value="shai" />
+							<PostData t="http.PostData" Name="pass" Value="123" />
+						</Aspect>
+						<Aspect t="http.StoreSessionCookies" />
+						<Aspect t="http.JBartCrossDomainProxy" />
+					</Action>
+				</DoLogin>
+			</xtml>
+		</Component> 
+
+ </exmaple>
+
+</xtml>

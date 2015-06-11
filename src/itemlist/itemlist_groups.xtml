@@ -1,0 +1,46 @@
+<xtml package="true">
+<xtml ns="itemlist_aspect">
+
+  <Component id="GroupItems" type="field.FieldAspect" category="itemlist" description="Creates item groups" execution="native">
+    <Param name="GroupOfItem" script="true" />
+    <Param name="SortGroups" type="itemsort.SortType" />
+    <Param name="Style" type="items_group.Style">
+      <Default t="items_group.Default" />
+    </Param>
+    <Param name="GroupDisplayName" type="data.Data" script="true" Default="%%" />
+  </Component>
+  
+</xtml>
+
+<xtml ns="items_group">
+
+  <Type id="Style" style="true" />
+  
+<Component id="Default" type="items_group.Style">  <Param name="IncludeCounter" type="data.Boolean" Default="true"/>  <xtml t="ui.CustomStyle">    <Html><![CDATA[<div>
+<div class="group_title"/>
+</div>]]></Html>    <Css><![CDATA[
+#this { clear:both; }      
+.group_title { 
+  cursor: pointer; color:#3764A0; 
+  font-weight:bold; font-size: 15px; 
+  margin-bottom: 10px; 
+  border-bottom: 2px solid #99BBE8; 
+  max-width:400px;  
+}
+      ]]></Css>    <Javascript><![CDATA[function(group) {
+  var jElem = jQuery(group.control);
+  if ('%$IncludeCounter%' == 'true')
+    group.text += '&lrm; (' + group.ItemElements.length + ')';
+    
+  jElem.find('.group_title').html( group.text );
+  jElem.find('.group_title').click(function() {
+    group.collapsed = !group.collapsed;
+    if (group.collapsed)
+      jQuery(group.ItemElements).animate({height:'hide'},300);
+    else
+      jQuery(group.ItemElements).animate({height:'show'},300);
+  });
+}]]></Javascript>  </xtml></Component>
+
+</xtml>
+</xtml>

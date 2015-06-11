@@ -1,0 +1,43 @@
+<html>
+ <head><title>Hello, XPath!</title>
+
+  <!-- import jQuery -->
+  <script type="text/javascript" src="../core/jquery.js"></script>
+  <!-- import JavaScript-XPath -->
+  <script type="text/javascript" src="javascript-xpath.js"></script>
+  <!-- import XPath for jQuery -->
+  <script type="text/javascript" src="xpath4jquery.js"></script>
+
+  <!-- use XPath -->
+  <script type="text/javascript">
+  var t = 1;
+ $(document).ready(function() {
+
+  $('//ul')
+    .xfind('li[1]')
+      .append('Shut up')
+    .end()
+    .xfind('li[2]')
+      .append('and')
+    .end()
+    .xfind('li[3]')
+      .append('commit')
+    .end()
+    .xfind('li[4]')
+      .append('some code')
+    .end()
+
+});
+  </script>
+
+ </head>
+ <body>
+  <h1>Hello, DOM 3 XPath!</h1>
+  <ul>
+   <li>1. </li>
+   <li>2. </li>
+   <li>3. </li>
+   <li>4. </li>
+  </ul>
+ </body>
+</html>

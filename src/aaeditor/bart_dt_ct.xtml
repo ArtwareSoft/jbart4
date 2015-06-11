@@ -1,0 +1,44 @@
+<xtml ns="bart_dt" plugin="jbart_editor" light="false">
+
+  <Component id="Plugins" type="ui.Control" image="%$_Images%/studio/plugin21616.png">
+      <xtml t="ui.Document">
+          <Field t="field.XmlMultipleGroup" ID="dt_plugins" Title="Plugins" TitleForSingle="Plugin">
+            <Items t="field.CustomItems">
+              <Items t="data.Pipeline">
+                <Item t="plugins.PluginDefinitions" customxtml="true">
+                  <Item value=""/>
+                </Item>
+                <Item value="%*%"/>
+              </Items>
+            </Items>
+            <Presentation t="uiaspect.RichTable"/>
+            <Aspect t="uiaspect.DefaultFeatures"/>
+            <Aspect t="uiaspect.ReadOnly"/>
+            <FieldAspect t="field_aspect.HideTitle" />
+            <FieldAspect t="field_aspect.Section" HideTitle=""/>
+            <Operations t="operation.Operations"/>
+            <Field t="field.Button" ID="button" Title="button" HideTitle="true">
+              <Style t="button.Hyperlink"/>
+              <ButtonText t="data.IfThenElse" Then="Installed (click to uninstall)" Else="Install" >
+                <If t="data.IsInCommaSeparatedList" Item="%@id%" List="%$_WidgetXml/@plugins%" />
+              </ButtonText>
+              <Action t="action.RunActions">
+                <Action t="action.IfThenElse">
+                  <If t="data.IsInCommaSeparatedList" Item="%@id%" List="%$_WidgetXml/@plugins%"/>
+                  <Then t="text.RemoveFromCommaText" Text="%$_WidgetXml/@plugins%" ToRemove="%@id%"/>​
+                  <Else t="text.AddToCommaText" Text="%$_WidgetXml/!@plugins%" ToAdd="%@id%"/>​
+                </Action>
+                <Action t="field.RefreshField" FieldID="dt_plugins" Scope="screen"/>​
+              </Action>
+            </Field>
+            <Field t="field.Field" FieldData="%!@name%" ID="name" Title="Plugin" ReadOnlyText="">
+              <Type t="field_aspect.Text"/>
+            </Field>
+            <Field t="field.Field" FieldData="%!@description%" ID="description" Title="Description" ReadOnlyText="">
+              <Type t="field_aspect.Text"/>
+            </Field>
+          </Field>
+      </xtml>
+    </Component>
+
+</xtml>

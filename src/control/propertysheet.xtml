@@ -1,0 +1,117 @@
+<xtml package="true">
+
+<xtml ns="control">
+
+   <Component id="PropertySheet" type="field.Fields" execution="native" image="%$_Images%/studio/pform.gif">
+      <Param name="Title" essential="true" autoaspects="false" titleField="true" />
+      <Param name="Style" type="properties.Style">
+        <Default t="properties.Default" />
+      </Param>
+      <Param name="Field" type="field.Fields[]" script="true" light="false" />
+      <Param name="FieldAspect" type="field.FieldAspect[]" script="true" light="false" />    
+      <Param name="ID" essential="true" idField="true" />
+    </Component>
+
+</xtml>
+
+<xtml ns="properties">
+
+  <Type id="Style" />
+
+  <Component id="Default" type="properties.Style">
+   <Param name="PropertiesWidth" Default="100px" slider="true" sliderUnit="px" />
+   <xtml t="ui.CustomStyle">
+      <Html><![CDATA[<div>
+  <div class="aa_property">
+  	<div class="aa_property_title" />
+  	<div class="aa_property_content" />
+  </div>
+</div>]]></Html>
+      <Css><![CDATA[
+#this {
+}
+#this>.aa_property {
+  margin-bottom:20px;
+}
+#this>.aa_property:last-child {
+  margin-bottom:0px;
+}
+
+#this>.aa_property.aa_mandatory>.aa_property_title {
+  font-weight: bold;
+}
+#this>.aa_property>.aa_property_title {
+  width:%$PropertiesWidth%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align:top;
+  margin-top:2px;
+  font: 14px arial;
+}
+#this>.aa_property>div {
+  display: inline-block;
+}
+#this>.aa_property.aa_hiding_title>.aa_property_title {
+  display: none;
+}
+#this>.aa_property.aa_hiding_title>.aa_property_content {
+  display: inline-block;
+}
+.aa_error_message {
+  display: block;
+  color: #C24343;
+  padding-top:3px;
+}
+#this>.aa_property>.aa_property_content>.aa_property_description {
+  padding-top:5px;
+  color: #8C8C8C;
+  font-style: italic;
+  font-size: 11px;
+  white-space: normal;  
+}
+]]></Css>
+        <Javascript><![CDATA[function render(propertySheet) {
+  aa_propertySheet(propertySheet);
+}]]></Javascript>
+    </xtml>
+  </Component>
+
+<Component id="TitlesAboveFields" type="properties.Style">
+  <Param name="HorizontalSpacing" slider="true" sliderUnit="px" Default="15px" />
+  <Param name="VerticalSpacing" Default="8px" slider="true" sliderUnit="px" />
+  <xtml t="ui.CustomStyle">
+      <Html>
+<![CDATA[
+<div>
+  <div class="aa_property">
+    <div class="aa_property_title" />
+    <div class="aa_property_content" />
+  </div>
+  <div style="clear: both;"/>
+</div>
+]]>
+      </Html>
+      <Css>
+<![CDATA[#this>.aa_property { float: left;}
+#this>.aa_property:not(:nth-last-child(2)) { padding-right:%$HorizontalSpacing%; }
+#this>.aa_property>.aa_property_title { 
+  padding-bottom:3px; 
+  color: #666;
+  font-weight: bold;
+  font-size: 11px;
+  font-family: "lucida grande",tahoma,verdana,arial,sans-serif;
+}
+#this>.aa_property>.aa_property_content { vertical-align: top; padding-bottom: %$VerticalSpacing%; }
+#this {}
+]]>
+      </Css>
+         <Javascript><![CDATA[function render(propertySheet) {
+  aa_propertySheet(propertySheet);
+}]]></Javascript>
+
+  </xtml>
+</Component>​
+
+
+</xtml>
+</xtml>

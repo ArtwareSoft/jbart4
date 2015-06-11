@@ -1,0 +1,228 @@
+<xtml ns="bart_dt" light="false">
+
+  <Component id="EditXtmlTests" type="ui.Control">
+      <Param name="IsGallery" type="data.Boolean">
+        <Default value="true"/>
+      </Param>
+      <xtml t="ui.ItemList" Class="bart_dt_tests">
+        <Var name="_ActionToAddDesignTimeFlag" t="jbart_studio.ToggleDesignTimeClass" DesignTime="true" />
+        <Items t="xml.XmlItems" Tag="Test"/>
+        <Presentation t="uiaspect.RichTable" Sort="false" ColumnsResizer="false" DragAndDropColumns="false"/>
+        <Aspect t="uiaspect.DefaultFeatures" ItemSelection="true"/>
+        <Aspect t="uiaspect.ItemDetails">
+          <NewItemPage t="ui.ItemPage" FieldsFromList="Name"/>
+        </Aspect>
+        <Fields t="field.Fields">
+          <Field t="field.CustomControl" ID="test" Title="Test" ShowTitle="true">
+            <Control t="ui_async.Control">
+              <Var name="_TestPassed" t="data.WritableText"/>
+              <Var name="_WidgetXml" t="data.Duplicate" Data="%../..%" />
+              <Var name="_TestDB" t="data.Duplicate" Condition="%@t% != 'bart_usage.JBartUsage'" >
+                <Data t="data.IfThenElse" If="%$IsGallery%" Then="%../../bart_dev/db%" Else="%../../db%" />
+              </Var>
+              <ControlForLoading t="ui.Image" Source="%$_Images%/running_animated.gif"/>
+              <AsyncAction t="action_async.ActionOnAsyncData">
+                <Query t="data_async.AsyncDataOnNextTimer">
+                  <Query t="xtml.RunXtml" Xtml="%%"/>
+                </Query>
+                <Action t="action.WriteValue" To="%$_TestPassed%">
+                  <Value t="yesno.IsEmpty" Value="%%"/>
+                </Action>
+              </AsyncAction>
+              <Control t="ui.Image">
+                <Source t="data.IfThenElse" If="%$_TestPassed%" Then="%$_Images%/studio/yes.gif" Else="%$_Images%/studio/error.gif"/>
+              </Control>
+            </Control>
+          </Field>
+          <Field t="field.XmlField" Path="@Name"/>
+          <Field t="field.CustomControl" Title="Definition" ID="properties">
+            <Control t="ui.Document">
+              <Var name="_ItemDB" t="data.IfThenElse" If="%$IsGallery%" Then="%../../bart_dev/db%" Else="%../../db%"/>
+              <Fields t="field.Fields">
+                <Field t="field.Text1" Text="You should run this page with jbart=false">
+                  <Condition t="yesno.ItemsEqual" Item1="true">
+                    <Item2 t="ui.UrlParameter" Param="jbart"/>
+                  </Condition>
+                </Field>
+                <Field t="xtml_dt.PTSelectorField" Type="usage.Usage" FieldTitle="Test Type"/>
+              </Fields>
+            </Control>
+            <FieldAspect t="field_aspect.CellPresentation" Content="expandable text"/>
+            <FieldAspect t="field_aspect.TextSummary" Text="Click to edit test definition"/>
+          </Field>
+        </Fields>
+        <Operations t="operation.Operations" >
+          <Operation t="operation.NewItem">
+            <DoAfter t="action.RunActions">
+              <Action t="action.WriteValue" To="%!@t%" Value="async.JBartWidgetUsage"/>
+              <Action t="action.WriteValue" To="%!ExpectedResult/@t%" Value="usage.ContainsText"/>
+              <Action t="action.WriteValue" To="%!ExpectedResult/Text/@value%" Value=""/>
+              <Action t="action.WriteValue" To="%!@RunInAllTests%" Value="true"/>
+            </DoAfter>
+          </Operation>
+          <Operation t="operation.DeleteItem"/>
+          <Operation t="operation.Operation" ID="Show Output" Title="Show Output" Target="item" Icon="%$_Images%/studio/control1616.gif">
+            <Action t="operation.RunXtmlAction">
+              <Action t="action_async.RunAsyncActions">
+                <Var name="_TestOutput" t="object.Object">
+                  <Property name="OutputControl" t="ui.Html">
+                    <div></div>
+                  </Property>
+                </Var>
+                <Var name="_WidgetXml" t="data.Duplicate" Data="%../..%" />
+                <Var name="_TestDB" t="data.Duplicate" Condition="%@t% != 'bart_usage.JBartUsage'">
+                  <Data t="data.IfThenElse" If="%$IsGallery%" Then="%../../bart_dev/db%" Else="%../../db%"/>
+                </Var>
+                <Action t="dlg.OpenDialog" Title="Output of test %@Name%">
+                    <Contents value="%$_TestOutput/OutputControl%"/>
+                    <Feature t="dlg.AutomaticFocus" FocusOn="no focus" />
+                </Action>
+                <Action t="xtml.RunXtml" Xtml="%%"/>
+              </Action>
+            </Action>
+          </Operation>
+          <Operation t="operation.Operation" ID="refresh" Title="Rerun Test" Target="item" Icon="%$_Images%/refresh.gif">
+            <Action t="operation.RefreshCurrentItem"/>
+          </Operation>
+          <Operation t="operation.Operation" ID="xml" Title="Xml" Target="items" Icon="%$_Images%/studio/xml4.gif">
+            <Action t="xmlui.ShowXmlDialog" Xml="%$_Items/ParentXml%" AutoWrite="true">
+              <OnUpdate t="uiaction.Refresh" RunOn="%$_Cntr/Ctrl%"/>
+            </Action>
+          </Operation>
+          <Operation t="operation.Operation" Title="Advanced Mode" Icon="%$_Images%/studio/customize1616.gif" ID="aaeditor" Shortcut="Alt+x">
+            <Action t="gstudio_popup.ShowAAEditorFloatingPopupWithCircuit" MainCircuit="%$_Context%">
+              <Var name="_Context" t="xtml.Xtml" Xtml="%%">
+                <Context t="bart_dt.ResourcesContext"/>
+              </Var>
+              <RunOnClose t="uiaction.Refresh" RunOn=".bart_dt_tests"/>
+            </Action>
+          </Operation>
+          <Operation t="operation.Operation" Title="Single Xml" Icon="%$_Images%/studio/xml4.gif" ID="aaeditor_xml" Shortcut="Alt+e">
+            <Action t="xmlui.ShowXmlDialog" Xml="%%" Title="xtml source" AutoWrite="true">
+              <OnUpdate t="uiaction.Refresh" RunOn="up(.bart_dt_tests)"/>
+            </Action>
+          </Operation>
+          <Operation t="operation.Operation" Title="Measure Time" ID="Measure_Time" Target="item" Icon="%$_Images%/studio/timer.gif">
+            <Action t="operation.RunXtmlAction">
+              <Action t="ui.ControlWithAction">
+                <Var name="_TestTimeKeeper" t="object.Object" />
+                <Var name="_WidgetXml" t="data.Duplicate" Data="%../..%" />
+                <Var name="_TestDB" t="data.Duplicate" Condition="%@t% != 'bart_usage.JBartUsage'">
+                  <Data t="data.IfThenElse" If="%$IsGallery%" Then="%../../bart_dev/db%" Else="%../../db%"/>
+                </Var>
+                <Var name="ButtonControl" value="%$ControlElement%" />
+                <Control t="data.MeasureCalculationTime" PutTimeInObject="%$_TestTimeKeeper%" PutTimeInProperty="Time">
+                  <Calculation t="xtml.RunXtml" Xtml="%%"/>
+                </Control>
+                <RunAfterControl t="dlg.OpenDialog" >
+                  <Var name="ControlElement" value="%$ButtonControl%" />
+                  <Contents t="ui.List">
+                    <Control t="ui.Text" Text="time: %$_TestTimeKeeper/Time% ms" />
+                    <Control t="ui.Text" Text="(time does not include html rendering or asynchronous calculations)" CssStyle="font-size:9px" />
+                  </Contents>
+                  <Style t="dialog_style.DefaultPopup" />
+                </RunAfterControl> 
+              </Action>
+            </Action>
+          </Operation> 
+          <Operation t="operation.Operation" Title="Clone test" Icon="%$_Images%/studio/books.gif" Target="item" ID="clone">
+            <Action t="action.RunActions">
+              <Action t="xml.AddXmlChildren" Parent="%..%" Children="%%" CloneChildren="true" />
+              <Action t="uiaction.Refresh" RunOn="up(.bart_dt_tests)"/>
+            </Action>
+          </Operation>
+        </Operations>
+      </xtml>
+    </Component>
+
+  <Component id="EditUIPref" type="field.Fields" hidden="true">
+    <xtml t="field.Button1" Title="UI Prefs" AsSection="false" ID="UIPrefs" ShowTitle="true" ButtonText="edit">
+      <ButtonStyle t="ui.ButtonAsHyperlink" />
+      <Action t="xmlui.ShowXmlDialog" Title="Edit UI Preferences" AutoWrite="true">
+        <Data t="data.CreateIfDoesNotExist" Query="%UiPref/UIPref%">
+          <Create t="xml.ChangeXml">
+            <Change t="xml.AddChildren">
+              <Children t="xml.ByTag" Tag="UiPref">
+                <Change t="xml.SetAttribute" AttributeName="t" Value="xml.Xml" />
+                <Change t="xml.AddChildren" Children="%$_ItemDB/bart_unit/bart_unit/UIPref%" CloneChildren="true" />
+              </Children>
+            </Change>
+          </Create>
+        </Data>
+      </Action>
+    </xtml>
+  </Component>
+
+  <Component id="TestToUsageXml" type="data.Data">
+    <Param name="IsGallery" type="data.Boolean">
+      <Default value="true" />
+    </Param>
+    <xtml t="data.IfThenElse" If="%$IsGallery%">
+      <Var name="Test" value="%%" />
+      <Var name="T" t="data.IfThenElse" If="%@isasync%" Then="ui_async.ControlUsage" Else="ui.ControlUsage" />
+      <Then t="xml.WithChanges">
+        <Var name="Sample" value="%../..%" />
+        <Xml t="xml.Xml" DynamicContent="true">
+          <Usage t="%$T%" Of="gallery_%$Sample/@id%.%@name%">
+            <Control t="bart_usage.GalleryItemToUsageControl">
+              <GalleryItem t="xml.Xml" />
+            </Control>
+          </Usage>
+        </Xml>
+        <Change t="xml.AddChildren" Children="%$Sample%" CloneChildren="true" Data="%Control/GalleryItem%" />
+        <Change t="xml.AddChildren" Data="%Control%">
+          <Children t="xml.WithChanges">
+            <Xml t="xml.Xml">
+              <Test t="xml.Xml" />
+            </Xml>
+            <Change t="xml.AddChildren" Children="%$Test%" CloneChildren="true" />
+          </Children>
+        </Change>
+        <Change t="xml.AddChildren" Children="%RunOnControl%" CloneChildren="true" />
+        <Change t="xml.AddChildren" Children="%ExpectedResult%" CloneChildren="true" />
+        <Change t="xml.AddChildren" Children="%CleanAfter%" CloneChildren="true" />
+      </Then>
+      <Else t="xml.WithChanges">
+        <Var name="AppDev" value="%../../%" />
+        <Var name="TestIndex" t="xml.IndexOfElement" />
+        <Xml t="xml.Xml" DynamicContent="true">
+          <Usage t="%$T%" Of="app_%$AppDev/@id%.%@name%">
+            <Control t="bart_usage.AppDevToUsageControl" TestIndex="%$TestIndex%" />
+          </Usage>
+        </Xml>
+        <Change t="xml.AddChildren" Children="%RunOnControl%" CloneChildren="true" />
+        <Change t="xml.AddChildren" Children="%ExpectedResult%" CloneChildren="true" />
+      </Else>
+    </xtml>
+  </Component>
+
+  <Component id="TestProperties" type="data.Data">
+    <Param name="RunOnControl" type="uiaction.UsageAction" />
+    <Param name="ExpectedResult" type="usage.PassesUsage" script="true" />
+    <Param name="CleanAfter" type="action.Action" />
+    <xtml />
+  </Component>
+
+  <Component id="RunOnDT" type="field.Fields">
+    <xtml t="field.XmlField" Path="@RunOn" Title="Run On">
+      <Type t="field_aspect.Picklist" AllowValueNotInOptions="true" RecalculateForEachCell="true">
+        <Options t="picklist.DynamicOptions">
+          <Options t="ui.CssClassesInControl">
+            <Condition t="yesno.Not">
+              <Of t="xml.IsOfTag" Tag="Test" />
+            </Condition>
+            <Data t="xml.UpToTag" Tag="Test" />
+            <Control t="ui.IfThenElse" If="%../../@_type%=='bart_sample'">
+              <Then t="bart_usage.GalleryItemToUsageControl" GalleryItem="%../..%" Test="%%" />
+              <Else t="bart_usage.AppDevToUsageControl">
+                <TestIndex t="xml.IndexOfElement" />
+              </Else>
+            </Control>
+          </Options>
+        </Options>
+      </Type>
+      <FieldAspect t="field_aspect.Description" Description="use .cls to find by class, or $.find('input').slice(2,3) for jquery" />
+    </xtml>
+  </Component>
+  
+</xtml>

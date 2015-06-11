@@ -1,0 +1,224 @@
+<xtml ns="ui">
+
+	<Type id="SectionsListStyle" />
+	<Type id="SectionListPageT" />
+	<Type id="ListMarker" type="enum">
+    <value>none</value>
+    <value>disc</value>
+    <value>circle</value>
+    <value>square</value>
+    <value>decimal</value>
+    <value>decimal-leading-zero</value>
+    <value>lower-roman</value>
+    <value>upper-roman</value>
+    <value>lower-alpha</value>
+    <value>upper-alpha</value>
+    <value>hebrew</value>
+    <value>cjk-ideographic</value>
+  </Type>
+  
+  <Type id="Level" type="enum">
+	<value>Heading 1</value>
+	<value>Heading 2</value>
+	<value>Heading 3</value>
+	<value>Heading 4</value>
+	<value>Heading 5</value>
+	<value>Heading 6</value>
+	<value>Box</value>
+ </Type>
+ 
+
+	<Component id="Section" type="ui.Control" execution="xtml"	databind="true">
+    <Param name="Title" essential="true" />
+		<Param name="Control" type="ui.Control[]" essential="true" />
+		<Param name="ItemsLayout" type="ui.ListLayout" script="true">
+			<Default t="ui.LineBreak" />
+		</Param>
+		<Param name="Level" type="ui.Level">
+			<Default value="Heading 3" />
+		</Param>
+		<Param name="Collapsion" type="enum">
+			<Default value="Not Collapses" />
+			<value>Not Collapses</value>
+			<value>Collapses, Open</value>
+			<value>Collapsed</value>
+			<value>Collapsed by cookie</value>
+		</Param>
+    <Param name="CollaptionCookie"/>
+		<Param name="Style" type="ui.SectionStyle" script="true" paramVars="Title,Level,Collapsion">
+			<Default t="ui.DefaultSectionStyle" />
+		</Param>
+
+		<xtml t="data.Pipeline">
+			<Var name="Title" t="text.MultiLang" Pattern="%$Title%" Dynamic="true"/>
+			<Var name="Level" value="%$Level%" />
+			<Var name="Collapsion" value="%$Collapsion%" />
+			<Var name="CollaptionCookie" value="%$CollaptionCookie%" />
+			<Item value="%$Control%" />
+
+			<Aggregator t="xtml.UseParam" Param="ItemsLayout">
+				<Input t="data.Same" />
+			</Aggregator>
+			<Aggregator t="xtml.UseParam" Param="Style" />
+		</xtml>
+	</Component>
+
+  <Component id="DefaultSectionStyle" type="ui.SectionStyle" execution="xtml">
+    <xtml t="data.IfThenElse">
+      <Var name="Controls" value="%%"/>
+      <If t="yesno.EqualsTo" Data="%$Level%" To="Box"/>
+      <Then t="ui.DefaultBoxStyle"/>
+      <Else t="xml.WithChanges" Data="">
+        <Var name="Cls" t="text.Replace" Data="%$Level%" Find=" " ReplaceWith="" UseRegex="true"/>
+        <Var name="Collapses" t="yesno.NotEqualsTo" Data="%$Collapsion%" To="Not Collapses"/>
+        <Var name="IsExpanded" t="data.IfThenElse" If="%$Collapses%" Else="true">
+          <Then t="data.IfThenElse" If="%$Collapsion% == 'Collapsed by cookie'">
+            <Then t="yesno.ItemsEqual" Item1="expanded">
+              <Item2 t="data.ValueFromCookie" Cookie="%$CollaptionCookie%"/>
+            </Then>
+            <Else t="yesno.EqualsTo" Data="%$Collapsion%" To="Collapses, Open"/>
+          </Then>
+        </Var>
+        <Xml t="ui.Html" DynamicContent="true">
+          <div class="aa_DefaultSectionStyle %$Cls%"></div>
+        </Xml>
+        <Change t="xml.AddChildren" Name="Add Title">
+          <Condition t="yesno.NotEmpty" Data="%$Title%"/>
+          <Children t="xml.WithChanges">
+            <Xml t="data.Pipeline">
+              <Var name="Tag" t="data.Switch" Data="%$Level%">
+                <Case If="Heading 1" Then="H1"/>
+                <Case If="Heading 2" Then="H2"/>
+                <Case If="Heading 3" Then="H3"/>
+                <Case If="Heading 4" Then="H4"/>
+                <Case If="Heading 5" Then="H5"/>
+                <Case If="Heading 6" Then="H6"/>
+                <Default value="DIV"/>
+              </Var>
+              <Item t="ui.Html" Tag="%$Tag%" Class="section_header"/>
+            </Xml>
+            <Change t="xml.UpdateInnerText" NewValue="%$Title%"/>
+            <Change t="xml.SetAttribute" AttributeName="class" Condition="%$Collapses%">
+              <Value t="data.IfThenElse" If="%$IsExpanded%" Then="collapsable_section_title expanded" Else="collapsable_section_title"/>
+            </Change>
+            <Change t="ui.BindEvent" Event="click" Condition="%$Collapses%">
+              <Var name="Title"/>
+              <Action t="action.RunActions" Data="%$Title%">
+                <Action t="action.IfThenElse">
+                  <If t="uiaction.HasClass" RunOn="%$Title%" Cls="expanded"/>
+                  <Then t="uiaction.RemoveClass" RunOn="%$Title%" Cls="expanded"/>
+                  <Else t="uiaction.AddClass" RunOn="%$Title%" Cls="expanded"/>
+                </Action>
+                <Action t="action.WriteToCookie" Cookie="%$CollaptionCookie%">
+                  <Value t="data.IfThenElse" Then="expanded" Else="collapsed">
+                    <If t="uiaction.HasClass" RunOn="%$Title%" Cls="expanded"/>
+                  </Value>
+                </Action>
+                <Action t="ui.ExecJQuery" Expression=".siblings().toggle(100);"/>
+              </Action>
+            </Change>
+          </Children>
+        </Change>
+        <Change t="xml.AddChildren" CloneChildren="false" Children="%$Controls%"/>
+        <Change t="uiaction.Hide" RunOn="%$Controls%">
+          <Condition t="yesno.Not" Of="%$IsExpanded%"/>
+        </Change>
+      </Else>
+    </xtml>
+  </Component>
+
+  <Component id="CollapsableSectionBox" type="ui.SectionStyle">
+    <Param name="Cookie"/>
+    <xtml t="ui.List" Class="collapsable_section_box">
+      <Control t="ui.DefaultSectionStyle">
+        <Var name="Collapsion" value="Collapsed by cookie"/>
+      </Control>
+    </xtml>
+  </Component>
+  
+	<Component id="DefaultBoxStyle" type="ui.SectionStyle" execution="xtml">
+		<xtml t="xml.WithChanges">
+			<Xml t="ui.Html">
+				<DIV class="section_box">
+					<DIV class="left_top corner"></DIV>
+					<DIV class="right_top corner"></DIV>
+					<DIV class="content">
+						<DIV class="box_title"></DIV>
+					</DIV>
+					<DIV class="left_bottom corner"></DIV>
+					<DIV class="right_bottom corner"></DIV>
+				</DIV>
+			</Xml>
+			<Change t="xml.UpdateInnerText" NewValue="%$Title%">
+				<Data t="ui.ElementOfClass" Cls="box_title" />
+			</Change>
+			<Change t="xml.AddChildren"  CloneChildren="false" Children="%%">
+				<Data t="ui.ElementOfClass" Cls="content" />
+			</Change>
+		</xtml>
+	</Component>
+
+  <Component id="NoLayout" type="ui.ListLayout" execution="xtml">
+   <xtml t="data.Pipeline" >
+    <Var name="Controls" />
+    <Item value="%$Controls%" />
+     <Aggregator t="data.IfThenElse" >
+      <If t="yesno.NotEqualsTo" To="1">
+       <Data t="data.Count" />
+      </If>
+      <Then t="xml.Wrap">
+      <Head t="ui.Html">
+       <span class="aa_NoLayout"/>
+      </Head>
+      </Then>
+      <Else t="data.Same" />
+     </Aggregator>
+   </xtml>
+  </Component>
+
+  <Component id="SpanList" type="ui.ListLayout" execution="xtml">
+   <Param name="Padding" />
+   <xtml t="xml.WithChanges" >
+    <Var name="Controls" />
+    <Xml t="ui.Html">
+      <span></span>
+    </Xml>
+    <Change t="xml.AddChildren" >
+    	<Children t="data.Pipeline" >
+    		<Item value="%$Controls%" />
+    		<Aggregator t="data.AddSeparator" >
+    			<Separator t="ui.Html" DynamicContent="true">
+    				<span class="spanlist_separator" style="width:%$Padding%" />
+    			</Separator>
+    		</Aggregator>
+    	</Children>
+    </Change>
+   </xtml>
+  </Component>
+
+ <Component id="SectionListPage" type="ui.Sections">
+  <Param name="Title" />
+  <Param name="Image" />
+  <Param name="Control" type="ui.Control" script="true" essential="true"/>
+  <xtml t="xtml.Params">
+    <Param name="Input" t="data.Same" />
+    <Param name="Title" value="%$Title%"/>
+    <Param name="Image" value="%$Image%"/>
+    <ScriptParam name="Control" t="xtml.UseParam" Param="Control"/>
+  </xtml>
+ </Component>
+ 
+	<Component id="HorizontalSplitter" type="ui.SectionsListStyle" execution="native" >
+      <Param name="IdForCookie"/>
+      <Param name="Height">
+        <Default value="300px"/>
+      </Param>
+      <Param name="DefaultWidths">
+        <Default t="data.ListByCommas" List="200px,200px,200px,200px"/>
+      </Param>
+      <Param name="KeepTotalWidth" ><Default value="true" /></Param>
+      <Param name="TotalWidth" />
+      <NativeHelper name="Control" t="xtml.RunXtml" Xtml="%Control%" Input="%Input%" />
+    </Component>
+
+</xtml>

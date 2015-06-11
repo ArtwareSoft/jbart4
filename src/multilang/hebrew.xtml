@@ -1,0 +1,202 @@
+<xtml ns="hebrew">
+  <Component id="HebrewBasicTranslations" type="text.MultiLangSuite">
+   <xtml t="text.MultiLangSuite" Language="hebrew">
+    <Pattern Original="OK" Tranlation="אישור" />
+    <Pattern Original="Cancel" Tranlation="ביטול" />
+    <Pattern Original="Edit" Tranlation="ערוך" />
+    <Pattern Original="Update" Tranlation="עדכן" />
+    <Pattern Original="Print" Tranlation="הדפסה" />
+    <Pattern Original="Try it yourself" Tranlation="נסה בעצמך" />
+    <Pattern Original="Data" Tranlation="תוכן" />
+    <Pattern Original="Yes" Tranlation="כן" />
+    <Pattern Original="No" Tranlation="לא" />
+    <Pattern Original="Usage Exercise" Tranlation="תרגיל בשימוש" />
+    <Pattern Original="Customization Exercise" Tranlation="תרגיל בהתאמה" />
+    <Pattern Original="Please enter value for %$FieldTitle%" Tranlation="אנא הזן ערך עבור %$FieldTitle%" />
+    <Pattern Original="login" Tranlation="כניסה" />
+    <Pattern Original="title" Tranlation="כותרת" />
+    <Pattern Original="body" Tranlation="תוכן" />
+    <Pattern Original="Create" Tranlation="צור" />
+    <Pattern Original="type" Tranlation="סוג" />
+    <Pattern Original="user" Tranlation="משתמש" />
+    <Pattern Original="password" Tranlation="סיסמה" />
+    <Pattern Original="add %$_WriteContext/NameOfItem%" Tranlation="הוסף %$_WriteContext/NameOfItem%" />
+    <Pattern Original="add %$Item%" Tranlation="הוסף %$Item%" />
+    <Pattern Original="delete %$Item%" Tranlation="מחק %$Item%" />
+    <Pattern Original="delete %$_WriteContext/NameOfItem%" Tranlation="מחק %$_WriteContext/NameOfItem%" />
+    <Pattern Original="delete" Tranlation="מחק" />
+    <Pattern Original="Delete" Tranlation="מחק" />
+    <Pattern Original="name" Tranlation="שם" />
+    <Pattern Original="Name" Tranlation="שם" />
+    <Pattern Original="new %$ContentTypeDisplay%" Tranlation="צור %$ContentTypeDisplay%" />
+    <Pattern Original="new %$_WriteContext/NameOfItem%" Tranlation="צור %$_WriteContext/NameOfItem%" />
+    <Pattern Original="more" Tranlation="עוד" />
+    <Pattern Original="no items available" Tranlation="הרשימה ריקה - לא קיימים פריטים" />
+    <Pattern Original="Are you sure ?" Tranlation="האם את/ה בטוח ?" />
+    <Pattern Original="Are you sure you want to delete?" Tranlation="האם את/ה בטוח שברצונך למחוק ?" />
+    <Pattern Original="Are you sure you want to delete %$CountItems% Items?" Tranlation="האם את/ה בטוח שברצונך למחוק %$CountItems% פריטים?" />
+    <Pattern Original="Delete '%$Item%' ?" Tranlation="למחוק את '%$Item%' ?" />
+    <Pattern Original="save" Tranlation="שמור" />
+    <Pattern Original="loading..." Tranlation="טוען..." />
+    <Pattern Original="delete %$ContentTypeDisplay%" Tranlation="מחק %$ContentTypeDisplay%" />
+    <Pattern Original="confirm delete" Tranlation="אישור מחיקה" />
+    <Pattern Original="are you sure you want to delete %$ContentTypeDisplay% %@name% ?" Tranlation="ברצונך למחוק את ה%$ContentTypeDisplay% '%@name%' ?" />
+    <Pattern Original="user name" Tranlation="שם משתמש" />
+    <Pattern Original="logout" Tranlation="יציאה" />
+    <Pattern Original="property" Tranlation="תכונה" />
+    <Pattern Original="value" Tranlation="ערך" />
+    <Pattern Original="new value" Tranlation="ערך חדש" />
+    <Pattern Original="edit %%" Tranlation="ערוך %%" />
+    <Pattern Original="are you sure you wish to delete ?" Tranlation="האם את/ה בטוח שברצונך למחוק ?" />
+    <Pattern Original="are you sure you wish to delete the %$CTDisplay% '%$NodeDisplay%' ?" Tranlation="האם את/ה בטוח שברצונך למחוק %$CTDisplay% '%$NodeDisplay%' ?" />
+    <Pattern Original="users" Tranlation="משתמשים" />
+    <Pattern Original="admin" Tranlation="מנהל מערכת" />
+    <Pattern Original="time" Tranlation="שעה" />
+    <Pattern Original="Close" Tranlation="סגור" />
+    <Pattern Original="delete %$ContentType%" Tranlation="מחק %$ContentType%"/>
+    <Pattern Original="shared %$Plural%:" Tranlation="%$Plural% משותפים:"/>
+    <Pattern Original="share %$ContentType%" Tranlation="שתף %$ContentType%"/>
+    <Pattern Original="cancel share" Tranlation="בטל שיתוף"/>
+    <Pattern Original="my %$Plural%:" Tranlation="ה%$Plural% שלי:"/>
+    <Pattern Original="date" Tranlation="תאריך"/>
+    <Pattern Original="time" Tranlation="שעה"/>
+    <Pattern Original="Add %$Title%" Tranlation="הוסף %$Title%"/>
+    <Pattern Original="%$ContentType% %$CmsArtCurrentNode/@title% copied to list" Tranlation="ה%$ContentType% '%$CmsArtCurrentNode/@title%' הועתק לרשימה האישית שלי"/>
+    <Pattern Original="here" Tranlation="כאן"/>
+    <Pattern Original="login to have your own list" Tranlation="היכנסו כדי ליצור רשימות משלכם"/>
+    <Pattern Original="error while saving" Tranlation="נתקלנו בשגיאה בשמירת הנתונים, יתכן וקיימת בעיה ברשת"/>
+    <Pattern Original="more (total %$Count% items) ..." Tranlation="עוד (סך הכל  %$Count% שורות) ..."/>
+    <Pattern Original="%$ContentTypeDisplay% deleted" Tranlation="ה%$ContentTypeDisplay% נמחק"/>
+    <Pattern Original="no filter" Tranlation="ללא סינון"/>
+    <Pattern Original="user '%%' does not exist" Tranlation="לא קיים משתמש בשם '%%'"/>
+    <Pattern Original="new user" Tranlation="כניסה ראשונה"/>
+    <Pattern Original="Type your name" Tranlation="ביחרו שם משתמש באנגלית"/>
+    <Pattern Original="your real name" Tranlation="שמכם האמיתי"/>
+    <Pattern Original="'%%' is taken. Please choose another one" Tranlation="השם '%%' תפוס. אנא בחרו שם משתמש אחר."/>
+    <Pattern Original="email" Tranlation="דואר אלקטרוני"/>
+    <Pattern Original="Email" Tranlation="דואר אלקטרוני"/>
+    <Pattern Original="user name must be in english" Tranlation="אנא הזינו שם משתמש באנגלית"/>
+    <Pattern Original="Select %%" Tranlation="בחירת %%"/>
+    <Pattern Original="current" Tranlation="נוכחי"/>
+    <Pattern Original="Edit %$ItemTitle%" Tranlation="עריכת %$ItemTitle%"/>
+    <Pattern Original="Edit ..." Tranlation="עריכה ..."/>
+    <Pattern Original="my %$Plural%" Tranlation="ה%$Plural% שלי"/>
+    <Pattern Original="groups" Tranlation="קבוצות"/>
+    <Pattern Original="size: 16x16" Tranlation="גודל: 16x16"/>
+    <Pattern Original="edit" Tranlation="ערוך"/>
+    <Pattern Original="All %$Plural%" Tranlation="כל ה%$Plural%"/>
+    <Pattern Original="related %$Plural%:" Tranlation="%$Plural% קשורים:"/>
+    <Pattern Original="mail sent successfully" Tranlation="הדואר נשלח בהצלחה"/>
+    <Pattern Original="mail send has failed" Tranlation="שליחת הדואר נכשלה"/>
+    <Pattern Original="The %$ContentType% '%$NodeDisplay%' created successfully" Tranlation="ה%$ContentType% '%$NodeDisplay%' נוצר בהצלחה"/>
+    <Pattern Original="new %$ContentType%" Tranlation="%$ContentType% חדש"/>
+    <Pattern Original="Search:" Tranlation="חיפוש:"/>
+    <Pattern Original="Terms of use" Tranlation="תנאי שימוש"/>
+    <Pattern Original="Missing Value" Tranlation="יש להזין ערך"/>
+    <Pattern Original=" and " Tranlation=" "/>
+    <Pattern Original="Save" Tranlation="שמור"/>
+    <Pattern Original="the %$CTDisplay% '%%' already exists" Tranlation="ה%$CTDisplay% '%%' כבר קיימ/ת"/>
+    <Pattern Original="'%%' is not a valid %$Title%" Tranlation="'%%' אינו %$Title% תקין. יש להשתמש באותיות אנגליות וספרות בלבד."/>
+    <Pattern Original="Details" Tranlation="פרטים"/>
+    <Pattern Original="set password" Tranlation="קבע סיסמה"/>
+    <Pattern Original="you have to set your password on first login" Tranlation="יש לשנות את הסיסמה בכניסה הראשונה למערכת"/>
+    <Pattern Original="new password" Tranlation="סיסמה חדשה"/>
+    <Pattern Original="The %$ContentType% '%$NodeDisplay%' saved" Tranlation="ה%$ContentType% '%$NodeDisplay%' נשמר"/>
+    <Pattern Original="Id" T="מספר"/>
+    <Pattern Original="Created By" T="נוצר ע&quot;י" />
+    <Pattern Original="override" T="הגדר ידנית" />
+    <Pattern Original="recalc" T="חשב מחדש" />
+    <Pattern Original="Open" T="פתח" />
+    <Pattern Original="Hours" T="שעות" />
+    <Pattern Original="Days" T="ימים" />
+    <Pattern Original="Day" T="יום" />
+    <Pattern Original="Year" T="שנה" />
+    <Pattern Original="Minutes" T="דקות" />
+    <Pattern Original="Minute" T="דקה" />
+    <Pattern Original="today" T="היום" />
+    <Pattern Original="Today" T="היום" />
+    <Pattern Original="Date Range" T="טווח תאריכים" />
+    <Pattern Original="From" T="מתאריך" />
+    <Pattern Original="To" T="עד תאריך" />
+    <Pattern Original="all dates" T="כל התאריכים" />
+    <Pattern Original="(clean all filters)" T="(נקה הכל)" />
+    <Pattern Original="%$_OriginalField/Title% Filter" T="%$_OriginalField/Title% סנן לפי" />
+    <Pattern Original="to" T="עד" />
+    <Pattern Original="from the beginning of this month" T="מתחילת החודש" />
+    <Pattern Original="from the beginning of this quarter" T="מתחילת הרבעון" />
+    <Pattern Original="from the beginning of this year" T="מתחילת השנה" />
+    <Pattern Original="last 7 days" T="ב-7 הימים האחרונים" />
+    <Pattern Original="last 30 days" T="ב-30 הימים האחרונים" />
+    <Pattern Original="last 12 months" T="ב-12 החודשים האחרונים" />
+    <Pattern Original="last month" T="בחודש האחרון" />
+    <Pattern Original="last week" T="בשבוע האחרון" />
+    <Pattern Original="custom range" T="טווח תאריכים" />
+    <Pattern Original="by expression" T="לפי נוסחא" />
+    <Pattern Original="clear" T="נקה שדה" />
+    <Pattern Original="Clear All" T="נקה הכל" />
+    <Pattern Original="Select All" T="בחר הכל" />
+    <Pattern Original="Wrong password" T="סיסמא שגויה" />
+    <Pattern Original="Apply" Tranlation="החל" />
+    <Pattern Original="New %$_Cntr/Items/ItemTypeName%" T="צור %$_Cntr/Items/ItemTypeName%" />
+    <Pattern Original="Edit %$_Cntr/Items/ItemTypeName%" T="ערוך %$_Cntr/Items/ItemTypeName%" />
+    <Pattern Original="%$_Cntr/Items/ItemTypeName% details" T="פרטי %$_Cntr/Items/ItemTypeName%" />
+    <Pattern Original="Delete %$Cntr/Items/ItemTypeName%" T="מחק %$Cntr/Items/ItemTypeName%" />
+    <Pattern Original="New %$Title%" T="צור %$Title%" />
+    <Pattern Original="Edit %$Title%" T="ערוך %$Title%" />
+    <Pattern Original="Edit %$Title%" T="ערוך %$Title%" />
+    <Pattern Original="Are you sure ?" T="האם אתה בטוח ?" />
+    <Pattern Original="Filter By %$_OriginalField/Title%" T="סנן ע&quot;פ %$_OriginalField/Title%" />
+    <Pattern Original="between..." T="טווח תאריכים..." />
+    <Pattern Original="by expression..." T="לפי ביטוי..." />
+    <Pattern Original="of" T="מתוך" />
+    <Pattern Original="Of" T="מתוך" />
+    <Pattern Original="show all items" T="הצג את כל הפריטים" />
+    <Pattern Original="loading more..." T="טוען פריטים נוספים..." />
+    <Pattern Original="Keep me logged in" T="השאר אותי מחובר" />
+    <Pattern Original="to" T="עד" />
+    <Pattern Original="Total" T="סה&quot;כ" />
+    <Pattern Original="graph settings..." T="הגדרות גרף..." />
+    <Pattern Original="Graph Settings" T="הגדרות גרף" />
+    <Pattern Original="Group by %Title%" T="קיבוץ עפ&quot;י %Title%" />
+    <Pattern Original="Group By" T="קיבוץ עפ&quot;י" />
+    <Pattern Original="Ungroup" T="הסר קיבוץ" />
+    <Pattern Original="Group Amount" T="כמות לקבוצה" />
+    <Pattern Original="Name Of Empty Group" T="שם קבוצה ריקה" />
+    <Pattern Original="Graph Type" T="סוג גרף" />
+    <Pattern Original="Properties" T="מאפיינים" />
+    <Pattern Original="Restore to defaults" T="שחזר ברירת מחדל" />
+	<Pattern Original="Graph Data" T="תוכן הגרף" />
+	<Pattern Original="Single Column" T="עמודה בודדת" />
+	<Pattern Original="Height" T="גובה" />
+	<Pattern Original="Width" T="רוחב" />
+	<Pattern Original="Frame Width" T="רוחב מסגרת" />
+	<Pattern Original="Frame Height" T="גובה מסגרת" />
+	<Pattern Original="Title" T="כותרת" />
+	<Pattern Original="Google Properties" T="פרמטרים של גוגל" />
+	<Pattern Original="e.g. { title: 'my title' }" T="לדוגמא: { title: 'my title' }" />
+	<Pattern Original="table" T="טבלה" />
+	<Pattern Original="auto saved" T="נשמר אוטומטית" />
+	<Pattern Original="languages" T="שפות" />
+	<Pattern Original="language" T="שפה" />
+	<Pattern Original="new language" T="הוסף שפה" />
+	<Pattern Original="delete language" T="מחק שפה" />
+	<Pattern Original="server connection error" T="שגיאה בחיבור לשרת" />
+    <Pattern Original="no value" T="ללא ערך"/>
+    <Pattern Original="All" T="הכל"/>
+    <Pattern Original="is read" T="האם נקרא"/>
+    <Pattern Original="is not read" T="האם לא נקרא"/>
+    <Pattern Original="read" T="נקרא"/>
+    <Pattern Original="unread" T="לא נקרא"/>
+    <Pattern Original="No Matching Items Found" T="לא נמצאו פריטים מתאימים"/>
+    <Pattern Original="%$TotalItemsCount% Items" T="%$TotalItemsCount% פריטים"/>
+    <Pattern Original="%$FilteredItemsCount% of %$TotalItemsCount%" T="%$FilteredItemsCount% מתוך %$TotalItemsCount%"/>
+    <Pattern Original="enter image url" T="נא הכנס קישור לתמונה"/>
+    <Pattern Original="Years" T="שנים"/>
+    <Pattern Original="Height" T="גובה"/>
+    <Pattern Original="Width" T="רוחב"/>
+    <Pattern Original="Hour" T="שעה"/>
+    
+    
+   </xtml>
+  </Component>
+</xtml>

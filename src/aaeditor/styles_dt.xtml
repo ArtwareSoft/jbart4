@@ -1,0 +1,303 @@
+<xtml ns="styles_dt" light="false">
+
+<Component id="ShareStyleDialogContent" type="field.Field" dtsupport="false">
+  <Param name="StyleXtml"/>
+  <xtml t="control.TabControl" ID="Tabs" Title="Tabs">
+    <FieldAspect t="field_aspect.FieldData" FieldData="%$StyleXtml%"/>
+    <Style t="gstudio.AccordionInStudioPopup"/>
+    <Field t="control.Layout" ID="Share_as_Component" Title="Share as new Component (in xtml files)">
+      <Layout t="layout.Vertical" Spacing="8px"/>
+      <Field t="field.PropertySheet1" ID="Fields" Title="Fields">
+        <Style t="group.PropertySheet"/>
+        <Operations t="operation.Operations"/>
+        <Field t="fld.Field" FieldData="%$Params/!@CompName%" ID="Component_Name" Title="Name">
+          <FieldType t="fld_type.EditableText">
+            <Style t="editable_text.JBartTextbox" Width="150px"/>
+          </FieldType>
+          <FieldAspect t="field_feature.HandleEvent">
+            <Event t="field_feature.Update"/>
+            <Action t="field.RefreshField" FireOnUpdate="" FieldID="Share_as_Component_Button" Scope="screen"/>
+          </FieldAspect>
+          <FieldAspect t="field_feature.HandleEvent">
+            <Event t="field_feature.EnterPressed"/>
+            <Action t="operation.ClickOnButton" Button="Share_as_Component_Button"/>
+          </FieldAspect>
+        </Field>
+      </Field>
+      <Field t="control.Button" ID="Share_as_Component_Button" Title="Share as Component" HideTitle="true">
+        <Style t="btn.JBart">&#xa;            </Style>
+        <Disabled t="yesno.ConditionByXtml">
+          <Expression t="yesno.IsEmpty" Value="%$Params/@CompName%"/>
+        </Disabled>
+        <Action t="styles_dt.SaveStyleAsNewComponent" StyleXtml="%$StyleXtml%" Name="%$Params/!@CompName%" Save="true"/>
+      </Field>
+      <Field t="control.Label" ID="Stored_in_global_styles_xtml" Title="Stored in global_styles.xtml">
+        <Style t="ui.CustomCss" base="uitext.PlainText">
+          <Style t="uitext.PlainText"/>
+          <Css><![CDATA[#this { font-size: 12px; }
+]]></Css>
+        </Style>
+      </Field>
+    </Field>
+    <Field t="control.Layout" ID="Share_in_widget" Title="Share in current widget">
+      <Layout t="layout.Vertical" Spacing="8px"/>
+      <Field t="field.PropertySheet1" ID="Fields" Title="Fields">
+        <Style t="group.PropertySheet"/>
+        <Operations t="operation.Operations"/>
+        <Field t="fld.Field" FieldData="%$Params/!@WidgetName%" ID="Name" Title="Name">
+          <FieldType t="fld_type.EditableText">
+            <Style t="editable_text.JBartTextbox"/>
+          </FieldType>
+          <FieldAspect t="field_feature.HandleEvent">
+            <Event t="field_feature.Update"/>
+            <Action t="field.RefreshField" FireOnUpdate="" FieldID="Share_in_local_widget_button" Scope="screen"/>
+          </FieldAspect>
+          <FieldAspect t="field_feature.HandleEvent">
+            <Event t="field_feature.EnterPressed"/>
+            <Action t="operation.ClickOnButton" Button="Share_in_local_widget_button"/>
+          </FieldAspect>
+        </Field>
+      </Field>
+      <Field t="control.Button" ID="Share_in_local_widget_button" Title="Share in local widget" HideTitle="true">
+        <Style t="btn.JBart"/>
+        <Disabled t="yesno.ConditionByXtml">
+          <Expression t="yesno.IsEmpty" Value="%$Params/@WidgetName%"/>
+        </Disabled>
+        <Action t="styles_dt.SaveStyleInWidget" StyleXtml="%$StyleXtml%" Name="%$Params/!@WidgetName%" Save="true"/>
+      </Field>
+    </Field>
+    <FieldAspect t="field_aspect.Variable" VarName="Component" Value="%%"/>
+    <Field t="control.Layout" ID="Save_back_to_Component" Title="Save back to Component">
+      <Layout t="layout.Vertical" Spacing="0"/>
+      <Field t="control.Button" ID="Save" Title="Save" HideTitle="true" ButtonText="Save to '%@base%'">
+        <Style t="btn.JBart"/>
+        <Action t="styles_dt.SaveBackToComponent" StyleXtml="%$StyleXtml%" Save="true"/>
+      </Field>
+      <Action t="styles_dt.MakeGlobalToOriginalStyle" SaveComponent="true"/>
+      <FieldAspect t="field_aspect.Hidden">
+        <OnCondition t="field_aspect.CheckConditionForEveryItem" DataForCondition="Item data" WhenHidden="Do not render">
+          <ShowCondition t="yesno.NotEmpty" Value="%@base%"/>
+        </OnCondition>
+      </FieldAspect>
+    </Field>
+    <FieldAspect t="field_aspect.Variable" VarName="Type">
+      <Value t="xtml.ComponentParamType" Component="%../@t%">
+        <Param t="xml.Tag"/>
+      </Value>
+    </FieldAspect>
+    <FieldAspect t="field_aspect.Variable" VarName="Params">
+      <Value t="xml.Xml">
+        <params/>
+      </Value>
+    </FieldAspect>
+  </xtml>
+</Component>
+
+  <Component id="MakeGlobalToOriginalStyle" type="action.Action">
+      <Param name="CustomStyle" Default="%%"/>
+      <Param name="SaveComponent" type="data.Boolean"/>
+      <xtml t="action.RunActions">
+        <Var name="ComponentID" value="%$CustomStyle/@base%"/>
+        <Var name="Component" t="xtml.ComponentDefinition" ID="%$ComponentID%" ToXtml="false"/>
+        <Var name="SaveManager" t="xtml_dt_tree.SaveManager"/>
+        <Var name="NewXtml" t="xml.ElementOfDynamicTag" Tag="xtml">
+          <Change t="xml.SetAttribute" AttributeName="t" Value="%$Component/xtml/@t%"/>
+          <Change t="xml.AddChildren">
+            <Children t="data.FirstSucceeding">
+              <Item value="%$CustomStyle/Css%"/>
+              <Item value="%$Component/xtml/Css%"/>
+              <Item t="xml.Xml" DynamicContent="true">
+                <Css><![CDATA[%$Component/xtml/@Css%]]></Css>
+              </Item>
+            </Children>
+          </Change>
+          <Change t="xml.AddChildren">
+            <Children t="data.FirstSucceeding">
+              <Item value="%$CustomStyle/Html%"/>
+              <Item value="%$Component/xtml/Html%"/>
+              <Item t="xml.Xml" DynamicContent="true">
+                <Css><![CDATA[%$Component/xtml/@Html%]]></Css>
+              </Item>
+            </Children>
+          </Change>
+          <Change t="xml.AddChildren">
+            <Children t="data.FirstSucceeding">
+              <Item value="%$CustomStyle/Javascript%"/>
+              <Item value="%$Component/xtml/Javascript%"/>
+              <Item t="xml.Xml" DynamicContent="true">
+                <Css><![CDATA[%$Component/xtml/@Javascript%]]></Css>
+              </Item>
+            </Children>
+          </Change>
+          <Change t="xml.PerformChangeWithManyInputs">
+            <Inputs t="data.Pipeline">
+              <Item value="%$Component/xtml%"/>
+              <Item t="xml.Attributes"/>
+              <Item t="xml.AttributeName"/>
+              <Item t="yesno.PassesFilter" Filter="%% != 't'"/>
+            </Inputs>
+            <Change t="xml.SetAttribute" AttributeName="%%" Value="%$Component/xtml/@{}%"/>
+          </Change>
+        </Var>
+        <Action t="xml.ChangeXml" Xml="%$Component%">
+          <Change t="xml.Delete" Element="%xtml%"/>
+          <Change t="xml.AddChildren" Children="%$NewXtml%"/>
+        </Action>
+        <Action t="xml.ReplaceElement" Element="%$CustomStyle%">
+          <NewElement t="xml.ElementOfDynamicTag">
+            <Tag t="xml.Tag" Data="%$CustomStyle%"/>
+            <Change t="xml.SetAttribute" AttributeName="t" Value="%$ComponentID%"/>
+          </NewElement>
+        </Action>
+        <Action t="dlg.CloseDialog">
+          <Condition t="yesno.IsEmpty" Value="%$_TestDB%"/>
+        </Action>
+        <Action t="popup.CloseContainingPopup">
+          <Condition t="yesno.IsEmpty" Value="%$_TestDB%"/>
+        </Action>
+        <Action t="xtml.ClearComponentsCache" />
+        <Action t="field.RefreshFieldByElement" Element="%$FieldCellElement%"/>
+        <Action t="object.RunMethod" Method="MarkAsModified" Input="%$Component/xtml%" Object="%$SaveManager%">
+          <Condition t="yesno.IsEmpty" Value="%$_TestDB%"/>
+        </Action>
+        <Action t="object.RunMethod" Method="Save" Condition="%$SaveComponent%" Object="%$SaveManager%"/>
+      </xtml>
+    </Component>
+ 
+  <Component id="SaveStyleAsNewComponent" type="action.Action">
+      <Param name="StyleXtml"/>
+      <Param name="Name"/>
+      <Param name="Save" type="data.Boolean" Default="true"/>
+      <xtml t="action.RunActions">
+        <Var t="xtml.TypeDefinition" name="TypeDef">
+          <Type t="data.Pipeline">
+            <Item t="xtml.ComponentParam" Component="%$StyleXtml/../@t%">
+              <Param t="xml.Tag" Data="%$StyleXtml%"/>
+            </Item>
+            <Item value="%@type%"/>
+          </Type>
+        </Var>
+        <Var name="NS" value="%$TypeDef/../@ns%"/>
+        <Var name="XtmlToAdd" t="xml.Xml" DynamicContent="true">
+          <xtml ns="%$NS%" />
+        </Var>
+        <Action t="styles_dt.CreateComponentFromStyle" StyleXtml="%$StyleXtml%" ID="%$Name%" NS="%$NS%" Type="%$NS%.%$TypeDef/@id%" AddToXtml="%$XtmlToAdd%">
+          <RunOnComponent t="aaeditor.SaveNewStyle" Ns="%$NS%" Component="%%" Condition="%$Save%"/>
+        </Action>
+      </xtml>
+    </Component>
+
+  <Component id="SaveBackToComponent" type="action.Action">
+    <Param name="StyleXtml"/>
+    <Param name="Save" type="data.Boolean" Default="true"/>
+    <xtml t="action.RunActions">
+      <Var t="xtml.TypeDefinition" name="TypeDef">
+        <Type t="data.Pipeline">
+          <Item t="xtml.ComponentParam" Component="%$StyleXtml/../@t%">
+            <Param t="xml.Tag" Data="%$StyleXtml%"/>
+          </Item>
+          <Item value="%@type%"/>
+        </Type>
+      </Var>
+      <Var name="TypeNs" value="%$TypeDef/../@ns%"/>
+      <Var name="Component" t="xtml.ComponentDefinition" ID="%$StyleXtml/@base%"/>
+      <Var name="XtmlToAdd" value="%$Component/..%" />
+      <Var name="NS" value="%$XtmlToAdd/@ns%" />
+      <Action t="styles_dt.CreateComponentFromStyle" NS="%$NS%" StyleXtml="%$StyleXtml%" Type="%$TypeNs%.%$TypeDef/@id%" ID="%$Component/@id%" AddToXtml="%$XtmlToAdd%" >
+        <RunOnComponent t="action.RunActions">
+          <Var name="SaveManager" t="xtml_dt_tree.SaveManager"/>
+          <Action t="object.RunMethod" Method="MarkAsModified" Input="%xtml%" Object="%$SaveManager%" />
+          <Action t="object.RunMethod" Method="Save" Object="%$SaveManager%"/>
+          <Condition t="yesno.And">
+            <Item value="%$Save%" />
+            <Item t="yesno.ItemsNotEqual" Item1="%$NS%" Item2="sample" />
+            <Item t="yesno.IsEmpty" Value="%$_TestDB%"/>
+          </Condition>
+        </RunOnComponent>
+      </Action>
+      <Action t="xml.Delete" Data="%$Component%" />
+    </xtml>
+  </Component>
+
+  <Component id="SaveStyleInWidget" type="action.Action">
+      <Param name="StyleXtml"/>
+      <Param name="Name"/>
+      <Param name="Save" type="data.Boolean" Default="true"/>
+      <xtml t="action.RunActions">
+        <Var t="xtml.TypeDefinition" name="TypeDef">
+          <Type t="data.Pipeline">
+            <Item t="xtml.ComponentParam" Component="%$StyleXtml/../@t%">
+              <Param t="xml.Tag" Data="%$StyleXtml%"/>
+            </Item>
+            <Item value="%@type%"/>
+          </Type>
+        </Var>
+        <Var name="TypeNs" value="%$TypeDef/../@ns%"/>
+        <Var name="ComponentsTop" value="%$_WidgetXml/xtml%"/>
+        <Var name="ID" t="data.Pipeline">
+          <Item t="text.Capitalize" Data="%$Name%" Mode="separate words to capital"/>
+          <Item t="text.ToId" UsedIDs="%$ComponentsTop/Component/@ID%"/>
+        </Var>
+        <Action1 t="object.RunMethod" Object="%$_BartDevDtContext%" Method="Refresh"/>
+        <Action t="xml.Delete" Data="%$ComponentsTop/Component[@id='{$ID}']%" />
+        <Action t="styles_dt.CreateComponentFromStyle" NS="sample" StyleXtml="%$StyleXtml%" Type="%$TypeNs%.%$TypeDef/@id%" ID="%$ID%" AddToXtml="%$ComponentsTop%" />
+      </xtml>
+    </Component>
+
+    <Component id="CreateComponentFromStyle" type="action.Action">
+      <Param name="StyleXtml" />
+      <Param name="NS" />
+      <Param name="Type" />
+      <Param name="ID" />
+      <Param name="AddToXtml" />
+      <Param name="RunOnComponent" type="action.Action" script="true" />
+      <xtml t="action.RunActions">
+        <Var name="Xtml" t="data.Switch" Value="%$StyleXtml/@t%">
+          <Case If="ui.CustomStyle" Then="%$StyleXtml%" />
+          <Case If="ui.CustomCss">
+            <Then t="xml.ElementOfDynamicTag" Tag="xtml">
+              <Var name="BaseStyle" t="xtml.ComponentDefinition" ID="%$StyleXtml/Style/@t%" ToXtml="true"/>
+              <Change t="xml.SetAttribute" AttributeName="t" Value="ui.CustomStyle"/>
+              <Change t="xml.AddChildren" Children="%$StyleXtml/Css%" />
+              <Change t="xml.AddChildren" Children="%$BaseStyle/Html%" />
+              <Change t="xml.AddChildren" Children="%$BaseStyle/Javascript%" />
+            </Then>
+          </Case>
+        </Var>
+        <Var name="NewComponent" t="xml.ElementOfDynamicTag" Tag="Component">
+          <Change t="xml.SetAttribute" AttributeName="id" Value="%$ID%"/>
+          <Change t="xml.SetAttribute" AttributeName="type" Value="%$Type%"/>
+          <Change t="xml.AddChildren">
+            <Children t="xml.XmlWithChangedTag" Tag="xtml" BaseXml="%$Xtml%"/>
+          </Change>
+        </Var>
+        <Var name="ComponentID" value="%$NS%.%$ID%"/>        
+        <Action t="xtml.ClearComponentsCache" />
+        <Action t="aaeditor.ClearCaches" />
+        <Action t="xml.ReplaceElement" Element="%$StyleXtml%">
+          <NewElement t="xml.ElementOfDynamicTag">
+            <Tag t="xml.Tag" Data="%$StyleXtml%"/>
+            <Change t="xml.SetAttribute" AttributeName="t" Value="%$ComponentID%"/>
+          </NewElement>
+        </Action>
+        <Action t="popup.CloseContainingPopup">
+          <Condition t="yesno.IsEmpty" Value="%$_TestDB%"/>
+        </Action>
+        <Action t="xml.AddXmlChildren" Parent="%$AddToXtml%" Children="%$NewComponent%" CloneChildren="true">
+          <DoOnAddedChildren t="action.RunActions">
+            <Action t="xtml.LoadComponents" Components="%%" Namespace="%$NS%" />
+            <Action t="xtml.UseParam" Param="RunOnComponent"/>
+          </DoOnAddedChildren>
+        </Action>
+        <Action t="field.RefreshFieldByElement" Element="%$FieldCellElement%" Break="true"/>
+      </xtml>
+    </Component>
+
+    <Component id="OpenShareStyleDialog" type="action.Action">
+      <xtml t="popup.OpenPopup" PopupTitle="Share Style">
+        <Style t="gstudio.GoogleDrivePopup"/>
+        <Contents t="styles_dt.ShareStyleDialogContent" StyleXtml="%%"/>
+      </xtml>
+    </Component>
+
+</xtml>

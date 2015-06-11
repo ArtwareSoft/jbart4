@@ -1,0 +1,859 @@
+<xtml ns="xtml_dt" light="false">
+
+  <Component id="ParamsAsFields" type="field.Fields" execution="native">
+      <Param name="Component" Default="%@t%"/>
+      <Param name="Params"/>
+      <NativeHelper name="RefreshPreview" t="field_dt.RefreshPreview" />
+      <NativeHelper name="Options" t="field_aspect.Aspects">
+        <Var name="TypeDef" t="xtml.TypeDefinition" Type="%$_Field/Type%"/>
+        <FieldAspect t="field_aspect.Picklist" AllowEmptyValue="true" RecalculateForEachCell="true" Options="%$_Field/Options%" Multiple="%$_Field/Multiple%">
+           <ControlStyle t="picklist.JBartPicklist">
+              <PopupStyle t="xtml_dt.TgpTypePicklistPresentation" TypeDef="%$TypeDef%"/>
+           </ControlStyle>
+          <Presentation t="xtml_dt.TgpTypePicklistPresentation" TypeDef="%$TypeDef%"/>
+        </FieldAspect>
+        <FieldAspect t="field_aspect.PopupWidth" WidthOption="by css class" Condition="%$TypeDef/@style%"/>
+        <FieldAspect t="field_aspect.OnUpdate" Phase="1000">
+          <Action t="field_dt.RefreshPreview" />
+        </FieldAspect>
+        <FieldAspect t="xtml_dt.ToggleInnerTgpParams" />
+        <FieldAspect t="field_aspect.IndentOptionPage"/>
+      </NativeHelper>
+      <NativeHelper name="OptionsObjForTgpType" t="field_dt.ComponentsOfTypeOptions" Type="%$_Field/Type%" CurrentPT="%{$_Field/Param}/@t%">
+        <OptionPage t="object.Object">
+          <Method name="Control" t="ui.Document">
+            <Data value="%$_PageParams/DataItems/Items/{$_Field/Param}%"/>
+            <Condition t="yesno.NotEmpty" Value="%@t%"/>
+            <Fields t="data.List">
+              <Item t="xtml_dt.ParamsAsFields" Component="%@t%"/>
+              <Item t="xtml_dt.SwitchComponentButtons" Xtml="%%" />
+            </Fields>
+            <Item t="data_items.Items" Items="%%"/>
+            <Presentation t="uiaspect.Group">
+              <Style t="group.PropertySheet"/>
+            </Presentation>
+            <Aspect t="uiaspect.Css" OnElement="container" Inline="padding:5px 0 8px 0;"/>
+          </Method>
+        </OptionPage>
+      </NativeHelper>
+      <NativeHelper name="AspectsForTgpType" t="field_aspect.Aspects">
+        <FieldAspect t="field_aspect.OnUpdate">
+          <Action t="uiaction.Refresh" RunOn="updown(.pt_editor,.gallery_link)"/>
+        </FieldAspect>
+        <FieldAspect t="field_aspect.Css" Class="pt_editor"/>
+      </NativeHelper>
+      <NativeHelper name="Aspects" t="field_aspect.Aspects">
+        <FieldAspect t="field_aspect.Description">
+          <Description t="text.FirstSucceeding">
+            <Item value="%$_Field/ParamXml/@description%" />
+            <Item t="xml.CDataValue" Element="%$_Field/ParamXml/Description%" />
+          </Description>
+        </FieldAspect>
+        <FieldAspect t="field_dt.CssEditingFieldAspect" Condition="%$_Field/ParamXml/@css%"/>
+        <FieldAspect t="field_dt.SliderParam">
+          <Condition t="yesno.And">
+            <Item value="%$_Field/ParamXml/@slider%" />
+            <Item t="yesno.IsEmpty" Value="%{$_Field/ParamXml/@name}%" />
+          </Condition>
+          <Units t="slider.Unit" Symbol="%$_Field/ParamXml/@sliderUnit%" Min="0" />
+        </FieldAspect>
+        <FieldAspect t="field_dt.JSEditingFieldAspect" Condition="%$_Field/ParamXml/@js%"/>
+        <FieldAspect t="field_dt.CodeMirrorPopupFieldAspect" Condition="%$_Field/ParamXml/@codemirror%"/>
+        <FieldAspect t="field_aspect.Aspects" Condition="%$_Field/ParamXml/@titleField%">
+          <FieldAspect t="field_aspect.FieldData" FieldData="%!@Title%"/>
+          <FieldAspect t="field_dt.TitleField" />
+          <FieldAspect t="field_aspect.ChangeFieldID" ID="dt_title"/>
+        </FieldAspect>
+        <FieldAspect t="field_aspect.Aspects" Condition="%$_Field/ParamXml/@idField%">
+          <FieldAspect1 t="field_aspect.FieldData" FieldData="%!@ID%"/>
+          <FieldAspect t="field_aspect.ChangeFieldID" ID="dt_id"/>
+        </FieldAspect>
+        <FieldAspect t="field_aspect.Resizer" RememberLastWidth="false" />
+      </NativeHelper>
+      <NativeHelper name="BoolFeatureAspects" t="field_aspect.Aspects">
+        <FieldAspect t="field_aspect.Picklist" Multiple="true">
+          <Options t="picklist.DynamicOptions" Options="%$_Field/Params%">
+            <OptionLabel t="text.Capitalize" Mode="capital to separate words"/>
+          </Options>
+        </FieldAspect>
+        <FieldAspect t="field_aspect.OnUpdate">
+          <Action t="field_dt.RefreshPreview" />
+        </FieldAspect>
+      </NativeHelper>
+      <NativeHelper name="Array" t="field_aspect.Aspects">
+        <FieldAspect t="field_aspect.HideTitle"/>
+        <FieldAspect t="field_aspect.Control">
+          <Control t="ui.ItemList">
+            <Items t="xml.XmlItems" Tag="%$_Field/Param%"/>
+            <Presentation t="uiaspect.RichTable" HideEmptyTable="true" Sort="false" ColumnsResizer="false" DragAndDropColumns="false"/>
+            <Aspect t="uiaspect.DefaultFeatures" Toolbar1="false" ItemSelection="false"/>
+            <Aspect t="uiaspect.FastFindInHtml" Condition="%$_Field/ParamXml/@fastfind%"/>
+            <Aspect t="uiaspect.ItemSelection" OnDoubleClick=""/>
+            <Aspect1 t="uiaspect.Toolbar" Location="footer" ID="default"/>
+            <Aspect1 t="uiaspect.TableNoHeader"/>
+            <Aspect t="xtml_dt.XtmlItemDetails">
+              <Type t="text.RemoveSuffix" Suffix="[]" Data="%$_Field/Type%"/>
+            </Aspect>
+            <Operations t="operation.Operations">
+              <Operation t="operation.Operation" ID="NewItem" Target="new" Icon="%$_Images%/add1616.png" Shortcut="Alt+N" WritableOnly="true" Title="New %$_Cntr/Items/ItemTypeName%">
+                <Action t="xtml_dt.NewProfile" Cntr="%$_Cntr%">
+                  <Type t="text.RemoveSuffix" Suffix="[]" Data="%$_Field/Type%"/>
+                </Action>
+              </Operation>
+              <Operation t="operation.DeleteItem"/>
+            </Operations>
+            <Fields t="field.Fields">
+              <Field t="field.Field1" Title="%$_Field/ParamXml/@name%">
+                <FieldAspect t="field_aspect.Control">
+                  <Control t="field_dt.ComponentInTable" Xtml="%%" />
+                </FieldAspect>
+                <FieldAspect t="field_aspect.ColumnWidth" Width="270px"/>
+                <FieldAspect t="field_aspect.CellPresentation" Content="control"/>
+              </Field>
+              <Field1 t="xtml_dt.ComponentImageField"/>
+              <Field1 t="field.XmlField" Path="@%$_Field/ParamXml/@ItemIdentifier%">
+                <Condition t="yesno.NotEmpty" Value="%$_Field/ParamXml/@ItemIdentifier%"/>
+              </Field1>
+              <Field1 t="field.CustomControl" ID="T" Title="%$_Field/Param%" ShowTitle="true">
+                <Control t="xtml_dt.PTToTextControl"/>
+              </Field1>
+              <Field1 t="field.CustomControl" Title="Properties" ID="properties">
+                <Control t="ui.Document">
+                  <Presentation t="uiaspect.Group">
+                    <Style t="group.PropertySheet"/>
+                  </Presentation>
+                  <Fields t="xtml_dt.ParamsAsFields"/>
+                </Control>
+                <FieldAspect t="field_aspect.CellPresentation" Content="expandable text"/>
+                <FieldAspect t="field_aspect.TextSummary">
+                  <Text t="xtml_dt.XtmlTextSummary" Xtml="%%"/>
+                </FieldAspect>
+              </Field1>
+            </Fields>
+          </Control>
+        </FieldAspect>
+      </NativeHelper>
+    </Component>
+ 
+  <Component id="SwitchComponentButtons" type="field.Fields" hidden="true" dtsupport="false">
+    <Param name="Xtml" />
+    <xtml t="data.Pipeline">
+        <Item t="xtml.ComponentDefinition" ID="%$Xtml/@t%" />
+        <Item value="%SwitchComponent%" />
+        <Item t="xtml_dt.SwitchComponentButton" Xtml="%$Xtml%" Definition="%%" />
+    </xtml>
+  </Component>
+
+  <Component id="SwitchComponentButton" type="field.Fields" hidden="true" dtsupport="false">
+      <Param name="Xtml"/>
+      <Param name="Definition"/>
+      <xtml t="field.Button" ID="dt_switch_component_%$Definition/@Component%" ButtonText="%$Definition/@text%" Title="">
+        <Action t="xtml_dt.SetContainingPicklistValue" PicklistInput="%$_PicklistOfOptionPage%" Value="%$Definition/@Component%" />
+        <Style t="button.LightHyperlink"/>
+        <Image t="image.Image" Url="%$_Images%/studio/convert.png"/>
+      </xtml>
+    </Component>
+
+  <Component id="SetContainingPicklistValue" type="action.Action" execution="native">
+    <Param name="PicklistInput" />
+    <Param name="Value" />
+  </Component>  
+  
+  <Component id="ParamsAndReadOnlyTypeAsFields" type="field.Fields">
+    <Param name="Component">
+      <Default value="%@t%" />
+    </Param>
+    <xtml t="field.Fields">
+      <Field t="field.CustomControl" ID="t" Title="Type">
+        <Control t="ui.Text">
+          <Text t="xtml_dt.ComponentToLowerCase" Data="%$Component%" />
+        </Control>
+      </Field>
+      <Field t="xtml_dt.ParamsAsFields" Component="%$Component%" />
+    </xtml>
+  </Component>
+
+  <Component id="XtmlTextSummary" type="data.Data" execution="native">
+    <Param name="Xtml">
+      <Default value="%%" />
+    </Param>
+  </Component>
+
+  <Component id="PTSelectorField" type="field.Fields">
+      <Param name="Type"/>
+      <Param name="FieldTitle" />
+      <Param name="FieldAspect" type="field.FieldAspect[]" script="true"/>
+      <Param name="ParamsForOptionPage" type="field.Fields" script="true">
+        <Default t="xtml_dt.ParamsAsFields" Component="%$_PageParams/DataItems/Items/@t%"/>
+      </Param>
+      <Param name="AllowEmptyValue" type="data.Boolean" Default="true"/>
+      <Param name="Path" Default="@t"/>
+      <Param name="HideTypeTitle" type="data.Boolean"/>
+      <xtml t="field.XmlField" Path="%$Path%" >
+        <Title t="text.FirstSucceeding">
+          <Item value="%$FieldTitle%" />
+          <Item value="%@TypeTitle%">
+            <Data t="xtml.TypeDefinition" Type="%$Type%" />
+          </Item>
+          <Item value="Type" />
+        </Title>
+        <FieldAspect t="field_aspect.OnUpdate" >
+          <Action t="xtml_dt.CleanXtmlOfParams" Data="%..%" PrevComponent="%$OldValue%"/> 
+        </FieldAspect>
+        <FieldAspect t="field_aspect.Picklist" AllowEmptyValue="%$AllowEmptyValue%">
+          <Options t="field_dt.ComponentsWithCategories" Type="%$Type%">
+            <OptionPage t="object.Object">
+              <Method name="Control" t="ui.Document">
+                <Presentation t="uiaspect.Group">
+                  <Style t="group.PropertySheet"/>
+                </Presentation>
+                <Aspect t="uiaspect.Css" OnElement="container" Inline="padding-top:10px" />
+                <Item t="data_items.Items" Items="%$_PageParams/DataItems/Items%"/>
+                <Fields t="xtml.UseParam" Param="ParamsForOptionPage"/>
+              </Method>
+            </OptionPage>
+          </Options>
+        </FieldAspect>
+        <FieldAspect t="field_aspect.DefaultValue">
+          <Condition t="yesno.NotEmpty">
+            <Value t="data.Pipeline">
+              <Item t="xtml.TypeDefinition" Type="%$Type%" />
+              <Item value="%@DefaultPT%" /> 
+            </Value>
+          </Condition>
+          <Value t="data.Pipeline">
+            <Item t="xtml.TypeDefinition" Type="%$Type%" />
+            <Item value="%@DefaultPT%" /> 
+          </Value>
+        </FieldAspect>
+        <FieldAspect t="field_aspect.HideTitle" Condition="%$HideTypeTitle%"/>
+        <FieldAspect t="field_aspect.UnindentOptionPage"/>
+        <FieldAspect t="xtml.UseParamArray" Param="FieldAspect"/>
+      </xtml>
+    </Component>
+
+  <Component id="FindXtmlType" type="data.Data">
+    <xtml t="data.Pipeline">
+      <Item t="xtml.ComponentParamType" Component="%../@t%">
+        <Param t="xml.Tag" />
+      </Item>
+      <Item t="text.RemoveSuffix" Suffix="[]" />
+    </xtml>
+  </Component>
+
+  <Component id="CleanXtmlOfParams" type="action.Action" execution="native">
+    <Param name="PrevComponent" />
+  </Component>
+
+  <Component id="IsAdvancedParam" type="data.Boolean" execution="native">
+    <Param name="Xtml"/>
+    <Param name="ParamXml"/>
+  </Component>
+  
+  <Component id="MoreFieldsHelper" type="ui.Control" hidden="true">
+      <xtml t="ui.Document">
+        <Var name="Xtml" value="%%"/>
+        <Item t="data_items.Items" Items="%%"/>
+        <Fields t="xtml_dt.ParamsAsFields" Component="%$Component%">
+          <Params t="data.Pipeline">
+            <Item t="xtml.ComponentDefinition" ID="%$Component%"/>
+            <Item value="%Param%"/>
+            <Item t="yesno.PassesFilter">
+              <Filter t="yesno.And">
+                <Item t="yesno.ItemsNotEqual" Item1="%@light%" Item2="false"/>
+                <Item t="xtml_dt.IsAdvancedParam" ParamXml="%%" Xtml="%$Xtml%"/>
+              </Filter>
+            </Item>
+            <Item value="%@name%"/>
+            <Aggregator t="text.Concat" Separator=","/>
+          </Params>
+        </Fields>
+        <Presentation t="uiaspect.Group">
+          <Style t="group.PropertySheet"/>
+        </Presentation>
+      </xtml>
+    </Component>
+
+  <Component id="NewPTControl" type="ui.Control">
+      <Param name="Type"/>
+      <xtml t="ui.Document">
+        <Fields t="field.Fields">
+          <Var name="ParamsForNew" t="data.Pipeline">
+            <Item t="xtml.TypeDefinition" Type="%$Type%"/>
+            <Item t="text.Split" Text="%@FirstParamsForNew%"/>
+            <Item t="xtml.ComponentParam">
+              <Component t="text.RemoveSuffix" Separator="."/>
+              <Param t="text.ExtractSuffix" Separator="."/>
+            </Item>
+          </Var>
+          <Field t="data.Pipeline">
+            <Item value="%$ParamsForNew%"/>
+            <Item t="xtml_dt.ParamsAsFields" Component="%../../@ns%.%../@id%" Params="%@name%"/>
+          </Field>
+          <Field t="xtml_dt.PTSelectorField" Type="%$Type%">
+            <ParamsForOptionPage t="data.Pipeline">
+              <Item t="xtml_dt.ParamsAsFields" Component="%$_PageParams/DataItems/Items/@t%"/>
+              <Item t="yesno.PassesFilter">
+                <Filter t="yesno.NotInList" Item="%Param%" List="%$ParamsForNew/@name%"/>
+              </Item>
+            </ParamsForOptionPage>
+          </Field>
+        </Fields>
+        <Item t="data_items.Items" Items="%%"/>
+        <Presentation t="uiaspect.Group">
+          <Style t="group.PropertySheet"/>
+        </Presentation>
+        <Operations t="operation.Operations"/>
+      </xtml>
+    </Component>
+  
+  <Component id="DoAddProfile" type="action.Action" light="false" execution="native">
+    <Param name="Cntr" />
+    <Param name="PT" />
+  </Component>
+
+  <Component id="NewProfile" type="action.Action" light="false">
+    <Param name="Cntr" />
+    <Param name="Type" />
+    <xtml t="popup.OpenPopup">
+      <Style t="feature_dt.StudioAddPTPopup" />
+      <Contents t="field.InnerPage" Title="Add PT">
+        <Field t="xtml_dt.ContentsOfNewProfile" Type="%$Type%">
+          <DoAddProfile t="xtml_dt.DoAddProfile" PT="%%" Cntr="%$Cntr%"  />
+        </Field>
+      </Contents>
+    </xtml>
+  </Component>
+
+<Component id="ContentsOfNewProfile" type="field.Fields" light="false" dtsupport="false">  <Param name="Type"/>  <Param name="DoAddProfile" type="action.Action" script="true"/>  <xtml t="control.Layout" Title="">    <Field t="field.ItemListContainer" ID="features_Top" Title="features">      <Items t="itemlist.Items">        <Items t="aaeditor.ComponentsOfTypeNew" Type="%$Type%" LightOnly="true"/>      </Items>      <Field t="control.Layout" ID="Filters" Title="Filters">        <Layout t="layout.Default"/>        <FieldAspect t="itemlist_aspect.FilterGroup"/>        <Field t="fld.Field" Title="Search" ID="Filter_name" FieldData="%@name%">          <FieldType t="fld_type.EditableText">            <Style t="ui.CustomCss" base="editable_text.JBartTextbox">              <Style t="editable_text.JBartTextbox"/>              <Css><![CDATA[#this {
+  font-size: 11px;
+  width: 274px;
+  height: 20px;
+  padding-top: 3px;
+  padding-right: 3px;
+  padding-bottom: 3px;
+  padding-left: 6px;
+  border-top:none;
+  border-left:none;
+  border-right:none;
+  border-bottom: 1px solid #BDC7D8;
+  background: transparent;
+}
+#this:focus {
+  outline: none;
+}
+]]></Css>            </Style>          </FieldType>          <FieldAspect t="itemlist_aspect.Filter" ImmediateFilter="true">            <FieldData t="text.FirstSucceeding">              <Item value="%Definition/@displayName%"/>              <Item t="text.Capitalize" Mode="capital to separate words" Data="%Definition/@id%"/>            </FieldData>            <FilterType t="itemlist_filter.TextWords"/>          </FieldAspect>          <FieldAspect t="field_aspect.ItemListSelectionWithKeyboard"/>        </Field>      </Field>      <Field t="field.ItemList" Title="pts" ID="studio_features_List_of_add_feature">        <View t="ui.CustomCss" base="itemlist_style.Simple">          <Style t="itemlist_style.Simple"/>          <Css><![CDATA[#this>.aa_item {
+  cursor:pointer;
+  overflow: hidden;
+  height: 25px;
+  padding-top: 3px;
+  padding-right: 17px;
+  padding-bottom: 11px;
+  padding-left: 5px;
+}
+#this {
+}
+]]></Css>        </View>        <FieldAspect t="itemlist_aspect.ItemClick">          <OnClick t="action.RunActions">            <Action t="popup.CloseContainingPopup"/>            <Action t="xtml.UseParam" Param="DoAddProfile" Input="%ID%"/>          </OnClick>        </FieldAspect>        <FieldAspect t="itemlist_aspect.ItemSelection" KeyboardSupport="true" AlwaysOneSelected="true" MouseSupport="mouse hover">          <Css><![CDATA[{ background: #D9E8FB; }]]></Css>        </FieldAspect>        <FieldAspect t="itemlist_aspect.ShowTextWhenNoItems" Text="No features match your search"/>        <Field t="control.Layout" ID="Horizontal" Title="Horizontal">          <Layout t="layout.HorizontalHtmlTable" Spacing="15px" VerticalAlign="top"/>          <Field t="field.Image" HideTitle="true" ID="Image" Title="Image">            <Image t="image.Image" Width="24px" Height="24px" Url="%$_Images%/studio/bonuses2421.gif">              <ImageProportions t="image.KeepProportions" FillImage="true" CenterImage="true"/>            </Image>            <Style t="image.PlainImage"/>            <FieldAspect t="field_feature.Layout">              <Css><![CDATA[#this { margin-top: 4px; margin-left: 4px; }]]></Css>            </FieldAspect>          </Field>          <Field t="control.Layout" ID="Group" Title="Vertical">            <Field t="fld.Field" ID="name" Title="Name">              <FieldType t="fld_type.Text">                <Style t="ui.CustomCss" base="uitext.PlainText">                  <Style t="uitext.PlainText"/>                  <Css><![CDATA[#this {  font:bold 12px arial;}]]></Css>                </Style>              </FieldType>              <FieldData t="text.FirstSucceeding">                <Item value="%Definition/@displayName%"/>                <Item t="data.Pipeline">                  <Item value="%Definition/@id%"/>                  <Item t="text.Capitalize" Mode="capital to separate words"/>                </Item>              </FieldData>            </Field>            <Layout t="layout.Vertical" Spacing="1px"/>            <Field t="fld.Field" FieldData="%Definition/@description%" ID="description" Title="Description">              <FieldType t="fld_type.Text">                <Style t="ui.CustomCss" base="uitext.PlainText">                  <Style t="uitext.PlainText"/>                  <Css><![CDATA[#this {
+  font: 11px arial;
+  white-space: nowrap;
+  overflow: ellipsis;
+}
+]]></Css>                </Style>              </FieldType>            </Field>          </Field>        </Field>        <FieldAspect t="itemlist_aspect.LongList">          <Style t="text_as_item.Default"/>        </FieldAspect>      </Field>      <Layout t="layout.Default"/>    </Field>    <Layout t="layout.Default"/>  </xtml></Component>
+
+  <Component id="XtmlItemDetails" type="uiaspect.Aspect">
+    <Param name="Type" />
+    <xtml t="uiaspect.ItemDetails">
+      <ItemPage t="ui.CustomSinglePage">
+        <Control t="ui.Document">
+          <Fields t="xtml_dt.ParamsAsFields" />
+          <Presentation t="uiaspect.Group">
+            <Style t="group.PropertySheet"/>
+          </Presentation>
+        </Control>
+      </ItemPage>
+      <NewItemPage t="ui.CustomSinglePage">
+        <Control t="ui.IfThenElse" If="%=Count($PTs)%==1">
+          <Var name="PTs" t="xtml.ComponentsOfType" Type="%$Type%" />
+          <Then t="ui.ControlWithAction">
+            <RunBeforeControl t="action.WriteValue" To="%!@t%" Value="%$PTs%" />
+            <Control t="ui.Document">
+              <Fields t="xtml_dt.ParamsAsFields" />
+              <Presentation t="uiaspect.Group">
+                <Style t="group.PropertySheet"/>
+              </Presentation>
+            </Control>
+          </Then>
+          <Else t="xtml_dt.NewPTControl" Type="%$Type%" />
+        </Control>
+      </NewItemPage>
+    </xtml>
+  </Component>
+
+  <Component id="RunGenerations" type="action.Action">
+    <Param name="Xtml" />
+    <xtml t="xtml.RunXtmlByComponentId" ComponentID="%$Xtml/@t%_Generate" Input="%$Xtml%" />
+  </Component>
+
+  <Component id="PreviewContext" type="data.Data" execution="native">
+    <Param name="Input" />
+    <Param name="ContextVar" type="data.Data[]" />
+  </Component>
+
+  <Component id="GlobalOpenAAEditor" type="action.Action" execution="native">
+    <NativeHelper name="OpenAAEditor" t="gstudio_popup.ShowAAEditorFloatingPopup">
+      <Xtml t="data.FirstSucceeding">
+        <Item value="%jbXtml%" />
+        <Item value="%script%" />        
+      </Xtml>
+    </NativeHelper>
+  </Component>
+
+  <Component id="ComponentParams" type="field.Fields" execution="native">
+    <Param name="ComponentID" />
+    <Param name="FieldAspect" type="field.FieldAspect[]" script="true" paramVar="Param" />
+  </Component>
+
+  <Component id="RefreshPrimitivePreview" type="action.Action">
+    <xtml t="uiaction.Refresh" RunOn="updown(.xtml_dt_primitive,.text_dynamic_preview)" />
+  </Component>
+
+  <Component id="EditScriptOfPrimitive" type="action.Action">
+    <xtml t="action.RunActions">
+      <Condition t="yesno.And">
+        <Item t="yesno.Not" Of="%$IsAttribute%" />
+        <Item t="yesno.ItemsNotEqual" Item1="%$Xtml/{$Field}/@t%" Item2="ui.DataFromJavaScript" />
+      </Condition>
+      <Action t="gstudio_popup.ShowAAEditorFloatingPopup" Xtml="%$Xtml/{$Field}%" />
+    </xtml>
+  </Component>
+  
+  <Component id="FindXtmlByT" type="data.Data">
+    <Param name="ParentXtml" />
+    <Param name="T" />
+    <Param name="FindAll" type="data.Boolean" />
+    <xtml t="xml.FindXmlByAttribute" ParentXml="%$ParentXtml%" Attribute="t" Value="%$T%" FindAll="%$FindAll%" />
+  </Component>
+
+  <Component id="AddNewXtmlItem" type="action.Action">
+    <Param name="Items" />
+    <Param name="Xtml" />
+    <Param name="DoOnXtmlObject" type="action.Action" script="true" />
+    <xtml t="action.RunActions">
+      <Var name="NewSubset" t="object.RunMethod" Object="%$Items%" Method="SubsetForNewItem" />
+      <Action t="xml.ReplaceElement" Element="%$NewSubset/Items%" NewElement="%$Xtml%" />
+      <Action t="object.RunMethod" Object="%$NewSubset%" Method="Save" />
+      <Action t="xtml.UseParam" Param="DoOnXtmlObject" Input="%$NewSubset/Items%" />
+    </xtml>
+  </Component>
+
+  <Component id="ComponentObject" type="data.Data" execution="native">
+    <Param name="Component" />
+  </Component>
+
+  <Component id="ComponentImage" Type="field.Fields">
+    <Param name="Component" script="true">
+      <Default value="%@t%" />
+    </Param>
+    <xtml t="text.FirstSucceeding">
+      <Var name="ComponentID" t="xtml.UseParam" Param="Component" />
+      <Item t="xtml.RunXtml" Xtml="%$Def/@image%">
+        <Var name="Def" t="xtml.ComponentDefinition" ID="%$ComponentID%" />
+      </Item>
+      <Item t="data.Pipeline">
+        <Item t="xtml_dt.ComponentObject" Component="%$ComponentID%" />
+        <Item value="%Image%" />
+      </Item>
+      <Item value="%$_Images%/default1616.gif" />
+    </xtml>
+  </Component>
+
+  <Component id="ComponentImageField" Type="field.Fields">
+    <Param name="Component" script="true">
+      <Default value="%@t%" />
+    </Param>
+    <xtml t="field.Field1" Title="" ID="compimage">
+      <Control t="ui.Image">
+        <Source t="text.FirstSucceeding">
+          <Item t="data.Pipeline">
+            <Item t="xtml_dt.ComponentObject">
+              <Component t="xtml.UseParam" Param="Component" />
+            </Item>
+            <Item value="%Image%" />
+          </Item>
+          <Item t="text.FirstSucceeding">
+            <Var name="CompDefinition" t="xtml.ComponentDefinition">
+              <ID t="xtml.UseParam" Param="Component" />
+            </Var>
+            <Var name="TypeDefinition" t="xtml.TypeDefinition" Type="%$CompDefinition/@type%" />
+            <Item value="%$CompDefinition/@image%" />
+            <Item value="%$TypeDefinition/@image%" />
+          </Item>
+        </Source>
+      </Control>
+      <FieldAspect t="field_aspect.CellPresentation" Content="control" />
+    </xtml>
+  </Component>
+
+  <Component id="ComponentOperations" Type="operation.Operations">
+    <Param name="Component">
+      <Default value="%Xtml/@t%" />
+    </Param>
+    <xtml t="data.Pipeline">
+      <Item t="xtml_dt.ComponentObject" Component="%$Component%" />
+      <Item value="%Operations%" />
+    </xtml>
+  </Component>
+
+  <Component id="EditBasicTypeControl" type="ui.Control">
+    <xtml t="ui.ButtonOld">
+      <Text t="data.IfThenElse" Then="define" Else="edit">
+        <If t="yesno.And">
+          <Item t="yesno.IsEmpty" Value="%$Xtml/@{$Param}%" />
+          <Item t="yesno.IsEmpty" Value="%$Xtml/{$Param}%" />
+        </If>
+      </Text>
+      <Style t="ui.ButtonAsHyperlink" />
+      <OnClick t="action.RunActions">
+        <Action t="xml.AddChildren" Data="%$Xtml%">
+          <Condition t="yesno.IsEmpty" Value="%$Xtml/{$Param}%" />
+          <Children t="xml.ByTag" Tag="%$Param%">
+            <Change t="xml.SetAttribute" AttributeName="t">
+              <Value t="data.Switch">
+                <Value t="xtml.ComponentParamType" Component="%$Xtml/@t%" Param="%$Param%" />
+                <Case If="data.Data" Then="data.Pipeline" />
+                <Case If="action.Action" Then="action.RunActions" />
+                <Case If="xml.Change" Then="xml.PerformChanges" />
+                <Case If="ui.Control" Then="ui.List" />
+                <Case If="action_async.Action" Then="action_async.RunActions" />
+              </Value>
+            </Change>
+          </Children>
+        </Action>
+        <Action t="gstudio_popup.ShowAAEditorFloatingPopup" Xtml="%{$Param}%" />
+      </OnClick>
+    </xtml>
+  </Component>
+
+  <Component id="AdvancedCustomizationOperation" type="operation.Operations">
+    <xtml t="operation.Operations">
+      <Operation t="operation.Operation" Title="Advanced Customization (Xml)" Icon="%$_Images%/studio/xml4.gif" ID="aaeditor_xml" Shortcut="Alt+e">
+        <Action t="xmlui.ShowXmlDialog" Title="Xtml Source" AutoWrite="true">
+          <Xml t="data.IfThenElse" If="%$ParentTag% == 'Component'" Then="%..%" Else="%%">
+            <Var name="ParentTag" t="xml.Tag" Data="%..%" />
+          </Xml>
+          <OnUpdate t="uiaction.Refresh" RunOn="up(.bartdt_edit_fields)" />
+        </Action>
+      </Operation>
+    </xtml>
+  </Component>
+
+  <Component id="LightComponentsOfType" type="data.Data" execution="native">
+    <Param name="Type" />
+  </Component>
+
+  <Component id="RefreshPreview" type="action.Action">
+    <xtml t="uiaction.Refresh" RunOn="%$_FieldsDTContext/ControlHolder%" />
+  </Component>
+
+  <Component id="CalcPreviewForXtml" type="data.Data">
+    <Param name="SelectedInTree" Default="%%" />
+    <xtml t="data.FirstSucceeding" >
+      <Var name="SelectedInTree" value="%$SelectedInTree%"/>
+      <Var name="_Xtml" value="%$SelectedInTree/ParentXtml%" />
+      <Var name="PreviewContextXtml" t="data.Pipeline">
+        <Item t="xtml.ComponentParam" Component="%$SelectedInTree/ParentXtml/@t%" Param="%$SelectedInTree/Field%" />
+        <Item value="%PreviewContext%" />
+      </Var>
+      <Item t="xtml.RunXtml" Xtml="%$PreviewContextXtml%">
+        <Condition t="yesno.NotEmpty" Value="%$PreviewContextXtml%" />
+      </Item>
+      <Item t="aaeditor.CalcLocalPreviewData" ReturnAll="true" >
+        <State t="aaeditor.State" SelectedInTree="%$SelectedInTree%">
+          <TreeXtml t="xtml.Xtml" >
+            <Xtml t="xml.UpToTag" Tag="Page" Data="%$SelectedInTree/ParentXtml%" />
+          </TreeXtml>
+        </State>
+        <Var name="TopCircuit" t="aaeditor.CalculateTopCircuit">
+          <Xtml t="data.FirstSucceeding">
+            <Item value="%$SelectedInTree/ParentXtml/@{$SelectedInTree/Field}%" />
+            <Item value="%$SelectedInTree/ParentXtml/{$SelectedInTree/Field}%" />
+          </Xtml>
+        </Var>
+        <MainCircuitRunner t="object.RunMethod" Method="RunCircuit" Object="%$TopCircuit%" />
+      </Item>
+    </xtml>
+  </Component>
+
+  <Component id="FieldsOfCurrentXtml" type="data.Data">
+    <Param name="Xtml">
+      <Default value="%%" />
+    </Param>
+    <xtml t="data.Pipeline">
+      <Item t="xml.UpToTag" Tag="Page" Data="%$Xtml%" />
+      <Item t="xtml.RunXtml" Xtml="%%" />
+      <Item t="yesno.PassesFilter" Remark="huristic: make sure that input is the page input">
+        <Filter t="yesno.ItemsEqual">
+          <Item1 t="xml.Tag" Data="%$_Context/Input%" />
+          <Item2 value="%ContentType%" />
+        </Filter>
+      </Item>
+      <Item value="%Fields%" />
+    </xtml>
+  </Component>
+
+  <Component id="UpdateValueToEnum" type="action.Action">
+    <Param name="Value" />
+    <xtml t="action.RunActions">
+      <Action t="action.WriteValue" To="%$_ItemsOfOperation%" Value="%$Value%" />
+      <Action t="xtml.RunXtml" Xtml="%$_Field/OnUpdate%" />
+      <Action t="uiaction.Refresh">
+        <RunOn t="uiaspect.ContainerControl" />
+      </Action>
+    </xtml>
+  </Component>
+
+  <Component id="ToCompositeParam" type="data.Data" execution="native">
+    <Param name="Param" />
+    <Param name="PTForComposite" />
+  </Component>
+
+  <Component id="ComponentToLowerCase" type="data.Data">
+    <xtml t="data.Pipeline">
+      <Item t="text.RemovePrefix" Separator="." />
+      <Item t="text.Capitalize" Mode="capital to separate words" />
+      <Item t="text.ToLowerCase" />
+    </xtml>
+  </Component>
+  
+  <Component id="ImageOfType" type="data.Data" execution="native">
+    <Param name="Type" />
+  </Component>
+
+  <Component id="ComponentEditor" type="ui.Control">
+    <Param name="ShowReadOnlyT" type="data.Boolean" />
+    <xtml t="ui.IfThenElse">
+      <Var name="ComponentObject" t="xtml_dt.ComponentObject" Component="%@t%" />
+      <If t="object.HasMethod" Object="%$ComponentObject%" Method="Control" />
+      <Then t="object.RunMethod" Object="%$ComponentObject%" Method="Control" />
+      <Else t="ui.Document">
+        <Presentation t="uiaspect.Group">
+          <Style t="group.PropertySheet"/>
+        </Presentation>
+        <Fields t="field.Fields">
+          <Field t="field.CustomControl" ID="t" Title="Type" Condition="%$ShowReadOnlyT%">
+            <Control t="ui.Text">
+              <Text t="xtml_dt.ComponentToLowerCase" Data="%$Component%" />
+            </Control>
+          </Field>
+          <Field t="xtml_dt.ParamsAsFields" />
+        </Fields>
+      </Else>
+    </xtml>
+  </Component>
+  
+  <Component id="AggregatorFields" type="data.Data" execution="native">
+    <Param name="Items" />
+  </Component>
+  
+  <Component id="CalcPreviewHelper" type="data.Data" >
+    <xtml t="aaeditor.CalcLocalPreviewData" >
+      <MainCircuitRunner t="object.RunMethod" Method="TopCircuit" />
+    </xtml>
+  </Component>
+  
+  <Component id="DummyFieldForPreview" type="field.Field1" hidden="true" >
+    <xtml t="xtml.RunXtml" Xtml="%$_FieldForPreview%" />
+  </Component>
+
+  <Component id="TgpTypePicklistPresentation" type="picklist.PopupStyle" hidden="true">
+      <Param name="TypeDef"/>
+      <xtml t="picklist.SystemPopup" FilterTreshold="30">
+        <Operation t="data.Pipeline">
+           <Item value="%$TypeDef/PopupButton%" />
+           <Item t="xtml.RunXtml" Xtml="%%" Input="%$FieldXtml/{$_Field/ParamXml/@name}%" />
+        </Operation>
+        <Operation t="operation.Operation" ID="Customize" Title="Customize" Target="items" Icon="%$_Images%/studio/custom.png">
+          <Condition t="yesno.And">
+            <Item value="%$TypeDef/@customPT% != ''" />
+            <Item t="data.Pipeline">
+              <Item t="xtml.RunXtmlByComponentId" ComponentID="%$_FieldData%" />
+              <Item t="yesno.OR">
+                <Item value="%IsTriplet%" />
+                <Item t="yesno.NotEmpty" Value="%Html%" />
+              </Item>
+            </Item>
+            <Item t="data.Pipeline">
+              <Item t="xtml.ComponentDefinition" ID="%$_FieldData%" />
+              <Item t="yesno.Not" Of="%@customPT%" />
+            </Item>
+          </Condition>
+          <Action t="action.RunActions">
+            <Action t="object.RunMethod" Object="%$_Input%" Method="RevertToLastValue"/>
+            <Action t="action.IfThenElse" If="%$Triplet/IsTriplet%" >
+              <Var name="Triplet" t="xtml.RunXtmlByComponentId" ComponentID="%$_FieldData%" />
+            </Action>
+            <Action t="object.RunMethod" Object="%$_Input%" Method="UpdateFromPopupAndClose">
+              <Input t="text.Text" Text="%$TypeDef/@customPT%"/>
+            </Action>
+          </Action>
+        </Operation>
+        <PopupFeature t="uiaspect.HighlightSelectionOnHover" >
+          <Condition t="yesno.OR">
+            <Item value="%$_PopupField/ParamXml/@name% == 'Style'" />
+            <Item value="%$_PopupField/ParamXml/@refreshOnHover%" />
+          </Condition>
+          <Action t="operation.RunXtmlAction">
+            <Action t="picklist.SetPicklistValue" ForPreviewOnly="true" Value="%code%"/>
+          </Action>
+        </PopupFeature>
+      </xtml>
+    </Component>
+  
+  
+  <Component id="ProfileProperty" type="data.Data" execution="native">
+    <Param name="Profile"/>
+    <Param name="Param"/>
+  </Component>
+  
+  <Component id="TrimVariables"  type="data.Data" execution="native"/>
+  
+  <Component id="JavaScriptInlineEditor" type="ui.Control">
+      <xtml t="field.ShowFieldControl" CellTag="span">
+        <Item value="%%"/>
+        <Field t="field.XmlField" Path="">
+          <FieldAspect t="field_aspect.FieldData">
+            <FieldData t="xml.XPath" XPath="@Code" CreateIfDoesNotExist="true">
+              <DefaultValue t="data.Pipeline">
+                <Item t="xtml.ComponentDefinition" ID="operation.RunJavascript"/>
+                <Item value="%Param[@name='Code']/Default/@value%"/>
+              </DefaultValue>
+            </FieldData>
+          </FieldAspect>
+          <Type t="field_aspect.MultiLineText" />
+          <FieldAspect t="field_aspect.Css" Inline="width:250px"/>
+        </Field>
+      </xtml>
+    </Component>
+    
+    <Component id="DocumentationIcon" type="ui.Control">
+      <Param name="ComponentDefinition" />
+      <Param name="Icon" ><Default value="%$_Images%/studio/question.jpg" /></Param>
+      <xtml t="ui.Image" Source="%$Icon%" Class="aa_hyperlink doc_icon">
+        <Title value="%$ComponentDefinition/@description%" />
+        <OnClick t="dlg.OpenDialog" >
+          <Style t="dialog_style.DefaultPopup" />
+          <Contents t="ui.Document">
+            <Fields t="field.Fields">
+              <Field t="field.Field" FieldData="%$ComponentDefinition/@description%" ReadOnlyText="true">
+                <FieldAspect t="field_aspect.HideTitle" />
+              </Field>
+              <Field t="field.Button" Title="See sample in the gallery">
+                <Var name="GalleryNode" value="%$ComponentDefinition/@gallery%"/>
+                <Condition t="yesno.NotEmpty" Value="%$GalleryNode%"/>
+                <Style t="button.Hyperlink" />
+                <Action t="uiaction.GoToPage" Url="bartgallery.html#?node=bart_sample.%$GalleryNode%?page=widget?smallpage=runtime"/> 
+              </Field>
+            </Fields>
+          </Contents>
+        </OnClick>
+        <Condition t="yesno.OR">
+          <Item t="yesno.NotEmpty" Value="%$GalleryNode%"/>
+          <Item t="yesno.NotEmpty" Value="%$ComponentDefinition/@description%"/>
+        </Condition>
+      </xtml>
+    </Component>
+    
+    <Component id="PTToTextControl" type="ui.Control">
+      <xtml t="ui.List">
+      <Control t="ui.List">
+        <Var name="ComponentDefinition" t="xtml.ComponentDefinition" ID="%@t%"/>
+        <Control t="ui.Text" Hint="%$ComponentDefinition/@description%">
+          <Text t="data.Pipeline">
+            <Item value="%@t%"/>
+            <Item t="text.RemovePrefix" Separator="."/>
+            <Item t="text.Capitalize" Mode="capital to separate words"/>
+          </Text>
+        </Control>
+        <Control t="xtml_dt.DocumentationIcon" ComponentDefinition="%$ComponentDefinition%" />
+        <Layout t="ui.Horizontal" VerticalAlign="middle"/>
+        </Control>
+        <Control1 t="ui.Text" Class="xtml_dt_description">
+          <Text t="data.Pipeline">
+            <Item t="xtml.ComponentDefinition" ID="%@t%"/>
+            <Item value="%@description%"/>
+          </Text>
+        </Control1>
+      </xtml>
+    </Component>
+
+  <Component id="HtmlParam" type="field.Fields">
+    <Param name="ParamName" />
+    <xtml t="field.XmlField" Path="@%$ParamName%">
+      <Type t="field_aspect.MultiLineText" />
+      <FieldAspect t="field_aspect.Css" Inline="width:300px; height:100px;" />
+      <FieldAspect t="action.RunActions">
+        <Action t="action.WriteValue" To="%!@{$ParamName}%">
+          <Value t="data.IfThenElse">
+            <If t="yesno.IsEmpty" Value="%@{$ParamName}%" />
+            <Then t="data.Pipeline">
+              <Item t="xtml.ComponentDefinition" ID="%@t%" ToXtml="false" />
+              <Item value="%Param[@name='{$ParamName}']/Default/@value%" />
+            </Then>
+            <Else t="data.Pipeline">
+              <Item t="xml.TextToXml" Data="%@{$ParamName}%" />
+              <Item t="xml.XmlToText" PrettyPrint="true" />
+            </Else>
+          </Value>
+        </Action>
+      </FieldAspect>
+      <FieldAspect t="field_aspect.OnKeyUp">
+        <Action t="field_dt.RefreshPreview">
+          <Condition t="yesno.And">
+            <Item value="%$CtrlKey%" />
+            <Item value="%$KeyCode% == '13'" />
+          </Condition>
+        </Action>
+      </FieldAspect>
+    </xtml>
+  </Component>
+  
+  <Component id="ToggleInnerTgpParams" type="field.FieldAspect" execution="native">
+    <Param name="Css" advanced="true" css="true">
+      <Default><![CDATA[
+.aa_field_toolbar_image { margin: 4px 0 0 3px; vertical-align: top; display: inline-block; width:16px; height:16px; cursor: pointer;}
+      ]]></Default>
+    </Param>
+  </Component>
+
+  <Component id="StyleInProperties" type="field.FieldAspect" execution="native" description="The style in jbart properties">
+    <NativeHelper name="Options" t="field_dt.ComponentsOfTypeOptions" Type="%%" CurrentPT="%$PT%">
+      <OptionPage1 t="object.Object">
+        <Method name="Control" t="control.ShowFieldControl">
+          <Data value="%$FieldData/Style%" />
+          <Field t="field.PropertySheet1" Title="">
+            <Field t="field.Control" ID="Control" Title="Control" HideTitle="true">
+              <Control t="field_control.CustomControlOld">
+                <Html><![CDATA[<hr/>]]></Html>
+                <Css><![CDATA[{ }]]></Css>
+                <Javascript><![CDATA[function(html_elem,context) { } ]]></Javascript>
+              </Control>
+            </Field>
+            <Field t="xtml_dt.ParamsAsFields" Component="%@t%" />
+            <Style t="group.PropertySheet" />
+            <FieldAspect t="field_feature.Css">
+              <Css><![CDATA[#wrapper { padding-top: 10px; }]]></Css>
+            </FieldAspect>
+          </Field>
+        </Method>
+      </OptionPage1>
+    </NativeHelper>
+    <NativeHelper name="Aspects" t="field_aspect.OnUpdate">
+      <Action1 t="field_dt.RefreshPreview" />
+    </NativeHelper>    
+  </Component>
+  
+  <Component id="MakeLocal" type="data.Data" execution="native" description="Makes local. does not work with params of script=true nature">
+    <Param name="Xtml" />
+    <Param name="ImplementationXtml" />
+  </Component>
+</xtml>

@@ -1,0 +1,186 @@
+<xtml ns="lp_cb" plugin="lp_cobrowse">
+
+  <Type id="ChatStreamMessage" />
+  <Type id="HistoryBarItem" />
+
+  <Component id="PluginDefiniton" type="jbart.PluginDefinition">
+    <xtml t="xml.Xml">
+      <plugin id="lp_cobrowse" name="Liveperson Connect Widget" description="Rich Cobrowsing Widgets for over liveperson chat" enhanceGStudio="lp_cb.EnhanceGStudio"/>
+    </xtml>
+  </Component>
+
+  <Component id="LPConnectSharingChannel" type="cobrowse.CoBrowseChannel" execution="native">
+  </Component>
+
+  <Component id="LPWidget" type="bart.ApplicationFeature" execution="native">
+    <Param name="ActivityLogIcon" />
+    <Param name="PageForMediaArea" type="jbart.MyWidgetPage" script="true"/>
+    <Param name="MediaAreaTitle" description="Event args in the input" />
+    <Param name="ChatStreamMessage" description="Input is the event args" Default="The agent has sent you a widget" />
+    <Param name="ChatStreamStyle" type="lp_cb.ChatStreamMessage" />
+    <Param name="HistoryBarStyle" type="lp_cb.HistoryBarItem" />
+    <Param name="VisitorMinWidthMediaArea" />
+  </Component>
+
+  <Component id="DefaultChatStreamBox" type="lp_cb.ChatStreamMessage">
+    <xtml t="ui.CustomStyle">
+      <Html><![CDATA[<div class="in_chatline"><div class="icon"/><span class="text"/></div>]]></Html>
+      <Css><![CDATA[
+#this { color: #6B6B6A; }
+.text { margin-left: 46px; display: block; }
+.link { color: #658799; font-weight:bold; } 
+.link:hover { text-decoration: underline; cursor:pointer;}
+.icon {
+ background-image: url('//dl.dropbox.com/u/24056024/lpdemo_debug/form-icon.png'); 
+float:left; width:37px; height:30px; background-repeat:no-repeat; margin-top:1px;
+display: inline-block;
+}
+
+#outer_lp_chat_message .outer_lp_chat_message { background-color: #fcf7e4; border: 1px solid #f0d158; min-height: 35px;}
+#outer_lp_chat_message .bubble span { background-image: url('//dl.dropbox.com/u/24056024/lpforms/html-arrow.gif'); }
+#outer_lp_chat_message .lp_chat_message:focus { outline: none; }
+]]></Css>
+      <Javascript><![CDATA[function show(chatMessage) {
+  aa_lp_chatMessage(chatMessage);       
+}]]></Javascript>
+    </xtml>
+  </Component>
+
+  <Type id="Argument" DefaultPT="lp_cb.Argument"/>
+  <Component id="Argument" type="lp_cb.Argument" execution="native">
+    <Param name="Name" />
+    <Param name="Value" />
+  </Component>
+
+  <Component id="SendWidgetToVisitor" type="action.Action" execution="native">
+    <Param name="ID" description="Widget or catalog item ID" />
+    <Param name="Argument" type="lp_cb.Argument[]" />
+    <Param name="IndicationText" description="In agent side" Default="Sending..." />
+  </Component>
+
+  <Component id="LPConnectAgentLog" type="cobrowse.AgentLog" execution="native">
+    <Param name="ActivityLogTitle" />
+    <Param name="ActivityLogStatus" />
+    <Param name="InfoLine" />
+  </Component>
+
+<!-- Design Time -->
+
+  <Component id="EnhanceStudio" type="action.Action" hidden="true">
+    <xtml t="action.RunActions">
+        <Action t="object.SetProperty" Object="%$_BartDevDtContext/Studio%" Property="ExtraBarButtons">
+          <Value t="field.Button" Title="Liveperson" ID="liveperson_button">
+            <Style t="button.StudioBarButton"/>
+            <Image t="image.Image" Url="apps/lp/images/chat.png"/>
+            <FieldAspect t="field_aspect.PopupOnHover">
+              <Style t="dialog_style.HoverPopup"/>
+              <Contents t="ui.ItemPage">
+                <Field t="field.Button" Title="Create Data Resources">
+                  <Condition t="yesno.IsEmpty" Value="%$_AppContext/AppXtml/DataResource[@ResourceID='LPVisitorWidget']%" />
+                  <Image t="image.ImageOld" Url="apps/lp/images/connect.png"/>
+                  <Style t="button.Hyperlink"/>
+                  <FieldAspect t="field_aspect.HideTitle"/>
+                  <Action t="action.RunActions">
+                    <Action t="lp_cb.CreateDataResources"/>
+                  </Action>
+                </Field>
+              </Contents>
+            </FieldAspect>
+          </Value>
+        </Action>
+    </xtml>    
+  </Component>
+
+  <Component id="CreateDataResources" type="action.Action" hidden="true">
+    <xtml t="action.RunActions">
+      <Var name="ResourceXtmls" t="xml.Xml">
+        <Resources>
+          <DataResource t="jbart_resource.Data" ResourceID="LPImages" ValueType="calculated" AutoSaveSampleData="" Value="%$_Images%/lp"/>
+          <DataResource t="jbart_resource.Data" ResourceID="CoBrowseSide" ValueType="calculated" AutoSaveSampleData="" Value="agent"/>
+          <DataResource t="jbart_resource.Data" ResourceID="LPVisitorWidget" ValueType="javascript" AutoSaveSampleData="">
+            <Value><![CDATA[function(data,elem,context) {
+return [aa_lp_dummy_LPConnectWidget()];                    
+}]]></Value>
+          </DataResource>
+          <DataResource t="jbart_resource.Data" ResourceID="LPAgentWidget" ValueType="javascript" AutoSaveSampleData="">
+            <Value><![CDATA[function(data,elem,context) {
+return [aa_lp_dummy_LPConnectAgentWidget()];                    
+}]]></Value>
+          </DataResource>
+          <DataResource t="jbart_resource.Data" ResourceID="Catalog" ValueType="xml" AutoSaveSampleData="">
+            <Value t="xml.Xml">
+              <catalog/>
+            </Value>
+          </DataResource>          
+        </Resources>
+      </Var>
+      <Action t="xml.AddXmlChildren" Parent="%$_AppContext/AppXtml%" Children="%$ResourceXtmls/*%" />
+      <Action t="object.RunMethod" Object="%$_BartDevDtContext%" Method="StrongRefresh" />
+      <Action t="dlg.CloseContainingDialog" />
+    </xtml>
+  </Component>
+
+<Component id="EnhanceGStudio" type="action.Action" hidden="true">
+  <xtml t="action.RunActions" />
+</Component>
+
+          <Component id="LpacButton" type="btn.Style">
+            <xtml t="ui.CustomStyle">
+              <Html><![CDATA[<div/>]]></Html>
+              <Css><![CDATA[#this {
+  width:55px;
+  font-family:Arial, Helvetica, sans-serif; 
+  font-size: 11px; 
+  text-align: center;  
+  line-height: 27px; 
+  padding: 0 10px;
+  height:27px;
+  color:white;
+  cursor: pointer;
+  background: url(%$LPImages%/agent-button.png) no-repeat;
+  display: inline-block;
+}
+#this:hover {
+  background-position:0 -26px;
+}
+#this:active { 
+  background-position:0 -52px;
+}]]></Css>
+              <Javascript><![CDATA[function(button) {
+  aa_button(button);
+}
+]]></Javascript>
+            </xtml>
+          </Component>
+
+          <Component id="LpacButtonWhite" type="btn.Style">
+            <xtml t="ui.CustomStyle">
+              <Html><![CDATA[<div/>]]></Html>
+              <Css><![CDATA[#this {
+  width:55px;
+  font-family:Arial, Helvetica, sans-serif; 
+  font-size: 11px; 
+  text-align: center;  
+  line-height: 27px; 
+  padding: 0 10px;
+  height:27px;
+  color: #87B402;
+  cursor: pointer;
+  background: url(//jbartapps.appspot.com/lp/images/agent-button-white.png) no-repeat;
+  display: inline-block;
+}
+#this:hover {
+  background-position:0 -26px;
+}
+#this:active { 
+  background-position:0 -52px;
+}]]></Css>
+              <Javascript><![CDATA[function(button) {
+  aa_button(button);
+}
+]]></Javascript>
+            </xtml>
+          </Component>
+
+
+</xtml>

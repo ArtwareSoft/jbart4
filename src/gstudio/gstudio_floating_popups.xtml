@@ -1,0 +1,461 @@
+<xtml ns="gstudio_popup">
+
+<Component id="ShowProperties" type="action.Action" light="false">
+  <xtml t="popup.OpenPopup">
+    <PopupTitle t="data.Pipeline">
+      <Var name="Selected" t="gstudio.SelectedFieldXtml"/>
+      <Var name="Type" t="data.Pipeline">
+        <Item value="%$Selected/@t%"/>
+        <Item t="text.Split" Separator="." Part="Second"/>
+      </Var>
+      <Var name="Title" value="%$Selected/@Title%"/>
+      <Item value="Properties of %$Title% (%$Type%)"/>
+    </PopupTitle>
+    <Data t="gstudio.SelectedFieldXtml"/>
+    <Style t="gstudio.StudioFloatingPopup" MinWidth="300px" MaxWidth="300px"/>
+    <Feature t="gstudio.StudioFloatingPopupFeatures" Identifier="properties" FieldIdsToRefreshWhenOpenOrClosed="gstudio_toolbar_properties" Xtml="%%">
+      <Location t="popup.ScreenTopRight" MarginRight="20" MarginTop="120"/>
+    </Feature>
+    <Feature t="popup.AutoFocusOnFirstInput"/>
+    <Contents t="field.InnerPage">
+      <Field t="control.TabControl" ID="DT_Properties_Tab" Title="Tabs" DTAddTab="">
+        <Style t="gstudio.StudioPropertiesAccordion"/>
+        <Field t="data.IfThenElse">
+          <If t="xtml_dt2.UseXtmlDt2" />
+          <Then t="field.Layout" ID="DT_Properties_Basic" Title="Properties" HideTitle="">
+            <Field t="xtml_dt2.XtmlEditor" Xtml="%%"/>
+            <FieldAspect t="field_feature.Css">
+              <Css><![CDATA[#this { padding: 8px; }]]></Css>
+            </FieldAspect>
+            <Layout t="layout.Default"/>
+          </Then>
+          <Else t="field.Layout" ID="DT_Properties_Basic" Title="Properties">
+            <Field t="field_control.CustomXtmlControl" ID="DT_Properties_Basic_Control" Title="Control">
+              <FieldAspect t="field_feature.Css">
+                <Css><![CDATA[#this { padding: 8px; }]]></Css>
+              </FieldAspect>
+              <Control t="ui.Document">
+                <Field t="xtml_dt.ParamsAsFields"/>
+                <Presentation t="uiaspect.Group">
+                  <Style t="group.PropertySheet"/>
+                </Presentation>
+              </Control>
+            </Field>
+          </Else>
+        </Field>
+        <Field t="feature_dt.Features" FieldXtml="%%"/>
+        <Field t="studio_suggest.SuggestionsGroup" FieldXtml="%%"/>
+      </Field>
+    </Contents>
+  </xtml>
+</Component>
+
+<Component id="ShowOutline" type="action.Action" light="false">
+  <xtml t="popup.OpenPopup" PopupTitle="Outline">
+    <Var name="Selected" t="gstudio.SelectedFieldXtml"/>
+    <Var name="PageXtml" t="field_dt.UpToPageDef" Data="%$Selected%"/>
+    <Var name="Path" t="field_dt.UpToPageDef" Data="%$Selected%" Result="path"/>
+    <Style t="gstudio.StudioFloatingPopup" MinWidth="250px">
+      <MaxHeight t="ui.ScreenSize" Axis="height" Margin="200" AsHtmlString="true"/>
+    </Style>
+    <Feature t="gstudio.StudioFloatingPopupFeatures" Identifier="outline" FieldIdsToRefreshWhenOpenOrClosed="gstudio_toolbar_outline">
+      <Location t="popup.ScreenTopRight" MarginTop="120" MarginRight="330"/>
+    </Feature>
+    <Contents t="field.InnerPage">
+      <Field t="field.Layout">
+        <Field t="control.Layout" Title="toobar" ID="outline_toolbar">
+          <FieldAspect t="field_feature.Css">
+            <Css><![CDATA[#this {
+  background:#F5F5F5;
+  height: 28px;
+  border-top1: 1px solid #E5E5E5;
+  border-bottom: 1px solid #E5E5E5;
+}
+]]></Css>
+          </FieldAspect>
+          <Layout t="ui.CustomStyle" base="layout.Default">
+            <Html><![CDATA[<div><div class="field"/><div style="clear:both;"/></div>]]></Html>
+            <Css><![CDATA[#this {  position:relative;}
+#this>.field {  float:left;}
+#this>.field * {  float: left;}]]></Css>
+            <Javascript><![CDATA[function(layout) {
+  aa_layout(layout);
+}]]></Javascript>
+          </Layout>
+          <Field t="gstudio.AddFieldsInToolbar"/>
+          <Field t="control.SeparatingLine" ID="SeparatingLine" Title="SeparatingLine">
+            <Style t="gstudio.StudioToolbarLine"/>
+          </Field>
+          <Field t="control.Button" ID="gstudio_toolbar_refresh" Title="Edit Xtml">
+            <Style t="google_drive.StudioToolbarIcon"/>
+            <Action t="gstudio.EditScriptXtml"/>
+            <Image t="gstudio.StudioSmallImage" PositionInSprite="224,0"/>
+          </Field>
+          <Field t="control.Button" ID="gstudio_toolbar_refresh" Title="Edit in AAEditor">
+            <Style t="google_drive.StudioToolbarIcon"/>
+            <Action t="gstudio.EditScriptXtmlInAAEditor"/>
+            <Image t="gstudio.StudioSmallImage" PositionInSprite="240,0"/>
+          </Field>
+          <Field t="control.Button" ID="gstudio_toolbar_refresh" Title="Delete">
+            <FieldAspect t="field_aspect.Title" Title="Delete Selected (%$_JBartStudio/SelectedFieldXtml/@Title%)"/>
+            <Action t="popup_confirmation.OpenConfirmationPopup" Title="Confirm Delete" Question="Are you sure you want to delete the field %@Title%?" LabelForYes="Delete" LabelForNo="Cancel">
+              <Data t="gstudio.SelectedFieldXtml"/>
+              <Style t="popup_confirmation.GoogleDriveConfirmation"/>
+              <Action t="action.RunActions">
+                <Var name="Parent" value="%..%"/>
+                <Action t="xml.Delete" Data="%%"/>
+                <Action t="action.RunActions">
+                  <Action t="gstudio.Refresh"/>
+                  <Action t="bart_dt.EditXtmlInStudioBar" Data="%$Parent%"/>
+                </Action>
+              </Action>
+            </Action>
+            <Style t="google_drive.StudioToolbarIcon"/>
+            <Image t="gstudio.StudioSmallImage" PositionInSprite="256,0"/>
+          </Field>
+        </Field>
+        <Field t="field_control.CustomXtmlControl" ID="DT_outline" Title="Outline Tree">
+          <FieldAspect t="field_feature.Css">
+            <Css><![CDATA[
+#this { padding: 3px; }
+#this *:focus { outline: none; }
+]]></Css>
+          </FieldAspect>
+          <Control t="ui.ItemList" ID="pagedt" Class="jbstudio_tree" DataHolderCntr="">
+            <Items t="field_dt.FieldTreeItems" RootXtml="%$PageXtml%"/>
+            <Presentation t="uiaspect.Tree" SelectedInUrl="false">
+              <ItemImage t="field_dt.TreeItemImage"/>
+              <ItemText t="gstudio_popup.TreeItemText"/>
+            </Presentation>
+            <Aspect t="uiaspect.TreeDragAndDrop">
+              <OnDrop t="bart_dt.RefreshAfterTreeDrop"/>
+            </Aspect>
+            <Aspect t="uiaspect.ContextMenu"/>
+            <Aspect t="uiaspect.Shortcuts"/>
+            <Aspect1 t="uiaspect.OnDoubleClick">
+              <Action t="action.RunActions">
+                <Action t="bart_dt.SetSelectedStudiobarObject" Xtml="%%"/>
+                <Action t="bart_dt.ShowSelectedObjectElements"/>
+                <Action t="gstudio.SetSelectedFieldXtml" FieldXtml="%%"/>
+                <Action t="gstudio_popup.ShowProperties"/>
+              </Action>
+            </Aspect1>
+            <Aspect t="uiaspect.Css" Class="jbstudio_tree_in_window"/>
+            <Aspect t="uiaspect.ItemSelection" AutoSelectFirstItem="false" KeyboardSupport="true" MouseSupport="mouse down" IncludeSubContainers="true" Css="#this.aa_selected_item { background: #D9E8FB;}" PropagateSelection="">
+              <OnSelect t="action.RunActions">
+                <Condition t="yesno.OR">
+                  <Item t="yesno.ItemsNotEqual" Item1="%%">
+                    <Item2 t="gstudio.SelectedFieldXtml"/>
+                  </Item>
+                  <Item value="%$_SelectionMethod% == 'mouse'"/>
+                </Condition>
+                <Action t="bart_dt.SetSelectedStudiobarObject" Xtml="%%"/>
+                <Action1 t="bart_dt.ShowSelectedObjectElements"/>
+                <Action t="gstudio.SetSelectedFieldXtml" FieldXtml="%%"/>
+                <Action t="gstudio_popup.ShowProperties"/>
+              </OnSelect>
+            </Aspect>
+            <Aspect t="uiaspect.TreeInitialSelection">
+              <Path t="gstudio.TreePathOfSelected"/>
+            </Aspect>
+            <Operations t="field_dt.FieldOperations"/>
+          </Control>
+        </Field>
+      </Field>
+    </Contents>
+  </xtml>
+</Component>
+
+   <Component id="ShowWidgetSettings" type="action.Action" light="false">
+    <xtml t="popup.OpenPopup" PopupTitle="Widget Settings">
+      <Style t="gstudio.StudioFloatingPopup" MinWidth="170px" />
+      <Feature t="gstudio.StudioFloatingPopupFeatures" Identifier="outline" />
+      <Contents t="field.InnerPage">
+      </Contents>
+    </xtml>
+   </Component>
+
+  <Component id="RestorePopupsState" type="action.Action" execution="native">
+    <NativeHelper name="RestorePopups" t="action.RunActions">
+      <Action t="popup.RestoreFloatingPopup" Identifier="outline">
+        <OpenPopup t="gstudio_popup.ShowOutline" />
+      </Action>
+      <Action t="popup.RestoreFloatingPopup" Identifier="properties">
+        <OpenPopup t="gstudio_popup.ShowProperties" />
+      </Action>
+    </NativeHelper>
+  </Component>
+
+  <Component id="TreeItemText" type="data.Data">
+    <xtml t="text.FirstSucceeding">
+      <Item value="%@Title%" />
+      <Item value="%@ID%" />
+      <Item value="Project" Condition="%@t%=='bart.Application'" />
+      <Item value="Custom Style" Condition="%@t%=='ui.CustomStyleByField'" />
+      <Item value="%../@id%" />
+      <Item value="%@t%" />
+    </xtml>
+  </Component>
+
+<Component id="ShowWidgetProperties" type="action.Action" light="false">  <xtml t="popup.OpenPopup" PopupTitle="Widget Properties">    <Style t="gstudio.StudioFloatingPopup" MinWidth="300px"/>    <Feature t="gstudio.StudioFloatingPopupFeatures" Identifier="widget properties"/>    <Feature t="popup.AutoFocusOnFirstInput"/>    <Contents t="field.InnerPage" Data="%$_AppContext/AppXtml%">      <Field t="control.TabControl" ID="DT_WidgetProperties_Tab" Title="Tabs">        <Style t="gstudio.StudioPropertiesAccordion"/>        <Field t="field.Layout" ID="DT_Widget_Properties_Basic" Title="Properties" HideTitle="">          <Field t="field.XtmlControl" ID="_XtmlControl" Title="XtmlControl">            <FieldAspect t="field_feature.Css">              <Css><![CDATA[#this { padding-top: 15px; padding-left: 15px; }]]></Css>            </FieldAspect>            <Control t="ui.Document" Data="%$_AppContext/AppXtml%" ID="Document">              <Field t="xtml_dt.ParamsAsFields" Params="MainPage"/>              <Presentation t="uiaspect.Group">                <Style t="group.PropertySheet"/>              </Presentation>              <ID value="Document"/>              <Item t="data_items.Items" Items="%%"/>            </Control>          </Field>          <Layout t="layout.Default"/>        </Field>        <Field t="field.Layout" ID="DT_Widget_Properties_Basic" Title="Widget Features">          <Field1 t="feature_dt.WidgetFeatures"/>          <Field t="field.XtmlControl" ID="_XtmlControl" Title="XtmlControl">            <FieldAspect t="field_feature.Css">              <Css><![CDATA[#this { padding: 10px; }]]></Css>            </FieldAspect>            <Control t="ui.Document" Data="%$_AppContext/AppXtml%">              <Field t="xtml_dt.ParamsAsFields" Params="ApplicationFeature"/>              <Presentation t="uiaspect.Group">                <Style t="group.PropertySheet"/>              </Presentation>            </Control>          </Field>        </Field>        <Field t="control.Layout" ID="-Group" Title="Deployment">          <Layout t="layout.Default"/>          <FieldAspect t="field_aspect.FieldData" FieldData="%$_WidgetXml/!deploy%"/>          <Field t="control.PropertySheet" ID="-Property-Sheet" Title="Property Sheet">            <Style t="gstudio.XtmlDtPropertySheet"/>            <Field t="fld.Field" FieldData="%!@as%" ID="as" Title="Deploy As">              <FieldType t="fld_type.Picklist" AllowEmptyValue="" AllowValueNotInOptions="">                <Options t="editable_picklist.OptionsTable">                  <Option t="editable_picklist.Option" Code="xml" DisplayName="Source Xml"/>                  <Option t="editable_picklist.Option" Code="js" DisplayName="Compressed Javascript"/>                </Options>                <Style t="editable_picklist.NativeCombo"/>              </FieldType>            </Field>            <Field t="fld.Field" FieldData="%!@ie8%" ID="ie8" Title="IE8 Support in sample Html">              <FieldType t="fld_type.EditableBoolean" HidePropertySheetTitle="true">                <Style t="editable_boolean.Checkbox" HideTitle="true"/>              </FieldType>            </Field>            <FieldAspect t="field_feature.Layout">              <Css><![CDATA[#this { margin: 13px; }
+#wrapper { }
+]]></Css>            </FieldAspect>          </Field>        </Field>      </Field>    </Contents>  </xtml></Component>
+
+  <Component id="FrameViewOptions" type="data.Data" light="false">
+    <xtml t="xml.Xml">
+      <views>
+        <view id="Sansumg Galaxy S3/4" width="360" height="640" />
+        <view id="Apple IPhone 5" width="320" height="444" />
+        <view id="Apple IPhone 3/4" width="320" height="480" />
+        <view id="Sansumg Galaxy SII" width="320" height="356" />
+        <view id="ASUS Galaxy 7" width="320" height="533" />
+      </views>
+    </xtml>
+  </Component>
+
+  <Component id="ShowDesiredOutput" type="action.Action" light="false">
+      <xtml t="popup.OpenPopup" PopupTitle="Desired Output">
+        <Data t="gstudio.SelectedFieldXtml"/>
+        <Style t="gstudio.StudioFloatingPopup" MinWidth="300px"/>
+        <Feature t="gstudio.StudioFloatingPopupFeatures" Identifier="desired_output" FieldIdsToRefreshWhenOpenOrClosed="" />
+        <Contents t="field.InnerPage">
+<Field t="fld.Field" ID="geditable_image" Title="Image" FieldData="%$_WidgetXml/!desiredOutput/@image%">
+  <FieldType t="img_type.EditableImage" FieldDataForImageWidth="%!../@imageWidth%" FieldDataForImageHeight="%!../@imageHeight%">
+    <Style t="ui.CustomCss" base="editableimage_style.Default">
+      <Style t="editableimage_style.Default"/>
+      <Css><![CDATA[#this {
+  cursor: pointer;
+  border: 1px solid transparent;
+}
+#this:hover {
+}
+#this.aa_empty_image {
+  width: 320px;
+  height:200px;
+  background: #ccc;
+  background-image: -webkit-radial-gradient(150px 150px, circle cover, #555, #ccc);
+}
+]]></Css>
+    </Style>
+    <PreviewWidth t="img.FixedWidth" Width=""/>
+    <PreviewHeight t="img.FixedHeight" Height=""/>
+    <AdjustSizeForPreview t="img.Center"/>
+  </FieldType>
+</Field>        </Contents>
+      </xtml>
+  </Component>
+
+<Component id="ShowAddFieldsPopup" type="action.Action" light="false">  <Param name="AsWritableField" type="data.Boolean"/>  <xtml t="popup.OpenPopup" PopupTitle="Add fields">    <Var name="ParentFieldXtml" scope="Component" t="gstudio.SelectedFieldXtml"/>    <Data t="gstudio.SelectedFieldXtml"/>    <Style t="gstudio.StudioFloatingPopup" MinWidth="300px"/>    <Feature t="gstudio.StudioFloatingPopupFeatures" Identifier="studio_fields" FieldIdsToRefreshWhenOpenOrClosed=""/>    <Contents t="field.InnerPage">      <Field t="field.ItemList" Title="items" ID="items_table">        <View t="itemlist_style.JBartTable" MinWidth="100%"/>        <FieldAspect t="field_aspect.ItemListContainer">          <Items t="itemlist.Items">            <Items t="gstudio_insert.GuessFieldsFromSampleData"/>          </Items>        </FieldAspect>        <FieldAspect t="itemlist_aspect.CssForItem">          <ConditionOnItem t="yesno.ConditionByXtml">            <Expression t="gstudio.IsFieldFromSampleDataAdded" NewFieldData="%FieldData%" ParentFieldXtml="%$ParentFieldXtml%"/>          </ConditionOnItem>          <Css><![CDATA[#this {
+            opacity:0.4;
+          }]]></Css>        </FieldAspect>        <FieldAspect t="itemlist_aspect.ShowTextWhenNoItems"/>        <Field t="fld.Field" ID="field" Title="Field">          <FieldType t="fld_type.Text">            <Style t="uitext.PlainText"/>          </FieldType>          <FieldData t="data.Pipeline">            <Item value="%Title%"/>            <Item t="text.Capitalize" Mode="capital to separate words"/>          </FieldData>        </Field>        <Field t="fld.Field" FieldData="%SampleData%" ID="sample" Title="Sample">          <FieldType t="fld_type.Text">            <Style t="ui.CustomCss" base="uitext.PlainText">              <Style t="uitext.PlainText"/>              <Css><![CDATA[#this {
+  font-style:italic;
+  max-width: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}]]></Css>            </Style>          </FieldType>        </Field>        <Field t="control.Button" ID="Add" Title="Add" HideTitle="true">          <Action t="action.RunActions">            <Action t="gstudio.AddFieldFromFieldGuess" FieldGuess="%%" AsWritableField="%$AsWritableField%"/>            <Action t="itemlist_action.RefreshItem">              <Item t="itemlist_item.ItemInContext"/>            </Action>          </Action>          <Style t="ui.CustomCss" base="gstudio.XtmlDTOpenAAEditor">            <Style t="gstudio.XtmlDTOpenAAEditor"/>            <Css><![CDATA[#this { cursor: pointer; }
+          .computed { display: inline-block; cursor: pointer; 
+            border: 1px solid #C4DBC5; 
+            font: 11px arial; padding: 4px 3px; 
+            height: 24px; width: 150px; 
+            background: rgb(241, 248, 237); 
+            box-sizing: border-box; text-align: center; }
+          ]]></Css>          </Style>          <FieldAspect t="field_aspect.ShowOnlyOnItemHover">            <Css><![CDATA[#this { display: none !important;}
+                    #item:hover #this { display: block !important; }]]></Css>          </FieldAspect>          <FieldAspect t="field_feature.Css">            <Css><![CDATA[#wrapper {
+            width:150px;
+            height:24px;
+          }]]></Css>          </FieldAspect>          <FieldAspect t="field_aspect.Title">            <Title t="data.IfThenElse" If="%$AsWritableField%" Then="Add as editable" Else="Add as read only"/>          </FieldAspect>        </Field>        <FieldAspect t="field_feature.Css">          <Css><![CDATA[#this {
+            height:400px;
+            width: 540px;
+            overflow: auto;
+          }
+          #wrapper {}]]></Css>        </FieldAspect>      </Field>    </Contents>  </xtml></Component>
+
+<Component id="ShowEditCodeMirrorPopup" type="action.Action" light="false">
+  <Param name="Xtml"/>
+  <Param name="ParamXml" />
+  <xtml t="popup.OpenPopup" Data="%$Xtml%" PopupTitle="%$ParamXml/@name%" >
+    <Style t="gstudio.StudioFloatingPopup" MinWidth="400px"/>
+    <Feature t="gstudio.StudioFloatingPopupFeatures" Identifier="javascript" FieldIdsToRefreshWhenOpenOrClosed="" Xtml="%$Xtml%">
+      <Location t="popup.ScreenCenter"/>
+    </Feature>
+    <Contents t="field.InnerPage">
+      <Field t="control.TabControl" ID="DT_Style_Tabs1" Title="JS Tab">
+        <Style t="gstudio.StudioStyleTabs" />
+        <Field t="field_dt.CodeMirrorTab" ParamXml="%$ParamXml%" Xtml="%$Xtml%" />
+      </Field>
+    </Contents>
+  </xtml>
+</Component>
+
+<Component id="ShowStylePopup" type="action.Action" light="false">
+  <Param name="Xtml" Default="%%"/>
+  <Param name="TopTitlePrefix" type="data.Boolean" Default="Style"/>
+  <xtml t="popup.OpenPopup" Data="%$Xtml%">
+    <PopupTitle t="data.Pipeline">
+      <Var name="FieldXtml" t="xml.UpToTag" Tag="Field" Data="%$Xtml%"/>
+      <Var name="Title" value="%$FieldXtml/@Title%"/>
+      <Var name="Type" t="data.Pipeline">
+        <Item value="%$FieldXtml/@t%"/>
+        <Item t="text.Split" Separator="." Part="Second"/>
+      </Var>
+      <Item value="%$TopTitlePrefix% of %$Title% (%$Type%)"/>
+    </PopupTitle>
+    <Style t="gstudio.StudioFloatingPopup" MinWidth="400px"/>
+    <Feature t="gstudio.StudioFloatingPopupFeatures" Identifier="style" FieldIdsToRefreshWhenOpenOrClosed="" Xtml="%$Xtml%">
+      <Location t="popup.ScreenCenter"/>
+    </Feature>
+    <Contents t="field.InnerPage">
+      <Field t="control.TabControl" ID="DT_Style_Tabs" Title="Style Tabs">
+        <Style t="gstudio.StudioStyleTabs"/>
+        <Field t="control.Layout" ID="dt_css_designer_2" Title="Designer">
+          <Var name="CompDefinition" t="xtml.ComponentDefinition" ID="%$Xtml/@t%"/>
+          <Condition t="yesno.NotEmpty" Value="%$CompDefinition/Param[@name='Css']%"/>
+          <Field t="css_dt.EditorGroup">
+            <CssAsXml t="field_dt.CssXmlValueByRef" CssCDataElement="%$Xtml/!Css%">
+              <OnChange t="field_dt.RefreshPreview"/>
+            </CssAsXml>
+          </Field>
+          <FieldAspect t="field_feature.Css">
+            <Css><![CDATA[#this { padding: 10px; }]]></Css>
+          </FieldAspect>
+        </Field>
+        <Field t="data.Pipeline">
+          <Item t="xtml.ComponentDefinition" ID="%$Xtml/@t%"/>
+          <Item t="data.List">
+            <Item value="%Param[@codemirror='true']%"/>
+            <Item value="%Param[@css='true']%"/>
+          </Item>
+          <Item t="field_dt.CodeMirrorTab" ParamXml="%%" Xtml="%$Xtml%" Large="" >
+            <Type t="text.FirstSucceeding">
+              <Item value="js" Condition="%@name% == 'Javascript'"/>
+              <Item value="html" Condition="%@name% == 'Html'"/>
+              <Item value="%@codeMirrorType%"/>
+              <Item value="css" />
+            </Type>
+          </Item>
+        </Field>
+        <Field t="field_dt.CustomizeMoreTab" Xtml="%$Xtml%" ParamXml="%$ParamXml%" Condition="%$Xtml/@t%=='ui.CustomCss'" OrigControlElement="%$ControlElement%">
+          <ReopenPopup t="action.RunActions">
+            <Action t="popup.CloseContainingPopup"/>
+            <Action t="gstudio_popup.ShowStylePopup" Xtml="%$Xtml%"/>
+          </ReopenPopup>
+          <FieldAspect t="field_feature.Css">
+            <Css><![CDATA[#this { padding: 0px 10px 10px 10px; }]]></Css>
+          </FieldAspect>
+        </Field>
+        <FieldAspect t="fld_aspect.TabControlProperties" RefreshTabsOnSelect="true" KeepHiddenTabInTheDOM="false"/>
+      </Field>
+    </Contents>
+  </xtml>
+</Component>
+
+    <Component id="RefreshFloatingPopups" type="action.Action">
+      <xtml t="action.RunActions">
+        <Action t="popup.CloseFloatingPopup" Identifier="properties" />
+        <Action t="popup.CloseFloatingPopup" Identifier="outline" />
+        <Action t="popup.CloseFloatingPopup" Identifier="style" />
+      </xtml>
+    </Component>
+
+<Component id="ShowAAEditorFloatingPopup" type="action.Action" light="false">
+  <Param name="Xtml" Default="%%"/>
+  <Param name="RunOnClose" type="action.Action" script="true"/>
+  <xtml t="gstudio_popup.ShowAAEditorFloatingPopupWithCircuit" MainCircuit="%$_Context%" Title="%$Title%">
+    <Var name="_Context" t="aaeditor.ProbeXtmlNew" Xtml="%$Xtml%"/>
+    <RunOnClose t="xtml.UseParam" Param="RunOnClose"/>
+  </xtml>
+  <Param name="Title">
+    <Default value="AAEditor"/>
+  </Param>
+</Component>
+
+<Component id="ShowAAEditorFloatingPopupWithCircuit" type="action.Action" light="false">
+  <Param name="MainCircuit"/>
+  <Param name="RunOnClose" type="action.Action" script="true"/>
+  <xtml t="popup.OpenPopup" Data="" PopupTitle="%$Title%">
+    <Var name="_XtmlDtTreeTimeCalculator" t="object.Object"/>
+    <Style t="gstudio.AAEditorFloatingPopup" MinWidth="400px" MinHeight="300px"/>
+    <Feature t="gstudio.StudioFloatingPopupFeatures" Identifier="aaeditor" FieldIdsToRefreshWhenOpenOrClosed="">
+      <Location t="popup.ScreenCenter"/>
+    </Feature>
+    <Feature t="popup_feature.Resizer"/>
+    <Feature t="popup_feature.RunOnClose" CloseType="">
+      <Action t="xtml.UseParam" Param="RunOnClose"/>
+    </Feature>
+    <Contents t="field.InnerPage">
+      <Field t="control.Layout" Title="">
+        <Layout t="layout.HorizontalCss3" Spacing="20px"/>
+        <Field t="control.Layout" ID="Inteli" Title="Inteli">
+          <Field t="field.XtmlControl" ID="_XtmlControl" Title="XtmlControl">
+            <Control t="xtml_dt_tree.Tree" TopXtml="%$MainCircuit/script%" Type="data.Data">
+              <MainCircuit t="xtml.RunCircuit" Circuit="%$MainCircuit%"/>
+            </Control>
+          </Field>
+          <Layout t="layout.Default"/>
+          <FieldAspect t="field_feature.Css">
+            <Css><![CDATA[#this {min-width: 250px;max-width:400px; overflow: auto; } #this *:focus { outline: none; } ]]></Css>
+          </FieldAspect>
+        </Field>
+        <Field t="control.Layout" ID="_Group2" Title="">
+          <Field t="control.Layout" ID="Preview" Title="Preview">
+            <Layout t="layout.Vertical" Spacing="0"/>
+            <FieldAspect t="field_feature.CssClass" ClassName="xtml_editor_local_preview"/>
+          </Field>
+          <Layout t="layout.Default"/>
+          <SectionStyle1 t="section.DefaultNoUnderline"/>
+        </Field>
+        <FieldAspect t="field_feature.CssClass" ClassName="aaeditor_top"/>
+        <FieldAspect t="field_aspect.DynamicSize">
+          <Height t="scroll_size.DeviceHeight" ReduceHeightOfOtherField="" StretchFromCurrentLocation="true" ReducePixels="100px" ApplyOn="max-height"/>
+        </FieldAspect>
+        <FieldAspect t="field_feature.Layout">
+          <Css><![CDATA[#this { margin: 6px; }]]></Css>
+        </FieldAspect>
+      </Field>
+      <Layout t="layout.Default"/>
+    </Contents>
+  </xtml>
+  <Param name="Title">
+    <Default value="AAEditor"/>
+  </Param>
+</Component>
+
+   <Component id="ShowSettingsPage" type="action.Action" light="false">
+      <Param name="SettingsPage" type="jbart.MyWidgetPage">
+        <Default t="sample.settings" />
+      </Param>
+      <xtml t="action.RunActions">
+      <Action t="gstudio.SwitchPage" PageID="main" AlsoOpenPopups="false" />        
+      <Action t="popup.OpenPopup" PopupTitle="Instance Settings">
+        <Style t="gstudio.StudioFloatingPopup" MinWidth="400px" MinHeight="300px"/>
+        <Feature t="gstudio.StudioFloatingPopupFeatures" Identifier="instance settings" FieldIdsToRefreshWhenOpenOrClosed="gstudio_toolbar_instance_settings">
+          <Location t="popup.ScreenCenter"/>
+        </Feature>
+        <Contents t="field.InnerPage">
+          <Layout t="ui.CustomCss" base="layout.Default">
+            <Style t="layout.Default"/>
+            <Css><![CDATA[#this {  padding:10px; background: white; }]]></Css>
+          </Layout>
+          <Field t="control.Layout">
+          <FieldAspect t="field_feature.HandleEvent">
+            <Event t="field_feature.ControlAttached"/>
+            <Action t="gstudio.AutoRefreshOnSettingsChange" Settings="%$Settings%" >
+              <RefreshAction t="gstudio.Refresh">
+                <Var name="ShownPage" t="ui.UrlFragment" Attribute="gpage"/>
+                <Condition value="%$ShownPage% == 'main'" />
+              </RefreshAction>
+            </Action>
+          </FieldAspect>                    
+          <Field value="%$SettingsPage%" />
+        </Field>
+        </Contents>
+      </Action>
+      </xtml>
+    </Component>
+
+    <Component id="IsXtmlAttached" type="data.Boolean" light="false" execution="native">
+      <Param name="Xtml" />
+    </Component>
+
+</xtml>

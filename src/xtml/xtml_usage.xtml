@@ -1,0 +1,135 @@
+<xtml ns="xtml_usage">
+
+  <Usage t="usage.DataUsage" Name="run xtml field">
+    <Data t="xml.Xml">
+      <Control Title="hello %%"/>
+    </Data>
+    <Result t="xtml.RunXtml" Xtml="%%" Field="Title" Input="Homer"/>
+    <ExpectedResult t="yesno.EqualsTo" To="hello Homer"/>
+  </Usage>
+
+  <Usage t="usage.DataUsage" Of="xtml.ComponentDefinition">
+    <Result t="xtml.ComponentDefinition" ID="text.AddPrefix" ToXtml="false"/>
+    <ResultTransformer value="%@id%"/>
+    <ExpectedResult t="yesno.EqualsTo" To="AddPrefix"/>
+  </Usage>
+
+  <Usage t="usage.DataUsage" Name="go to component definition - toXtml param">
+    <Result t="data.Pipeline">
+      <Item t="xtml.ComponentDefinition" ID="xtml.ComponentDefinition" ToXtml="false"/>
+      <Item value="%@id%"/>
+    </Result>
+    <ExpectedResult t="yesno.EqualsTo" To="ComponentDefinition"/>
+  </Usage>
+
+  <Usage t="usage.DataUsage" Of="xtml.LoadedPlugins">
+    <Result t="text.Concat" Separator=",">
+      <Items t="xtml.LoadedPlugins"/>
+    </Result>
+    />
+    <ExpectedResult t="yesno.Contains">
+      <Text value="xtml_usage"/>
+    </ExpectedResult>
+  </Usage>
+
+  <Usage t="usage.DataUsage" Of="xtml.ComponentsOfPlugin">
+    <Result t="data.Pipeline">
+      <Item t="xtml.ComponentsOfPlugin" Plugin="xtml"/>
+      <Item value="%@id%"/>
+      <Aggregator t="text.Concat" Separator=","/>
+    </Result>
+    <ExpectedResult t="yesno.Contains">
+      <Text value="ComponentsOfPlugin"/>
+    </ExpectedResult>
+  </Usage>
+
+  <Usage t="usage.DataUsage" Of="xtml.UsagesOfPlugin">
+    <Result t="data.Pipeline">
+      <Item t="xtml.UsagesOfPlugin"/>
+      <Item value="%@Of%"/>
+      <Item2 t="yesno.PassesFilter" Filter="%% == 'xtml.UsagesOfPlugin'"/>
+      <Aggregator t="text.Concat" Separator=","/>
+    </Result>
+    <ExpectedResult t="yesno.Contains">
+      <Text value="xtml.UsagesOfPlugin"/>
+    </ExpectedResult>
+  </Usage>
+
+  <Component id="RunXtmlWithParams" execution="xtml">
+    <Param name="Script"/>
+    <xtml t="xtml.RunXtml" Xtml="%$Script%"/>
+  </Component>
+
+  <Component id="RunXtmlWithParamsRunner" execution="xtml">
+    <Param name="Input"/>
+    <xtml t="xtml_usage.RunXtmlWithParams">
+      <Script t="xml.Xml">
+        <Script value="Hi %$Input%"/>
+      </Script>
+    </xtml>
+  </Component>
+  <Usage2 t="usage.DataUsage" Of="xtml.RunXtml" Name="Run xtml with params">
+    <Result t="xtml_usage.RunXtmlWithParamsRunner" Input="Homer"/>
+    <ExpectedResult t="yesno.EqualsTo" To="Hi Homer"/>
+  </Usage2>
+
+  <Usage t="usage.DataUsage" Of="xtml.ComponentHasParam">
+    <Result t="xtml.ComponentHasParam" Component="data.Pipeline" Param="Item"/>
+    <ExpectedResult t="yesno.EqualsTo" To="true"/>
+  </Usage>
+
+  <Usage t="usage.DataUsage" Of="xtml.ComponentsOfType">
+    <Result t="data.Pipeline">
+      <Item t="xtml.ComponentsOfType" Type="action.Action"/>
+      <Aggregator t="text.Concat" Separator=","/>
+    </Result>
+    <ExpectedResult t="yesno.Contains">
+      <Text value="action.RunActions"/>
+    </ExpectedResult>
+  </Usage>
+
+  <Usage t="usage.DataUsage" Of="xtml.LogContent" IsTest="false">
+    <Result t="xtml.LogContent" Level="warning">
+      <Var name="write to logs" t="action.RunActions">
+        <Action t="action.WriteToLog" Message="log message" Level="general"/>
+        <Action t="action.WriteToLog" Message="log message 2" Level="general"/>
+        <Action t="action.WriteToLog" Message="warning 1" Level="warning"/>
+        <Action t="action.WriteToLog" Message="error 1" Level="error"/>
+      </Var>
+    </Result>
+    <ExpectedResult t="yesno.Contains">
+      <Text value="warning 1"/>
+    </ExpectedResult>
+  </Usage>
+
+  <Usage t="usage.DataUsage" Of="xtml.ActiveLogLevels">
+    <Result t="text.Concat">
+      <Var name="write to logs" t="action.RunActions">
+        <Action t="action.WriteToLog" Message="log message" Level="general"/>
+        <Action t="action.WriteToLog" Message="warning 1" Level="warning"/>
+      </Var>
+      <Items t="xtml.ActiveLogLevels"/>
+    </Result>
+    <ExpectedResult t="yesno.Contains" IgnoreOrder="true">
+      <Text value="general"/>
+      <Text value="warning"/>
+    </ExpectedResult>
+  </Usage>
+
+  <Usage t="usage.DataUsage" Of="Xtml.Performance">
+    <Var name="a" t="data.CreateNumbers" From="1" To="1000"/>
+    <Var name="sc" t="xml.Xml">
+      <Item t="data.Same"/>
+    </Var>
+    <Result t="data.Pipeline">
+      <Item value="%$a%"/>
+      <Item t="xtml.RunXtml" >
+        <Xtml t="xml.Xml" DynamicContent="true">
+      <Item t="data.Same"/>
+        </Xtml>
+      </Item>
+    </Result>
+    <ExpectedResult value="true"/>
+  </Usage>
+  
+</xtml>

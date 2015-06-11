@@ -1,0 +1,750 @@
+<xtml package="true">
+
+<xtml ns="crawler_studio" light="false">
+
+  <Component id="Main" type="ui.Control">
+    <xtml t="gstudio.Main" Type="crawler" />
+  </Component>
+
+<Component id="MainMenu" type="field.Fields" hidden="true">
+  <xtml t="google_drive.MainMenu" Title="Main Menu">
+    <Field t="google_drive.MainMenuButton" ID="gmenu_File" Title="File">
+      <Field value="%$_JBartStudio/NewCrawlerButton%"/>
+      <Field t="control.Button" ID="Open" Title="Open..." HideTitle="true">
+        <Style t="gstudio.StudioMenuItem"/>
+        <Action t="async.RunAsyncActions">
+          <Action t="object.RunMethod" Object="%$_JBartStudio%" Method="LoadWidgetList"/>
+          <Action t="gstudio_select.OpenStudioSelectPopup" ItemDesscription="%@description%" PopupTitle="Open Widget">
+            <Items value="%$_JBartStudio/WidgetList/*%"/>
+            <DoOnSelect t="operation.Link" OpenInANewTab="true" Link="?widget=%@id%"/>
+            <ItemName t="data.Pipeline">
+              <Item value="%$Folder%%@name%"/>
+              <Var name="Folder" t="data.IfThenElse">
+                <If t="yesno.Contains" AllText="%@id%">
+                  <Text value="/"/>
+                </If>
+                <Then t="data.Pipeline">
+                  <Item t="text.RemoveSuffix" Data="%@id%" Separator="/"/>
+                  <Item value="%% / "/>
+                </Then>
+              </Var>
+            </ItemName>
+          </Action>
+        </Action>
+      </Field>
+      <Field t="control.Button" ID="File" Title="Save">
+        <Style t="gstudio.StudioMenuItem"/>
+        <Image t="gstudio.StudioSmallImage" PositionInSprite="48,0"/>
+        <Action t="gstudio.Save" AlsoDeploy="false"/>
+      </Field>
+      <Field t="control.Button" ID="File" Title="Save and deploy">
+        <Style t="gstudio.StudioMenuItem"/>
+        <Image t="gstudio.StudioSmallImage" PositionInSprite="48,0"/>
+        <Action t="gstudio.Save" AlsoDeploy="true"/>
+      </Field>
+      <Field t="control.Button" ID="Refersh" Title="Clean Queues">
+        <Style t="gstudio.StudioMenuItem"/>
+        <Image t="gstudio.StudioSmallImage" PositionInSprite="80,0"/>
+        <Action t="action.RunActions">
+          <Action t="crawler_studio.CleanSamplesCache" />
+          <Action t="gstudio.StrongRefresh" AlsoDeploy="false"/>
+        </Action>
+      </Field>
+      <Field t="control.Button" ID="File" Title="Edit Crawler Xtml...">
+        <Style t="gstudio.StudioMenuItem"/>
+        <Action t="action.RunActions">
+          <Action t="gstudio.SetSelectedFieldXtml" FieldXtml="%$_AppContext/AppXtml%"/>
+          <Action t="gstudio_popup.ShowProperties"/>
+        </Action>
+      </Field>
+      <Field t="control.Button" ID="File" Title="Crawler source xml...">
+        <Style t="gstudio.StudioMenuItem"/>
+        <Action t="xmlui.ShowXmlDialog" Title="Xtml Source of %$_WidgetXml/@name%" AutoWrite="true" AutoWriteAllowTagChange="" Xml="%$_WidgetXml%">
+          <Var name="Xtml" value="%$InspectObject/Xtml%"/>
+          <Var name="Name" t="text.FirstSucceeding">
+            <Item value="%$Xtml/@Title%"/>
+            <Item value="%$Xtml/@ID%"/>
+          </Var>
+          <OnUpdate t="action.RunActions">
+            <Action t="gstudio.StrongRefresh"/>
+            <Action t="bart_dt.RefreshDtPopups"/>
+          </OnUpdate>
+        </Action>
+      </Field>
+    </Field>
+    <Field t="gstudio.DataMainMenu">
+      <BottomMenuItems t="field.Fields">
+        <Field t="control.SeparatingLine" ID="SeparatingLine" Title="SeparatingLine">
+          <Style t="gstudio.StudioMenuSeparator"/>
+        </Field>
+        <Field t="control.Button" ID="ResultsAsCSV" Title="Results as CSV ..." HideTitle="true">
+          <Style t="gstudio.StudioMenuItem"/>
+          <Action t="xmlui.ShowTextDialog" Title="Results" StudioPopup="true">
+            <Text t="crawler.XmlToCSV" XmlItems="%$_AppContext/Resources[ID='Results']/Xml/a%"/>
+          </Action>
+        </Field>
+        <Field t="control.Button" ID="ResultsAsTabs" Title="Results as Tabs ..." HideTitle="true">
+          <Style t="gstudio.StudioMenuItem"/>
+          <Action t="xmlui.ShowTextDialog" Title="Results" StudioPopup="true">
+            <Text t="crawler.XmlToCSV" XmlItems="%$_AppContext/Resources[ID='Results']/Xml/a%" Separator="&#009;"/>
+          </Action>
+        </Field>
+        <Field t="control.Button" ID="ResultsAsTable" Title="Results as Table ..." HideTitle="true">
+          <Style t="gstudio.StudioMenuItem"/>
+          <Action t="popup.OpenPopup" PopupTitle="Results">
+            <Contents t="field.InnerPage">
+              <Layout t="layout.Default"/>
+              <Field t="field.ItemList">
+                <FieldAspect t="field_aspect.ItemListContainer">
+                  <Items t="itemlist.Items" Items="%$Results/a%"/>
+                </FieldAspect>
+                <View t="itemlist_style.JBartTable"/>
+                <Field t="field.DynamicFields">
+                  <FieldItems t="data.Pipeline">
+                    <Item t="data.Pipeline">
+                      <Item value="%$Results/a%"/>
+                      <Aggregator t="data.Subset" Count="500"/>
+                    </Item>
+                    <Item t="xml.Attributes"/>
+                    <Item t="xml.AttributeName"/>
+                    <Aggregator t="data.MakeUnique"/>
+                  </FieldItems>
+                  <Field t="control.Label" Title="%%" Text="%@{$_FieldItem}%"/>
+                </Field>
+                <FieldAspect t="field_aspect.DynamicSize">
+                  <Height t="scroll_size.DeviceHeight" ReducePixels="200" StretchFromCurrentLocation="false" ApplyOn="max-height"/>
+                  <Width t="scroll_size.DeviceWidth" ReducePixels="200" StretchFromCurrentLocation="false" ApplyOn="max-width"/>
+                </FieldAspect>
+                <FieldAspect t="field_feature.Css" Css="#this { overflow: auto; }"/>
+              </Field>
+            </Contents>
+            <Style t="gstudio.GoogleDrivePopup"/>
+          </Action>
+        </Field>
+      </BottomMenuItems>
+    </Field>
+  </xtml>
+</Component>
+
+ <Component id="RunAllServices" type="action.Action">
+  <xtml t="action.RunActions">
+    <Action t="crawler.StartAllQueues"/>
+    <Action t="field.RefreshField" FireOnUpdate="" FieldID="queue_toolbar" Scope="screen"/>
+  </xtml>
+ </Component>
+
+<Component id="MainToolbar" type="field.Fields" hidden="true" dtsupport="false">
+  <xtml t="google_drive.Toolbar" Title="toobar" ID="studio_main_toolbar">
+    <Field t="google_drive.ExpandCollapseToolbarButtons"/>
+    <Field t="control.Button" ID="gstudio_toolbar_save" Title="Save">
+      <Style t="google_drive.StudioToolbarIcon"/>
+      <Action t="gstudio.Save" AlsoDeploy="%$_DomEvent/ctrlKey%"/>
+      <Image t="gstudio.StudioSmallImage" PositionInSprite="48,0"/>
+    </Field>
+    <Field t="control.Button" ID="gstudio_toolbar_refresh" Title="Refresh">
+      <Style t="google_drive.StudioToolbarIcon"/>
+      <Action t="action.IfThenElse" If="%$_DomEvent/ctrlKey%">
+        <Then t="action.RunActions">
+          <Action t="crawler_studio.CleanSamplesCache" />
+          <Action t="gstudio.StrongRefresh"/>
+        </Then>
+        <Else t="gstudio.Refresh"/>
+      </Action>
+      <Image t="gstudio.StudioSmallImage" PositionInSprite="80,0"/>
+    </Field>
+    <Field t="control.Button" ID="gstudio_toolbar_refresh" Title="Start All">
+      <Style t="google_drive.StudioToolbarIcon"/>
+      <Action t="crawler_studio.RunAllServices">&#xa;      </Action>
+      <Image t="gstudio.StudioSmallImage" PositionInSprite="304,0"/>
+    </Field>
+    <Field t="control.Button" ID="gstudio_toolbar_refresh" Title="Add Queue">
+      <Style t="google_drive.StudioToolbarIcon"/>
+      <Action t="crawler_studio.RunAllServices">&#xa;      </Action>
+      <Image t="gstudio.StudioSmallImage" PositionInSprite="64,16"/>
+    </Field>
+    <Field t="control.Button" ID="gstudio_toolbar_refresh" Title="Show Results">
+      <Style t="google_drive.StudioToolbarIcon"/>
+      <Action t="bart_dt.ShowDataResource" DataResourceXtml="%$_AppContext/AppXtml/DataResource[@ResourceID='Results']%"/>
+      <Image t="gstudio.StudioSmallImage" PositionInSprite="320,0"/>
+    </Field>
+    <Field t="gstudio.ErrorsButtonInToolbar"/>
+  </xtml>
+</Component>
+
+<Component id="QueueViewer" type="field.Fields" light="false">
+  <Param name="QueueID"/>
+  <Param name="Compact" type="data.Boolean"/>
+  <xtml t="control.Layout" Title="">
+    <Field t="field.ItemListContainer" ID="queue_contents" Title="Queue">
+      <Items t="itemlist.Items">
+        <Items t="crawler.QueueContents" QueueID="%$QueueID%"/>
+      </Items>
+      <Field t="field.ItemList" Title="Queue Items" ID="queue_inner">
+        <View t="ui.CustomCss" base="itemlist_style.JBartTable">
+          <Style t="itemlist_style.JBartTable">                </Style>
+          <Css><![CDATA[#this {
+  height:140px;
+  padding-left:3px;
+  padding-top:3px;
+  overflow: auto;
+}
+#this >table {
+  color:#404040;
+  padding-right: 20px;
+  border: 1px #ccc solid;
+  min-width: 350px;
+  border-collapse: collapse;
+  border-spacing: 0px;
+}
+#this>table>tbody>tr.aa_details_inplace>td {
+  background:#FAFADC;
+}
+#this>table>tbody>tr>td {
+  color:#404040;
+  padding-top: 5px;
+  padding-right: 5px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  border-bottom: 1px solid #ccc;
+  border-left: 1px solid #ccc;
+  vertical-align:top;
+  border-collapse: collapse;
+  border-spacing: 0px;
+}
+#this>table>thead>tr>th {
+  background:#eee;
+  padding-top: 4px;
+  padding-right: 5px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  border-left: 1px solid #CCC;
+  border-bottom: 1px solid #CCC;
+}
+#this>table>thead>tr>th>.title {
+  color:#666;
+  font-weight:bold;
+  font-size: 11px;
+  padding-right: 5px;
+}
+#this>table>thead>tr>th>.sortArrow {
+  cursor:default;
+  padding-right: 10px;
+}
+#this>table>thead>tr>th.sort_ascending >.sortArrow {
+  background:url(images/css/sort2.gif) no-repeat 0 5px;
+}
+#this>table>thead>tr>th.sort_descending >.sortArrow {
+  background:url(images/css/sort1.gif) no-repeat 0 5px;
+}
+]]></Css>
+        </View>
+        <FieldAspect t="itemlist_aspect.LongList"/>
+        <FieldAspect t="itemlist_aspect.ShowTextWhenNoItems" Text="The queue is empty"/>
+        <FieldAspect t="itemlist_aspect.ItemSelection" KeyboardSupport="true" AlwaysOneSelected="true" MouseSupport="mouse hover">
+          <Css><![CDATA[{ background: #D9E8FB; }]]></Css>
+        </FieldAspect>
+        <Field t="control.Label" ID="queue_val" Title="Value" Text="%@val%">
+          <Style t="ui.CustomStyle" base="uitext.PlainText">
+            <Html><![CDATA[<div />]]></Html>
+            <Css><![CDATA[#this {
+  white-space: nowrap;
+  max-width:340px;
+  overflow:hidden;
+}
+]]></Css>
+            <Javascript><![CDATA[function(textObj) { 
+  textObj.$el.text(textObj.text);
+}]]></Javascript>
+          </Style>
+          <FieldAspect t="field_aspect.Title">
+            <Title t="data.Pipeline">
+              <Var name="Count" value="%=Count($ItemListCntr/Items)%"/>
+              <Item value="%$QueueID% (%$Count%)"/>
+            </Title>
+          </FieldAspect>
+        </Field>
+      </Field>
+      <Layout t="layout.Vertical" Spacing="7px"/>
+    </Field>
+    <Layout t="ui.CustomCss" base="layout.Default">
+      <Style t="layout.Default"/>
+      <Css><![CDATA[#this {
+}
+
+#this .fld_Qeuue_buttons {
+  visibility: hidden;
+}
+
+#this:hover .fld_Qeuue_buttons {
+  visibility: visible;
+}]]></Css>
+    </Layout>
+  </xtml>
+</Component>
+
+   <Component id="ShowFloatingObjectProperties" type="action.Action" light="false">
+      <Param name="Xtml" />
+      <xtml t="popup.OpenPopup">
+        <PopupTitle t="data.Pipeline">
+          <Var name="Selected" value="%$Xtml%" />
+          <Var name="Type" t="data.Pipeline">
+            <Item value="%$Selected/@t%"/>
+            <Item t="text.Split" Separator="." Part="Second"/>
+          </Var>
+          <Var name="Title" value="%$Selected/@ID%"/>
+          <Item value="Properties of %$Title% (%$Type%)"/>
+        </PopupTitle>
+        <Data value="%$Xtml%" />
+        <Style t="gstudio.StudioFloatingPopup" MinWidth="300px" MaxWidth="300px"/>
+        <Feature t="gstudio.StudioFloatingPopupFeatures" Identifier="properties" FieldIdsToRefreshWhenOpenOrClosed="gstudio_toolbar_properties" Xtml="%%">
+          <Location t="popup.ScreenTopRight" MarginRight="20" MarginTop="120" />
+        </Feature>
+        <Feature t="popup.AutoFocusOnFirstInput" />
+        <Contents t="field.InnerPage">
+          <Field t="field.Layout" ID="DT_Properties_Basic" Title="Properties">
+            <Field t="field_control.CustomXtmlControl" ID="DT_Properties_Basic_Control" Title="Control" >
+              <FieldAspect t="field_feature.Css">
+                <Css><![CDATA[#this { padding: 8px; }]]></Css>
+              </FieldAspect>
+              <Control t="ui.Document">
+                <Field t="xtml_dt.ParamsAsFields"/>
+                <Presentation t="uiaspect.Group">
+                  <Style t="group.PropertySheet"/>
+                </Presentation>
+              </Control>
+            </Field>
+          </Field>
+        </Contents>
+      </xtml>
+    </Component>
+
+<Component id="ShowFloatingSample" type="action.Action" light="false">
+  <Param name="SampleXtml"/>
+  <xtml t="popup.OpenPopup" PopupTitle="Sample for %../@ID% - %@Name%">
+    <Style t="gstudio.StudioFloatingPopup" MinWidth="300px"/>
+    <Feature t="gstudio.StudioFloatingPopupFeatures" Identifier="sample" FieldIdsToRefreshWhenOpenOrClosed="" Xtml="%$SampleXtml%">
+      <Location t="popup.ScreenTopRight" MarginRight="20" MarginTop="120"/>
+    </Feature>
+    <Contents t="field.InnerPage">
+      <Field t="control.TabControl" ID="DT_Properties_Tab" Title="Tabs">
+        <Style t="gstudio.StudioStyleTabs"/>
+        <Field t="parser.PreviewHtml" ID="_PreviewHtml" Title="Preview">
+          <Html t="crawler.SampleContents">
+            <Sample t="xtml.RunXtml" Xtml="%$SampleXtml%" />
+          </Html>
+          <Style t="preview_html.Simple" Border="" Width="600px" Height="400px"/>
+        </Field>
+        <Field t="fld.Field" ID="source" Title="Source">
+          <FieldData t="crawler.SampleContents">
+            <Sample t="xtml.RunXtml" Xtml="%$SampleXtml%" />
+          </FieldData>
+          <FieldType t="fld_type.EditableText">
+            <Style t="editable_text.JBartMultiLine" Width="600px" Height="400px"/>
+          </FieldType>
+        </Field>
+        <Field t="field_control.CustomXtmlControl" ID="DT_Properties_Basic_Control" Title="Properties" >
+          <FieldAspect t="field_feature.Css">
+            <Css><![CDATA[#this { padding: 8px; }]]></Css>
+          </FieldAspect>
+          <Control t="ui.Document" Data="%$SampleXtml%">
+            <Field t="xtml_dt.ParamsAsFields"/>
+            <Presentation t="uiaspect.Group">
+              <Style t="group.PropertySheet"/>
+            </Presentation>
+          </Control>
+        </Field>
+      </Field>
+    </Contents>
+  </xtml>
+</Component>
+
+<Component id="ShowFloatingService" type="action.Action" light="false">
+  <Param name="Xtml"/>
+  <xtml t="popup.OpenPopup" PopupTitle="Service - %$Xtml/../@ID%">
+    <Style t="gstudio.StudioFloatingPopup" MinWidth="250px"/>
+    <Feature t="gstudio.StudioFloatingPopupFeatures" Identifier="service" FieldIdsToRefreshWhenOpenOrClosed="" Xtml="%$Xtml%">
+      <Location t="popup.ScreenTopRight" MarginRight="20" MarginTop="120"/>
+    </Feature>
+    <Contents t="field.InnerPage">
+      <Field t="control.Layout">
+        <FieldAspect t="field_feature.Css">
+          <Css><![CDATA[#this { padding: 8px; }]]></Css>
+        </FieldAspect>
+        <Field t="field_control.CustomXtmlControl" ID="DT_Properties_Basic_Control" Title="Properties">
+          <Control t="ui.Document" Data="%$Xtml%">
+            <Field t="xtml_dt.ParamsAsFields"/>
+            <Presentation t="uiaspect.Group">
+              <Style t="group.PropertySheet"/>
+            </Presentation>
+          </Control>
+        </Field>
+        <Field t="control.Button" ID="_RunServiceOnce" Title="Run Once">
+          <Style t="btn.JBart"/>
+          <Action t="crawler.RunServiceOnce" ServiceID="%$Xtml/@ID%" />
+          <FieldAspect t="field_feature.Layout">
+            <Css><![CDATA[#this { margin-top: 11px; }]]></Css>
+          </FieldAspect>
+        </Field>
+      </Field>
+    </Contents>
+  </xtml>
+</Component>
+
+<Component id="ShowFloatingEditQueue" type="action.Action" light="false">
+  <Param name="Xtml"/>
+  <xtml t="popup.OpenPopup" PopupTitle="Queue - %$Xtml/@ID%">
+    <Style t="gstudio.StudioFloatingPopup" MinWidth="250px"/>
+    <Feature t="gstudio.StudioFloatingPopupFeatures" Identifier="edit_queue" FieldIdsToRefreshWhenOpenOrClosed="" Xtml="%$Xtml%">
+      <Location t="popup.ScreenTopRight" MarginRight="20" MarginTop="120"/>
+    </Feature>
+    <Contents t="field.InnerPage">
+      <Field t="control.Layout">
+        <FieldAspect t="field_feature.Css">
+          <Css><![CDATA[#this { padding: 8px; }]]></Css>
+        </FieldAspect>
+        <Field t="field_control.CustomXtmlControl" ID="DT_Properties_Basic_Control" Title="Properties">
+          <Control t="ui.Document" Data="%$Xtml%">
+            <Field t="xtml_dt.ParamsAsFields"/>
+            <Presentation t="uiaspect.Group">
+              <Style t="group.PropertySheet"/>
+            </Presentation>
+          </Control>
+        </Field>
+      </Field>
+    </Contents>
+  </xtml>
+</Component>
+
+<Component id="ShowSampleButton" type="field.Fields" light="false">
+  <xtml t="control.Button" ID="Open" Title="Show Sample..." HideTitle="true">
+    <FieldAspect t="field_aspect.HideTitle"/>
+    <Action t="crawler_studio.ShowFloatingSample" SampleXtml="%%"/>
+    <Style t="btn.Hyperlink"/>
+  </xtml>
+</Component>
+
+<Component id="MainArea" type="field.Fields" light="false">
+  <xtml t="control.Layout" ID="gstudio_widget_preview" Title="Crawler Main">
+    <FieldAspect t="crawler_studio.RefreshCrawlerObjects"/>
+    <Layout t="ui.CustomCss" base="layout.Vertical">
+      <Style t="layout.Vertical" Spacing=""/>
+      <Css><![CDATA[#this >.field:not(:last-child) {
+  margin-bottom: ;
+}
+#this >.field { clear: both; }]]></Css>
+    </Layout>
+    <Field t="field.ItemList" Title="queues" ID="queues_table">
+      <View t="ui.CustomCss" base="itemlist_style.Simple">
+        <Style t="itemlist_style.Simple"/>
+        <Css><![CDATA[#this>.aa_item {
+  overflow: hidden;
+  float: left;
+  background-color:#ffffff;
+  width: 360px;
+  height: 220px;
+  border-radius: 3px;
+  margin-top: 0;
+  margin-right: 15px;
+  margin-bottom: 15px;
+  margin-left: 0;
+  border: 1px solid #aaa;
+  box-shadow:  2px 2px 3px 1px #ccc;
+  background-image: -webkit-linear-gradient(-90deg, #ffffff 0\% , #ffffff 50\% , #e6e6e6 100\% );
+}
+]]></Css>
+      </View>
+      <FieldAspect t="field_aspect.ItemListContainer">
+        <Items t="itemlist.Items" Items="%$_AppContext/Queues/ID%"/>
+      </FieldAspect>
+      <Field t="control.Layout" ID="_Group" Title="Queue Section">
+        <Field t="control.Button" ID="_Button" Title="">
+          <Style t="btn.HyperlinkWithImage"/>
+          <Action t="action.RunActions">
+            <Action t="itemlist_action.DeleteItem">
+              <Item t="itemlist_item.ItemInContext"/>
+            </Action>
+            <Action t="popup_confirmation.OpenConfirmationPopup" Title="Delete Queue '%%'">
+              <Style t="popup_confirmation.GoogleDriveConfirmation"/>
+              <Action t="action.RunActions">
+                <Action t="xml.ChangeXml" Xml="%$_AppContext/AppXtml/Queue[@ID='{}']%">
+                  <Change t="xml.Delete"/>
+                </Action>
+                <Action t="gstudio.Refresh"/>
+              </Action>
+            </Action>
+          </Action>
+          <Image t="img.Image" Url="%$_Images%/delete1616.gif">
+            <AdjustSize t="img.Center"/>
+          </Image>
+          <FieldAspect t="field_feature.Layout">
+            <Css><![CDATA[#this {
+  position:absolute;
+  top:5px;
+  right:5px;
+} #wrapper {}]]></Css>
+          </FieldAspect>
+          <FieldAspect t="field_aspect.ShowOnlyOnItemHover">
+            <Css><![CDATA[#this { display: none !important;}
+#item:hover #this { display: block !important; }]]></Css>
+          </FieldAspect>
+        </Field>
+        <Field t="control.Label" ID="_Label" Title="Title">
+          <Style t="ui.CustomCss" base="uitext.PlainText">
+            <Style t="uitext.PlainText"/>
+            <Css><![CDATA[#this { padding: 8px 0 0 7px; font-size: 14px; 
+  height: 25px; font: bold 15px arial; 
+  background: #d8e8e5; color: #040205; }
+]]></Css>
+          </Style>
+          <Text t="data.Pipeline">
+            <Item value="%$Index%) %%"/>
+            <Var name="Index" t="xml.IndexOfElement" Data="%$_AppContext/AppXtml/Queue[@ID='{}']%"/>
+          </Text>
+        </Field>
+        <Field t="control.Layout" ID="_crawler_queue" Title="Group">
+          <Field t="control.Layout" ID="queue_toolbar" Title="Toolbar">
+            <Layout t="ui.CustomCss" base="layout.HorizontalCss3">
+              <Style t="layout.HorizontalCss3" Spacing="3px"/>
+              <Css><![CDATA[#this {
+  background-color: #edede8;
+  height: 30px;
+  display: -webkit-box;
+  -webkit-box-orient: horizontal;
+}
+#this >.field {
+  margin-right: 3px;
+  margin-left: 3px;
+  margin-top:5px;
+}
+]]></Css>
+            </Layout>
+            <Field t="control.Button" ID="_start_queue" Title="Start" HideTitle="true">
+              <Style t="btn.Bootstrap">
+                <Size t="bootstrap_btn.Mini"/>
+                <Type t="bootstrap_btn.Success"/>
+              </Style>
+              <Action t="operation.RunActions">
+                <Action t="crawler.StartQueue" QueueID="%%"/>
+                <Action t="field.RefreshField" FireOnUpdate="" FieldID="queue_toolbar" Scope="screen"/>
+              </Action>
+              <FieldAspect t="field_aspect.Hidden">
+                <OnCondition t="field_aspect.CheckConditionForEveryItem" DataForCondition="Item data" WhenHidden="Do not render">
+                  <ShowCondition t="yesno.Not">
+                    <Of t="crawler.IsQueueRunning" QueueID="%%"/>
+                  </ShowCondition>
+                </OnCondition>
+              </FieldAspect>
+            </Field>
+            <Field t="control.Button" ID="_stop_queue" Title="Stop" HideTitle="true">
+              <Style t="btn.Bootstrap">
+                <Size t="bootstrap_btn.Mini"/>
+                <Type t="bootstrap_btn.Info"/>
+              </Style>
+              <Action t="operation.RunActions">
+                <Action t="crawler.StopQueue" QueueID="%%"/>
+                <Action t="field.RefreshField" FireOnUpdate="" FieldID="queue_toolbar" Scope="screen"/>
+              </Action>
+              <FieldAspect t="field_aspect.Hidden">
+                <OnCondition t="field_aspect.CheckConditionForEveryItem" DataForCondition="Item data" WhenHidden="Do not render">
+                  <ShowCondition t="crawler.IsQueueRunning" QueueID="%%"/>
+                </OnCondition>
+              </FieldAspect>
+            </Field>
+            <Field t="control.Button" ID="_Button" Title="Edit...">
+              <Style t="btn.Bootstrap">
+                <Size t="bootstrap_btn.Mini"/>
+                <Type t="bootstrap_btn.Success"/>
+              </Style>
+              <Action t="crawler_studio.ShowFloatingEditQueue" Xtml="%$_AppContext/AppXtml/Queue[@ID='{}']%"/>
+            </Field>
+            <Field t="control.Button" ID="_Button" Title="Parser...">
+              <Style t="btn.Bootstrap">
+                <Size t="bootstrap_btn.Mini"/>
+                <Type t="bootstrap_btn.Success"/>
+              </Style>
+              <Action t="gstudio_popup.ShowAAEditorFloatingPopup" Xtml="%$_AppContext/AppXtml/Queue[@ID='{}']/Service/Parser%" Title="Parser for %%"/>
+            </Field>
+            <Field t="control.Button" ID="_Button" Title="Service...">
+              <Style t="btn.Bootstrap">
+                <Size t="bootstrap_btn.Mini"/>
+                <Type t="bootstrap_btn.Success"/>
+              </Style>
+              <Action t="crawler_studio.ShowFloatingService" Xtml="%$_AppContext/AppXtml/Queue[@ID='{}']/Service%"/>
+              <FieldAspect t="field_aspect.Hidden"/>
+            </Field>
+            <Field t="control.Button" ID="_Button" Title="Preview ...">
+              <Style t="btn.Bootstrap">
+                <Size t="bootstrap_btn.Mini"/>
+                <Type t="bootstrap_btn.Success"/>
+              </Style>
+              <FieldAspect t="field_aspect.Tooltip" Tooltip="Show results for sample input"/>
+              <Action t="xmlui.ShowXmlDialog" AutoWrite="" AutoWriteAllowTagChange="" StudioPopup="true">
+                <Xml t="crawler.QueuePreviewResults" QueueID="%%"/>
+              </Action>
+            </Field>
+            <Field t="control.Button" ID="_Button" Title="Empty">
+              <Style t="btn.Bootstrap">
+                <Size t="bootstrap_btn.Mini"/>
+                <Type t="bootstrap_btn.Default"/>
+              </Style>
+              <Action t="crawler.EmptyQueue" QueueID="%%"/>
+            </Field>
+            <Field t="control.Button" ID="_Button" Title="Add...">
+              <Style t="btn.Bootstrap">
+                <Size t="bootstrap_btn.Mini"/>
+                <Type t="bootstrap_btn.Default"/>
+              </Style>
+              <Action t="popup.OpenPopup" PopupTitle="Add to queue">
+                <Style t="popup.Default"/>
+                <Contents t="field.InnerPage" Title="Add to queue">
+                  <Layout t="layout.Default"/>
+                  <Field t="control.Layout" ID="_Vertical_Layout" Title="Vertical Layout">
+                    <Layout t="layout.Vertical" Spacing="10px"/>
+                    <FieldAspect t="field_aspect.FieldData">
+                      <FieldData t="xml.Xml" DynamicContent="true">
+                        <xml queue="%%"/>
+                      </FieldData>
+                    </FieldAspect>
+                    <Field t="control.Label" ID="_Label" Title="Title" Text="Please insert the entry you want to add:">
+                      <Style t="uitext.PlainText"/>
+                    </Field>
+                    <Field t="fld.Field" FieldData="%!@value%" ID="value" Title="Value">
+                      <FieldType t="fld_type.EditableText">
+                        <Style t="editable_text.JBartTextbox" Width="275px"/>
+                      </FieldType>
+                      <FieldAspect t="field_aspect.Mandatory"/>
+                    </Field>
+                    <Field t="control.Button" ID="_Button" Title="Add">
+                      <Style t="btn.JBart"/>
+                      <Action t="popup.CloseContainingPopup">
+                        <DoOnExit t="crawler.AddToQueue" AddIfNotAlreadyAdded="true" Value="%@value%" QueueID="%@queue%"/>
+                      </Action>
+                    </Field>
+                  </Field>
+                </Contents>
+              </Action>
+            </Field>
+          </Field>
+          <Field t="crawler_studio.QueueViewer" QueueID="%%" Compact=""/>
+          <Layout t="layout.Default"/>
+          <FieldAspect t="field_feature.Css">
+            <Css><![CDATA[#this {
+  overflow: auto;
+  padding-bottom:20px;
+  max-height:300px;
+  max-width: 400px;
+}
+]]></Css>
+          </FieldAspect>
+        </Field>
+        <Layout t="ui.CustomCss" base="layout.Vertical">
+          <Style t="layout.Vertical" Spacing="0"/>
+          <Css><![CDATA[#this {} #this >.field:not(:last-child) {
+  margin-bottom:0;
+}
+
+#this {
+  position:relative;
+}]]></Css>
+        </Layout>
+      </Field>
+    </Field>
+    <Field t="control.Layout" ID="_Group" Title="Services">
+      <Layout t="layout.HorizontalCss3" Spacing="15px"/>
+      <Field t="control.Button" ID="_Button" Title="Start All">
+        <Style t="btn.AsyncGray"/>
+        <Action t="crawler_studio.RunAllServices"/>
+      </Field>
+      <Field t="control.Button" ID="_Button" Title="+ Add Queue">
+        <Style t="btn.AsyncGray"/>
+        <Action t="crawler_studio.CrawlerStudioAddQueue"/>
+      </Field>
+      <Field t="control.Button" ID="_Button" Title="+ Add Queue as first">
+        <Style t="btn.AsyncGray"/>
+        <Action t="crawler_studio.CrawlerStudioAddQueue" AsFirst="true"/>
+      </Field>
+    </Field>
+  </xtml>
+</Component>
+
+<Component id="CrawlerStudioAddQueue" type="action.Action">
+  <xtml t="xml.AddXmlChildren" CloneChildren="false" Parent="%$_AppContext/AppXtml%">
+    <Children t="data.Pipeline">
+      <Item t="data.FirstSucceeding">
+        <Item value="%$_JBartStudio/CrawlerQueuePrototype%"/>
+        <Item t="xml.Xml">
+          <Queue t="crawler.Queue">
+            <Service t="crawler.Service">
+              <ParserData t="http.HttpCall" Url="%%">
+                <Aspect t="http.JBartCrossDomainProxy"/>
+              </ParserData>
+              <Parser t="crawler.Parser">
+                <OutputQueueItems t="data.Pipeline">
+                  <Item t="text.Extract"/>
+                </OutputQueueItems>
+              </Parser>
+            </Service>
+          </Queue>
+        </Item>
+      </Item>
+      <Item t="xml.WithChanges">
+        <Change t="xml.SetAttribute" AttributeName="ID">
+          <Value t="data.Pipeline">
+            <Item t="data.Math">
+              <Expression t="data.Pipeline">
+                <Item t="data.Pipeline">
+                  <Item value="%$_AppContext/AppXtml/Queue%"/>
+                  <Aggregator t="data.Count"/>
+                </Item>
+                <Item value="%% + 1"/>
+              </Expression>
+            </Item>
+            <Item value="Queue_%%"/>
+          </Value>
+        </Change>
+        <Change t="xml.SetAttribute" AttributeName="OutputQueue" Data="%Service%" Value="%$_AppContext/AppXtml/Queue/@ID%" Condition="%$AsFirst%"/>
+      </Item>
+    </Children>
+    <DoOnAddedChildren t="action.RunActions">
+      <Action t="gstudio.Refresh"/>
+      <Action t="crawler_studio.ShowFloatingEditQueue" Xtml="%%"/>
+    </DoOnAddedChildren>
+    <AddAsFirst value="%$AsFirst%"/>
+  </xtml>
+  <Param name="AsFirst" type="data.Boolean"/>
+</Component>
+
+<Component id="RefreshCrawlerObjects" type="field.FieldAspect" execution="native" />
+<Component id="CleanSamplesCache" type="action.Action" execution="native" />
+
+</xtml>
+
+<xtml ns="crawler_deploy">
+
+  <Component id="Deploy" type="action.Action">
+    <xtml t="action.RunActions">
+      <Action t="notification_box.ShowNotification" NotificationBox="GStudio_NotificationBox" Text="Deploying..." Duration="2000" Status="saving" />
+      <Action t="async.RunAsyncActions">
+        <Var name="All" t="bart_dt.JavascriptForCompress" FullPackage="false" CrawlerNodeJS="true" Clean="true" />
+        <Var name="WidgetId" t="text.Split" Separator="/" Text="%$_WidgetXml/@id%" Part="Last"/>
+        <Action t="async.SaveFileInLocalComputer" FilePath="crawlers/%$WidgetId%.js" AlsoCreateDirectory="true">
+          <FileContents t="text.Concat" Separator="&#xa;">
+            <Item value="(function(){" />
+            <Item value="%$All%;" />
+            <Item t="bart_dt.WidgetAsJavascript" NodeJS="true" />
+            <Item value="GLOBAL.crawlerID = '%$WidgetId%';" />
+            <Item value="GLOBAL.aa_crawlerRunFromNodeJS = aa_crawlerRunFromNodeJS;" />
+            <Item value="GLOBAL.aa_crawlerGetResults = aa_crawlerGetResults;" />
+            <Item value="GLOBAL.aa_crawlerGetQueues = aa_crawlerGetQueues;" />
+            <Item value="}());" />
+          </FileContents>
+        </Action>
+        <Action t="notification_box.ShowNotification" NotificationBox="GStudio_NotificationBox" Text="Widget Deployed to NodeJS" Duration="2000" Status="saved" />
+      </Action>
+    </xtml>
+
+  </Component>
+
+</xtml>
+
+</xtml>

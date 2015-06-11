@@ -1,0 +1,70 @@
+<xtml ns="bart_url">
+
+  <Type id="UrlProvider" />
+  
+  <Component id="BrowserUrl" type="bart_url.UrlProvider">
+  	<Param name="OnUpdate" type="action.Action" script="true" />
+    <xtml t="xtml.Params">
+      <ScriptParam name="GetValue" paramVars="Attribute" t="ui.UrlFragment" Attribute="%$Attribute%" />
+      <ScriptParam name="Clean" t="uiaction.SetUrlFragment" Fragment="" />
+      <ScriptParam name="Update" paramVars="ValuePairs" t="action.RunActions" >
+      	<Action t="uiaction.SetUrlFragment">
+	        <Fragment t="bart_url.NewUrlFragment" Proposed="%$ValuePairs%">
+	          <Current t="ui.UrlFragment"/>
+	        </Fragment>
+        </Action>
+        <Action t="xtml.UseParam" Param="OnUpdate" />
+      </ScriptParam>
+    </xtml>
+  </Component>
+
+  <Component id="InMemoryUrl" type="bart_url.UrlProvider">
+    <Param name="DefaultUrl" />
+    <xtml t="xtml.Params">
+      <Param name="All" value="%$DefaultUrl%" />
+      <Method name="GetValue" paramVars="Attribute" t="ui.UrlFragmentAttribute" Url="%$_This/All%" Attribute="%$Attribute%" />
+      <Method name="Update" paramVars="ValuePairs" t="object.SetProperty" Object="%$_This%" Property="All">
+        <Value t="bart_url.NewUrlFragment" Current="%$_This/All%" Proposed="%$ValuePairs%"/>
+      </Method>
+    </xtml>
+  </Component>
+
+  <Component id="UrlAttribute" type="data.Data">
+      <Param name="Attribute" essential="true"/>
+      <xtml t="object.RunMethod" Object="%$_AppContext/Url%" Method="GetValue">
+        <Var name="Attribute" value="%$Attribute%"/>
+      </xtml>
+    </Component>
+
+  <Component id="UrlAttributeEquals" type="data.Boolean">
+    <Param name="Attribute"/>
+    <Param name="To" />
+    <xtml t="yesno.ItemsEqual" Item1="%$To%">
+      <Item2 t="bart_url.UrlAttribute" Attribute="%$Attribute%" />
+    </xtml>
+  </Component>
+    
+  <Component id="ChangeUrl" type="action.Action">
+      <Param name="Url" essential="true"/>
+      <Param name="CleanUrlBefore" type="data.Boolean"/>
+      <xtml t="action.RunActions">
+        <Action t="object.RunMethod" Object="%$_AppContext/Url%" Method="Clean" Condition="%$CleanUrlBefore%"/>
+        <Action t="object.RunMethod" Object="%$_AppContext/Url%" Method="Update">
+          <Var name="ValuePairs" t="text.RemovePrefix" Data="%$Url%" Separator="#"/>
+        </Action>
+      </xtml>
+    </Component>
+  
+  <Component id="UpdateUrl" type="action.Action">
+      <Param name="ValuePairs" essential="true"/>
+      <xtml t="object.RunMethod" Object="%$_AppContext/Url%" Method="Update">
+        <Var name="ValuePairs" value="%$ValuePairs%"/>
+      </xtml>
+    </Component>
+  
+ <Component id="NewUrlFragment" type="data.Data" execution="native">
+   <Param name="Current"/>
+   <Param name="Proposed"/>
+ </Component>
+
+</xtml>

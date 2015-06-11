@@ -1,0 +1,1480 @@
+<xtml ns="field_dt" light="false">
+
+  <Component id="TreeItemImage" type="data.Data" execution="native" />
+    
+  <Component id="PaneBottomMargin" type="data.Data">
+    <xtml t="data.IfThenElse" Then="20" Else="20">
+      <If t="yesno.IsEmpty" Value="%$GalleryNode/@id%" />
+    </xtml>
+  </Component>
+  
+  <Component id="HasPanes" type="data.Boolean">
+    <xtml t="ui.UrlFragment" Attribute="dtpanes" />
+  </Component>
+
+  <Component id="FieldTreeItemsDecorator" type="data_items.Items" light="false" execution="native" description="Adds inner pages">
+    <Param name="DataItems" />
+  </Component>
+  
+  <Component id="FieldTreeItems" type="data_items.Items">
+    <Param name="RootXtml" />
+    <xtml t="data_items.Items" Items="%$RootXtml%">
+      <Aspect t="data_items.RecursiveNextLevel">
+        <NextLevel t="field_dt.FieldTreeItemsDecorator">
+        <DataItems t="data.IfThenElse">
+          <Var name="ParentField" t="data.FirstSucceeding">
+            <Item value="%Page%" Remark="for inner page of embedded content types" />
+            <Item value="%%" />
+          </Var>
+          <If t="field_dt.IsGroup" Data="%$ParentField%" />
+          <Then t="xml.XmlItems" Parent="%$ParentField%" Tag="Field,Fields" />
+          <Else t="data.Switch">
+            <Case IfCondition="%@t% == 'jbart.Page'">
+              <Then t="data_items.Items" >
+                <Var name="PageId" t="text.Split" Separator="." Data="%Page/@t%" Part="Second" />
+                <Items value="%$_WidgetXml/bart_dev/db/bart_unit/bart_unit/Component[@id='{$PageId}']/xtml%" />
+              </Then>
+            </Case>
+            <Case IfCondition="%@t% == 'control.Page'">
+              <Then t="data_items.Items" >
+                <Items t="xtml.ComponentDefinition" ID="%Page/@t%" ToXtml="true" />
+              </Then>
+            </Case>
+          </Else>
+          </DataItems>
+        </NextLevel>
+      </Aspect>
+    </xtml>
+  </Component>
+
+  <Component id="XtmlForItemList" type="data.Data">
+    <Param name="BaseXtml" />
+    <xtml t="data.FirstSucceeding" Data="%$BaseXtml%">
+      <Item value="%Page%" Condition="%Page/@t%=='ui.ItemPage'" />
+      <Item value="%Page%" Condition="%Page/@t%=='ui.MultiplePage'" />
+      <Item value="%%" />
+    </xtml>
+  </Component>
+
+  <Component id="TitleField" type="field.FieldAspect">
+    <xtml t="field_aspect.Aspects">
+      <FieldAspect t="field_aspect.HandleEvent" Event="update">
+        <Action t="action.RunActions">
+          <Action t="cntr.RefreshSelectedTextAndImage">
+            <Cntr t="cntr.ContainerOfElement" RunOn=".jbstudio_tree" />
+          </Action>
+          <Action t="action.RunActions" Condition="%$_StudioIsNewItem%" >
+            <Var name="NewID" t="text.ToId" Text="%%" UsedIDs="%../../@ID%" /> 
+            <Action t="action.WriteValue" To="%../@ID%" Value="%$NewID%" />
+            <Action t="field.RefreshField" FieldID="dt_id" Scope="screen" /> 
+            <Action t="action.RunActions"> 
+              <Action t="action.WriteValue" To="%../@FieldData%" Value="\%@%$NewID%\%" />
+              <Action t="field.RefreshField" FieldID="dt_field_data" Scope="screen" />
+            </Action> 
+          </Action>
+        </Action>
+      </FieldAspect>
+      <FieldAspect t="field_aspect.HandleEvent" Event="enter pressed">
+        <Action t="action.RunActions">
+          <Action t="cntr.RefreshSelectedTextAndImage">
+            <Cntr t="cntr.ContainerOfElement" RunOn=".jbstudio_tree" />
+          </Action>
+          <Action t="field_dt.RefreshPreview" />
+        </Action>
+      </FieldAspect>
+    </xtml>
+  </Component>
+  
+  <Component id="AddField" type="action.Action">
+    <Param name="Xtml" />
+    <Param name="DataItems" />
+    <Param name="ParentElement">
+      <Default value="%$_ElemsOfOperation%" />
+    </Param>
+    <Param name="MoreItemsComing" type="data.Boolean" />
+    <xtml t="xml.AddToXmlItems" Xml="%$Xtml%">
+      <Var name="IsLastItem" t="yesno.Not" Of="%$MoreItemsComing%" />
+      <Items t="data.FirstSucceeding">
+        <Item value="%$DataItems%" />
+        <Item value="%$ChildDataItems%" />
+        <Item value="%$_Items%" />
+      </Items>
+      <DoOnAddedXml t="action.RunActions">
+        <Action t="uiaction.AddItemElement" Item="%%" ParentElement="%$ParentElement%" SelectIt="%$IsLastItem%" />
+        <Action t="field_dt.RefreshPreview" Condition="%$IsLastItem%" />
+      </DoOnAddedXml>
+    </xtml>
+  </Component>
+
+  <Component id="IsGroup" type="data.Boolean">
+    <xtml t="yesno.OR">
+      <Item t="xtml.ComponentHasParam" Param="Field" Component="%@t%" />
+      <Item t="xtml.ComponentHasParam" Param="Fields" Component="%@t%" />
+    </xtml>
+  </Component>
+
+  <Component id="ToGroupXtml" type="data.Data">
+    <Param name="ParentXtml" />
+    <xtml t="xml.WithChanges">
+      <Var name="ID" t="text.ToId" Text="%@Title%" UsedIDs="%$ParentXtml/Field/@ID%" />
+      <Var name="HideTitle" t="yesno.Not" Of="%@Is_Section%" />
+      <Xml t="xml.Xml" DynamicContent="true">
+        <Field t="field.Group" ID="%$ID%" Title="%@Title%" HideTitle="%$HideTitle%">
+          <FieldAspect t="field_aspect.Section" />
+        </Field>
+      </Xml>
+      <Change t="xml.Delete" Data="%FieldAspect%" Condition="%$HideTitle%" />
+    </xtml>
+  </Component>
+  
+  <Component id="FieldOperations" type="operation.Operations">
+    <xtml t="operation.Operations">
+      <Operation t="operation.Operation" Title="View This Page Only" Icon="%$_Images%/studio/page1616.png" ID="view_page">
+        <Disabled value="%../@type% != 'jbart.MyWidgetPage'" />
+        <Action t="action.RunActions">
+          <Action t="object.RunMethod" Object="%$_BartDevDtContext%" Method="ChangeOuterUrl">
+            <Param name="Url" value="?wpage=%@ID%"/>
+          </Action>
+          <Action t="object.RunMethod" Object="%$_BartDevDtContext%" Method="StrongRefresh"/>
+          <Action t="bart_dt.EditXtmlInStudioBar" Xtml="%%" />
+        </Action>
+      </Operation>
+      <Operation t="operation.Operation" Title="Wrap with a group" Icon="%$_Images%/studio/cube1616.gif" ID="wrap" >
+        <Action t="gstudio_insert.WrapWithGroup"/>
+      </Operation>
+      <Operation t="operation.DeleteItem">
+        <DoAfter t="field_dt.RefreshPreview" RefreshParent="true" />
+      </Operation>
+      <Operation t="operation.Operation" Title="Duplicate" Icon="%$_Images%/studio/duplicate.png" ID="duplicate" Disabled="'jbart.MyWidgetPage' == %../@type%">
+        <Action t="xml.AddSiblings" ExistingElement="%%" >
+            <NewElements t="xml.WithChanges" Xml="%%">
+              <Change t="xml.SetAttribute" AttributeName="Title" Value="%@Title%1" />
+              <Change t="xml.SetAttribute" AttributeName="ID">
+                <Value t="text.ToId" Text="%@ID%">
+                  <UsedIDs t="data.List">
+                    <Item t="gstudio_insert.UsedIDs" />
+                    <Item value="%../Field/@ID%" />
+                  </UsedIDs>
+                </Value> 
+              </Change>
+            </NewElements>
+            <DoOnNewChild t="action.RunActions">
+              <Action t="object.RunMethod" Object="%$_BartDevDtContext%" Method="Refresh" />
+              <Action t="bart_dt.EditXtmlInStudioBar" Xtml="%%"/>
+            </DoOnNewChild>
+          </Action>
+      </Operation>
+      <Operation t="operation.Operation" Title="Rename" Icon="%$_Images%/studio/textfield_rename.png" ID="rename" >
+        <Action t="field_dt.RenameField" />
+      </Operation>
+    </xtml>
+  </Component>
+
+  <Component id="RenameField" type="action.Action" execution="native">
+    <NativeHelper name="Refresh" t="field_dt.RefreshPreview"/>
+    <NativeHelper name="ID" t="text.ToId" Text="%%" />
+  </Component>
+
+  <Component id="SelectedFieldInfo" execution="native" />
+
+  <Component id="ExistingFieldsToAdd" type="data.Data" execution="native" dtsupport="false">
+    <Param name="ParentField" />
+    <Param name="ParentFieldPath" />
+    <Param name="ContentType" />
+  </Component>
+
+  <Component id="FieldsFromOtherPages" type="data.Data" execution="native" dtsupport="false">
+    <Param name="FieldXtml" />
+  </Component>
+
+  <Component id="OptionsTree" type="ui.Control">
+    <Param name="Xtml" />
+    <xtml t="ui.ItemList">
+      <Items t="field_dt.FieldTreeItems" Xtml="%$Xtml%" />
+      <Aspect t="uiaspect.DefaultFeatures" />
+      <Aspect t="uiaspect.ItemImage" ItemImage="%$_Images%/studio/bullet1616.gif" />
+      <Aspect t="uiaspect.ItemText" ItemText="%Preview/Title%" />
+      <Aspect t="uiaspect.NextLevels">
+        <NextLevelAspect t="uiaspect.NextLevels" />
+        <NextLevelAspect t="uiaspect.ItemImage" ItemImage="%$_Images%/studio/bullet1616.gif" />
+        <NextLevelAspect t="uiaspect.ItemText" ItemText="%Preview/Title%" />
+        <NextLevelAspect t="uiaspect.TreeNode" />
+        <NextLevelAspect t="uiaspect.Indent" />
+        <NextLevelAspect t="uiaspect.ExpandCollapse" />
+      </Aspect>
+      <Aspect t="uiaspect.Indent" />
+      <Aspect t="uiaspect.ExpandCollapse" />
+      <Operations t="operation.StdOperations" />
+    </xtml>
+  </Component>
+
+  <Component id="RefreshPreview" type="action.Action">
+    <Param name="RefreshParent" type="data.Boolean"/>
+    <xtml t="action.IfThenElse" >
+      <If t="yesno.IsEmpty" Value="%$_RefreshPreview%" />
+      <Then t="action.RunActions">
+        <Var name="RefreshParent" value="%$RefreshParent%" />
+        <Action t="bart_dt.RefreshSelectedObject" />
+        <Action t="object.RunMethod" Method="MarkAsModified" Input="%$_Xtml%">
+          <Object t="xtml_dt_tree.SaveManager" />
+        </Action>
+      </Then>
+      <Else t="object.RunMethod" Object="%$_RefreshPreview%" Method="Refresh" />
+    </xtml>
+  </Component>
+
+  <Component id="ComponentsWithCategories" type="picklist.OptionsDefinition" execution="native">
+    <Param name="Type" />
+    <Param name="OptionPage" type="ui.SinglePage" script="true" />
+    <Param name="Xtml" description="used to show relevant dynamic categories, e.g. picklist" Default="%%"/>
+    <Param name="CurrentPT" description="used to show deprecated pts" />
+    <NativeHelper name="Components" t="aaeditor.ComponentsOfTypeNew" Type="%$Type%" />
+  </Component>
+
+  <Component id="ComponentsOfTypeOptions" type="picklist.OptionsDefinition" execution="native">
+    <Param name="Type" />
+    <Param name="OptionPage" type="ui.SinglePage" script="true" />
+    <Param name="Xtml" description="used to show relevant dynamic categories, e.g. picklist" Default="%%"/>
+    <Param name="CurrentPT" description="used to show deprecated pts" />
+    <NativeHelper name="Components" t="aaeditor.ComponentsOfTypeNew" Type="%$Type%" LightOnly="true"/>
+  </Component>
+
+  <Component id="PreviewFieldData" type="data.Data">
+    <xtml t="data.FirstSucceeding">
+      <Var name="PageSingleItem" t="data.Pipeline">
+        <Item value="%$PageSampleItems%" />
+        <Aggregator t="data.First" />
+      </Var>
+      <Item t="object.RunMethod" Method="FieldData" Input="%$PageSingleItem%">
+        <Object t="xtml.RunXtml" Xtml="%$FieldXtml%" />
+      </Item>
+      <Item value="%$PageSingleItem%" />
+    </xtml>
+  </Component>
+
+  <Component id="SiblingFieldIDs" type="data.Data" execution="native">
+    <Param name="FieldXtml">
+      <Default value="%$FieldXtml%" />
+    </Param>
+  </Component>
+
+  <Component id="SingleFieldNameToXtml" type="data.Data" execution="native">
+    <Param name="Editable" type="data.Boolean" />
+  </Component>
+
+  <Component id="FieldNameToXtml" type="data.Data">
+    <Param name="ReadOnly" type="data.Boolean" />
+    <xtml t="data.Pipeline">
+      <Item t="text.Trim" />
+      <Item t="data.IfThenElse" If="true">
+        <Var name="ID1" t="text.Replace" Find=" " ReplaceWith="_" />
+        <Var name="Editable" t="yesno.Not" Of="%$ReadOnly%" />
+        <Then t="field_dt.SingleFieldNameToXtml" Editable="%$Editable%" />
+      </Item>
+    </xtml>
+  </Component>
+
+  <Type id="NewField" />
+
+  <Component id="NewBasicFields" type="field_dt.NewField">
+    <Param name="Names" description="you can add several fields separated by comma" />
+    <Param name="ReadOnly" type="data.Boolean" />
+    <xtml t="data.Pipeline">
+      <Item t="text.Split" Data="%$Names%" />
+      <Item t="field_dt.FieldNameToXtml" ReadOnly="%$ReadOnly%" />
+    </xtml>
+  </Component>
+
+  <Component id="NewExistingFields" type="field_dt.NewField">
+    <Param name="Fields" description="should be picklist with field id from other pages (not working yet)" />
+  </Component>
+
+  <Component id="NewGroup" type="field_dt.NewField">
+    <Param name="Name" />
+    <xtml t="data.Pipeline">
+      <Var name="ID" t="text.ToIdText" Data="%$Name%" />
+      <Item t="xml.Xml" DynamicContent="true">
+        <Field t="field.Group" ID="%$ID%" Title="%$Name%">
+          <FieldAspect t="field_aspect.Section" />
+        </Field>
+      </Item>
+    </xtml>
+  </Component>
+
+  <Component id="OpenCustomPTDesigner" type="action.Action">
+    <xtml t="action.IfThenElse" If="%@t% == 'ui.CustomStyleByField'">
+      <Then t="bart_dt.EditXtmlInStudioBar" Xtml="%%"/>
+      <Else t="gstudio_popup.ShowStylePopup" Xtml="%%" />
+    </xtml>
+  </Component>
+
+  <Component id="MakeStyleGlobal" type="action.Action">
+    <xtml t="bart_dt.DoSaveStyle">
+      <Type t="xtml.ComponentParamType" Component="%../@t%">
+        <Param t="xml.Tag" />
+      </Type>
+    </xtml>
+  </Component>
+
+  <Component id="MoreActions" type="action.Action">
+    <xtml t="action.RunActions">
+      <Var name="Xtml" value="%%" />
+      <Var name="XtmlWithActionTag" t="xml.ByTag" Tag="Action">
+        <Change t="xml.ReplaceElement" Element="%%" NewElement="%$Xtml%" />
+      </Var>
+      <Var name="NewXtml" t="xml.ByTag">
+        <Tag t="xml.Tag" Data="%$Xtml%" />
+        <Change t="xml.SetAttribute" AttributeName="t" Value="operation.RunActions" />
+        <Change t="xml.AddChildren" Children="%$XtmlWithActionTag%" CloneChildren="true" />
+      </Var>
+      <Action t="xml.ReplaceElement" Element="%%" NewElement="%$NewXtml%" />
+      <Action t="field.RefreshFieldByElement" Element="%$FieldCellElement%" />
+    </xtml>
+  </Component>
+        
+  <Component id="DoCustomizeGlobalStyle" type="action.Action">
+    <xtml t="action.RunActions">
+      <Data t="xtml.ComponentDefinition" ID="%@t%" ToXtml="true" />
+      <Action t="object.RunMethod" Method="MarkAsModified" Input="%%">
+        <Object t="xtml_dt_tree.SaveManager" />
+      </Action>
+      <Action t="field_dt.OpenCustomPTDesigner" />
+    </xtml>
+  </Component>
+
+  <Component id="DoCustomizeStyle" type="action.Action">
+    <Param name="KeepPercetanges" />
+    <xtml t="action.RunActions">
+      <Var name="Xtml" value="%%" />
+      <Var name="ImplementationXtml" t="xtml.ComponentDefinition" ID="%$Xtml/@t%" ToXtml="true" />
+      <Action t="action.RunActions" Remark="Custom Html and JS" Condition="%$Xtml/@t%=='ui.CustomCss'">
+        <Var name="StyleObject" t="xtml.RunXtml" Xtml="%$Xtml%" />
+        <Var name="Css" t="data.IfThenElse" If="%$KeepPercetanges%" Else="%$StyleObject/Css%" >
+          <Then t="data.Pipeline">
+            <Item t="xtml.ComponentDefinition" ID="%$Xtml/@t%" ToXtml="true"/>
+            <Item value="Css" />
+          </Then>
+        </Var>
+        <Var name="NewXtml" t="xml.WithChanges">
+          <Xml t="xml.Xml">
+            <Style t="ui.CustomStyle" />
+          </Xml>
+          <Change t="xml.WriteCData" Element="%!Html%" CDataText="%$StyleObject/Html%" />
+          <Change t="xml.WriteCData" Element="%!Css%" CDataText="%Css%" />
+          <Change t="xml.WriteCData" Element="%!Javascript%" CDataText="%$StyleObject/Javascript%" />
+          <Change t="xml.SetAttribute" AttributeName="base" Value="%$Xtml/@base%" RemoveEmptyAttribute="true" />
+        </Var>
+        <Action t="xml.ReplaceElement" Element="%$Xtml%" NewElement="%$NewXtml%" />
+      </Action>
+      <Action t="action.RunActions" Remark="Custom Style" Condition="%$ImplementationXtml/@t%=='ui.CustomStyle'">
+        <Var name="StyleObject" t="xtml.RunXtml" Xtml="%$Xtml%" />
+        <Var name="Css" t="data.IfThenElse" If="%$KeepPercetanges%" Else="%$StyleObject/Css%">
+          <Then t="data.Pipeline">
+            <Item t="xtml.ComponentDefinition" ID="%$Xtml/@t%" ToXtml="true"/>
+            <Item value="%Css%" />
+          </Then>
+        </Var>
+        <Var name="InnerStyleElement" t="xml.WithChanges">
+          <Xml t="xml.ByTag" Tag="Style">
+            <Change t="xml.ReplaceElement" Element="%%" NewElement="%$Xtml%" />
+          </Xml>
+        </Var>
+        <Var name="NewXtml" t="xml.WithChanges">
+          <Xml t="xml.Xml">
+            <Style t="ui.CustomCss" />
+          </Xml>
+          <Change t="xml.AddChildren" Children="%$InnerStyleElement%" CloneChildren="true" />
+          <Change t="xml.WriteCData" Element="%!Css%" CDataText="%$Css%" />
+          <Change t="xml.SetAttribute" AttributeName="base" Value="%$Xtml/@t%" />
+        </Var>
+        <Action t="xml.ReplaceElement" Element="%$Xtml%" NewElement="%$NewXtml%" />
+      </Action>
+      <Action t="action.RunActions" Remark="Style By Field" Condition="%$ImplementationXtml/@t%=='ui.CustomStyleByField'">
+        <Var name="FieldMadeLocal" t="xtml_dt.MakeLocal" ImplementationXtml="%$ImplementationXtml%" Xtml="%$Xtml%"/>
+        <Action t="xml.ReplaceElement" Element="%$Xtml%" NewElement="%$FieldMadeLocal%" />
+      </Action>
+      <Action t="field.RefreshFieldByElement" Element="%$FieldCellElement%" />
+      <Action t="field_dt.RefreshPreview" />
+      <Action t="field_dt.OpenCustomPTDesigner" />
+    </xtml>
+  </Component>
+
+  <Component id="CloseCodeMirrorTabsPopup" type="action.Action">
+    <xtml t="dlg.CloseDialogByID" Identifier="codemirror_popup" />
+  </Component>
+  
+  <Component id="CssXmlValueByRef" type="data.Data" execution="native">
+    <Param name="CssCDataElement" />
+    <Param name="OnChange" type="action.Action" script="true" />
+    <NativeHelper name="ParseCss" t="css_dt.Css2Xml" Css="%$CssCDataElement%" />
+    <NativeHelper name="XmlToCss" t="css_dt.Xml2Css" Xml="%%" />
+  </Component>
+
+  <Component id="OpenCodeMirrorTabsPopup" type="action.Action">
+      <Param name="ParamXml"/>
+      <Param name="Xtml" Default="%%"/>
+      <Param name="Large" type="data.Boolean"/>
+      <Param name="InNewWindow" type="data.Boolean"/>
+      <Param name="OrigControlElement" Default="%$ControlElement%" hidden="true" />
+      <xtml t="action.RunActions">
+        <Action t="action.RunActionOnItems" Items="%$ParamXml/../Param[@codemirror='true']%">
+          <Action t="field_dt.MoveContentToCData" Xtml="%$Xtml%" ParamXml="%%"/>
+        </Action>
+        <Action t="dlg.OpenDialog" Title="Style">
+          <Contents t="ui.Document" ID="studio_style_tabs">
+            <Presentation t="uiaspect.TabControl">
+              <Style t="field_dt.CodeMirrorsTabControlStyle"/>
+              <KeepSelectedTab1 t="object.Object">
+                <Method name="Get" value="%$ParamXml/@name%"/>
+              </KeepSelectedTab1>
+            </Presentation>
+            <Field t="data.Pipeline">
+              <Item value="%$ParamXml/../Param[@codemirror='true']%"/>
+              <Item t="field_dt.CodeMirrorTab" ParamXml="%%" Xtml="%$Xtml%" Large1="%$Large%" Large="" />
+            </Field>
+            <Field t="control.Layout" ID="dt_css_designer_2" Title="Designer (2)">
+              <Condition t="yesno.And">
+                <Item t="yesno.NotEmpty" Value="%$ParamXml/../Param[@name='Css']%"/>
+              </Condition>
+              <FieldAspect t="field_aspect.Section">
+                <Image t="image.Image" Url="%$_Images%/studio/designer.png"/>
+              </FieldAspect>
+              <Field t="css_dt.EditorGroup">
+                <CssAsXml t="field_dt.CssXmlValueByRef" CssCDataElement="%$Xtml/!Css%">
+                  <OnChange t="field_dt.RefreshPreview" />
+                </CssAsXml>
+              </Field>
+            </Field>
+            <Field t="field_dt.CustomizeMoreTab" Xtml="%$Xtml%" ParamXml="%$ParamXml%" Condition="%$Xtml/@t%=='ui.CustomCss'">
+              <ReopenPopup t="action.RunActions">
+                <Action t="dlg.CloseContainingDialog"/>                
+                <Action t="field_dt.OpenCodeMirrorTabsPopup" Xtml="%$Xtml%" OrigControlElement="%$OrigControlElement%" >
+                  <ParamXml t="data.Pipeline">
+                    <Item t="xtml.ComponentDefinition" ID="%$Xtml/@t%"/>
+                    <Item value="%Param[1]%"/>
+                  </ParamXml>                  
+                  <Var name="ControlElement" value="%$OrigControlElement%"/>
+                </Action>
+              </ReopenPopup>
+            </Field>
+          </Contents>
+          <Style t="bart_dt.InspectPopup" Padding="1px 3px 3px 6px"/>
+          <Style1 t="dialog_style.CustomStyle" Html="&lt;div class=&quot;aa_popup inspect_popup&quot;&gt;&#xa;  &lt;div class=&quot;aa_dialog_title&quot;&gt;&#xa;    &lt;/div&gt;&#xa;  &lt;div class=&quot;aa_dialogcontents&quot;/&gt;&#xa;  &lt;div class=&quot;aa_dialogbuttons&quot;/&gt;&#xa;&lt;/div&gt;" Css="#this { padding:15px 15px 5px 15px; -moz-border-radius: 3px;&#xa; border-radius: 3px; &#xa; -moz-box-shadow: 0 0 5px 5px #888;-webkit-box-shadow: 0 0 5px 5px#888;&#xa;box-shadow: 0 0 5px 5px #888;&#xa; border:none; &#xa; margin-right:20px; overflow-y: auto; overflow-x: hidden; }&#xa;#this .aa_dialog_title { background1:red; z-index:0;height:35px; width:100\%; cursor:move; margin-left:-15px; margin-top:-15px; }&#xa;#this .aa_dialogcontents { overflow:auto; padding-left:5px; padding-right:5px; }&#xa;  #this .help { position:absolute; right:25px; top:3px; cursor:default;  }" Javascript="" Mode="dialog"/>
+          <Feature t="dlg.JBartStudioDialog"/>
+          <Feature t="dlg.DragDialog"/>
+          <Feature t="dlg.Location">
+            <Location t="dlg.AboveLauncher" DeltaX="-20px"/>
+          </Feature>
+          <Feature t="dlg.CloseIcon" CssStyle="top:3px;right:3px"/>
+          <Feature t="dlg.Css" Css="#this { background:white; padding:0px; }"/>
+          <Feature t="dlg.HandleEvents">
+            <OnBeforeClose t="xmlui.CallUpdateOfCodeMirror" RunOn=".cmtextarea"/>
+            <OnClose t="action.RunActions">
+              <Action t="uiaction.Refresh" RunOn=".code_mirror_list"/>
+              <Action t="field_dt.RefreshPreview"/>
+            </OnClose>
+          </Feature>
+          <Feature t="dlg.UniquePopup" Identifier="codemirror_popup" AutoClose="true" KeepPopupLocation="false">
+            <Condition t="yesno.Not" Of="%$InNewWindow%"/>
+          </Feature>
+          <Feature t="dlg.TopZIndexWhenTouching"/>
+          <Feature t="dlg.StudioStyleDialogOf" Xtml="%$Xtml%" />
+        </Action>
+      </xtml>
+    </Component>
+
+  <Component id="OpenJsTabsPopup" type="action.Action">
+      <Param name="ParamXml"/>
+      <Param name="Xtml" Default="%%"/>
+      <Param name="InNewWindow" type="data.Boolean"/>
+      <xtml t="action.RunActions">
+        <Action t="field_dt.MoveContentToCData" Xtml="%$Xtml%" ParamXml="%$ParamXml%"/>
+        <Action t="dlg.OpenDialog" Title="Javascript">
+          <Feature t="dlg.JBartStudioDialog" />
+          <Contents t="ui.Document" ID="studio_style_tabs">
+            <Presentation t="uiaspect.TabControl">
+              <Style t="field_dt.CodeMirrorsTabControlStyle"/>
+            </Presentation>
+            <Field t="field_dt.CodeMirrorTab" ParamXml="%$ParamXml%" Xtml="%$Xtml%" Type="js"/>
+          </Contents>
+          <Style t="bart_dt.InspectPopup" Padding="1px 3px 3px 6px"/>
+          <Style1 t="dialog_style.CustomStyle" Html="&lt;div class=&quot;aa_popup inspect_popup&quot;&gt;&#xa;  &lt;div class=&quot;aa_dialog_title&quot;&gt;&#xa;    &lt;/div&gt;&#xa;  &lt;div class=&quot;aa_dialogcontents&quot;/&gt;&#xa;  &lt;div class=&quot;aa_dialogbuttons&quot;/&gt;&#xa;&lt;/div&gt;" Css="#this { padding:15px 15px 5px 15px; -moz-border-radius: 3px;&#xa; border-radius: 3px; &#xa; -moz-box-shadow: 0 0 5px 5px #888;-webkit-box-shadow: 0 0 5px 5px#888;&#xa;box-shadow: 0 0 5px 5px #888;&#xa; border:none; &#xa; margin-right:20px; overflow-y: auto; overflow-x: hidden; }&#xa;#this .aa_dialog_title { background1:red; z-index:0;height:35px; width:100\%; cursor:move; margin-left:-15px; margin-top:-15px; }&#xa;#this .aa_dialogcontents { overflow:auto; padding-left:5px; padding-right:5px; }&#xa;  #this .help { position:absolute; right:25px; top:3px; cursor:default;  }" Javascript="" Mode="dialog"/>
+          <Feature t="dlg.DragDialog"/>
+          <Feature t="dlg.Location">
+            <Location t="dlg.AboveLauncher" DeltaX="-20px"/>
+          </Feature>
+          <Feature t="dlg.CloseIcon" CssStyle="top:3px;right:3px"/>
+          <Feature t="dlg.Css" Css="#this { background:white; padding:0px; }"/>
+          <Feature t="dlg.HandleEvents">
+            <OnClose t="action.RunActions">
+              <Action t="uiaction.Refresh" RunOn=".dt_textbox_editing_js"/>
+              <Action t="field_dt.RefreshPreview"/>
+            </OnClose>
+          </Feature>
+          <Feature t="dlg.UniquePopup" Identifier="codemirror_%$ParamName%" AutoClose="true" KeepPopupLocation="false">
+            <Condition t="yesno.Not" Of="%$InNewWindow%" />
+          </Feature>
+          <Feature t="dlg.TopZIndexWhenTouching"/>
+        </Action>
+      </xtml>
+    </Component>
+
+  <Component id="WriteCDataAndFix" type="action.Action" light="false">
+    <Param name="CDataText" />
+    <Param name="Element" />
+    <xtml t="xml.WriteCData" CDataText="%$TextToWrite%" Element="%$Element%">
+      <Var name="TextToWrite" t="data.IfThenElse">
+        <If t="xml.IsOfTag" Tag="Css" Data="%$Element%" />
+        <Then t="field_dt.FixPercentagesInCss" Text="%$CDataText%" />
+        <Else value="%$CDataText%" />
+      </Var>
+    </xtml>
+  </Component>
+  
+  <Component id="FixPercentagesInCss" execution="native" >
+    <Param name="Text" />
+  </Component>
+  
+  <Component id="MoveContentToCData" type="action.Action" light="false">
+    <Param name="Xtml"/>
+    <Param name="ParamXml"/>
+    <Param name="DefaultValue" />
+    <xtml t="action.RunActions">
+      <Var name="Content" t="data.FirstSucceeding">
+        <Item value="%$Xtml/@{$ParamXml/@name}%" />
+        <Item t="xml.CDataValue" Element="%$Xtml/{$ParamXml/@name}%" />
+        <Item value="%$ParamXml/@Default%" />
+        <Item value="%$ParamXml/Default/@value%" />
+        <Item t="xml.CDataValue" Element="%$ParamXml/Default%" />
+        <Item value="%$DefaultValue%" />
+      </Var>
+      <Action t="xml.Delete" Data="%$Xtml/@{$ParamXml/@name}%" />
+      <Action t="field_dt.WriteCDataAndFix" CDataText="%$Content%" Element="%$Xtml/!{$ParamXml/@name}%" />
+    </xtml>
+  </Component>
+
+<Component id="CodeMirrorTab" type="field.Fields" light="false">
+  <Param name="ParamXml"/>
+  <Param name="Xtml"/>
+  <Param name="Large" type="data.Boolean"/>
+  <Param name="Type" />
+  <xtml t="field.CustomControl" HideTitle="true" ID="%$ParamXml/@name%" Title="%$ParamXml/@name%">
+    <Control t="ui.List" Class="dt_tabtop">
+      <Control t="xmlui.CodeMirrorTextarea" Class="cmtextarea" WrapperCss="" AutoFocus="true" TextWrapping="false" Resizer="true">
+        <IdentifierToRecallLastSize t="data.IfThenElse" If="%$Large%" Then="CodeMirrorForStyles_Large" Else="CodeMirrorForStyles"/>
+        <Width t="data.IfThenElse" If="%$Large%" Then="900px" Else="390px"/>
+        <Height t="data.IfThenElse" If="%$Large%" Then="500px" Else="380px"/>
+        <Type t="text.FirstSucceeding">
+          <Item value="%$ParamXml/@codemirrorType%"/>
+          <Item value="htmlmixed" Condition="%$ParamXml/@name% == 'Html'"/>
+          <Item value="css" Condition="%$ParamXml/@name% == 'Css'"/>
+          <Item value="js" Condition="%$ParamXml/@name% == 'Javascript'"/>
+          <Item value="%$Type%"/>
+          <Item value="text"/>
+        </Type>
+        <Data t="data.FirstSucceeding">
+          <Item value="%$Xtml/@{$ParamXml/@name}%"/>
+          <Item value="%$Xtml/{$ParamXml/@name}/@value%"/>
+          <Item t="xml.CDataValue" Element="%$Xtml/{$ParamXml/@name}%"/>
+          <Item value="%$ParamXml/@Default%"/>
+          <Item value="%$ParamXml/Default/@value%"/>
+          <Item value=""/>
+        </Data>
+        <OnUpdate t="action.RunActions">
+          <Action t="xml.Delete" Data="%$Xtml/@{$ParamXml/@name}%"/>
+          <Action t="field_dt.WriteCDataAndFix" CDataText="%%" Element="%$Xtml/!{$ParamXml/@name}%"/>
+        </OnUpdate>
+        <OnCtrlEnter t="action.RunActions">
+          <Var name="_Xtml" value="%$Xtml%" />
+          <Action t="xml.Delete" Data="%$Xtml/@{$ParamXml/@name}%"/>
+          <Action t="field_dt.WriteCDataAndFix" CDataText="%%" Element="%$Xtml/!{$ParamXml/@name}%"/>
+          <Action t="field_dt.RefreshPreview"/>
+        </OnCtrlEnter>
+        <OnShiftEnter t="dlg.CloseDialog"/>
+        <AutoIndent value="%$ParamXml/@name% == 'Css'"/>
+      </Control>
+      <Control t="control.ShowFieldControl" Condition="%$ParamXml/@name% == 'Javascript'">
+        <Field t="control.Button" ID="JBart_Style" Title="Override Utility Function">
+          <Style t="ui.CustomCss" base="btn.Hyperlink">
+            <Style t="btn.Hyperlink"/>
+            <Css><![CDATA[#this { cursor: pointer; 
+  font-family: "lucida grande",tahoma; 
+  color: blue; font-size: 11px; 
+  text-decoration: none; padding-left: 10px; }
+#this:hover { text-decoration: underline; }
+#this.disabled { text-decoration: none; 
+  cursor: default; }
+]]></Css>
+          </Style>
+          <FieldAspect t="field_feature.Layout">
+            <Css><![CDATA[#wrapper { padding-top: 5px;}]]></Css>
+          </FieldAspect>
+          <Action t="operation.OpenDialog">
+            <Style t="dialog_style.DefaultPopup"/>
+            <Contents t="field.InnerPage" Title="Override Function">
+              <Layout t="layout.Default"/>
+              <Field t="control.Label" ID="label" Title="label" Text="You can override the js code of utility functions. Select a function and click override">
+                <Style t="uitext.PlainText"/>
+                <FieldAspect t="field_feature.Css">
+                  <Css><![CDATA[#this { width: 250px; padding-bottom: 10px; }]]></Css>
+                </FieldAspect>
+              </Field>
+              <Field t="field.ItemList" Title="functions" ID="functions_List">
+                <View t="itemlist_style.Simple"/>
+                <FieldAspect t="itemlist_aspect.ShowTextWhenNoItems" Text="No functions relevant for override"/>
+                <FieldAspect t="itemlist_aspect.UpdateOnAddOrDeleteItem"/>
+                <Field t="control.Layout" ID="Group" Title="Group" gradientType="linear">
+                  <Layout t="layout.Vertical" Spacing="0"/>
+                  <Field t="fld.Field" FieldData="%%" ID="name" Title="Function">
+                    <FieldType t="fld_type.Text">
+                      <Style t="uitext.PlainText"/>
+                    </FieldType>
+                    <FieldAspect t="field_aspect.ReadOnly"/>
+                    <FieldAspect t="field_feature.Css">
+                      <Css><![CDATA[#this { font-size: 12px; }]]></Css>
+                    </FieldAspect>
+                  </Field>
+                  <Field t="control.Button" ID="Override" Title="Override">
+                    <Style t="btn.Bootstrap">
+                      <Size t="bootstrap_btn.Mini"/>
+                      <Type t="bootstrap_btn.Info"/>
+                    </Style>
+                    <FieldAspect t="field_feature.Css">
+                      <Css><![CDATA[#this {  position:absolute;  right: 5px;  top: 6px;}]]></Css>
+                    </FieldAspect>
+                    <Action t="operation.RunActions">
+                      <Action t="dlg.CloseContainingDialog"/>
+                      <Action t="js_dt.OverrideFunctionInJSCode" JSCode="%$Javascript%" FunctionName="%%"/>
+                      <Action t="uiaction.Refresh" RunOn=".dt_tabtop"/>
+                    </Action>
+                  </Field>
+                  <FieldAspect t="field_feature.Css">
+                    <Css><![CDATA[#this { position:relative; width: 248px; height: 35px; padding-top: 2px; padding-left: 5px; border-bottom: 1px solid #96C8A2; }]]></Css>
+                  </FieldAspect>
+                </Field>
+                <FieldAspect t="field_aspect.ItemListContainer">
+                  <Items t="itemlist.Items">
+                    <Items t="bart_dt_compress.DependentFunctions" Code="%Javascript%"/>
+                  </Items>
+                </FieldAspect>
+              </Field>
+            </Contents>
+            <Var name="Javascript" value="%Javascript%"/>
+          </Action>
+        </Field>
+      </Control>
+    </Control>
+    <FieldAspect t="field_aspect.Section">
+      <Image t="image.ImageOld">
+        <Url t="text.FirstSucceeding">
+          <Item value="%$_Images%/studio/html.png" Condition="%$ParamXml/@name% == 'Html'"/>
+          <Item value="%$_Images%/studio/css.png" Condition="%$ParamXml/@name% == 'Css'"/>
+          <Item value="%$_Images%/studio/js.png" Condition="%$ParamXml/@name% == 'Javascript'"/>
+          <Item value="%$_Images%/studio/embed.png"/>
+        </Url>
+      </Image>
+    </FieldAspect>
+  </xtml>
+</Component>
+  
+  <Component id="OpenCodeMirrorPopup" type="action.Action" light="false">
+      <Param name="Xtml"/>
+      <Param name="ParamName"/>
+      <Param name="AsText"/>
+      <Param name="Width" Default="500px"/>
+      <Param name="Height" Default="300px"/>
+      <Param name="Type" />
+      <xtml t="dlg.OpenDialog">
+    <Feature t="dlg.JBartStudioDialog" />
+        <Contents t="xmlui.CodeMirrorTextarea" Class="cmtextarea" WrapperCss="" AutoFocus="true" TextWrapping="false" Width="%$Width%" Height="%$Height%" Type="%$Type%" Text="%$AsText%" >
+          <OnCtrlEnter t="action.RunActions">
+            <Action t="xml.Delete" Data="%$Xtml/@{$ParamName}%"/>
+            <Action t="field_dt.WriteCDataAndFix" CDataText="%%" Element="%$Xtml/!{$ParamName}%"/>
+            <Action t="field_dt.RefreshPreview"/>
+          </OnCtrlEnter>
+          <OnShiftEnter t="dlg.CloseDialog"/>
+        </Contents>
+        <Style t="dialog_style.CustomStyle" Html="&lt;div class=&quot;aa_popup inspect_popup&quot;&gt;&#xa;  &lt;div class=&quot;aa_dialog_title&quot;&gt;&#xa;      &lt;/div&gt;&#xa;  &lt;div class=&quot;aa_dialogcontents&quot;/&gt;&#xa;  &lt;div class=&quot;aa_dialogbuttons&quot;/&gt;&#xa;&lt;/div&gt;" Css="#this { padding:15px 15px 5px 15px; -moz-border-radius: 3px;&#xa; border-radius: 3px; &#xa; -moz-box-shadow: 0 0 5px 5px #888;-webkit-box-shadow: 0 0 5px 5px#888;&#xa;box-shadow: 0 0 5px 5px #888;&#xa; border:none; &#xa; margin-right:20px; overflow-y: auto; overflow-x: hidden; }&#xa;#this .aa_dialog_title { background1:red; z-index:0;height:35px; width:100\%; cursor:move; margin-left:-15px; margin-top:-15px; }&#xa;#this .aa_dialogcontents { overflow:auto; padding-left:5px; padding-right:5px; }&#xa;  #this .help { position:absolute; right:25px; top:3px; cursor:default;  }" Javascript="" Mode="dialog"/>
+        <Feature t="dlg.DragDialog"/>
+        <Feature t="dlg.Location">
+          <Location t="dlg.AboveLauncher"/>
+        </Feature>
+        <Feature t="dlg.CloseIcon" CssStyle="top:3px;right:3px"/>
+        <Feature t="dlg.Css" Css="#this { background:white; padding:0px; }"/>
+        <Feature t="dlg.HandleEvents">
+          <OnBeforeClose t="xmlui.CallUpdateOfCodeMirror" RunOn=".cmtextarea"/>
+          <OnClose t="action.RunActions">
+            <Action t="xml.Delete" Data="%$Xtml/@{$ParamName}%"/>
+            <Action t="field_dt.WriteCDataAndFix" CDataText="%$AsText%" Element="%$Xtml/!{$ParamName}%"/>
+            <Action t="uiaction.Refresh" RunOn=".code_mirror_list"/>
+            <Action t="field_dt.RefreshPreview"/>
+          </OnClose>
+        </Feature>
+        <Feature t="dlg.UniquePopup" Identifier="codemirror_%$ParamName%" AutoClose="true" KeepPopupLocation="false"/>
+      </xtml>
+    </Component>
+
+  <Component id="CodeMirrorPopupFieldEditor2" type="field.FieldAspect" light="false">
+    <xtml t="field_dt.CodeMirrorPopupFieldEditor1" ParamXml="%$_Field/ParamXml%" />
+  </Component>
+
+  <Component id="CssEditingFieldAspect" type="field.FieldAspect" light="false">
+      <Param name="ParamXml" essential="true" Default="%$_Field/ParamXml%"/>
+      <xtml t="field_aspect.Aspects">
+        <FieldAspect t="field_aspect.Control">
+          <Control t="field_dt.CssEditingFieldAspectControl" ParamXml="%$ParamXml%" Xtml="%%" />
+        </FieldAspect>
+      </xtml>
+    </Component>
+  
+  <Component id="JSEditingFieldAspect" type="field.FieldAspect" light="false">
+      <Param name="ParamXml" essential="true" Default="%$_Field/ParamXml%"/>
+      <xtml t="field_aspect.Aspects">
+        <FieldAspect t="field_aspect.Control">
+          <Control t="field_dt.JsEditingFieldAspectControl" ParamXml="%$ParamXml%" Xtml="%%" />
+        </FieldAspect>
+      </xtml>
+    </Component>
+  
+    <Component id="CssEditingFieldAspectControl" type="ui.Control" light="false">
+      <Param name="ParamXml"/>
+      <Param name="Xtml"/>
+      <xtml t="ui.ControlWithAction">
+        <RunBeforeControl t="field_dt.MoveContentToCData" Xtml="%$Xtml%" ParamXml="%$ParamXml%" DefaultValue="#this {}"/>
+        <Control t="field.ShowFieldControl" Class="dt_textbox_editing_css">
+          <Field t="field.Layout" ID="dt_textbox_editing_css">
+            <Field t="field.Field" ReadOnlyText="" Title="">
+              <Type t="field_aspect.CustomDataType">
+                <Html><![CDATA[<textarea disabled="true" />]]></Html>
+                <Css><![CDATA[#this { cursor: pointer; font-size: 11px; width: 219px; height: 50px; padding-top: 3px; 
+  padding-right: 3px; padding-bottom: 3px; padding-left: 3px; 
+  border: 1px solid #BDC7D8; }
+]]></Css>
+                <Javascript><![CDATA[function(textbox) { 
+  return $(textbox).attr("value",textbox.val)[0]; 
+} ]]></Javascript><![CDATA[]]>
+              </Type>
+              <FieldData t="xml.CDataValue" Element="%{$ParamXml/@name}%"/>
+              <FieldAspect t="field_aspect.HandleEvent" Event="mouse click">
+                <Action t="gstudio_popup.ShowStylePopup" Xtml="%$Xtml%" TopTitlePrefix="%$ParamXml/@styleTitle%"/>
+              </FieldAspect>
+            </Field>
+            <Field t="field.Button" Tooltip="Edit" Title="">
+              <Style t="button.ImageOnly"/>
+              <Image t="image.ImageOld" Url="%$_Images%/studio/designer.png"/>
+              <Action t="gstudio_popup.ShowStylePopup" Xtml="%$Xtml%" TopTitlePrefix="%$ParamXml/@styleTitle%"/>
+            </Field>
+            <Layout t="layout.HorizontalHtmlTable" Spacing="3px"/>
+          </Field>
+        </Control>
+      </xtml>
+    </Component>
+  
+    <Component id="JsEditingFieldAspectControl" type="ui.Control" light="false">
+      <Param name="ParamXml"/>
+      <Param name="Xtml"/>
+      <xtml t="ui.ControlWithAction">
+        <RunBeforeControl t="field_dt.MoveContentToCData" Xtml="%$Xtml%" ParamXml="%$ParamXml%" />
+        <Control t="field.ShowFieldControl" Class="dt_textbox_editing_js">
+          <Field t="field.Layout">
+            <Field t="field.Field" ReadOnlyText="" Title="">
+              <Type t="field_aspect.CustomDataType">
+                <Html><![CDATA[<textarea disabled="true" />]]></Html>
+                <Css><![CDATA[#this { font-size: 11px; width: 235px; height: 50px; padding-top: 3px; padding-right: 3px; 
+  padding-bottom: 3px; padding-left: 3px; border: 1px solid #BDC7D8; 
+  cursor: pointer; }
+]]></Css>
+                <Javascript><![CDATA[function(textbox) { 
+  return jQuery(textbox).attr("value",textbox.val)[0]; 
+} ]]></Javascript><![CDATA[]]>
+              </Type>
+              <FieldData t="xml.CDataValue" Element="%{$ParamXml/@name}%"/>
+              <FieldAspect t="field_aspect.HandleEvent" Event="mouse click">
+                <Action t="field_dt.OpenJsTabsPopup" ParamXml="%$ParamXml%" Data="%$Xtml%" InNewWindow="%$_DomEvent/ctrlKey%"/>
+              </FieldAspect>
+            </Field>
+            <Field t="field.Button" Tooltip="Edit" Title="">
+              <Style t="button.ImageOnly"/>
+              <Image t="image.Image" Url="%$_Images%/studio/designer.png"/>
+              <Action t="field_dt.OpenJsTabsPopup" ParamXml="%$ParamXml%" Data="%$Xtml%" InNewWindow="%$_DomEvent/ctrlKey%"/>
+            </Field>
+            <Layout t="layout.HorizontalHtmlTable" Spacing="3px"/>
+          </Field>
+        </Control>
+      </xtml>
+    </Component>
+  
+  <Component id="CodeMirrorPopupFieldAspect" type="field.FieldAspect" light="false">
+      <Param name="ParamXml" essential="true" Default="%$_Field/ParamXml%"/>
+      <xtml t="field_aspect.Aspects">
+        <FieldAspect t="field_aspect.HideTitle"/>
+        <FieldAspect t="field_aspect.Control">
+          <Control t="ui.List" Class="code_mirror_list">
+            <Control t="ui.Document" Class="code_mirror_field">
+              <Var name="Xtml"/>
+              <Presentation t="uiaspect.Group">
+                <Style t="group.Vertical" CssOnElement=""/>
+              </Presentation>
+              <Field t="field.Group">
+                <Layout t="uiaspect.Group">
+                  <Style t="group.Horizontal"/>
+                </Layout>
+                <Field t="field.Text" Text="%$ParamXml/@name%:">
+                  <FieldAspect t="field_aspect.Css" Class="jbstudio_style_param_title"/>
+                </Field>
+                <Field t="field.Button" Tooltip="Edit in Full Screen" Title="">
+                  <Style t="button.ImageOnly"/>
+                  <Image t="image.ImageOld" Url="%$_Images%/studio/fullscreen.gif"/>
+                  <FieldAspect t="field_aspect.Css" OnElement="cell" Class="jbstudio_open_codemirror_param_button"/>
+                  <Action t="field_dt.OpenCodeMirrorTabsPopup" ParamXml="%$ParamXml%" Xtml="%$Xtml%" Large="true">
+                    <InNewWindow value="%$_DomEvent/ctrlKey%" />
+                  </Action>
+                </Field>
+              </Field>
+              <Field t="field.Field" ReadOnlyText="" Title="">
+                <Type t="field_aspect.MultiLineText">
+                  <Style t="textarea.Default" Width="320px" Height="50px"/>
+                </Type>
+                <FieldData t="data.WritableText">
+                  <DefaultValue t="data.FirstSucceeding">
+                    <Item value="%@{$ParamXml/@name}%"/>
+                    <Item t="xml.CDataValue" Element="%{$ParamXml/@name}%"/>
+                    <Item value="%$ParamXml/@Default%"/>
+                    <Item value="%$ParamXml/Default/@value%"/>
+                  </DefaultValue>
+                </FieldData>
+                <FieldAspect t="field_aspect.Css" Class="jbstudio_style_param_textarea"/>
+                <FieldAspect t="field_aspect.TextAreaProperties" ReadOnly="readonly"/>
+                <FieldAspect t="field_aspect.OnClick">
+                  <Action t="field_dt.OpenCodeMirrorTabsPopup" ParamXml="%$ParamXml%" Xtml="%$Xtml%"/>
+                </FieldAspect>
+              </Field>
+            </Control>
+          </Control>
+        </FieldAspect>
+      </xtml>
+    </Component>
+  
+  <Component id="CodeMirrorPopupFieldEditor" type="field.FieldAspect" light="false">
+      <Param name="ParamXml" essential="true" Default="%$_Field/ParamXml%"/>
+      <Param name="Type" type="enum">
+        <value>xml</value>
+        <value>css</value>
+        <value>js</value>
+        <value>text</value>
+        <value>html</value>
+      </Param>
+      <Param name="Width">
+        <Default value="300px"/>
+      </Param>
+      <Param name="Height">
+        <Default value="100px"/>
+      </Param>
+      <Param name="MarginLeft" Default="margin-left:-15px;"/>
+      <xtml t="field_aspect.Aspects">
+        <FieldAspect t="field_aspect.HideTitle"/>
+        <FieldAspect t="field_aspect.Control">
+          <Control t="ui.List" Class="code_mirror_list">
+            <Control t="ui.List" CssStyle="position: relative; %$MarginLeft%">
+              <Var name="RequiredType" t="text.FirstSucceeding" >
+                <Item value="%$Type%" />
+                <Item value="xml" Condition="%$ParamXml/@name% == 'Html'" />
+                <Item value="css" Condition="%$ParamXml/@name% == 'Css'" />
+                <Item value="js" Condition="%$ParamXml/@name% == 'Javascript'" />
+                <Item value="text" />
+              </Var>
+              <Var name="OriginalData"/>
+              <Var name="AsText" t="data.WritableText">
+                <DefaultValue t="data.FirstSucceeding">
+                  <Item value="%$OriginalData/@{$ParamXml/@name}%"/>
+                  <Item t="xml.CDataValue" Element="%$OriginalData/{$ParamXml/@name}%"/>
+                  <Item value="%$ParamXml/@Default%" />
+                  <Item value="%$ParamXml/Default/@value%" />
+                </DefaultValue>
+              </Var>
+              <Control t="ui.List">
+                <Layout t="ui.Horizontal"/>
+                <Control t="ui.Text" Text="%$ParamXml/@name%:" Class="propertysheet field"/>
+                <Control t="ui.ButtonOld" Image="%$_Images%/studio/fullscreen.gif" Text="Edit in Full Screen" CssStyle="position: absolute;right: 0px;z-index: 10;">
+                  <Style t="ui.ButtonAsImage"/>
+                  <OnClick t="field_dt.OpenCodeMirrorPopup" Type="%$RequiredType%" Xtml="%$OriginalData%" ParamName="%$ParamXml/@name%" AsText="%$AsText%" Data="%$AsText%" Width="700px">
+                    <Var name="ControlElement" value="%$ControlElement%" RunOn="up(.code_mirror_list)"/>
+                    <Height t="ui.ScreenSize" Axis="height" AsHtmlString="true" Margin="100px"/>
+                  </OnClick>
+                </Control>
+              </Control>
+              <Control t="ui.Document" Class="code_mirror_field">
+                <Fields t="field.JavaScriptControl" Html="&lt;textarea wrap=&quot;off&quot; class=&quot;style_text_area&quot;&gt;%%&lt;/textarea&gt;&#xa;">
+                  <FieldAspect t="field_aspect.HideTitle"/>
+                  <FieldAspect t="field_aspect.FieldData" FieldData="%$AsText%"/>
+                  <FieldAspect t="field_aspect.Css" Inline="width:320px; height:120px; cursor:pointer;"/>
+                  <FieldAspect t="field_aspect.OnClick">
+                    <Action t="operation.RunXtmlAction">
+                      <Action t="field_dt.OpenCodeMirrorPopup" Type="%$RequiredType%" Xtml="%$OriginalData%" ParamName="%$ParamXml/@name%" AsText="%$AsText%"/>
+                    </Action>
+                  </FieldAspect>
+                </Fields>
+              </Control>
+            </Control>
+          </Control>
+        </FieldAspect>
+      </xtml>
+    </Component>
+  
+  <Component id="CodeMirrorFieldEditor" type="field.FieldAspect" light="false">
+    <Param name="CompId" essential="true"/>
+    <Param name="ParamName" essential="true" />
+    <Param name="Type" type="enum">
+      <Default value="css" />
+      <value>xml</value>
+      <value>css</value>
+      <value>js</value>
+      <value>text</value>
+    </Param>
+    <Param name="Width">
+      <Default value="230px" />
+    </Param>
+    <Param name="Height">
+      <Default value="100px" />
+    </Param>
+    <xtml t="field_aspect.Control">
+      <Control t="ui.List" Class="code_mirror_field">
+        <Var name="OriginalData" />
+        <Data t="data.WritableText">
+          <DefaultValue t="data.FirstSucceeding">
+            <Item value="%$OriginalData/@{$ParamName}%" />
+            <Item t="data.Pipeline">
+              <Item t="xtml.ComponentDefinition" ID="%$CompId%" />
+              <Item value="%Param[@name='{$ParamName}']/Default/@value%" />
+            </Item>
+          </DefaultValue>
+        </Data>
+        <Control t="field.ShowFieldControl">
+          <Field t="field.XmlField">
+            <Type t="field_aspect.MultiLineText" />
+            <FieldAspect t="field_aspect.Css" Inline="width:%$Width%; height:%$Height%; white-space:nowrap"/>?
+            <FieldAspect t="field_aspect.OnUpdate">
+              <Action t="action.WriteValue" Value="%%">
+                <To value="%$OriginalData/!@{$ParamName}%" />
+              </Action>
+            </FieldAspect>
+            <FieldAspect t="field_aspect.OnKeyUp">
+              <Action t="field_dt.RefreshPreview">
+              <Condition t="yesno.And" >
+                <Item value="%$CtrlKey%" />
+                <Item value="%$KeyCode% == '13'" />
+              </Condition>
+              </Action>
+            </FieldAspect>
+          </Field>
+        </Control>
+        <Layout t="ui.Horizontal" />
+        <Control t="ui.List">
+          <Control t="ui.ButtonOld" Image="%$_Images%/refresh.gif" Text="Refresh preview">
+            <Style t="ui.ButtonAsImage" />
+            <OnClick t="field_dt.RefreshPreview" />
+          </Control>
+          <Control t="ui.ButtonOld" Image="%$_Images%/studio/fullscreen.gif" Text="Edit in Full Screen">
+            <Style t="ui.ButtonAsImage" />
+            <OnClick t="dialog.OpenDialog">
+              <Dialog t="dialog.Dialog" Title="%$ParamName%">
+                <Content t="xmlui.CodeMirrorTextarea" Type="%$Type%" UpdateOnClick="true">
+                  <Width t="ui.ScreenSize" Axis="width" AsHtmlString="true" Margin="200px" />
+                  <Height t="ui.ScreenSize" Axis="height" AsHtmlString="true" Margin="200px" />
+                </Content>
+                <RunOnOK t="action.RunActions">
+                  <Action t="action.WriteValue" Value="%%">
+                    <To value="%$OriginalData/!@{$ParamName}%" />
+                  </Action>
+                  <Action t="uiaction.Refresh" RunOn="up(.code_mirror_field)" />
+                  <Action t="field_dt.RefreshPreview" />
+                </RunOnOK>
+              </Dialog>
+            </OnClick>
+          </Control>
+        </Control>
+      </Control>
+    </xtml>
+  </Component>
+
+  <Component id="PluralText" type="field.FieldAspect">
+    <xtml t="data.IfThenElse" Else="%%s">
+      <If t="text.EndsWith" With="y"/>
+      <Then t="data.Pipeline">
+        <Item t="text.RemoveSuffix" Suffix="y"/>
+        <Item value="%%ies"/>
+      </Then>
+    </xtml>
+  </Component>
+  
+  <Component id="GuessType" type="data.Data" execution="native">
+    <Param name="SampleData" />
+    <Param name="Filter" type="data.Boolean" />
+  </Component>
+  
+ <Component id="ExtractXmlMetadata" type="data.Data">
+    <Param name="SampleItems"/>
+    <Param name="ReadOnly" type="data.Boolean"/>
+    <xtml t="xml.WithChanges">
+      <Xml t="xml.Xml">
+        <xml>
+          <fields/>
+          <rows/>
+        </xml>
+      </Xml>
+      <Var name="SampleItem" t="data.Pipeline">
+        <Item value="%$SampleItems%"/>
+        <Aggregator t="data.First"/>
+      </Var>
+      <Var name="Fields" t="data.List">
+        <Item t="data.Pipeline">
+          <Item t="data.Pipeline">
+            <Item value="%$SampleItem/*%"/>
+            <Item t="xml.Tag"/>
+            <Aggregator t="data.MakeUniqueAndCount"/>
+          </Item>
+          <Item t="data.IfThenElse" If="%count% == 1" >
+            <Var name="Tag"/>
+            <Var name="Title" t="text.Capitalize" Data="%text%"/>
+            <Var name="Plural" t="field_dt.PluralText" Data="%text%"/>
+            <Var name="Primitive" t="yesno.Empty" Data="%$SampleItem/{text}/*%"/>
+            <Var name="Type" t="field_dt.GuessType" SampleData="%$SampleItem/{text}/*%" />
+            <Then t="data.IfThenElse" If="%$Primitive%">
+               <Then t="xml.Xml" DynamicContent="true">
+                <Field t="field.XmlField" Path="%text%" ID="%text%" Title="%$Title%"/>
+               </Then>
+               <Else t="xml.WithChanges">
+                <Var name="Tag"/>
+                <Xml t="xml.Xml" DynamicContent="true">
+                  <Field t="field.Group" Title="%$Title%" ID="%text%" Path="%text%" />
+                </Xml>
+                <Change t="xml.AddChildren" CloneChildren="true">
+                  <Children t="data.Pipeline">
+                    <Item t="field_dt.ExtractXmlMetadata" SampleItems="%$SampleItem/{$Tag/text}%"/>
+                    <Item value="%fields/Field%"/>
+                  </Children>
+                </Change>
+               </Else>
+            </Then>
+            <Else t="xml.WithChanges">
+              <Xml t="xml.Xml" DynamicContent="true">
+                <Field t="field.XmlMultipleGroup" ID="%$Plural%" Title="%$Plural%" TitleForSingle="%$Title%">
+                  <Items t="field.InnerItems" Path="%text%"/>
+                  <Presentation t="uiaspect.RichTable"/>
+                  <Aspect t="uiaspect.DefaultFeatures"/>
+                </Field>
+              </Xml>
+              <Change t="xml.AddChildren">
+                <Children t="data.Pipeline">
+                  <Item t="field_dt.ExtractXmlMetadata" SampleItems="%$SampleItem/{$Tag/text}%"/>
+                  <Item value="%fields/Field%"/>
+                </Children>
+              </Change>
+            </Else>
+            <Else1 t="fieldgenerator_dt.XmlSampleToItemList" SampleItem="%$SampleItem%" Tag="%text%"/> 
+          </Item>
+        </Item>
+        <Item t="data.Pipeline">
+          <Item value="%$SampleItem%"/>
+          <Item t="xml.Attributes"/>
+          <Item t="data.Pipeline">
+            <Var name="Attr" t="xml.AttributeName"/>
+            <Var name="Title" Data="%$Attr%" t="text.Capitalize"/>
+            <Var name="Sample" value="%%" />
+            <Var name="Type" t="data.IfThenElse" If="%$ReadOnly%" Then="field_type.ReadOnlyText" Else="field_aspect.Text" />
+            <Item t="xml.Xml" DynamicContent="true">
+              <Field t="field.Field" FieldData="\%!@%$Attr%\%" ID="%$Attr%" Title="%$Title%" origin="data" sample="%$Sample%">
+                <Type t="%$Type%" />
+                <FieldAspect t="field_feature.Css" />
+              </Field>
+            </Item>
+          </Item>
+        </Item>
+      </Var>
+      <Change t="xml.AddChildren" Data="%fields%" Children="%$Fields%"/>
+      <Change t="xml.AddChildren" Data="%rows%" Children="%$SampleItems%" CloneChildren="true"/>
+    </xtml>
+  </Component>
+  
+    <Component id="FieldXPathEditor" type="field.FieldAspect">
+    <xtml t="field_aspect.Aspects">
+        <FieldAspect t="field_aspect.Control">
+          <Control t="field.ShowFieldControl" Item="%%">
+            <Field t="field.Field1" >
+              <FieldAspect t="field_aspect.SimpleInput"/>
+              <FieldAspect t="aaeditor.XPathEditor" >
+               <Var name="ParentsPath" t="data.Pipeline" >
+                 <Item t="data.PathItems" Data="%$FieldXtml%" Next="%..%" IncludeOrigianlItem="false" >
+                   <StopCondition t="yesno.Not" >
+                     <Of t="xml.IsOfTag" Tag="Field" Data="%..%" />
+                   </StopCondition>
+                 </Item>
+                 <Item t="yesno.PassesFilter">
+                   <Filter t="yesno.NotEmpty" Value="%@Path%" />
+                 </Item>
+                 <Aggregator t="text.Concat" Separator="/" ItemText="%@Path%" />
+               </Var>
+               <XmlItems t="data.Pipeline">
+                 <Item value="%$PageSampleItems%" />
+                 <Item t="xml.XPath" XPath="%$ParentsPath%" />
+               </XmlItems>
+              </FieldAspect>
+              <FieldAspect t="field_aspect.Resizer" />
+            </Field>
+          </Control>
+        </FieldAspect>
+        <FieldAspect t="field_aspect.FieldData" FieldData="%!@Path%" />
+    </xtml>
+  </Component>
+
+  <Component id="CleanNSButton" type="field.Fields">
+    <Param name="XmlFieldPath"/>
+    <Param name="XmlFieldID"/>
+    <xtml t="field.Button1" Title="Clean Data" ShowTitle="">
+      <Action t="operation.RunXtmlAction" >
+        <Var name="Xml" t="xml.XPath" XPath="%$XmlFieldPath%"/>
+        <Action t="action.RunActions" customxtml="true">
+          <Action t="action.WriteValue" To="%$Xml%" >
+            <Value t="xml.XmlToText" PrettyPrint="true">
+              <Data t="data.CleanNS" Data="%$Xml%"/>
+            </Value>
+          </Action>
+          <Action t="field.RefreshField" FieldID="%$XmlFieldID%"/>
+        </Action>
+      </Action>
+    </xtml>
+  </Component>
+
+  <Component id="FieldSampleData" type="data.Data" execution="native">
+    <Param name="Page" />
+    <Param name="Field" />
+    <Param name="PageData" />
+  </Component>
+
+  <Component id="TitleOfComponentInTable" type="data.Data">
+      <Param name="Xtml"/>
+      <xtml t="data.Pipeline">
+        <Var name="ComponentDefinition" t="xtml.ComponentDefinition" ID="%@t%" ToXtml="false" />
+        <Var name="SummaryLabel" t="xtml.RunXtml" Input="%%" Xtml="%$ComponentDefinition%" Field="summaryLabel" />
+        <Var name="Remark" value="%@remark%" />
+        <Item t="text.FirstSucceeding">
+          <Item value="%$ComponentDefinition/@displayName%" />
+          <Item t="data.Pipeline">
+            <Item value="%@t%"/>
+            <Item t="text.RemovePrefix" Separator="."/>
+            <Item t="text.Capitalize" Mode="capital to separate words"/>
+          </Item>
+        </Item>
+        <Item t="data.IfThenElse" If="%$SummaryLabel% == ''" Then="%%" Else="%% (%$SummaryLabel%)" />
+        <Item t="data.IfThenElse" If="%$Remark% == ''" Then="%%" Else="%% (%$Remark%)" />
+      </xtml>
+  </Component>
+
+  <Component id="ComponentInTable" type="ui.Control" execution="native">
+      <Param name="Xtml"/>
+      <Param name="ComponentTitle" script="true">
+        <Default t="field_dt.TitleOfComponentInTable" Xtml="%%" />
+      </Param>
+      <Param name="TitleForExpand" advanced="true">
+        <Default value="Show Params"/>
+      </Param>
+      <Param name="TitleForCollapse" advanced="true">
+        <Default value="Hide Params"/>
+      </Param>
+      <Param name="ImageForCollapse" advanced="true">
+        <Default value="%$_Images%/studio/minus.gif"/>
+      </Param>
+      <Param name="ImageForExpand" advanced="true">
+        <Default value="%$_Images%/studio/plus.gif"/>
+      </Param>
+      <Param name="Css" advanced="true" css="true">
+        <Default><![CDATA[.aa_field_toolbar_image { margin: 1px 0 0 3px; vertical-align: top; display: inline-block; width:16px; height:16px; cursor: pointer;}]]></Default>
+      </Param>
+      <NativeHelper name="ParamsControl" t="ui.Document">
+        <Fields t="xtml_dt.ParamsAsFields"/>
+        <Item t="data_items.Items" Items="%%"/>
+        <Presentation t="uiaspect.Group">
+          <Style t="group.PropertySheet"/>
+        </Presentation>
+      </NativeHelper>
+      <NativeHelper name="HasParams" t="yesno.NotEmpty">
+        <Value t="data.Pipeline">
+          <Item t="xtml.ComponentDefinition" ID="%@t%"/>
+          <Item value="%Param%"/>
+          <Item t="yesno.PassesFilter">
+            <Filter t="yesno.ItemsNotEqual" Item1="%@light%" Item2="false"/>
+          </Item>
+          <Item t="yesno.PassesFilter">
+            <Filter t="yesno.ItemsNotEqual" Item1="%@hidden%" Item2="true"/>
+          </Item>
+        </Value>
+      </NativeHelper>
+      <NativeHelper name="Documentation" t="xtml_dt.DocumentationIcon" Class="documentation" Icon="%$_Images%/studio/help.png">
+        <ComponentDefinition t="xtml.ComponentDefinition" ID="%@t%"/>
+      </NativeHelper>
+    </Component>
+
+  <Component id="ToEnglishPlural" type="data.Data" execution="native" />
+  
+  <Component id="AddFieldFromPopup" type="action.Action">
+    <Param name="FieldXtml" Default="%%"/>
+    <Param name="ParentXtml" />
+    <Param name="AlsoClosePopup" type="data.Boolean" />
+    <Param name="AlsoSelect" type="data.Boolean"><Default value="true"/></Param>
+    <xtml t="action.RunActions">
+      <Var name="IsGroup" t="field_dt.IsGroup" Data="%$ParentXtml%" />
+      <Var name="CalculatedParent" t="data.IfThenElse" If="%$IsGroup%" Then="%$ParentXtml%" Else="%$ParentXtml/..%" />
+      <Var name="_Cntr" t="cntr.ContainerOfElement" RunOn=".jbstudio_tree" />            
+      <Var name="CntrCtrl" value="%$ControlElement%" RunOn=".jbstudio_tree" />            
+      <Var name="SelectedFieldElement" t="data.Pipeline">
+        <Item t="uiaction.SelectedItemElement" RunOn="%$CntrCtrl%" />
+        <Item t="data.IfThenElse" If="%$IsGroup%" Then="%%">
+          <Else t="cntr.ParentItemElement" RunOn="%%" />
+        </Item>        
+      </Var>
+      <Action t="xml.RemoveAttributes" Data="%$FieldXtml%" AttributeNames="sample,origin,fieldExists,ID_Manual" />
+      <Action t="action.IfThenElse">
+        <If t="yesno.NotEmpty" Value="%$SelectedFieldElement%"/>
+        <Then t="xml.AddToXmlItems" Xml="%$FieldXtml%">
+          <Items t="uiaction.DataItemsOfItemInTree" ItemElement="%$SelectedFieldElement%" />
+          <DoOnAddedXml t="uiaction.AddItemElement" Item="%%" ParentElement="%$SelectedFieldElement%" SelectIt="%$AlsoSelect%">
+            <DoOnAddedElement t="action.IfThenElse" If="false" Condition="%$AlsoSelect%">
+              <Else t="bart_dt.EditXtmlInStudioBar" IsNewItem="true">
+                <Xtml t="cntr.ItemDataFromElement" Element="%%" />
+              </Else>
+            </DoOnAddedElement>
+          </DoOnAddedXml>
+        </Then>
+        <Else t="xml.ChangeXml" Xml="%$CalculatedParent%" >
+          <Change t="xml.AddChildren" Children="%$FieldXtml%" >
+            <RunOnChildren t="bart_dt.EditXtmlInStudioBar" Condition="%$AlsoSelect%" Xtml="%%" IsNewItem="true"/>
+          </Change>
+        </Else>
+      </Action>
+      <Action t="dialog.ClosePopup" Condition="%$AlsoClosePopup%" />
+      <Action t="field_dt.RefreshPreview" />
+    </xtml>
+  </Component>
+  
+  <Component id="IsReadOnly" type="data.Boolean" execution="native">
+    <Param name="FieldXtml" />
+  </Component>
+
+  <Component id="UpToPageDef" type="data.Data" execution="native">
+    <Param name="Xtml" Default="%%" />
+    <Param name="Result" type="enum" options="xtml,path,object" Default="xtml" />
+  </Component>
+  
+  <Component id="CodeMirrorsTabControlStyle" type="tabcontrol.Style">
+  <xtml t="ui.CustomStyle">
+    <Css>
+<![CDATA[#this >div>div.aatabs_tab { font-size: 93\%; font-family: arial; float: left; padding: 6px 15px 4px 6px; cursor: pointer;
+  background-color:#FADFAD; margin-right:2px; 
+  color: #A08271; 
+  min-width:30px; 
+  border-top-left-radius:6px; border-top-right-radius:6px; 
+}
+#this >div>div>div.aatabs_tab_text {  padding:0 0 0 5px; float:left; }
+#this >div>div.aa_selected_tab  { background-color:#73C2FB; color: #230E0E; }
+#this >div>div>div.aatabs_tab_image { float: left; }
+#this >.aatabs_contents { clear: both; padding:0px 0 3px 0; }
+]]>
+    </Css>
+    <Html>
+<![CDATA[<div>
+  <div>
+    <div class="aatabs_tab">
+      <div class="aatabs_tab_image"/>
+      <div class="aatabs_tab_text"/>
+    </div>
+  </div>
+  <div class="aatabs_contents"/>
+</div>]]>
+    </Html>
+<![CDATA[]]>
+    <Javascript>
+<![CDATA[function(tabcontrol) {
+ tabcontrol.addTabs('.aatabs_tab','.aatabs_contents',
+   function(tab) {        
+      tab.setInnerHTML('.aatabs_tab_text',tab.Title);         
+      tab.setImageSource('.aatabs_tab_image',tab.Image);   
+   tab.setOnClick('',tab.Select); });
+}]]>
+    </Javascript>
+  </xtml>
+  </Component>
+
+  <Component id="SliderParam" type="field.FieldAspect">
+     <Param name="Units">
+          <Default t="slider.Unit" Symbol="px" Min="0" />
+       </Param>
+     <Param name="Width" Default="125px"/>
+     <Param name="AllowEmptyValue" type="data.Boolean" Default="true"/>
+     <xtml t="field_aspect.FieldAspects">
+        <FieldAspect t="field_aspect.FieldData" >
+          <FieldData t="data.CreateIfDoesNotExist" Query="%@{$_Field/ParamXml/@name}%">
+              <Create t="action.WriteValue" To="%!@{$_Field/ParamXml/@name}%">
+                <Value t="xtml.RunXtml" Xtml="%$_Field/ParamXml%" Field="Default" />
+              </Create>
+          </FieldData>
+        </FieldAspect>
+        <FieldAspect t="slider.Slider" Units="%$Units%" Width="%$Width%" AllowEmptyValue="%$AllowEmptyValue%"/>
+        <FieldAspect t="field_aspect.OnUpdate">
+          <Action t="field_dt.RefreshPreview" />
+        </FieldAspect>
+     </xtml>
+  </Component>
+
+  <Component id="FieldIdParam" type="field.FieldAspect">
+    <Param name="PTForFields" />
+      <xtml t="field_aspect.Aspects">
+        <FieldAspect t="field_aspect.Picklist" AllowEmptyValue="true" AllowValueNotInOptions="true" Multiple="false" Mandatory="false" RecalculateForEachCell="false">
+          <Options t="picklist.DynamicOptions" OptionCode="%ID%">
+            <Options t="data.Pipeline">
+              <Item t="data.IfThenElse">
+                <If t="yesno.NotEmpty" Value="%$PTForFields%" />
+                <Then t="xtml_dt.FindXtmlByT" FindAll="true" ParentXtml="%$_WidgetXml%" T="%$PTForFields%"/>
+                <Else value="%$_WidgetXml///Field%"/>
+              </Item>
+              <Item t="object.Object" ID="%@ID%" Title="%@Title%"/>
+              <Aggregator t="data.MakeUnique" Identifier="%ID%,%Title%"/>
+            </Options>
+            <OptionLabel value="%Title% %$IdText%">
+              <Var name="IdText" t="data.Switch">
+                <Case>
+                  <IfCondition t="yesno.IsEmpty" Value="%ID%"/>
+                </Case>
+                <Case Then="%ID%">
+                  <IfCondition t="yesno.IsEmpty" Value="%Title%"/>
+                </Case>
+                <Case Then="(%ID%)">
+                  <IfCondition t="yesno.ItemsNotEqual" Item1="%ID%" Item2="%Title%"/>
+                </Case>
+              </Var>
+            </OptionLabel>
+          </Options>
+        </FieldAspect>
+        <FieldAspect t="field_aspect.FieldData" >
+          <FieldData t="data.FirstSucceeding">
+            <Item value="%{$_Field/ParamXml/@name}%"/>
+            <Item value="%!@{$_Field/ParamXml/@name}%"/>
+          </FieldData>
+        </FieldAspect>
+        <FieldAspect t="field_aspect.HandleEvent" Event="update">
+          <Action t="field_dt.RefreshPreview" />
+        </FieldAspect>
+      </xtml>
+  </Component>
+
+  <Component id="InfoForSimpleEdit" type="field.FieldAspect">
+    <xtml value="" />
+  </Component>
+
+  <Component id="OpenCustomAAEditor" type="action.Action">
+    <Param name="Xtml" Default="%%" />
+    <Param name="Param" Default="%$_Param%" />
+      <xtml t="action.RunActions">
+        <Action t="xml.AddChildren">
+          <Condition t="yesno.IsEmpty" Value="%$Xtml/{$Param}%" />
+          <Children t="xml.ByTag" Tag="%$Param%">
+            <Change t="xml.SetAttribute" AttributeName="t">
+              <Value t="data.Switch">
+                <Value t="xtml.ComponentParamType" Component="%$Xtml/@t%" Param="%$Param%" />
+                <Case If="data.Data" Then="data.Pipeline" />
+                <Case If="action.Action" Then="action.RunActions" />
+                <Case If="xml.Change" Then="xml.PerformChanges" />
+                <Case If="ui.Control" Then="ui.List" />
+                <Case If="action_async.Action" Then="action_async.RunActions" />
+              </Value>
+            </Change>
+          </Children>
+        </Action>
+        <Action t="gstudio_popup.ShowAAEditorFloatingPopup" Xtml="%$Xtml%" />
+      </xtml>
+  </Component>
+
+  <Component id="CustomizeCss" type="action.Action" description="Make local for a style, only in the css aspect" light="false">
+    <Param name="StyleXtml" />
+    <xtml t="action.RunActions">
+      <Var name="CurrentStyle" t="xtml.RunXtml" Xtml="%$StyleXtml%" />
+      <Var name="CurrentCss" value="%$CurrentStyle/Css%" />
+      <Var name="CssElement" t="xml.WithChanges">
+        <Xml t="xml.ByTag" Tag="Css" />
+        <Change t="xml.WriteCData" Element="%%" CDataText="%$CurrentCss%" />
+      </Var>
+      <Var name="NewXtml" t="xml.WithChanges">
+        <Xml t="xml.Xml" DynamicContent="true">
+          <Style t="ui.CustomCss" />
+        </Xml>
+        <Change t="xml.AddChildren" Children="%$StyleXtml%" CloneChildren="true" />
+        <Change t="xml.AddChildren" Children="%$CssElement%" />
+      </Var>      
+      <Action t="xml.ReplaceElement" Element="%$StyleXtml%" NewElement="%$NewXtml%" />
+    </xtml>
+  </Component>
+
+<Component id="CustomizeMoreTab" type="field.Fields">
+      <Param name="Xtml"/>
+      <Param name="FieldAspect" type="field.FieldAspect[]" script="true"/>
+      <Param name="ReopenPopup" type="action.Action" script="true"/>      
+      <xtml t="control.Layout" ID="dt_CustomizeMoreTab" Title="More">
+        <FieldAspect t="object.SetProperty" Object="%$_Field%" Property="SectionImage" IsSingleProperty="true">
+          <Value t="image.Image" Url="%$_Images%/studio/html.png"/>
+        </FieldAspect>
+        <FieldAspect t="field_aspect.HideTitle"/>
+        <FieldAspect t="xtml.UseParamArray" Param="FieldAspect"/>
+        <Field t="control.Button" Title="Customize HTML and Javascript">
+          <Action t="action.RunActions">
+            <Var name="StyleObject" t="xtml.RunXtml" Xtml="%$Xtml%"/>
+            <Var name="NewXtml" t="xml.WithChanges">
+              <Xml t="xml.Xml">
+                <Style t="ui.CustomStyle"/>
+              </Xml>
+              <Change t="xml.WriteCData" Element="%!Html%" CDataText="%$StyleObject/Html%"/>
+              <Change t="xml.WriteCData" Element="%!Css%" CDataText="%$Xtml/Css%"/>
+              <Change t="xml.WriteCData" Element="%!Javascript%" CDataText="%$StyleObject/Javascript%"/>
+              <Change t="xml.SetAttribute" AttributeName="base" Value="%$Xtml/@base%" RemoveEmptyAttribute="true"/>
+            </Var>
+            <Action t="xml.ReplaceElement" Element="%$Xtml%" NewElement="%$NewXtml%"/>
+            <Action1 t="dlg.CloseContainingDialog"/>
+            <Action t="xtml.UseParam" Param="ReopenPopup" />
+          </Action>
+          <Style t="btn.Hyperlink"/>
+          <FieldAspect t="field_feature.Css">
+            <Css><![CDATA[#wrapper {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+]]></Css>
+          </FieldAspect>
+        </Field>
+        <Layout t="layout.Default"/>
+        <Field t="control.Label" ID="Html_" Title="Html:">
+          <Style t="uitext.Bold14"/>
+        </Field>
+        <Field t="fld.Field" ID="html" Title="Html">
+          <FieldData t="data.Pipeline">
+            <Item t="xtml.RunXtml" Xtml="%$Xtml%"/>
+            <Item value="%Html%"/>
+          </FieldData>
+          <FieldType t="fld_type.Text">
+            <Style t="uitext.CodeMirror" LineNumbers="false" LineWrapping="true" EnableFullScreen="true" Width="400px" Height="150px" Mode="htmlmixed"/>
+          </FieldType>
+        </Field>
+        <Field t="control.Label" ID="Html_" Title="Javascript:">
+          <Style t="uitext.Bold14"/>
+        </Field>
+        <Field t="fld.Field" ID="js" Title="Javascript">
+          <FieldData t="data.Pipeline">
+            <Item t="xtml.RunXtml" Xtml="%$Xtml%"/>
+            <Item value="%Javascript%"/>
+          </FieldData>
+          <FieldType t="fld_type.Text">
+            <Style t="uitext.CodeMirror" LineNumbers="false" LineWrapping="true" EnableFullScreen="true" Width="400px" Height="150px" Mode="javascript"/>
+          </FieldType>
+        </Field>
+      </xtml>
+    </Component>
+
+
+</xtml>

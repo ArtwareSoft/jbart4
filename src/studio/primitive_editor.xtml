@@ -1,0 +1,86 @@
+<xtml ns="primitive_editor">
+
+	<Type id="Style" />
+
+	<Component id="PrimitiveEditor" type="field.Fields" execution="native" hidden="true">
+    <Param name="ID" advanced="always" essential="true"/>
+    <Param name="Title" essential="true" titleField="true" />
+    <Param name="XtmlToEdit" />
+    <Param name="ParamToEdit" />
+    <Param name="Style" type="primitive_editor.Style"><Default t="primitive_editor.Default" /></Param>
+    <Param name="FieldAspect" type="field.FieldAspect[]" light="false" script="true" />
+	</Component>
+
+
+	<Component id="Default" type="primitive_editor.Style">
+		<xtml t="ui.CustomStyle">
+			<Html><![CDATA[<div>
+	<input class="aa_primitive_input" />
+	<div class="small_popup_arrow" />
+	<div class="small_popup">
+	</div>
+	<div class="tree_popup">
+	</div>
+	<div class="aa_selector_popup">
+		<div class="aa_popup_close" />    	
+		<div>
+			<div class="selector_item">
+				<div class="selector_item_val" />
+				<div class="selector_item_preview" />
+			</div>
+		</div>
+	</div>
+</div>]]></Html>
+			<Css><![CDATA[
+.aa_primitive_input {
+  border: 1px solid #BDC7D8;
+  font-size: 11px;
+  padding: 3px;
+  height: 16px;
+  width: 150px;
+  background: url(_jbartImages_/css/shadow2.png) repeat-x scroll 0 0 transparent;
+}
+#popup.aa_selector_popup {
+  background: #F8F9FF;
+  border: 1px groove lightgrey;
+  max-height: 350px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  min-width: 20px;
+}
+#popup.aa_selector_popup .aa_popup_close {
+  cursor: pointer;
+  position:absolute;
+  background: url('_jbartImages_/close2.png') no-repeat;
+  width: 16px;
+  height: 16px;
+  right:5px;
+  top: 3px;
+}
+#popup.aa_selector_popup .selector_item {
+  padding: 3px 2px;
+  border-bottom:1px solid #ddd;
+}
+#popup.aa_selector_popup .selector_item:hover {
+  background: lightblue;
+  cursor: pointer;  
+}
+#popup.aa_selector_popup .selector_item_val {
+  width: 70px;
+  display: inline-block;
+}
+#popup.aa_selector_popup .selector_item_preview {
+  padding-left:5px;
+  width: 150px;
+  display: inline-block;
+}
+]]></Css>
+      <Javascript><![CDATA[
+function render(primitive_editor) {
+  aa_primitive_editor(primitive_editor);
+}]]>
+      </Javascript>
+		</xtml>
+	</Component>
+
+</xtml>

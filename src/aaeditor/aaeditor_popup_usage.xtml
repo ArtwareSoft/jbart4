@@ -1,0 +1,300 @@
+<xtml ns="aaeditor_usage" light="false">
+
+	<Component id="SampleContext">
+      <Param name="Input">
+        <Default t="xml.Xml">
+          <people>
+            <person name="Homer" lastName="Simpson"/>
+            <person name="Marge" lastName="Simpson"/>
+          </people>
+        </Default>
+      </Param>
+      <Param name="TextParam">
+        <Default value="simple text"/>
+      </Param>
+      <Param name="XmlParam">
+        <Default t="xml.Xml">
+          <person name="Homer" lastName="Simpson"/>
+        </Default>
+      </Param>
+      <xtml t="data.Struct">
+      	<Item Name="context">
+      		<Value t="xtml.CurrentContext">
+		        <Var name="TextVariable" value="simple text"/>
+		        <Var name="TextVariable2" value="Homer"/>
+		        <Var name="XmlVariable" t="xml.Xml">
+		          <mypeople>
+		            <person name="Homer" lastName="Simpson"/>
+		            <person name="Marge" lastName="Simpson"/>
+		          </mypeople>
+		        </Var>
+		        <Var name="ListVariable" t="data.Pipeline">
+		        	<Item t="xml.Xml">
+			          <mypeople>
+			            <person name="Homer" lastName="Simpson"/>
+			            <person name="Marge" lastName="Simpson"/>
+			          </mypeople>
+		          </Item>
+		          <Item value="%*%" />
+		        </Var>
+		      </Value>
+		 </Item>
+		 <Item Name="Input" Value="%$Input%" />
+      </xtml>
+    </Component>
+	
+	<Usage t="usage.DataUsage" Of="aaeditor.EditPrimitiveAssistValues">
+		<Var name="Context" t="aaeditor_usage.SampleContext" />
+		<Result t="aaeditor.EditPrimitiveAssistValues" Context="%$Context%" Text="hi %" />
+		<ExpectedResult t="yesno.ItemsEqual" Item1="people">
+			<Item2 t="xml.Tag" />
+		</ExpectedResult>
+    </Usage>
+    
+	<Usage t="usage.DataUsage" Of="aaeditor.EditPrimitiveAssistValues.Text">
+		<Var name="Context" t="aaeditor_usage.SampleContext" Input="simple text" />
+		<Result t="aaeditor.EditPrimitiveAssistValues" Context="%$Context%"  Text="hi %" />
+		<ExpectedResult t="yesno.EqualsTo" To="simple text" />
+    </Usage>
+    
+	<Usage t="usage.DataUsage" Of="aaeditor.EditPrimitiveAssistValues.Variables">
+		<Var name="Context" t="aaeditor_usage.SampleContext" />
+		<Result t="aaeditor.EditPrimitiveAssistValues" Context="%$Context%" Text="hi %$" />
+		<ExpectedResult t="yesno.EqualsTo" To="___VARS LIST" />
+    </Usage>
+    
+	<Usage t="usage.DataUsage" Of="aaeditor.EditPrimitiveAssistValues.ValueOfVariable">
+		<Var name="Context" t="aaeditor_usage.SampleContext" />
+		<Result t="aaeditor.EditPrimitiveAssistValues" Context="%$Context%" Text="hi %$XmlVariable/" />
+		<ExpectedResult t="yesno.ItemsEqual" Item1="mypeople">
+			<Item2 t="xml.Tag" />
+		</ExpectedResult>
+    </Usage>
+    
+	<Usage t="usage.DataUsage" Of="aaeditor.EditPrimitiveAssistValues.Internal">
+		<Var name="Context" t="aaeditor_usage.SampleContext" />
+		<Result t="aaeditor.EditPrimitiveAssistValues" Context="%$Context%" Text="hi %$XmlVariable/person[@name='{" />
+		<ExpectedResult t="yesno.ItemsEqual" Item1="people">
+			<Item2 t="xml.Tag" />
+		</ExpectedResult>
+    </Usage>
+    
+	<Usage t="usage.DataUsage" Of="aaeditor.EditPrimitiveAssistValues.ListVariableCondition">
+      <Var name="Context" t="aaeditor_usage.SampleContext"/>
+      <Result t="aaeditor.EditPrimitiveAssistValues" Context="%$Context%" Text="hi %$ListVariable["/>
+      <ExpectedResult t="yesno.And">
+        <Item t="yesno.ItemsEqual" Item1="%Type%" Item2="List"/>
+        <Item t="yesno.ItemsEqual" Item1="%=Concat(List/Value,',')%" Item2="@name,@lastName"/>
+        <Item t="yesno.ItemsEqual" Item1="%=Concat(List/Desc,';')%" Item2="Homer,Marge;Simpson"/>
+        <Item t="yesno.ItemsEqual" Item1="%PutAfter%" Item2="='"/>
+      </ExpectedResult>
+    </Usage>
+    
+    <Usage t="ui.ControlUsage" Of="aaeditor.EditPrimitiveTextBox.ListVariableCondition" IsTest="false">
+       <Data t="data.WritableText"/>
+      <Control t="aaeditor.EditPrimitiveTextWithPreview">
+        <Context t="aaeditor_usage.SampleContext"/>
+      </Control>
+      <RunOnControl t="action.RunActions">
+      	<Action t="uiaction.SetText" Text="%$ListVariable[@lastName = '{" RunOn=".fld_primitive_text_box" />
+      	<Action t="uiaction.SetText" Text="%$ListVariable[@lastName = '{$" RunOn=".fld_primitive_text_box" />
+      </RunOnControl>
+	  <CleanAfter t="field_aspect.CloseSuggestionBox" /> 
+    </Usage>
+    
+	<Usage t="usage.DataUsage" Of="aaeditor.EditPrimitiveAssistValues.InternalVar">
+		<Var name="Context" t="aaeditor_usage.SampleContext" />
+		<Result t="aaeditor.EditPrimitiveAssistValues" Context="%$Context%" Text="hi %$XmlVariable/person[@name='{$TextVariable/" />
+		<ExpectedResult t="yesno.EqualsTo" To="simple text"/>
+    </Usage>
+    
+	<Usage t="usage.DataUsage" Of="aaeditor.EditPrimitiveAssistValues.SecondPercGivesNothing">
+      <Var name="Context" t="aaeditor_usage.SampleContext"/>
+      <Result t="aaeditor.EditPrimitiveAssistValues" Context="%$Context%" Text="hi %%"/>
+      <ExpectedResult t="yesno.EqualsTo"/>
+    </Usage>
+    
+    <Usage t="ui.ControlUsage" Of="aaeditor.EditPrimitiveTextBox" IsTest="false">
+       <Data t="data.WritableText"/>
+      <Control t="aaeditor.EditPrimitiveTextBox" >
+        <Context t="aaeditor_usage.SampleContext"/>
+        <Param t="xml.Xml" > <Param type="data.Data" /></Param>
+      </Control>
+      <RunOnControl t="action.RunActions">
+      	<Action1 t="uiaction.SetText" Text="%person" RunOn=".fld_primitive_text_box" />
+      	<Action1 t="uiaction.SetText" Text="%person/" RunOn=".fld_primitive_text_box" />
+      </RunOnControl>
+	  <CleanAfter t="field_aspect.CloseSuggestionBox" /> 
+    </Usage>
+
+    <Usage t="ui.ControlUsage" Of="aaeditor.EditPrimitiveTextWithPreview.Complex" IsTest="false">
+       <Data1 t="data.WritableText" DefaultValue="Hi \%$TextParam\% sdasd" />
+       <Data t="data.WritableText" DefaultValue="hi \%$XmlVariable/person[@name='{$TextVariable2}']/@lastName\%" />
+       <Control t="aaeditor.EditPrimitiveTextWithPreview">
+         <Context t="aaeditor_usage.SampleContext"/>
+       </Control>
+       <ExpectedResult t="yesno.Contains">
+       	<Text value="hi \%$XmlVariable/person[@name='Homer']/@lastName\%" />
+       	<Text value="hi Simpson" />
+       </ExpectedResult>
+    </Usage>
+    
+    <Usage t="ui.ControlUsage" Of="aaeditor.EditPrimitiveTextWithPreview.EmptyText" IsTest="false">
+       <Data t="data.WritableText" />
+       <Control t="aaeditor.EditPrimitiveTextWithPreview">
+         <Context t="aaeditor_usage.SampleContext"/>
+       </Control>
+       <ExpectedResult value="true" />
+    </Usage>
+
+	<Usage t="usage.DataUsage" Of="aaeditor.CalculatePrimitiveInnerParts">
+		<Result t="aaeditor.CalculatePrimitiveInnerParts">
+			<Text value="hi \%$XmlVariable/person[@name='{$TextVariable2}']/@lastName\%" />
+			<Context t="data.Pipeline">
+				<Item t="aaeditor_usage.SampleContext"/>
+				<Item value="%context%" />
+			</Context>
+		</Result>
+		<ExpectedResult t="yesno.EqualsTo" To="hi \%$XmlVariable/person[@name='Homer']/@lastName\%" />
+	</Usage>
+	
+	<Usage t="ui.ControlUsage" Of="aaeditor.PrimitiveTextPreview">
+      <ExpectedResult t="yesno.Contains">
+        <Text value="hi simple text"/>
+        <Text value="2 Items"/>
+        <Text value="Homer,Marge"/>
+        <Text value="(person ...)"/>
+        <Text value="Homer"/>
+      </ExpectedResult>
+      <Control t="ui.List">
+        <Control t="aaeditor.PrimitiveTextPreview" Text="hi \%$TextVariable\%">
+          <Context t="aaeditor_usage.SampleContext"/>
+        </Control>
+        <Control t="aaeditor.PrimitiveTextPreview" Text="\%person\%">
+          <Context t="aaeditor_usage.SampleContext"/>
+        </Control>
+        <Control t="aaeditor.PrimitiveTextPreview" Text="\%person/@name\%">
+          <Context t="aaeditor_usage.SampleContext"/>
+        </Control>
+        <Control t="aaeditor.PrimitiveTextPreview" Text="\%person[1]\%">
+          <Context t="aaeditor_usage.SampleContext"/>
+        </Control>
+        <Control t="aaeditor.PrimitiveTextPreview" Text="\%name\%">
+          <Context t="data.Struct">
+						 <Item Name="Input" >
+						 		<Value t="xml.Xml">
+						 			<xml>
+						 				<name>Homer</name>
+						 			</xml>
+						 		</Value>
+						 </Item>
+          </Context>
+        </Control>
+      </Control>
+    </Usage>
+	
+  <Usage t="ui.ControlUsage" Of="aaeditor.EditPrimitiveTextBox.Aggregator.AfterEquals" IsTest="false">
+    <Control t="aaeditor.EditPrimitiveTextBox" >
+      <Data t="data.WritableText" />
+      <Context t="aaeditor_usage.AggregatorContext" />
+    </Control>
+    <RunOnControl t="field_aspect.TriggerSuggestionBoxPopup" TextToSimulate="%=" RunOn=".fld_primitive_text_box" />
+    <ExpectedResult AllText="%$ControlElement%" RunOn=".customsuggestionpopup" t="yesno.Contains" >
+      <Text value="Sum" />
+    </ExpectedResult> 
+  </Usage>
+  
+  <Usage t="ui.ControlUsage" Of="aaeditor.EditPrimitiveTextBox.Aggregator.Fields" IsTest="false" >
+    <Control t="aaeditor.EditPrimitiveTextBox" >
+      <Data t="data.WritableText" />
+      <Context t="aaeditor_usage.AggregatorContext"/>
+    </Control>
+    <RunOnControl t="field_aspect.TriggerSuggestionBoxPopup" TextToSimulate="%=Sum(Items/" RunOn=".fld_primitive_text_box"/>
+    <ExpectedResult AllText="%$ControlElement%" RunOn=".customsuggestionpopup" t="yesno.Contains">
+      <Text value="Age" />
+      <Text value="20,30" />
+    </ExpectedResult> 
+  </Usage>
+  
+  <Usage t="usage.DataUsage" Of="xtml_dt.AggregatorFields">
+      <Result t="data.Pipeline">
+        <Item t="xtml_dt.AggregatorFields">
+          <Items t="data.List">
+            <Item t="object.Object" Age="20" Height="180"/>
+            <Item t="object.Object" Age="30" Height="170"/>
+            <Item t="object.Object" Age="40" Height="162"/>
+            <Item t="object.Object" Age="50" Height="164"/>
+            <Item t="object.Object" Age="60" Height="165"/>
+            <Item t="object.Object" Age="70" Height="171"/>
+            <Item t="object.Object" Age="80" Height="172"/>
+            <Item t="object.Object" Age="90" Height="174"/>
+          </Items>
+        </Item>
+        <Aggregator t="text.Concat" ItemText="%FieldName% (%Desc%)" Separator=" "/>
+      </Result>
+      <ExpectedResult t="yesno.EqualsTo" To="Age (20,30,40,50,...) Height (180,170,162,164,...)"/>
+    </Usage>
+
+  <Usage t="ui.ControlUsage" Of="aaeditor.EditPrimitiveTextBox.Aggregator" IsTest="false">
+    <Control t="aaeditor.EditPrimitiveTextBox" >
+      <Data t="data.WritableText" />
+      <Context t="aaeditor_usage.AggregatorContext"/>
+    </Control>
+    <ExpectedResult AllText="%$ControlElement%" RunOn=".customsuggestionpopup" t="yesno.Contains">
+      <Text value="Age" />
+      <Text value="20,30" />
+    </ExpectedResult> 
+  </Usage>
+  
+  <Usage1 t="ui.ControlUsage" Of="aaeditor.EditPrimitiveTextBox.Aggregator.SuggestEquals" >
+    <Control t="aaeditor.EditPrimitiveTextBox" >
+      <Data t="data.WritableText" />
+      <Context t="aaeditor_usage.AggregatorContext"/>
+    </Control>
+    <RunOnControl t="field_aspect.TriggerSuggestionBoxPopup" TextToSimulate="%" RunOn=".fld_primitive_text_box"/>
+    <ExpectedResult Data="%$ControlElement%" RunOn=".customsuggestionpopup" t="yesno.Contains">
+      <Text value="=" />
+    </ExpectedResult> 
+  </Usage1>
+  
+  <Usage t="ui.ControlUsage" Of="aaeditor.XPathEditor">
+      <Var name="XmlItems" t="data.Pipeline">
+        <Item t="xml.Xml">
+          <xml>
+		        <Person Name="Homer" Age="38" MainHobby="Complaining">
+		          <Children>
+		            <Child name="Bart" />
+		            <Child name="Lisa" />
+		          </Children>
+		        </Person>
+		        <Person Name="Marge" Age="32" Gender="Female" >
+		          <FullName>Marge Simpson</FullName>
+		        </Person>
+          </xml>
+        </Item>
+        <Item value="%*%" />
+      </Var>
+      <Control t="ui.Document">
+        <Item t="data_items.Items" >
+          <Items t="xml.Xml"><xml/></Items>
+        </Item>
+	          <Field t="field.XmlField" Path="@Path" ID="Path">
+  	           <FieldAspect t="aaeditor.XPathEditor" XmlItems="%$XmlItems%" />
+	          </Field>
+      </Control>
+      <RunOnControl t="uiaction.Click" RunOn=".fld_Path" />
+      <ExpectedResult t="yesno.Contains" RunOn=".aapopup" IgnoreOrder="true">
+        <Data value="%$ControlElement%" />
+        <Text value="@Name" />
+        <Text value="Marge" />
+        <Text value="@Age" />
+        <Text value="38" />
+        <Text value="@MainHobby" />
+        <Text value="Complaining" />
+        <Text value="Children" />
+        <Text value="FullName" />
+        <Text value="Marge Simpson" />
+      </ExpectedResult>
+  </Usage>
+  
+</xtml>

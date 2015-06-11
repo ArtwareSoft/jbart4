@@ -1,0 +1,65 @@
+<xtml ns="aaeditor" light="false">
+
+<Component id="ModifiedComponents" type="data.Data" hidden="true">
+  	<xtml t="data.FirstSucceeding">
+      <Item value="%$_JBartStudio/ModifiedComponents%" />
+  		<Item value="%$AAEditorState/ModifiedComponents%" />
+  		<Item value="%$_BartDevDtContext/ModifiedComponents%" />
+  	</xtml>
+</Component>
+
+<Component id="MarkComponentAsModified" type="action.Action">
+  <Param name="ComponentID"/>
+  <xtml t="xml.ChangeXml" >
+  	<Xml t="aaeditor.ModifiedComponents" />
+    <Change t="xml.Delete" Data="%component[@fullid='{$ComponentID}']%"/>
+    <Change t="xml.AddChildren" CloneChildren="false">
+      <Condition t="yesno.NotEmpty" Data="%$ComponentID%"/>
+      <Children t="xml.Xml" DynamicContent="true">
+        <component fullid="%$ComponentID%"/>
+      </Children>
+    </Change>
+  </xtml>
+</Component>
+
+<Component id="SaveDataToServer" type="data.Data">
+  <xtml t="xml.WithChanges">
+    <Xml t="xml.Xml">
+      <updateServer>
+        <component fullid="" file=""/>
+      </updateServer>
+    </Xml>
+    <Change t="xml.Duplicate" Element="%component%" >
+    	<Items t="data.Pipeline" >
+    		<Item t="aaeditor.ModifiedComponents" />
+    		<Item value="%component/@fullid%" />
+    	</Items>
+      <ChangeOnElement t="xml.MultiChange">
+		    <Var name="ComponentElement" t="data.FirstSucceeding" Data="%$InputForChanges%">
+		      <Item t="gallery.UsagesByName">
+		        <Condition t="text.StartsWith" With="usage:byname:"/>
+		        <Name t="text.RemovePrefix" Separator="usage:byname:"/> 
+		      </Item>
+		      <Item t="gallery.UsagesOfComponent">
+		        <Condition t="text.StartsWith" With="usage:"/> 
+		        <ComponentId t="text.RemovePrefix" Separator="usage:"/> 
+		      </Item>
+		      <Item t="xtml.ComponentDefinition" ID="%%"/>
+		    </Var>
+
+	      <Change t="xml.SetAttribute" AttributeName="fullid" Value="%%"/>
+	      <Change t="xml.SetAttribute" AttributeName="file" Value="%$ComponentElement/../@file%"/>
+	      <Change t="xml.AddChildren" CloneChildren="true" Children="%$ComponentElement%"/>
+	    </ChangeOnElement>
+    </Change>
+  </xtml>
+</Component>
+
+<Component id="SaveToServerAction" type="action.Action" execution="native" />
+
+<Component id="SaveNewStyle" type="action.Action" execution="native">
+  <Param name="Component" />
+  <Param name="Ns" />
+</Component>
+
+</xtml>

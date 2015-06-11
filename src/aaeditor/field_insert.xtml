@@ -1,0 +1,5 @@
+<xtml ns="addfield_dt" light="false">
+
+  <Component id="ParentXtml" type="data.Data" execution="native" />
+
+</xtml>

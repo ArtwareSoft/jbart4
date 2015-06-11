@@ -1,0 +1,9 @@
+<xtml ns="js">
+
+  <Component id="JavaScript" type="data.Data,action.Action,*" execution="native">
+    <Param name="Javascript" essential="true" codemirror="true" Default="function(data,html_elem,context) {&#xa;  &#xa;}">
+    	<EditorField t="xtml_dt2.JavaScriptEditorField" />
+    </Param>
+  </Component>
+
+</xtml>

@@ -1,0 +1,273 @@
+<xtml package="true">
+<xtml ns="fld">
+
+  <Component id="Field" type="field.Fields" execution="native">
+      <Param name="Title" titleField="true" essential="true"/>
+      <Param name="FieldData" script="true" Default="%%" title="Data"/>
+      <Param name="FieldType" type="field_type.Type" title="Type">
+        <Default t="fld_type.Text"/>
+      </Param>
+      <Param name="FieldAspect" type="field.FieldAspect[]" script="true" light="false"/>
+      <Param name="ID" idField="true"/>
+    </Component>
+  
+  <Component id="CalculatedField" type="field.Fields" execution="native" description="Non visual field which adds calculations to the data" image="%$_Images%/studio/calculator.png">
+    <Param name="Title" titleField="true"/>
+    <Param name="FieldData" script="true" Default="%%" title="Data" description="Value is copied here"/>
+    <Param name="Value" script="true" description="The calculation output"/>
+    <Param name="WorkOn" type="enum" Options="single data,items in itemlist" Default="single data"/>
+    <Param name="Visible" type="data.Boolean" />    
+    <Param name="ID" idField="true" />
+    <Param name="FieldAspect" type="field.FieldAspect[]" script="true" light="false"/>
+  </Component>
+  
+</xtml>
+
+<xtml ns="field_type">
+  <Type id="Type" />
+</xtml>
+
+<xtml ns="fld_type">
+
+  <Component id="Text" type="field_type.Type" execution="native" autoexapnd="true">
+    <Param name="Style" type="uitext.Style">
+      <Default t="uitext.PlainText" />
+    </Param>
+  </Component>
+  
+  <Component id="EditableText" type="field_type.Type" execution="native" autoexapnd="true" editable="true" doc="http://jb-letmesee.appspot.com/LetMeSee/p80kd9kkn6.html?roomid=6qnrs8&amp;notracking=true&amp;autoitem=m0cl">
+    <Param name="Style" type="editable_text.Style">
+      <Default t="editable_text.JBartTextbox" />
+    </Param>
+  </Component>
+  
+  <Component id="EditableColor" type="field_type.Type" execution="native" autoexapnd="true" editable="true">
+    <Param name="Style" type="editable_color.Style">
+      <Default t="editable_color.JSColor" />
+    </Param>
+  </Component>
+
+  <Component id="Number" type="field_type.Type" autoexapnd="true" execution="native">
+    <Param name="Style" type="number.Style">
+      <Default t="number.Plain" />
+    </Param>
+    <Param name="Format" type="number.Format">
+      <Default t="number.Format" />
+    </Param>
+    <Param name="AlignToRightOnTables" type="data.Boolean" Default="true" />
+    <NativeHelper name="SortType" t="field_aspect.SortType">
+      <SortType t="itemsort.Numeric"/>
+    </NativeHelper>
+    <NativeHelper name="AlignToRight" t="field_feature.Css" Condition="%$AlignToRightOnTables%">
+      <Css><![CDATA[td.aa_cell >#this { text-align: right; }]]></Css>
+    </NativeHelper>
+  </Component>
+
+  <Component id="EditableNumber" type="field_type.Type" execution="native" autoexapnd="true" editable="true">
+    <Param name="Style" type="editable_number.Style">
+      <Default t="editable_number.JBartNumberTextbox" />
+    </Param>
+    <Param name="Format" type="number.Format">
+      <Default t="number.Format" />
+    </Param>
+    <NativeHelper name="DefaultValidation" t="field_aspect.Validation">
+       <ValidationLogic t="validation.IsNumber" />
+    </NativeHelper>
+  </Component>
+
+  <Component id="Date" type="field_type.Type" autoexapnd="true" execution="native">
+    <Param name="Style" type="date.Style">
+      <Default t="date.Plain" />
+    </Param>
+    <Param name="StorageFormat" Default="@" description="@ is for time in ms"/>
+    <Param name="DisplayFormat" Default="DD/MM/YY" description="@ is for time in ms"/>
+    <Param name="DateConverter" type="date.DateConverter">
+      <Default t="date.JBartDateConverter" />
+    </Param>
+  </Component>
+
+  <Component id="EditableDate" type="field_type.Type" execution="native" autoexapnd="true" editable="true" doc="http://jb-letmesee.appspot.com/LetMeSee/p80kd9kkn6.html?roomid=6qnrs8&amp;notracking=true&amp;autoitem=il5n">
+    <Param name="Style" type="editable_date.Style">
+      <Default t="editable_text.JQueryDatePicker"/>
+    </Param>
+    <Param name="StorageFormat" Default="@" description="@ is for time in ms"/>
+    <Param name="DisplayFormat" Default="dd/mm/yy" description="@ is for time in ms"/>
+    <Param name="Min" advanced="true" description="In storage format"/>
+    <Param name="Max" advanced="true" description="In storage format"/>
+  </Component>
+  
+  <Component id="Lookup" type="field_type.Type" execution="native" description="Read only text of picklist" autoexapnd="true">
+    <Param name="Style" type="lookup.Style">
+      <Default t="lookup.Plain" />
+    </Param>
+    <Param name="Options" type="editable_picklist.Options">
+      <Default t="editable_picklist.OptionsByCommas" />
+    </Param>
+  </Component>
+  
+  <Component id="Boolean" type="field_type.Type" execution="native" autoexapnd="true">
+    <Param name="Style" type="boolean.Style">
+      <Default t="boolean.Plain" />
+    </Param>
+    <Param name="TextForTrue" Default="true" advanced="true"/>
+    <Param name="TextForFalse" Default="false" advanced="true"/>
+    <Param name="CodeForTrue" Default="true" advanced="true"/>
+  </Component>
+  
+  <Component id="Image" type="field_type.Type" execution="native" autoexapnd="true" light="false">
+    <Param name="Style" type="image.Style">
+      <Default t="image.PlainImage" />
+    </Param>
+    <Param name="Image" type="img.Image">
+      <Default t="image.Image" Url="%%" />
+    </Param>
+    <Param name="DefaultImage" description="For empty image" advanced="true" />
+  </Component>
+  
+  <Component id="EditableImage" type="field_type.Type" execution="native" autoexapnd="true" editable="true" light="false">
+    <Param name="Style" type="editableimage.Style">
+      <Default t="editableimage.TextboxWithImagePreview" />
+    </Param>
+    <Param name="Image" type="image.Image">
+      <Default t="image.Image" Url="%%" />
+    </Param>
+    <Param name="OriginalWidth" script="true" />
+    <Param name="OriginalHeight" script="true" />
+  </Component>
+  
+  <Component id="EditableBoolean" type="field_type.Type" execution="native" autoexapnd="true" editable="true">
+    <Param name="Style" type="editable_boolean.Style">
+      <Default t="editable_boolean.Checkbox" HideTitle="true"/>
+    </Param>
+    <Param name="HidePropertySheetTitle" type="data.Boolean"/>
+    <Param name="TextForTrue" Default="true" advanced="true"/>
+    <Param name="TextForFalse" Default="false" advanced="true"/>
+    <Param name="CodeForTrue" Default="true" advanced="true"/>
+    <Param name="CodeForFalse" Default="" advanced="true"/>
+    <Param name="Image" type="image.Image" advanced="true"/>
+  </Component>
+  
+</xtml>
+
+<xtml ns="field_feature">
+  <Type id="OnUpdateInvocation" />
+
+  <Component id="SetOnUpdateEventInvocation" type="field.FieldAspect" description="on update could be invoked on every click, on blur or with minimum timer">
+    <Param name="InvokeOnUpdate" type="field_feature.OnUpdateInvocation" >
+      <Default t="field_feature.OnEveryClick" />
+    </Param>
+    <xtml value="%$InvokeOnUpdate%" />
+  </Component>
+
+  <Component id="OnEveryClick" type="field_feature.OnUpdateInvocation">
+    <xtml t="object.SetTextProperty" Object="%$_Field%" Property="UpdateOn" Value="EveryClick" />
+  </Component>
+
+  <Component id="OnBlur" type="field_feature.OnUpdateInvocation">
+    <xtml t="object.SetTextProperty" Object="%$_Field%" Property="UpdateOn" Value="Blur" />
+  </Component>
+
+</xtml>
+
+<xtml ns="number">
+  <Type id="Format" />
+  <Type id="FormatUIHints" />
+  <Type id="DisplayFormat" />
+
+  <Component id="Format" type="number.Format" execution="native">
+    <Param name="Name" />
+    <Param name="Symbol" />
+    <Param name="UseDynamicSymbol" type="data.Boolean" Description="Use symbol from value"/>
+    <Param name="Min" />
+    <Param name="Max" />
+    <Param name="DisplayString" type="number.DisplayFormat" script="true">
+      <Default t="number.ByExpression" Expression="%Symbol%%Value%" />
+    </Param>
+    <Param name="DataString" script="true" Default="%Value%%Symbol%" />
+    <Param name="UIHints" type="number.FormatUIHints" />
+  </Component>
+
+  <Component id="FormatUIHints" type="number.FormatUIHints" execution="native">
+    <Param name="Step" Default="1" description="Hint for the ui (usually when clicking the arrow keys)" />
+    <Param name="InitialPixelsPerUnit" Default="1" description="Hint for slider when no limits on range" />
+  </Component>
+
+  <Component id="NumberDisplayFormat" type="data.Data">
+    <Param name="Number" Default="%%" />
+    <Param name="Symbol" Default="$" />
+    <Param name="DisplayString" type="number.DisplayFormat" script="true" />
+    <xtml t="xtml.UseParam" Param="DisplayString">
+      <Input t="object.Object" Value="%$Number%" Symbol="%$Symbol%" /> 
+    </xtml>
+  </Component>
+
+  <Component id="FormatMoney" type="number.DisplayFormat" execution="native">
+    <Param name="Precision" Default="2" />
+    <Param name="Thousand" Default="," />
+    <Param name="Decimal" Default="." />
+    <Param name="Format" Default="%Symbol%%Value%" Description="%Symbol% for symbol, %Value% for value" />
+  </Component>
+
+  <Component id="ByExpression" type="number.DisplayFormat">
+    <Param name="Expression" />
+    <xtml value="%$Expression%" />
+  </Component>
+
+</xtml>
+
+<xtml ns="editable_picklist">
+  <Type id="Option" />
+  <Type id="Options" />
+
+  <Component id="OptionsByCommas" type="editable_picklist.Options" execution="native" autoexapnd="true">
+    <Param name="Options" Description="Options separated by comma"/>
+  </Component>
+    
+  <Component id="OptionsTable" type="editable_picklist.Options" execution="native">
+    <Param name="Option" type="editable_picklist.Option[]" light="false"/>
+    <Param name="EditAsTable" light="true">
+      <Field t="field_dt_custom.EditOptionsTable" />
+      <EditorField t="field_dt_custom.EditOptionsTable" />
+    </Param>
+  </Component>
+    
+  <Component id="Option" type="editable_picklist.Option" execution="native">
+    <Param name="Code" />
+    <Param name="DisplayName" />
+    <Param name="Image" />
+  </Component>
+  
+  <Component id="DynamicOptions" type="editable_picklist.Options" execution="native">
+    <Param name="Options" />
+    <Param name="OptionCode" script="true" Default="%%" />
+    <Param name="OptionDisplayName" script="true" Default="%%" />
+    <Param name="OptionImage" script="true" />
+    <Param name="IsDisabled" type="data.Boolean" script="true" />
+  </Component>
+
+  <Component id="AutoFilterOptions" type="editable_picklist.Options" execution="native">
+    <Param name="NameForClearValue" Default="all" />
+    <Param name="NameForEmptyValue" Default="no value" />
+  </Component>
+
+</xtml>
+
+<xtml ns="rating">
+  <Type id="Style" />
+  
+  <Component id="Rating" type="field_type.Type" execution="native" autoexapnd="true" editable="true">
+    <Param name="Style" type="rating.Style">
+      <Default t="rating_style.MediumRatingStars" />
+    </Param>
+  </Component>
+
+</xtml>
+
+<xtml ns="date">
+  <Type id="DateConverter" />
+
+  <Component id="JBartDateConverter" type="date.DateConverter" execution="native" />
+
+</xtml>
+
+</xtml>

@@ -1,0 +1,32 @@
+<xtml ns="transition">
+	
+	<Type id="ReplaceTransitionStyle" style="true" />
+
+	<Component id="Fade" type="transition.ReplaceTransitionStyle">
+      <Param name="Duration" Default="500" description="in miliseconds" slider="true" sliderMin="0" />
+      <xtml t="ui.CustomStyle">
+        <Html><![CDATA[]]></Html>
+        <Css><![CDATA[#this {
+  position:relative;
+}
+#this>.aa_new {
+  position:absolute;
+  top:0px;
+  left:0px;
+  opacity:0;
+}
+#this>.aa_original {
+  position:absolute;
+  opacity:1;
+  top:0px;
+  left:0px;
+}
+]]></Css>
+        <Javascript><![CDATA[function animate(transition) {
+  aa_fade_transition(transition, %$Duration%);
+}]]></Javascript>
+      </xtml>
+  </Component>
+
+</xtml>
+

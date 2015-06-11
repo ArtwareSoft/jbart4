@@ -1,0 +1,21 @@
+<xtml ns="cntr" jbart="true">
+
+  <Component id="SelectedItem" type="data.Data" execution="native">
+    <Param name="Cntr"><Default value="%$_Cntr%"/></Param>
+  </Component>
+  <Component id="ParentItemElement" type="data.Data" execution="native" />
+
+  <Component id="ContainerOfElement" type="data.Data">
+    <Param name="Element" Default="%$ControlElement%" />
+    <xtml t="uiaspect.ContainerFromControl" Control="%$Element%" />
+  </Component>
+
+  <Component id="ItemDataFromElement" type="data.Data" execution="native">
+    <Param name="Element" Default="%$ControlElement%" />
+  </Component>
+  
+  <Component id="RefreshSelectedTextAndImage" type="action.Action" execution="native" light="false">
+    <Var name="Cntr" Default="%$_Cntr%" />
+  </Component>
+  
+</xtml>

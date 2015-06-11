@@ -1,0 +1,351 @@
+<xtml package="true">
+
+<xtml ns="field_feature">
+
+  <Component id="Css" type="field.FieldAspect" execution="native" description="Styles (font, color, padding, borders)" promoted="true">
+      <Param name="Css" css="true" styleTitle="Css" hideTitle="true">
+        <FieldAspect t="field_aspect.HideTitle" />
+        <Default><![CDATA[#this {} #wrapper {}]]></Default>
+      </Param>
+  </Component>
+
+  <Component id="CssClass" type="field.FieldAspect" execution="native">
+    <Param name="ClassName" />
+    <Param name="ConditionForClass" type="data.Boolean" script="true" Default="true" />
+    <Param name="AddClassTo" Default="content" type="enum" Options="content,wrapper" />
+  </Component>
+
+  <Component id="Right2Left" type="field.FieldAspect">
+    <xtml t="field_aspect.FieldAspects">
+     <FieldAspect t="field_feature.CssClass" ClassName="right2left" />
+     <FieldAspect t="field_feature.Css">
+        <Css><![CDATA[#this {  direction:rtl;}]]></Css>
+      </FieldAspect>
+    </xtml>
+  </Component>
+
+  <Component id="Layout" type="field.FieldAspect" description="padding and margin">
+      <Param name="Css" css="true" styleTitle="Layout" hideTitle="true">
+        <FieldAspect t="field_aspect.HideTitle" />
+        <Default><![CDATA[#this {} #wrapper {}]]></Default>
+      </Param>
+      <xtml t="field_feature.Css" Css="%$Css%" />
+  </Component>
+
+  <Component id="ClickOKOnEnter" type="field.FieldAspect">
+    <Param name="OKButtonID" Default="OK" />
+    <xtml t="field_feature.HandleEvent">
+      <Event t="field_feature.EnterPressed"/>
+      <Action t="operation.ClickOnButton" Button="%$OKButtonID%"/>
+    </xtml>
+  </Component>
+
+</xtml>
+
+<xtml ns="field_aspect">
+
+  <Component id="PopupOnHover" type="field.FieldAspect" execution="native" deprecated="true">
+    <Param name="Style" type="dialog_style.Style">
+      <Default t="dialog_style.HoverPopup" />
+    </Param>
+    <Param name="Contents" type="ui.Page"/>
+    <Param name="Delay" Default="500" Description="hover time in miliseconds before openning popup" />
+    <Param name="UsePageData" type="data.Boolean" advanced="true"><Default value="true"/></Param>
+    <Param name="Feature" type="dlg.DialogFeature[]" script="true"/>
+    <Param name="OnBeforeOpen" type="action.Action" script="true" advanced="true" />
+    <Param name="PopupData" type="data.Data" script="true" advanced="true" Default="%%"/>
+    <NativeHelper name="Open" t="action.RunActions">
+      <Action t="xtml.UseParam" Param="OnBeforeOpen" />
+      <Action t="dlg.OpenDialog" DialogData="%$DialogData%" Style="%$Style%">
+        <Var name="DialogData" t="xtml.UseParam" Param="PopupData"/>
+        <Contents t="ui.ShowPage" Page="%$Contents%">
+          <PageParams t="ui.PageParams">
+            <Condition t="yesno.Not" Of="%$UsePageData%" />
+            <DataItems t="data_items.Items" Items="%$DialogData%"/>
+          </PageParams>
+        </Contents>
+        <Feature t="xtml.UseParamArray" Param="Feature"/>
+      </Action>
+    </NativeHelper>
+  </Component>
+  
+  <Component id="RunAction" type="field.FieldAspect" execution="native" description="Runs an action before or after the field control is displayed">
+    <Param name="Action" type="action.Action" script="true" />
+    <Param name="AfterControlCreated" type="action.Action" script="true" />
+    <NativeHelper name="SetupAction" t="field_aspect.AsynchAction">
+      <Action t="xtml.UseParam" Param="Action" />
+    </NativeHelper>
+  </Component>
+
+  <Component id="DefineAction" type="field.FieldAspect" execution="native" description="Defines an action that can be called from js or xtml. js: aa_runFieldAction(object,actionName,moreParams)">
+    <Param name="ActionName" Default="action" />
+    <Param name="Action" type="action.Action" script="true" />
+  </Component>    
+  
+  <Component id="Tooltip" type="field.FieldAspect" execution="native" description="Adds browser tooltip">
+    <Param name="Tooltip" />
+  </Component>
+  
+  <Component id="HighlightSubTextOnFilter" type="field.FieldAspect" execution="native" context="InItemList=true">
+    <Param name="HighlightCss" css="true">
+      <Default><![CDATA[#this { color: blue; } ]]></Default>
+    </Param>
+  </Component>
+   
+  <Component id="ChangeFieldID" type="field.FieldAspect" light="false" execution="native">
+    <Param name="ID" />
+  </Component>
+
+  <Component id="Variable" execution="native" type="field.FieldAspect" description="Defines a local variable" summaryLabel="%@VarName%">
+    <Param name="VarName" Default="MyVar" essential="true"/>
+    <Param name="Value"/>
+  </Component>
+
+  <Component id="GlobalVariable" type="field.FieldAspect" execution="native">
+    <Param name="ResourceName" Default="MyVar" essential="true"/>
+    <Param name="Value"/>
+  </Component>
+
+  <Component id="VariableForCellElement" execution="native" type="field.FieldAspect" description="Adds a control or field to the current control/field">
+    <Param name="VarName" Default="FieldCellElement" essential="true"/>
+  </Component>
+
+  <Component id="AddControl" execution="native" type="field.FieldAspect" description="Adds a control or field to the current control/field">
+    <Param name="Contents" type="ui.Page" />
+    <Param name="CssForWrapper" css="true" styleTitle="Css for AddControl Feature"/>
+  </Component>
+
+  <Component id="TransitionForRefresh" execution="native" type="field.FieldAspect">
+   <Param name="Transition" type="transition.Transition" />    
+  </Component>
+
+  <Component id="FeatureForChildren" execution="native" type="field.FieldAspect">
+    <Param name="Feature" type="field.FieldAspect" />
+  </Component>
+
+  <Component id="ShowFirstSucceedingChild" execution="native" type="field.FieldAspect" description="Shows only the first child which is not hidden" />
+
+  <Component id="ShowErrorOnCondition" type="field.FieldAspect" execution="native">
+    <Param name="ConditionToShowError" type="data.Boolean" script="true" />
+    <Param name="ErrorText" Default="An error has occurred" />
+    <Param name="ErrorStyle" type="uitext.Style">
+      <Default t="uitext.PlainText" />
+    </Param>
+  </Component>
+
+  <Component id="RefreshOnBrowserUrlChange" type="field.FieldAspect" execution="native" description="auto refreshes the UI when the browser back button is clicked" />
+
+</xtml>
+
+<xtml ns="search_algorithm" >
+  <Type id="SearchAlgorithm" />
+  
+  <Component id="SimpleSearch" type="search_algorithm.SearchAlgorithm" execution="native" autoexpand="true">
+    <Param name="MatchOnlyTextBeginning" type="data.Boolean" /> 
+  </Component>
+  
+  <Component id="SearchWords" type="search_algorithm.SearchAlgorithm" execution="native">
+  </Component>
+  
+</xtml>
+
+<xtml ns="field_type" >
+  
+    <Component id="Text" type="field_aspect.FieldType">
+      <Param name="Style" type="text_field.Style">
+        <Default t="text_field.JBartText" />
+      </Param>
+      <xtml value="%$Style%" />
+    </Component>
+        
+    <Component id="ReadOnlyText" type="field_aspect.FieldType">
+      <Param name="Style" type="uitext.Style" >
+      	<Default t="uitext.PlainText" />
+      </Param>
+      <xtml value="%$Style%" />
+    </Component>
+        
+</xtml>
+
+<xtml ns="field_aspect">
+
+  <Component id="ClearValueButton" type="field.FieldAspect" execution="native" description="A button to clear the textbox value">
+    <Param name="Title" Default="Clear" />
+    <Param name="Style" type="clear_button.Style">
+      <Default t="clear_button.JBartClearFilterButton" />
+    </Param>
+  </Component>
+  
+  <Component id="DisplayUnits" type="field.FieldAspect" execution="native" description="Shows a unit mark next to the field, e.g. $">
+    <Param name="Unit" />
+    <Param name="Location" type="unit_locations.Location">
+      <Default t="unit_locations.Right" />
+    </Param>
+  </Component>
+
+  <Component id="TextboxCharacterMask" type="field.FieldAspect" execution="native" description="Does not allow entering certain characters" context="FieldType=editable">
+    <Param name="AllowedCharsRegex" Default="[0-9a-zA-Z]" />
+  </Component>
+  
+  <Component id="TransformTextToInputValue" type="field.FieldAspect" execution="native" description="Two way transformation between the EditableText data and input value" context="FieldType=editable">
+    <Param name="DataToInputValue" Default="%%" />
+    <Param name="InputValueToData" Default="%%" />
+  </Component>
+  
+  <Component id="TextboxCharacterLength" type="field.FieldAspect" execution="native" description="Does not allow entering more characters than length" context="FieldType=editable">
+    <Param name="Length" Default="20" />
+  </Component>
+  
+  <Component id="ModifyControl" type="field.FieldAspect" execution="native" category="control" light="false">
+    <Param name="Action" type="ui.Action" script="true" paramVars="Cell,Input,FieldData" essential="true" />
+  </Component>
+  <Component id="Toolbar" type="field.FieldAspect" execution="native" light="false" category="toolbar">
+    <Param name="Operations" type="operation.Operations" script="true" essential="true" />
+    <Param name="RefreshOnUpdate" type="data.Boolean" Default="true"/>
+    <Param name="MinWidth" descrription="Min width of the toolbar. Used to prevent flickering" />
+    <Param name="Css" advanced="true" css="true">
+      <Default><![CDATA[
+      .aa_field_toolbar { vertical-align: top; } 
+#this .aa_field_toolbar_image { margin: 4px 0 0 3px; vertical-align: top; display: inline-block; width:16px; height:16px; cursor: pointer;}
+.right2left #this .aa_field_toolbar_image { margin-right: 3px; }
+      ]]></Default>
+    </Param>
+  </Component>
+
+  <Component id="FieldAspects" type="field.FieldAspect" light="false">
+    <Param name="FieldAspect" type="field.FieldAspect[]" script="true" essential="true" />
+    <xtml t="xtml.UseParamArray" Param="FieldAspect" />
+  </Component>
+
+  <Component id="CssOnCondition" type="field.FieldAspect" execution="native" promoted="true" description="Allows different styling for different items">
+    <Param name="Css" css="true">
+      <FieldAspect t="field_aspect.HideTitle" />
+      <Default><![CDATA[#this {}
+#wrapper {}]]></Default>
+    </Param>
+    <Param name="OnCondition" script="true" type="data.Boolean.promoted">
+      <Default t="yesno.Expression" />
+    </Param>
+    <Param name="ConditionInput" type="enum" Default="field data" Options="field data,item" />
+    <Param name="CssClass" description="Toggles css class" />
+  </Component>
+
+  <Component id="DescriptionForEmptyText" type="field.FieldAspect" description="Description text inside the textbox (in italic) which clears away on editing" execution="native">
+    <Param name="Description" essential="true" />
+    <Param name="Css" css="true" advanced="true" Default="#this { font-style:italic; color: #8B8B8B; }" />
+  </Component>
+
+  <Component id="FieldData" type="field.FieldAspect" execution="native" description="Determines the data binding of the field item">
+    <Param name="FieldData" script="true" essential="true" />
+  </Component>
+    
+  <Component id="TransientXmlFieldData" type="field.FieldAspect">    
+    <Param name="Tag" Default="xml" />
+    <xtml t="field_aspect.FieldData">
+      <FieldData t="xml.ByTag" Tag="%$Tag%" />
+    </xtml>
+  </Component>
+    
+</xtml>
+
+<xtml ns="clear_button">
+  
+  <Type id="Style"/>
+
+  <Component id="JBartClearFilterButton" type="clear_button.Style">
+    <xtml t="ui.CustomStyle">
+      <Html><![CDATA[<span class="aa_clear_button" />]]></Html>
+      <Css><![CDATA[#this {
+background: url(%$_Images%/clean_filter.gif) no-repeat;
+margin: 4px 0 0 6px;
+vertical-align: top;
+display: inline-block;
+width: 16px;
+height: 16px;
+cursor: pointer;
+}
+#this.empty { background: none; }
+ ]]></Css>
+<Javascript><![CDATA[function(clearButton) {
+    clearButton.control.title = clearButton.Title; 
+    var wrapper = jQuery(clearButton.FieldControlWrapper);
+    jBart.remove(wrapper.find('.aa_clear_button')[0]);
+    wrapper[0].appendChild(clearButton.control);
+    clearButton.control.onclick = clearButton.ClearValue;
+    
+    if (clearButton.IsValueEmpty) clearButton.jElem.addClass('empty');
+    else clearButton.jElem.removeClass('empty');
+}]]></Javascript>
+    </xtml>
+  </Component>
+  
+</xtml>
+
+  <xtml ns="unit_locations">
+  
+    <Type id="Location" />
+    
+    <Component id="Right" type="unit_locations.Location">
+      <xtml t="ui.CustomStyle">
+        <Html><![CDATA[<div/>]]></Html>
+        <Css><![CDATA[#this { padding-left: 3px; display: inline-block; }
+#this.text { padding-left:0;} ]]></Css>
+        <Javascript><![CDATA[function(unit) {
+  unit.el.innerHTML = unit.unitString;
+  var input = aa_find_field_input(unit.fieldContent);
+  if (input) {
+    jQuery(input).after(unit.el);
+  } else {
+    unit.$el.addClass('text');
+    jQuery(unit.fieldContent).css('display','inline-block').after(unit.el);
+  }        
+}]]></Javascript>
+      </xtml>
+    </Component>
+     
+    <Component id="Left" type="unit_locations.Location">
+      <xtml t="ui.CustomStyle">
+        <Html><![CDATA[<div/>]]></Html>
+        <Css><![CDATA[#this { padding-right: 5px; display: inline-block; }
+#this.text { padding-right:0;}]]></Css>
+        <Javascript><![CDATA[function(unit) {
+  unit.el.innerHTML = unit.unitString;
+  var input = aa_find_field_input(unit.fieldContent);
+  if (input) {
+    jQuery(input).before(unit.el);        
+  } else {
+    unit.$el.addClass('text');
+    jQuery(unit.fieldContent).css('display','inline-block').before(unit.el);
+  }        
+}]]></Javascript>
+      </xtml>
+    </Component>
+     
+    <Component id="LeftInsideInput" type="unit_locations.Location">
+      <Param name="InputLeftPadding" Default="15" />
+      <xtml t="ui.CustomStyle">
+        <Html><![CDATA[<div/>]]></Html>
+        <Css><![CDATA[#this { padding-left:0px; display: inline-block; }]]></Css>
+        <Javascript><![CDATA[function(unit) {
+  var leftInputPadding = %$InputLeftPadding%;
+  unit.el.innerHTML = unit.unitString;
+  var input = aa_find_field_input(unit.fieldContent);
+  if (input) {
+      var jInput = jQuery(input);
+      jInput.after(unit.el);
+      aa_addOnAttach(input,function() {
+        var currLeftPadding = parseInt( jInput.css('padding-left') || 0);
+        var newWidth = jInput.width() - leftInputPadding + currLeftPadding;
+        jInput.css('padding-left',leftInputPadding).width(newWidth);
+        
+        var unitPadLeft = parseInt( unit.$el.css('padding-left') );
+        var val = -(newWidth+leftInputPadding );
+        unit.$el.css('margin-left',val+'px');
+      });
+  }        
+}]]></Javascript>
+      </xtml>
+    </Component>
+     
+  </xtml>
+</xtml>

@@ -1,0 +1,139 @@
+<xtml package="true">
+<xtml ns="imagegallery">
+
+	<Type id="Images" />
+
+  <Component id="ImageGallery" type="field.Fields" execution="native" light="false">
+    <Param name="Title" essential="true" autoaspects="false" titleField="true" />
+    <Param name="Images" type="imagegallery.Images">
+      <Default t="imagegallery.Images" />
+    </Param>
+    <Param name="Style" type="imagegallery_style.Style">
+      <Default t="imagegallery_style.SlideShow" />
+    </Param>
+    <Param name="FieldAspect" type="field.FieldAspect[]" script="true" light="false" />
+    <Param name="ID" essential="true" idField="true" />
+  </Component>
+
+  <Component id="Images" type="imagegallery.Images">
+    <Param name="ImagesList" />
+    <Param name="ImageProperties" type="img.Image" script="true">
+      <Default t="img.Image" />
+    </Param>
+    <Param name="ImageTitle" script="true"/>
+    <xtml t="data.Pipeline">
+      <Item value="%$ImagesList%" />
+      <Item t="object.Object">
+        <SingleProperty name="image" t="xtml.UseParam" Param="ImageProperties" />
+        <TextProperty name="title" t="xtml.UseParam" Param="ImageTitle" />
+      </Item>
+    </xtml>
+  </Component>
+
+	<Component id="ImagesOld" type="imagegallery.Images" deprecated="true">
+		<Param name="ImagesList" />
+		<Param name="ImageUrl" script="true"/>
+		<Param name="ImageWidth" script="true"/>
+		<Param name="ImageHeight" script="true"/>
+		<Param name="ImageTitle" script="true"/>
+		<Param name="ImageLink" script="true"/>
+		<xtml t="data.Pipeline">
+			<Item value="%$ImagesList%" />
+			<Item t="object.Object">
+				<TextProperty name="url" t="xtml.UseParam" Param="ImageUrl" />
+				<TextProperty name="width" t="xtml.UseParam" Param="ImageWidth" />
+				<TextProperty name="height" t="xtml.UseParam" Param="ImageHeight" />
+				<TextProperty name="title" t="xtml.UseParam" Param="ImageTitle" />
+				<TextProperty name="link" t="xtml.UseParam" Param="ImageLink" />
+			</Item>
+		</xtml>
+	</Component>
+
+</xtml>
+
+<xtml ns="imagegallery_style">
+  <Type id="Style" />
+  <Type id="SlideShowButtons" />
+
+  <Component id="SlideShow" type="imagegallery_style.Style" execution="native">
+    <Param name="Transition" type="image_transition.Transition">
+      <Default t="image_transition.Slide" />
+    </Param>
+    <Param name="Buttons" type="imagegallery_style.SlideShowButtons">
+      <Default t="imagegallery_style.SlideShowButtons" />
+    </Param>
+    <Param name="ImageStyle" type="img.Style">
+      <Default t="image_style.Default" />
+    </Param>
+    <Param name="AutoPlayTimeout" Default="0" />
+    <Param name="FrameWidth" Default="500" slider="true" sliderUnit="" />
+    <Param name="FrameHeight" Default="250" slider="true" sliderUnit="" />
+		<Param name="AdjustImageSize" type="img.AdjustSize">
+			<Default t="img.Center" />
+		</Param>
+  </Component>
+
+    <Component id="SlideShowButtons" type="imagegallery_style.SlideShowButtons">
+      <xtml t="ui.CustomStyle">
+        <Html><![CDATA[]]></Html>
+        <Css><![CDATA[]]></Css>
+        <Javascript><![CDATA[function add(slideshowButtons) {
+	aa_slideshow_buttons(slideshowButtons);
+}]]></Javascript>
+      </xtml>
+    </Component>
+
+</xtml>
+
+<xtml ns="image_transition">
+
+	<Type id="Transition" />
+
+    <Component id="Slide" type="image_transition.Transition">
+      <Param name="Duration" Default="0.8s" /> 
+      <Param name="Timing" type="enum" Options="linear,ease,ease-in-out,ease-in,ease-out" Default="ease-in-out" /> 
+      <xtml t="ui.CustomStyle" Duration="%$Duration%" Timing="%$Timing%">
+        <Html><![CDATA[]]></Html>
+        <Css><![CDATA[]]></Css>
+        <Javascript><![CDATA[function animate(transition) {
+  aa_image_transition_slide(transition, {
+    duration: transition.params.Duration,
+    timing: transition.params.Timing
+  });
+}]]></Javascript>
+      </xtml>
+    </Component>
+
+    <Component id="Fade" type="image_transition.Transition">
+      <Param name="Duration" Default="1s" /> 
+      <Param name="Timing" type="enum" Options="linear,ease,ease-in-out,ease-in,ease-out" Default="ease-in" /> 
+      <xtml t="ui.CustomStyle" Duration="%$Duration%" Timing="%$Timing%">
+        <Html><![CDATA[]]></Html>
+        <Css><![CDATA[]]></Css>
+        <Javascript><![CDATA[function animate(transition) {
+  aa_image_transition_fade(transition, {
+    duration: transition.params.Duration,
+    timing: transition.params.Timing
+  });
+}]]></Javascript>
+      </xtml>
+    </Component>
+
+    <Component id="Toss" type="image_transition.Transition">
+      <Param name="Duration" Default="0.5s" /> 
+      <Param name="Timing" type="enum" Options="linear,ease,ease-in-out,ease-in,ease-out" Default="ease-in-out" /> 
+      <xtml t="ui.CustomStyle" Duration="%$Duration%" Timing="%$Timing%">
+        <Html><![CDATA[]]></Html>
+        <Css><![CDATA[]]></Css>
+        <Javascript><![CDATA[function animate(transition) {
+  aa_image_transition_toss(transition, {
+    duration: transition.params.Duration,
+    timing: transition.params.Timing
+  });
+}]]></Javascript>
+      </xtml>
+    </Component>
+
+</xtml>
+
+</xtml>

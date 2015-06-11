@@ -1,0 +1,618 @@
+<xtml package="true">
+
+  <xtml ns="operation">
+    
+  <Component id="RunXtmlAction" type="action.Action">
+      <Param name="Action" type="action.Action" script="true" essential="true">
+        <EditorField t="bart_dt_custom.Custom_RunXtmlAction" />
+      </Param>
+      <Param name="Comment" />
+      <xtml t="xtml.UseParam" Param="Action"/>
+  </Component>
+
+</xtml>
+  
+<xtml ns="ui" >
+  
+    <Component id="ControlWithAction" type="ui.Control" execution="native" databind="true">
+       <Param name="RunBeforeControl" type="action.Action" script="true"/>
+       <Param name="Control" type="ui.Control" script="true" essential="true" />
+       <Param name="RunAfterControl" type="action.Action" script="true"/>
+       <Param name="RunAfterControlWithTimer" type="data.Boolean" />
+    </Component>
+
+    <Component id="List" type="ui.Control" execution="xtml" databind="true">
+      <Param name="Control" type="ui.Control[]" essential="true"/>
+      <Param name="Layout" type="ui.ListLayout" script="true">
+        <Default t="ui.LineBreak" />
+      </Param>
+      <xtml t="data.FirstSucceeding">
+        <Item t="xtml.UseParam" Param="Layout" Input="%$Control%" />
+        <Item t="ui.Html">
+          <div/>
+        </Item>
+      </xtml>
+    </Component>
+    
+</xtml>
+   
+<xtml ns="uiaction">
+      
+ <Component id="GoToPage" type="action.Action" execution="native">
+  <Param name="Url" essential="true" />
+  <Param name="Type" type="enum"><Default value="open in a new tab" />
+   <value>navigate current page</value>
+   <value>open in a new tab</value>
+  </Param>
+ </Component>
+ 
+   <Component id="AddClass" type="action.Action" execution="native" light="false">
+    <Param name="Cls" essential="true" />
+   </Component>
+
+     <Component id="SetText" type="action.Action,uiaction.UsageAction" execution="native" autoexpand="true">
+       <Param name="RunOn">
+        <Field t="bart_dt.RunOnDT" />
+      </Param>
+      <Param name="Text" essential="true" />
+      <Param name="StayInControl" type="data.Boolean" Description="do not fire blur event"/>
+      <Param name="Mode" type="enum">
+         <value>InsertAtCaret</value>
+         <value>ReplaceAll</value>
+         <value>InsertAtEnd</value>
+         <value>InsertAtBegining</value>
+           <value>CharByChar</value>
+         <Default value="ReplaceAll" />
+      </Param>
+      <Param name="DoNotFireEvents" type="data.Boolean"/>
+     </Component>
+     
+   </xtml>
+
+<xtml ns="xtml">
+  <Component id="UseAndTranslateParam" type="*" execution="native" dtsupport="false">
+    <Param name="Param" essential="true" />
+    <Param name="Input"><Default t="data.Same"/></Param>
+  </Component>
+  
+    <Component id="ComponentDefinition" type="data.Data" execution="native">
+      <Param name="ID" essential="true" />
+      <Param name="ToXtml" type="data.Boolean" />
+    </Component>
+
+     <Component id="ComponentsOfType" type="data.Data" execution="native">
+      <Param name="Type" essential="true" />
+      <Param name="ForAllTypes" type="data.Boolean"/>
+     </Component>
+
+     <Component id="Params" type="data.Data" execution="native" dtsupport="false">
+        <Param name="Param" type="data.Data[]"/>
+        <Param name="ScriptParam" type="data.Data[]"/>
+        <Param name="Method" type="data.Data[]"/>
+        <Param name="ScriptParamArray" type="data.Data[]"/>
+     </Component>
+
+    
+    <Component id="UseParam" type="*" execution="native" dtsupport="false">
+      <Param name="Param" essential="true" />
+      <Param name="Input" Default="%%" />
+    </Component>
+    
+    <Component id="UseParamArray" type="*" execution="native" dtsupport="false">
+      <Param name="Param" essential="true" />
+    </Component>
+
+    <Component id="UseParamArrayAsync" type="*" execution="native" dtsupport="false">
+      <Param name="Param" essential="true" />
+    </Component>
+    
+  </xtml>
+
+<xtml jbart="true" ns="ui_async">
+  
+<Component id="Control" type="ui_async.Control" execution="native">
+  <Param name="Control" type="ui.Control" script="true"/>
+  <Param name="AsyncAction" type="action_async.Action" script="true"/>
+  <Param name="AsyncData" type="data_async.Data" script="true"/>
+  <Param name="ControlForLoading" type="ui.Control">
+    <Default1 t="ui_async.LoadingControl" />
+    <Default t="ui.Text" Text="loading..." MultiLang="true"/>
+  </Param>
+</Component>
+</xtml>
+
+<xtml jbart="true" ns="action_async">
+<Component id="SequentialRun" type="action_async.Action" execution="native">
+  <Param name="Action" type="action_async.Action[]" essential="true"/> 
+</Component>
+
+<Component id="RunActions" type="action_async.Action" execution="native">
+  <Param name="Action" type="action_async.Action[]" essential="true"/>
+  <NativeHelper t="action_async.SequentialRun"/>
+</Component>
+</xtml>
+
+<xtml jbart="true" ns="yesno">
+
+<Component id="PassesFilter" type="data.Data" execution="native" dtsupport="false">
+  <Param name="Filter" type="data.Boolean" essential="true" script="true">
+    <Default value="true"/>
+  </Param>
+</Component>
+
+<Component id="IsEmpty" type="data.Boolean" execution="native">
+  <Param name="Value" Default="%%"/>
+  <Param name="CheckInnerText" type="data.Boolean"/>
+</Component>
+
+<Component id="ItemsNotEqual" type="data.Boolean">
+  <Param name="Item1" essential="true" />
+  <Param name="Item2" essential="true" />
+  <xtml t="yesno.Not">
+    <Of t="yesno.ItemsEqual" Item1="%$Item1%" Item2="%$Item2%" />
+  </xtml>
+</Component>
+
+    <Component id="And" type="data.Boolean" execution="native">
+      <Param name="Item" type="data.Boolean[]" script="true" essential="true" />
+    </Component>
+    
+    <Component id="Empty" type="data.Boolean" execution="native">
+      <Param name="CheckInnerText" type="data.Boolean"/>
+    </Component>
+    
+    <Component id="ItemsEqual" type="data.Boolean" execution="native">
+      <Param name="Item1" essential="true" />
+      <Param name="Item2" essential="true" />
+    </Component>
+    
+    <Component id="Not" type="data.Boolean" execution="native">
+          <Param name="Of" type="data.Boolean" essential="true" script="true"/>
+    </Component>
+    
+    <Component id="NotEmpty" type="data.Boolean" execution="native">
+        <Param name="Value" Default="%%" essential="true" />
+        <Param name="CheckInnerText" type="data.Boolean"/>
+    </Component>
+    
+    <Component id="OR" type="data.Boolean" execution="native">
+          <Param name="Item" type="data.Boolean[]" essential="true" script="true"/>
+    </Component>
+
+</xtml>
+
+<xtml ns="jbart_jsloader">
+  <Type id="EnsureJsFileLoaded" />
+
+  <Component id="LoadJavascriptFile" type="bart.ApplicationFeature" jbart="true" execution="native" in_dt_tree="true">
+    <Param name="LoadInDesignTimeOnly" type="data.Boolean" Default="true"/>
+    <Param name="Url" />
+    <Param name="EnsureLoaded" script="true" type="jbart_jsloader.EnsureJsFileLoaded">
+      <Default t="jbart_jsloader.AutoUsingJQuery" />
+    </Param>
+  </Component>
+
+  <Component id="LoadCssFiles" type="bart.ApplicationFeature" execution="native" in_dt_tree="true">
+    <Param name="LoadInDesignTimeOnly" type="data.Boolean" Default="true"/>
+    <Param name="CssFiles" description="Comma separated. Ensure 'real' commas are encoded as %2C. You can use _jbartLib_"/>
+    <NativeHelper name="Load" t="action.LoadCssFiles" CssFiles="%$CssFiles%"/>
+  </Component>
+
+  <Component id="AutoUsingJQuery" type="jbart_jsloader.EnsureJsFileLoaded" execution="native" />
+
+  <Component id="PollingOfJsExpression" type="jbart_jsloader.EnsureJsFileLoaded" execution="native">
+    <Param name="Expression" Default="function() { return (window.myvar) ? true : false; }"/>
+    <Param name="PollingTime" Default="100" />
+  </Component>
+
+  <Component id="CallbackFunction" type="jbart_jsloader.EnsureJsFileLoaded" execution="native">
+    <Param name="FunctionName" />
+  </Component>
+
+</xtml>
+
+<xtml ns="jbart">
+  <Type id="MyWidgetPage" />
+  
+  <Component id="PoweredByJBart" type="field.Fields" deprecated="true">
+    <Param name="FieldAspect" type="field.FieldAspect[]" script="true"/>
+    <xtml t="field.Button" ID="Button" Title="jBart">
+      <Style t="button.ImageOnly"/>
+      <Image t="image.ImageOld" Url="//jbartlib.appspot.com/images/powered_by_jbart.png"/>
+      <Action t="operation.Link" OpenInANewTab="true" Link="http://www.artwaresoft.com"/>
+      <FieldAspect t="xtml.UseParamArray" Param="FieldAspect" />
+    </xtml>
+  </Component>
+  
+  <Component id="Page" type="field.Fields" image="%$_Images%/studio/star1616.gif" deprecated="true">
+    <Param name="ID" advanced="always" />
+    <Param name="Title" titleField="true"/>
+    <Param name="Page" type="jbart.MyWidgetPage" script="true"/>
+    <Param name="HideTitle" type="data.Boolean"><Default value="true"/></Param>
+    <Param name="FieldAspect" type="field.FieldAspect[]" light="false" script="true" />
+    <Param name="PageData" script="true" type="data_items.Items.PageData" AllowEmptyValue="true" />
+    <xtml t="field.CustomControl" ID="%$ID%" Title="%$Title%">
+      <ShowTitle t="yesno.Not" Of="%$HideTitle%" />
+      <Control t="object.RunMethod" Method="Control">
+        <Object t="xtml.UseParam" Param="Page" />
+        <Var name="_PageData" t="xtml.UseParam" Param="PageData" />
+        <Var name="_PageParams" t="ui.PageParams" DataItems="%$_PageData%">
+          <Condition t="yesno.NotEmpty" Value="%$_PageData%" />
+        </Var>
+      </Control>
+      <FieldAspect t="object.SetBooleanProperty" Object="%$_Field%" Property="IsGroup" Value="true" />
+      <FieldAspect t="xtml.UseParamArray" Param="FieldAspect" />
+    </xtml>
+  </Component>
+  
+</xtml>
+
+<xtml ns="jbart_api">
+
+  <Component id="ShowWidget" type="ui.Control" execution="native" description="Shows/embeds a jbart widget with the relevant params">
+    <Param name="WidgetXml" />
+    <Param name="Page" />
+    <Param name="RunAfter" type="action.Action" script="true" />
+    <Param name="RunAfterControlWithTimer" type="data.Boolean" Default="true" />
+    <Param name="_Language" />
+    <Param name="OnError" type="action.Action" script="true" />
+    <Param name="ControlToShowInBartContext" type="ui.Control" script="true" description="used by automatic tests" />
+  </Component>
+    
+</xtml>
+
+<xtml ns="data_items">
+ <Component id="InnerDataItems" type="data_items.Aspect" execution="native">
+   <Param name="ParentDataItems" />
+ </Component>
+</xtml>
+
+  <xtml ns="bart">
+    <Component id="Resource" type="bart.DataItemsProvider">
+      <Param name="Name" type="dynamic_enum" options_pt="bart_dt.BartResources" />
+      <xtml t="bart_resource.ResourceByID" ResourceID="%$Name%" />
+    </Component>
+    <Component id="NewItem" type="bart.DataItemsProvider" jbart="false">
+      <Param name="Resource" type="dynamic_enum" Options="%$_AppContext/Resources/ID%" />
+      <xtml t="object.RunMethod" Method="SubsetForNewItem">
+        <Object t="bart_resource.ResourceByID" ResourceID="%$Resource%" />
+      </xtml>
+    </Component>
+    
+    <Component id="Page" type="bart.Pages" execution="native" light="false" >
+      <Param name="ID" />
+      <Param name="ResourceIDs" />
+      <Param name="ResourceID" />
+      <Param name="Control" type="ui.Control" script="true" />
+      <Param name="Type" />
+      <NativeHelper name="OverrideUiPrefs" t="uipref.OverrideUIPrefs" UIPrefs="%$_PageParams/UiPrefs%" Prefix="%$ID%"/>
+    </Component>
+    
+    <Component id="SinglePage" type="bart.Pages" image="%$_Images%/studio/star1616.gif">
+      <Param name="ID" essential="true">
+        <FieldAspect t="field_aspect.Mandatory"/>
+      </Param>
+      <Param name="ContentType" light="false" type="dynamic_enum" Options="%$_AppContext/ContentTypes/ID%"/>
+      <Param name="Presentation" type="uiaspect.DocumentPresentation" script="true">
+        <Default t="uiaspect.PropertySheet"/>
+        <FieldAspect t="field_aspect.Hide" ReadOnly="false" Edit="false"/>
+      </Param>
+      <Param name="DefaultResource" type="bart.DataItemsProvider" script="true" description="The data associated with the page">
+        <Convert t="bart_dt.ConvertDefaultResource"/>
+      </Param>
+      <Param name="Field" type="field.Fields[]" light="false" script="true" paramVars="_ReferenceFields"/>
+      <Param name="Aspect" type="uiaspect.Aspect[]" script="true" light="false"/>
+      <Param name="Operations" type="operation.Operations" script="true" light="false">
+        <FieldAspect t="field_aspect.Hide" ReadOnly="false" Edit="false"/>
+      </Param>
+      <Param name="Resource" type="dynamic_enum" Options="%$_AppContext/Resources/ID%" light="false" deprecated="true"/>
+      <xtml t="object.ExtendObject">
+        <Object t="bart.Page" ID="%$ID%" Type="single" ResourceIDs="CurrentNodeID,CurrentNode">
+          <Control t="ui.Document" ID="%$ID%" Class="aa_page">
+            <Item t="data.FirstSucceeding">
+              <Item value="%$_PageParams/DataItems%"/>
+              <Item t="data.Pipeline">
+                <Item t="xtml.UseParam" Param="DefaultResource"/>
+                <Item t="yesno.PassesFilter">
+                  <Filter t="object.IsObject"/>
+                </Item>
+              </Item>
+              <Item t="bart_resource.ResourceByID" ResourceID="%$DefaultResource%"/>
+              <Item t="bart_resource.ResourceByID" ResourceID="%$Resource%"/>
+            </Item>
+            <Presentation t="xtml.UseParam" Param="Presentation"/>
+            <Operations t="xtml.UseParam" Param="Operations"/>
+            <Fields1 value="%$_This/Fields%"/>
+            <Fields t="xtml.UseParamArray" Param="Field"/>
+            <Aspect t="uiaspect.Permissions" WritableIf="false" Condition="%$_PageParams/ReadOnly%" />
+            <Aspect t="xtml.UseParamArray" Param="Aspect"/>
+          </Control>
+        </Object>
+        <Property name="ContentType" value="%$ContentType%"/>
+        <Property name="Fields" t="xtml.UseParamArray" Param="Field">
+          <Var name="InSinglePageOverrideObject" value="true"/>
+        </Property>
+        <Property1 name="_Operations" t="xtml.UseParam" Param="Operations"/>
+        <Property name="Type" value="single"/>
+        <Property name="Resource" value="Resource"/>
+        <Method name="Items" t="data.Pipeline">
+          <Item t="xtml.UseParam" Param="DefaultResource"/>
+          <Item t="yesno.PassesFilter">
+            <Filter t="object.IsObject"/>
+          </Item>
+        </Method>
+        <Property name="ResourceID" t="data.Pipeline">
+          <Item t="xtml.UseParam" Param="DefaultResource"/>
+          <Item value="%ID%"/>
+        </Property>
+      </xtml>
+    </Component>
+    <Component id="MultiplePage" type="bart.Pages" image="%$_Images%/studio/star1616.gif">
+      <Param name="ID" essential="true" advanced="true" Title="Page ID"/>
+      <Param name="Presentation" type="uiaspect.ItemListPresentation" script="true">
+        <Default t="uiaspect.RichTable"/>
+      </Param>
+      <Param name="ContentType" type="dynamic_enum" Options="%$_AppContext/ContentTypes/ID%" advanced="true"/>
+      <Param name="Field" type="field.Fields[]" light="false" script="true" paramVars="_ReferenceFields"/>
+      <Param name="DefaultResource" type="bart.DataItemsProvider" script="true" description="The data associated with the page" advanced="true">
+        <Convert t="bart_dt.ConvertDefaultResource"/>
+      </Param>
+      <Param name="Aspect" type="uiaspect.Aspect[]" script="true" light="false"/>
+      <Param name="Operations" type="operation.Operations" script="true" light="false">
+        <FieldAspect t="field_aspect.Hide" ReadOnly="false" Edit="false"/>
+      </Param>
+      <Param name="ResourceID" type="dynamic_enum" light="false" Options="%$_AppContext/Resources/ID%"/>
+      <Param name="PreviewData" type="data_items.Items" script="true" light="false"/>
+      <xtml t="object.ExtendObject">
+        <Object t="bart.Page" ID="%$ID%" ResourceIDs="%$DefaultResource%">
+          <Control t="ui.ItemList" DataHolderCntr="true" Class="aa_page">
+            <Items t="data.FirstSucceeding">
+              <Item value="%$_PageParams/DataItems%"/>
+              <Item t="data.Pipeline">
+                <Item t="xtml.UseParam" Param="DefaultResource"/>
+                <Item t="yesno.PassesFilter">
+                  <Filter t="object.IsObject"/>
+                </Item>
+              </Item>
+              <Item1 t="xtml.UseParam" Param="PreviewData">
+                <Condition t="yesno.NotEmpty" Data="%$XtmlDtContext%"/>
+              </Item1>
+              <Item t="bart_resource.ResourceByID" ResourceID="%$DefaultResource%"/>
+              <Item t="bart_resource.ResourceByID" ResourceID="%$ResourceID%"/>
+              <Item t="data_items.Items"/>
+            </Items>
+            <ID t="text.FirstSucceeding">
+              <Item value="%$_PageParams/PageID%"/>
+              <Item value="%$ID%"/>
+            </ID>
+            <Operations t="xtml.UseParam" Param="Operations"/>
+            <Fields t="xtml.UseParamArray" Param="Field"/>
+            <Presentation t="xtml.UseParam" Param="Presentation"/>
+            <Aspect t="uiaspect.Aspects">
+              <Aspect t="uiaspect.Permissions" WritableIf="false" Condition="%$_PageParams/ReadOnly%"/>
+              <Aspect t="xtml.UseParamArray" Param="Aspect"/>
+              <Aspect t="object.RunMethod" Object="%$_PageParams%" Method="Aspect"/>
+            </Aspect>
+          </Control>
+        </Object>
+        <Property name="ContentType" value="%$ContentType%"/>
+        <Property name="ResourceID" t="data.Pipeline">
+          <Item t="xtml.UseParam" Param="DefaultResource"/>
+          <Item value="%ID%"/>
+        </Property>
+        <Property name="Fields" t="xtml.UseParamArray" Param="Field"/>
+        <Property1 name="_Operations" t="xtml.UseParam" Param="Operations"/>
+        <Property name="Type" value="multiple"/>
+        <Property name="IsMultiple" value="true"/>
+        <Method name="Items" t="xtml.UseParam" Param="DefaultResource"/>
+      </xtml>
+    </Component>
+
+    <Component id="PageByID" type="data.Data" execution="native" dtsupport="false">
+      <Param name="PageID" />
+      <NativeHelper name="NewPage" t="xtml.RunXtml" Xtml="%$_AppContext/AppXtml/../../Component[@id='{$PageID}']/xtml%" />
+    </Component>
+  
+    <Component id="Javascript" type="bart.ApplicationFeature" jbart="true" execution="native" in_dt_tree="true">
+      <Param name="ScriptOnLoad" description="javascript to run on load. you can put general purpose js functions here">
+        <FieldAspect t="field_dt.CodeMirrorFieldEditor" Type="js" CompId="bart.Javascript" ParamName="ScriptOnLoad" Height="400px" Width="600px"/>
+      </Param>
+    </Component>
+    
+    <Component id="RunOnLoad" type="bart.ApplicationFeature" in_dt_tree="true">
+      <Param name="Action" type="action.Action" script="true" />
+      <xtml t="object.Object">
+        <Method name="Load" t="xtml.UseParam" Param="Action" />
+      </xtml>
+    </Component>
+    
+    <Component id="CustomData" type="bart.DataItemsProvider">
+      <Param name="DataItems" type="data_items.Items">
+        <Default t="xml.XmlItems" />
+      </Param>
+      <xtml value="%$DataItems%" />
+    </Component>
+    
+   <Component id="HtmlPageTitle" type="bart.ApplicationFeature" execution="native" in_dt_tree="true">
+    <Param name="Title" />
+   </Component>
+   
+  </xtml>
+  
+  <xtml jbart="true" ns="bart_operation">
+  </xtml>
+  
+<xtml ns="bart_field">
+    <Component id="UseSinglePage" type="ui.SinglePage" dtsupport="false">
+      <Param name="Page" />
+      <xtml t="bart.PageByID" PageID="%$Page%" />
+    </Component>
+  </xtml>
+
+<xtml jbart="true" ns="bart_api">
+  <Component id="ShowPage" type="ui.Control">
+    <Param name="Page" />
+    <Param name="PageParams" script="true" advanced="true" type="ui.PageParams" AllowEmptyValue="true"/>
+    <xtml t="bart_resource.ControlUsingResource">
+      <Resource t="data.Pipeline" >
+        <Item t="bart.PageByID" PageID="%$Page%"/>
+        <Item value="%ResourceID%" />
+      </Resource>
+      <Control t="object.RunMethod" Method="Control" >
+        <Object t="bart.PageByID" PageID="%$Page%" />
+        <Var name="_PageParams" t="xtml.UseParam" Param="PageParams" />
+      </Control>
+    </xtml>
+  </Component>
+</xtml>
+
+<xtml jbart="true" ns="data_items">
+  <Component id="Resource" type="data_items.Items.PageData">
+    <Param name="Resource" type="dynamic_enum" options_pt="bart_dt.BartResources" essential="true"/>
+    <xtml t="data.ItemByID" List="%$_AppContext/Resources%" ID="%$Resource%" />
+  </Component>
+
+  <Component id="CustomData" type="data_items.Items.PageData">
+    <Param name="Items" />
+    <xtml t="data_items.Items" Items="%$Items%" />
+  </Component>
+
+</xtml>
+
+<xtml jbart="true" ns="jbart_resource">
+  <Type id="CacheIn" />
+  <Component id="CacheInCookies" type="bart_resource.CacheIn" execution="native" />
+  <Component id="CacheInLocalStorage" type="bart_resource.CacheIn" execution="native" />
+  
+  <Component id="Data" type="bart_resource.Resources" execution="native" summaryLabel="%@ResourceID%">
+    <Param name="ResourceID">
+      <Field t="field.Field" FieldData="%!@ResourceID%" Title="ID" ID="ResourceID">
+        <FieldAspect t="field_aspect.Mandatory" />
+      </Field>
+    </Param>
+    <Param name="ValueType" type="enum" Options="xml,json,javascript,text,xml clean ns,xml multiple,json to xml,calculated" Default="xml">
+      <FieldAspect t="field_aspect.RefreshDependentFields" FieldsIds="DataResource_Value" RefreshScope="screen" />
+    </Param>
+    <Param name="Value">
+      <Field t="bart_dt.DataResourceValue" />
+    </Param>
+    <Param name="CacheIn" type="bart_resource.CacheIn" script="true" />
+    <Param name="DataSource" type="bart_resource.DataSource" />
+    <Param name="_FillDataSource" remark="dt only" >
+      <Field t="bart_dt.FillDataSourceForXmlResource" />
+    </Param>
+    <Param name="AutoSaveSampleData" type="enum" Options="true,false" description="Relevant only for xml. The design time will auto save changes to this resource" />
+  </Component>
+
+</xtml>
+
+<xtml jbart="true" ns="bart_resource">
+  <Component id="ResourceByID" type="data_items.Items" dtsupport="false">
+    <Param name="ResourceID" type="dynamic_enum" Options="%$_AppContext/Resources/ID%" essential="true"/>
+    <xtml t="data.ItemByID" List="%$_AppContext/Resources%" ID="%$ResourceID%" />
+  </Component>
+  
+  <Component id="ResourceValue" type="data.Data">
+    <Param name="ResourceID" type="dynamic_enum" Options="%$_AppContext/Resources/ID%" essential="true"/>
+    <xtml t="data.FirstSucceeding">
+      <Item t="data.Pipeline" >
+        <Item t="data.ItemByID" List="%$_AppContext/Resources%" ID="%$ResourceID%" />
+        <Item value="%Items%" />
+      </Item>
+    </xtml>
+  </Component>
+  
+  <Component id="Xml" type="bart_resource.Resources" execution="native">
+    <Param name="ResourceID">
+      <Field t="field.Field" FieldData="%!@ResourceID%" Title="ID" ID="ResourceID">
+        <FieldAspect t="field_aspect.Mandatory" />
+        <FieldAspect t="field_aspect.DescriptionForEmptyText" Description="Put Data Resource ID Here..." />
+      </Field>
+    </Param>
+    <Param name="Mode" type="enum" Options="plural,single" Default="plural" />
+    <Param name="Xml">
+      <Field t="bart_dt.XmlResource" Param="Xml"/>
+    </Param>
+    <Param name="Storage" type="enum" Options="in memory,cookie,local storage" Default="in memory"/>
+    <Param name="DataSource" type="bart_resource.DataSource" />
+    <Param name="_FillDataSource" remark="dt only">
+      <Field t="bart_dt.FillDataSourceForXmlResource" />
+    </Param>
+    <Param name="AutoSaveSampleData" type="data.Boolean" remark="dt only" />
+  </Component>
+  
+  <Component id="Value" type="bart_resource.Resources" execution="native">
+    <Param name="ResourceID">
+      <Field t="field.Field" FieldData="%!@ResourceID%" Title="ID" ID="ResourceID">
+        <FieldAspect t="field_aspect.Mandatory" />
+        <FieldAspect t="field_aspect.DescriptionForEmptyText" Description="Put Data Resource ID Here..." />
+      </Field>
+    </Param>
+    <Param name="Value" />
+  </Component>
+  
+  <Type id="DataSource" />
+  
+  <Component id="Javascript" type="bart_resource.DataSource" execution="native">
+    <Param name="Code">
+      <Default value="function(context) {&#xa; return { Retrieve: function(data,context) { return myxml; } , Save: function(data,context) {} } &#xa;}"/>
+      <FieldAspect t="field_dt.CodeMirrorFieldEditor" CompId="operation.RunJavascript" ParamName="Code" Type="js" Height="100px" />
+    </Param>
+  </Component>
+
+  <Component id="Rest" type="bart_resource.DataSource">
+    <Param name="Url" />
+    <Param name="UseProxy" type="data.Boolean" />
+    <Param name="ResultType" type="enum" Options=",xml,json,json to xml" Default="" />
+    <Param name="ConvertResult" script="true" Default="%%" />
+    <xtml t="object.Object">
+      <Method name="Retrieve" t="data_async.Rest" TunnelRequest="%$UseProxy%" Url="%$Url%" ResultType="%$ResultType%">
+        <ConvertResult t="xtml.UseParam" Param="ConvertResult" />
+      </Method>
+      <Method name="Save" t="action_async.RunActions">
+      </Method>
+    </xtml>
+  </Component>
+  
+  <Component id="JBartCloudDB" type="bart_resource.DataSource">
+    <Param name="ContentType" />
+    <Param name="ID" />
+    <xtml t="object.Object">
+      <Method name="Retrieve" t="data_async.Rest" TunnelRequest="true" Url="//jbartdb.appspot.com/bart.php?op=loadnode&amp;contenttype=%$ContentType%&amp;id=%$ID%">
+        <ConvertResult t="data.IfThenElse" If="%@_type% != 'error'" Then="%%">
+          <Else t="data.Empty" />
+        </ConvertResult>
+      </Method>
+      <Method name="Save" t="action_async.RunActions">
+        <Action t="action.WriteValue" To="%!@_type%" Value="%$ContentType%" />
+        <Action t="action.WriteValue" To="%!@id%" Value="%$ID%" />
+        <Action t="action_async.Rest" Method="POST" Url="//jbartdb.appspot.com/bart.php?op=savenode">
+          <PostData t="xml.XmlToText" Data="%%" />
+        </Action>
+      </Method>
+    </xtml>
+  </Component>
+    
+  <Component id="ControlUsingResource" type="ui.Control">
+    <Param name="Resource" type="dynamic_enum" Options="%$_AppContext/Resources/ID%" />
+    <Param name="Control" type="ui.Control" script="true" />
+    <xtml t="ui_async.Control">
+      <ControlForLoading t="ui.Text" Text="loading..." MultiLang="true" /> 
+      <AsyncAction t="action_async.RunActions">
+        <Var name="ResourceObj" t="bart_resource.ResourceByID" ResourceID="%$Resource%"/>
+        <Condition t="yesno.And">
+          <Item t="yesno.NotEmpty" Value="%$ResourceObj%" />
+          <Item t="yesno.Not" Of="%$ResourceObj/Loaded%" />
+        </Condition>
+        <Action t="object.RunMethod" Object="%$ResourceObj%" Method="Prepare" />
+        <Action t="object.SetBooleanProperty" Object="%$ResourceObj%" Property="Loaded" Value="true" />
+      </AsyncAction>
+      <Control t="xtml.UseParam" Param="Control" />
+    </xtml>
+  </Component>
+  
+  <Component id="ResourcesToGlobalVars" type="action.Action" execution="native" light="false" />
+  
+</xtml>
+
+</xtml>

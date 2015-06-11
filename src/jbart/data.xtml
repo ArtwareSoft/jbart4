@@ -1,0 +1,591 @@
+<xtml ns="data">
+
+  <Component id="CleanNS" type="data.Data" execution="native" />
+  <Component id="StringifyJson" type="data.Data" execution="native" description="JSON.stringify">
+    <Param name="Object" Default="%%"/>
+    <Param name="PrettyPrint" type="data.Boolean" />
+  </Component>
+  <Component id="ParseJson" type="data.Data" execution="native" description="JSON.parse" dtsupport="false">
+     <Param name="JSON" Default="%%"/>
+  </Component>
+  <Component id="RemoveNullProperties" type="data.Data" execution="native" description="clean javascript object">
+    <Param name="Object" Default="%%"/>
+  </Component>
+ 
+  <Component id="Switch" type="data.Data" execution="native">
+    <Param name="Value">
+      <Default value="%%" />
+    </Param>
+    <Param name="Case" type="inline[]" essential="true" >
+     <Param name="If" essential="true"/>
+     <Param name="IfCondition" type="data.Boolean" script="true" essential="true"/>
+     <Param name="Then" type="data.Data" essential="true"/>
+    </Param>
+    <Param name="Default" />
+  </Component>
+
+  <Component id="AddSeparator" type="data.Aggregator" execution="native">
+    <Param name="Separator" />
+    <Param name="AddBefore" />
+    <Param name="AddAfter" />
+  </Component>
+  <Component id="NewValueWithItemIndex" type="data.Aggregator" execution="native">
+    <Param name="Value" Default="%$Index%" />
+  </Component>
+  <Component id="Count" type="data.Aggregator" execution="native">
+    <Param name="Items">
+      <Default value="%%" />
+    </Param>
+  </Component>
+  <Component id="FirstSucceeding" type="data.Data" execution="native" dtsupport="false">
+    <Param name="Item" type="data.Data[]" essential="true"/>
+  </Component>
+  <Component id="IfThenElse" type="data.Data" execution="native" dtsupport="false">
+    <Param name="If" type="data.Boolean" script="true" essential="true"/>
+    <Param name="Then" essential="true"/>
+    <Param name="Else" essential="true"/>
+  </Component>
+  <Component id="ItemByID" type="data.Data" execution="native" dtsupport="false">
+    <Param name="List"/>
+    <Param name="ID"/>
+  </Component>
+  <Component id="ItemsByIDs" type="data.Data" execution="native" dtsupport="false">
+    <Param name="List"/>
+    <Param name="IDs"/>
+  </Component>
+  <Component id="List" type="data.Data" execution="native" synonyms="Unite" dtsupport="false">
+    <Param name="Item" type="data.Data[]" essential="true"/>
+    <Param name="Aggregator" type="data.Aggregator[]" />
+  </Component>
+  <Component id="Pipeline" type="data.Data" execution="native" dtsupport="false">
+    <Param name="Item" type="data.Data[]" essential="true" />
+    <Param name="Aggregator" type="data.Aggregator[]" />
+  </Component>
+ <Component id="RunActionAndKeepInput" type="data.Data" execution="native" dtsupport="false">
+   <Param name="Action" type="action.Action" script="true" />
+ </Component>
+  <Component id="Same" type="data.Data" execution="native" dtsupport="false" />
+  <Component id="WritableText" type="data.Data">
+    <Param name="DefaultValue" />
+    <xtml t="data.Pipeline">
+      <Item t="xml.WithChanges">
+        <Xml t="xml.Xml">
+          <xml value="" />
+        </Xml>
+        <Change t="xml.SetAttribute" AttributeName="value" Value="%$DefaultValue%" />
+      </Item>
+      <Item value="%@value%" />
+    </xtml>
+  </Component>
+ <Component id="JustInTimeCalculation" type="data.Data" execution="native">
+  <Description>use method 'GetContent' to fetch results</Description>
+   <Param name="Content" script="true" essential="true"/>
+ </Component>
+
+  <Component id="Subset" type="data.Aggregator" execution="native">
+      <Param name="From" short="true" essential="true" Default="1" />
+      <Param name="Count" short="true" essential="true"/>
+  </Component>
+  
+  <Component id="SubsetWithMore" type="data.Aggregator" execution="native">
+      <Param name="From" essential="true" Default="1" />
+      <Param name="Count" essential="true"/>
+      <Param name="ItemForMore" />
+  </Component>
+  
+ <Component id="JavaScript" type="data.Data,action.Action" light="false" hidden="true" deprecated="true" execution="native">
+   <Param name="Code" essential="true" js="true">
+        <Default value="function(data,html_elem,context) {&#xa;  &#xa;}"/>
+        <FieldAspect1 t="field_dt.CodeMirrorPopupFieldEditor" MarginLeft="" Type="js"/>
+   </Param>
+ </Component>
+ 
+ <Component id="Always" type="data.Boolean.jBart,data.Boolean.promoted">
+   <xtml value="true" />
+ </Component>
+ 
+ <Component id="Never" type="data.Boolean.jBart,data.Boolean.promoted">
+   <xtml value="false" />
+ </Component>
+
+ <Component id="Percent" type="data.Data" execution="native">
+   <Param name="Whole" essential="true"/>
+   <Param name="Part" essential="true"/>
+ </Component>
+ 
+  <Component id="Parents" type="data.Data" execution="native">
+    <Param name="ParentRelation" script="true" Default="%..%"/> 
+    <Param name="IncludeItself" type="data.Boolean" />
+    <Param name="MaxIterations" Default="50"/>
+    <Param name="StopWhen" type="data.Boolean" script="true"/>
+  </Component>
+
+  <Component id="Cookie" type="data.Data" execution="native">
+    <Param name="CookieName" />
+  </Component>
+
+<Component id="SessionStorage" type="data.Data" execution="native">
+  <Param name="Key" essential="true"/>
+  <Param name="ValueAsText" type="data.Boolean" />
+</Component>
+
+<Component id="LocalStorage" type="data.Data" execution="native">
+  <Param name="Key" essential="true"/>
+  <Param name="ValueAsText" type="data.Boolean" />
+</Component>
+
+  <Type id="Data" Icon="%$_Images%/studio/data1616.gif">
+    <MoreComponents>
+      <component id="data.Pipeline" itemsParam="Item" />
+      <component id="data.List" itemsParam="Item" />
+      <component id="data.IfThenElse" itemsParam="Then" />
+      <component id="data.Switch" itemsParam="Default" />
+      <component id="text.FirstSucceeding" itemsParam="Item" />
+    </MoreComponents>
+  </Type>
+  <Type id="Boolean" Icon="%$_Images%/studio/yesno1616.gif" >
+    <MoreComponents>
+      <component id="yesno.And" itemsParam="Item" />
+      <component id="yesno.OR" itemsParam="Item" />
+      <component id="yesno.Not" itemsParam="Of" />
+    </MoreComponents>
+  </Type>
+  
+  <Type id="Aggregator" />
+  <Type id="MultiSelector">
+    <Method name="IsSelected"/>
+    <Method name="Toggle"/>
+  </Type>
+
+  <Component id="Empty" type="data.Data" execution="xtml">
+    <xtml t="data.List" />
+  </Component>
+
+  <Component id="RecursiveScan" type="data.Data" execution="native" synonyms="ScanTree,ScanStructure">
+    <Param name="ChildNodes" essential="true"/>
+    <Param name="OnlyLeaves">
+      <Default value="false" />
+    </Param>
+    <Param name="ScanOrder" type="enum">
+      <Default value="Breadth first search" />
+      <value>Depth first search</value>
+      <value>Breadth first search</value>
+    </Param>
+    <Param name="MaxItemsToAvoidInfinitiveLoop">
+      <Default value="1000" />
+    </Param>
+  </Component>
+
+  <Component id="PathItems" type="data.Data" synonyms="UpToStructureTop">
+    <Description>Build a chain of elements from current to the last one</Description>
+    <Param name="Next" script="true" />
+    <Param name="IncludeOrigianlItem" type="data.Boolean">
+      <Default value="true" />
+    </Param>
+    <Param name="StopCondition" type="data.Boolean" script="true">
+      <Default value="false" />
+    </Param>
+
+    <xtml t="data.RecursiveScan">
+      <Data t="data.IfThenElse" If="%$IncludeOrigianlItem%" Then="%%">
+        <Else t="xtml.UseParam" Param="Next" />
+      </Data>
+      <ChildNodes t="data.Pipeline">
+        <Item t="xtml.UseParam" Param="Next" />
+        <Item t="yesno.PassesFilter">
+          <Filter t="yesno.Not">
+            <Of t="xtml.UseParam" Param="StopCondition" />
+          </Filter>
+        </Item>
+        <Aggregator t="data.First" />
+      </ChildNodes>
+    </xtml>
+  </Component>
+
+  <Component id="Slice" type="data.Aggregator" execution="native">
+    <Param name="From" short="true"/>
+    <Param name="To" short="true" />
+  </Component>
+
+  <Component id="Max" type="data.Aggregator" execution="native">
+    <Param name="ToCompare" Default="%%"/>
+  </Component>
+  <Component id="Min" type="data.Aggregator" execution="native">
+    <Param name="ToCompare" Default="%%"/>
+  </Component>
+
+  <Component id="Average" type="data.Aggregator" execution="native">
+    <Param name="Digits">
+      <Default value="0" />
+    </Param>
+  </Component>
+
+  <Component id="Sum" type="data.Aggregator" execution="native" />
+
+
+  <Component id="First" type="data.Aggregator" execution="xtml">
+    <xtml t="data.Subset" From="1" Count="1" />
+  </Component>
+
+  <Component id="Last" type="data.Aggregator" execution="native" />
+
+  <Component id="RandomPick" type="data.Aggregator" execution="native" />
+  <Component id="RandomNumber" type="data.Data" execution="native">
+    <Param name="From">
+      <Default value="1" />
+    </Param>
+    <Param name="To" short="true">
+      <Default value="10" />
+    </Param>
+  </Component>
+  <Component id="RandomShuffle" type="data.Aggregator" execution="native" />
+
+  <Component id="UniqueNumber" type="data.Data" execution="native">
+    <Param name="Prefix" />
+    <Param name="Suffix" />
+  </Component>
+
+  <Component id="Single" type="data.Data" execution="native">
+    <Param name="Items" />
+  </Component>
+
+  <Component id="Url" type="data.Data" execution="native" />
+
+  <Component id="MakeUnique" type="data.Aggregator" execution="native">
+    <Param name="Identifier" script="true" >
+      <Default value="%%" />
+    </Param>
+  </Component>
+
+  <Component id="GroupBy" type="data.Aggregator" execution="native">
+    <Param name="GroupBy" script="true" Default="%%" />
+    <Param name="Group" script="true" Description="struct of ID and Items" Default="%%" />
+    <Param name="Items" Default="%%" />
+  </Component>
+
+  <Component id="DataWithCondition" type="data.Data">
+    <Param name="Condition" type="data.Boolean" script="true" />
+    <Param name="Value" essential="true" />
+    <xtml value="%$Value%" />
+  </Component>
+
+  <Component id="CreateDateRangesFromNow" type="data.Data" execution="native">
+    <Param name="Resolution" type="enum" Options="days,weeks,months" Default="days" />
+    <Param name="Count" Default="30" />
+  </Component>
+  
+  <Component id="ExpandWithRelated" type="data.Aggregator" execution="native">
+    <Param name="Identifier" script="true">
+      <Default value="%%" />
+    </Param>
+    <Param name="Relation" script="true"/>
+    <Param name="MaxDepth"><Default value="2"/></Param>
+    <Param name="LogRelationsTo" />
+  </Component>
+
+  <Component id="MakeUniqueAndCount" type="data.Aggregator" execution="native" Description="works on text only. returns a struct with 'text' and 'count' attributes"/>
+  <Component id="CountUnique" type="data.Aggregator" execution="native" Description="count unique accurances of value"/>
+
+  <Component id="Struct" type="data.Data" execution="native">
+    <Param name="Item" type="struct[]" essential="true">
+      <StructParam name="Name" />
+      <StructParam name="Value" />
+    </Param>
+  </Component>
+
+  <Component id="RuntimeObjectType" type="data.Data" execution="native" />
+
+  <Component id="ReverseOrder" type="data.Aggregator" execution="native" />
+
+  <Component id="Math" type="data.Data" execution="native">
+    <Param name="Expression" essential="true" />
+    <Param name="FixFloatingPointResult" type="data.Boolean"/>
+  </Component>
+
+  <Component id="DuplicateNTimes" type="data.Data" execution="native">
+    <Param name="Times">
+      <Defualt value="1" />
+    </Param>
+  </Component>
+
+  <Component id="Subtract" type="data.Data" execution="native">
+    <Param name="List" />
+    <Param name="Subtract" />
+  </Component>
+
+  <Component id="Sort" type="data.Aggregator" execution="native">
+    <Param name="SortBy" script="true">
+      <Default value="%%" />
+    </Param>
+    <Param name="SortByPath" />
+    <Param name="Order" type="enum" Options="Ascending,Descending" Default="Ascending" />
+    <Param name="Type" type="enum">
+      <Default value="text" />
+      <value>text</value>
+      <value>number</value>
+      <value>date</value>
+    </Param>
+    <Param name="SortAtSource" type="data.Boolean" Description="Side effect to sort in xml source">
+      <Default value="false"/>
+    </Param>
+  </Component>
+
+  <Component id="Duplicate" type="data.Data" execution="native" />
+
+  <Component id="VariableValue" type="data.Data" execution="native" visibility="hidden">
+    <Param name="Variable" />
+  </Component>
+
+  <Component id="ValueFromCookie" type="data.Data" execution="native">
+    <Param name="Cookie" essential="true"/>
+    <Param name="AsXml" type="data.Boolean" />
+  </Component>
+
+  <Component id="CreateIfDoesNotExist" type="data.Data" execution="native">
+      <Param name="Query" script="true" essential="true"/>
+      <Param name="Create" type="action.Action" script="true" essential="true"/>
+    </Component>
+
+  <Component id="Now" type="data.Data" visibility="hidden">
+    <Param name="TimeZone" type="enum" Options="local,GMT,GMT+1,GMT+2,GMT+3,GMT+4,GMT+5,GMT+6,GMT+7,GMT+8,GMT+9,GMT+10,GMT+11,GMT-1,GMT-2,GMT-3,GMT-4,GMT-5,GMT-6,GMT-7,GMT-8,GMT-9,GMT-10,GMT-11"/>
+    <Param name="Format" type="enum" Options="milliseconds,std,with time">
+      <Default value="milliseconds" />
+    </Param>
+    <xtml t="date.Now" Format="%$Format%" TimeZone="%$TimeZone%"/>
+  </Component>
+  <Component id="Today" type="data.Data" visibility="hidden">
+    <Param name="Format" type="enum" Options="milliseconds,std,with time">
+      <Default value="milliseconds" />
+    </Param>
+    <Param name="TimeZone" type="enum" Options="local,GMT,GMT+1,GMT+2,GMT+3,GMT+4,GMT+5,GMT+6,GMT+7,GMT+8,GMT+9,GMT+10,GMT+11,GMT-1,GMT-2,GMT-3,GMT-4,GMT-5,GMT-6,GMT-7,GMT-8,GMT-9,GMT-10,GMT-11"/>
+    <xtml t="date.Now" Format="%$Format%" TimeZone="%$TimeZone%"/>
+  </Component>
+
+<Component id="AddToCommaSeparated" type="data.Data">
+  <Param name="Separator" Default="," />
+  <Param name="List" essential="true" Default="%%" />
+  <Param name="ToAdd" essential="true"/>
+  <xtml t="data.IfThenElse" Then="%$ToAdd%" Else="%$List%%$Separator%%$ToAdd%">
+    <If t="yesno.IsEmpty" Data="%$List%"/>
+  </xtml>
+</Component>
+
+  <Component id="IsInCommaSeparatedList" type="data.Boolean" execution="native">
+      <Param name="Separator" Default="," />
+      <Param name="Item" essential="true" description="can be a list"/>
+      <Param name="List" essential="true"/>
+      <xtml t="yesno.EqualsTo" To="%$Item%">
+        <Data t="data.Pipeline">
+          <Item t="text.Split" Data="%$List%" Separator="%$Separator%" />
+          <Item t="yesno.PassesFilter">
+            <Filter t="yesno.EqualsTo" To="%$Item%"/>
+          </Item>
+        </Data>
+      </xtml>
+    </Component>
+
+
+  <Component id="RemoveFromCommaSeparated" type="data.Data">
+    <Param name="Separator">
+      <Default value="," />
+    </Param>
+    <Param name="List">
+      <Default value="%%" />
+    </Param>
+    <Param name="ToRemove" />
+    <xtml t="data.Pipeline">
+      <Item t="text.Split" Separator="%$Separator%" Data="%$List%" />
+      <Item t="yesno.PassesFilter">
+        <Filter t="yesno.NotEqualsTo" To="%$ToRemove%" />
+      </Item>
+      <Aggregator t="text.Concat" Separator="%$Separator%" />
+    </xtml>
+  </Component>
+
+  <Component id="ListByCommas" type="data.Data">
+    <Param name="List" essential="true"/>
+    <xtml t="text.Split" Separator="," Data="%$List%" />
+  </Component>
+
+  <Component id="CreateNumbers" type="data.Data" execution="native">
+    <Param name="From" essential="true"/>
+    <Param name="To" essential="true"/>
+  </Component>
+
+  <Component id="ReplaceItemByIndex" type="data.Aggregator" execution="native">
+    <Param name="Index" />
+    <Param name="NewItem" />
+  </Component>
+
+  <Component id="RoundCents" type="data.Data" execution="native">
+    <Param name="Indices" />
+  </Component>
+  
+  <Component id="HashPassword" type="data.Data" execution="native"/>
+
+  <Component id="BuildCategories" type="data.Data" execution="native">
+    <Param name="Categories" />
+    <Param name="Separator" ><Default value="."/></Param>
+  </Component>
+  <Component id="NextLevelCategory" type="data.Data" execution="native">
+    <Param name="Categories" />
+    <Param name="Parent" />
+    <Param name="Separator" ><Default value="."/></Param>
+  </Component>
+
+  <Component id="IsInSelectedItems" type="data.Boolean" execution="native" Uses="SelectedItems"/>
+
+  <Component id="IsCodeInSelectedItems" type="data.Boolean" execution="native" Uses="SelectedItems">
+    <Param name="Code"/>
+  </Component>
+
+  <Component id="SingleSelector" type="data.MultiSelector">
+    <Param name="SelectedItem"/>
+    <Param name="Item" script="true" Default="%%"/>
+    <xtml t="xtml.Params">
+      <Var name="SelectedItem" value="%$SelectedItem%"/>
+      <Param name="SelectedItem" value="%$SelectedItem%"/>
+      <Method name="IsSelected" t="yesno.EqualsTo" To="%$SelectedItem%"/>
+      <Method name="Toggle" t="action.WriteValue" To="%$SelectedItem%">
+        <Value t="xtml.UseParam" Param="Item"/>
+      </Method>
+    </xtml>
+  </Component>
+
+  <Component id="MultiSelectorByList" type="data.MultiSelector">
+    <Param name="SelectedItems" Description="Camma separated field list"/>
+    <Param name="Item" script="true" Default="%%"/>
+    <Param name="ReadOnly" type="data.Boolean"/>
+    <xtml t="xtml.Params">
+      <Var name="SelectedItems" value="%$SelectedItems%"/>
+      <Param name="SelectedItems" value="%$SelectedItems%"/>
+      <Method name="IsSelected" t="data.IsInSelectedItems" />
+      <Method name="Toggle" t="action.WriteValue" To="%$SelectedItems%" Condition="!%$ReadOnly%">
+        <Value t="data.IfThenElse">
+          <Data t="xtml.UseParam" Param="Item"/>
+          <If t="data.IsInSelectedItems"/>
+          <Then t="data.RemoveFromCommaSeparated" List="%$SelectedItems%" ToRemove="%%"/>
+          <Else t="data.AddToCommaSeparated" List="%$SelectedItems%" ToAdd="%%" />
+        </Value>
+      </Method>
+    </xtml>
+  </Component>
+
+  <Component id="MultiSelectorByListWithCodes" type="data.MultiSelector" Remark="Separated from MultiSelectorByList for performance reasons">
+    <Param name="SelectedItems" Description="Camma separated field list"/>
+    <Param name="ItemCode" type="data.Data" script="true" Default="%%"/>
+    <xtml t="xtml.Params">
+      <Var name="SelectedItems" value="%$SelectedItems%"/>
+      <Param name="SelectedItems" value="%$SelectedItems%"/>
+      <Method name="IsSelected" t="data.IsCodeInSelectedItems" remarks="use native for performance">
+        <Code t="xtml.UseParam" Param="ItemCode"/>
+      </Method>
+      <Method name="Toggle" t="action.WriteValue" To="%$SelectedItems%">
+        <Value t="data.IfThenElse">
+          <If t="data.IsCodeInSelectedItems">
+            <Code t="xtml.UseParam" Param="ItemCode" />
+          </If>
+          <Then t="data.RemoveFromCommaSeparated" List="%$SelectedItems%">
+            <ToRemove t="xtml.UseParam" Param="ItemCode"/>
+          </Then>
+          <Else t="data.AddToCommaSeparated" List="%$SelectedItems%">
+            <ToAdd t="xtml.UseParam" Param="ItemCode"/>
+          </Else>
+        </Value>
+      </Method>
+    </xtml>
+  </Component>
+
+ <Component id="RunNativeHelperTest" execution="native">
+  <Param name="FirstName"/>
+  <Param name="LastName"><Default value="Black"/></Param>
+  <Param name="TransformAll" script="true" Default="%%"/>
+  <NativeHelper name="FullName" t="xtml.UseParam" Param="TransformAll" Input="%$FirstName% %$LastName%"/>
+ </Component>
+ 
+ <Component id="StructEntryNames" type="data.Data" execution="native" />
+ 
+  <Type id="ValueByRef" />
+
+  <Component id="GetValue" type="data.Data" commonParams="Data">
+    <xtml t="xtml.RunXtml" Xtml="%GetValue%"/>
+  </Component>
+  
+  <Component id="ValueByRef" type="data.ValueByRef">
+    <Param name="GetValue" script="true"/>
+    <Param name="WriteValue" type="action.Action" script="true"/>
+    <xtml t="object.ObjectFromParams"/>
+  </Component>
+  
+  <Component id="UrlFragmentValue" type="data.ValueByRef">
+    <Param name="Attribute"/>
+    <xtml t="xtml.Params">
+      <ScriptParam name="GetValue" t="ui.UrlFragment" Attribute="%$Attribute%"/>
+      <ScriptParam name="WriteValue" t="uiaction.SetUrlFragment" Attribute="%$Attribute%" Value="%%" />
+    </xtml>
+  </Component>
+
+  <Component id="VariableAsValueByRef" type="data.ValueByRef">
+    <Param name="Value"/>
+    <xtml t="xtml.Params">
+      <ScriptParam name="GetValue" value="%$Value%"/>
+      <ScriptParam name="WriteValue" t="action.WriteValue" To="%$Value%" Value="%%" />
+    </xtml>
+  </Component>
+  
+ <Component id="Object" type="data.Data" execution="native" dtsupport="false" deprecated="true">
+    <Param name="Property" type="data.Data[]"/>
+    <Param name="Method" type="data.Data[]"/>
+ </Component>
+  
+ <Component id="Demote" type="data.Aggregator" execution="native" dtsupport="false">
+   <Param name="Items"/>
+   <Param name="ItemText" script="true" Default="%%"/>
+ </Component>
+ 
+ <Component id="EvaluateTemplate" type="data.Data">
+   <Param name="Template"/>
+   <xtml t="xtml.RunXtml" Xtml="%$Template%" />
+ </Component>
+ 
+ <Component id="ByIndexFromList" type="data.Data" execution="native" >
+  <Param name="List" />
+  <Param name="Index" />
+  <Param name="Base" type="enum" ><Default value="1-Based Index" />
+    <value>0-Based Index</value>
+    <value>1-Based Index</value>
+  </Param>
+ </Component>
+ 
+ <Component id="DataWithPreAction" type="data.Data" execution="native">
+   <Param name="Action" type="action.Action" script="true" />
+   <Param name="Query" script="true" />
+ </Component>
+ 
+ <Component id="HtmlToCleanText" type="data.Data" execution="native" />
+ 
+ <Component id="Csv" type="data.Data" execution="native">
+   <Param name="Content"/>
+   <Param name="FieldNames" Description="Comma separated"/>
+ </Component>
+  
+ <Component id="InPreviewMode" type="data.Boolean" execution="native" />
+ <Component id="NotInPreviewMode" type="data.Boolean" >
+   <xtml t="yesno.Not">
+     <Of t="data.InPreviewMode" />
+   </xtml>
+ </Component>
+ 
+ <Component id="Zip" type="data.Data" execution="native" description="[author,author,..] + [title,title,...] = [[author,title],[author,title],...]">
+  <Param name="List" type="data.Data[]" essential="true" />
+ </Component>
+ 
+ <Component id="MeasureCalculationTime" type="data.Data" execution="native">
+    <Param name="Calculation" type="data.Data" script="true" essential="true" />
+    <Param name="PutTimeInObject" type="data.Data" essential="true" />
+    <Param name="PutTimeInProperty" type="data.Data" essential="true" />
+ </Component>
+
+ <Component id="BrowserTitle" type="data.Data" execution="native" />
+
+</xtml>

@@ -1,0 +1,86 @@
+<xtml ns="wcf" plugin="wcf">
+
+  <Component id="WCFPluginDefiniton" type="jbart.PluginDefinition">
+    <xtml t="xml.Xml">
+      <plugin id="wcf" name="WCF" enhanceGStudio="wcf.EnhanceGStudio"/>
+    </xtml>
+  </Component>
+
+	<Component id="GenerateSampleRequestXml" type="data.Data" execution="native">
+	  <Param name="WSDL" />
+	  <Param name="OperationXmlInWSDL" />
+	</Component>
+
+	<Component id="GenerateCSharpWebApiCode" type="data.Data" execution="native">
+	  <Param name="GenerateRequestResponseClasses" type="data.Boolean" />
+	  <Param name="WSDL" />
+	</Component>
+
+  <Component id="AspNetCrossDomainProxy" type="http.Aspect" execution="native">
+    <Param name="UrlForWebAPI" Default="/api/proxy/get" />
+    <Param name="BaseUrlForStudio" Default="//jbartcrawler.herokuapp.com/?op=httpCall"/>
+    <NativeHelper name="InStudio" t="http.JBartCrossDomainProxy" BaseUrlForStudio="%$BaseUrlForStudio%" />
+  </Component>
+
+	<Component id="CleanXmlSpecified" type="data.Data" execution="native">
+		<Param name="Xml" Default="%%" />
+	</Component>
+
+	<Component id="WcfFieldsFromDataset" type="field.Fields">
+		<Param name="Title" />
+		<Param name="ID" />
+		<Param name="TableXml" Default="%%" />
+		<xtml t="field.DynamicFields" ID="%$ID%" Title="%$Title%">
+		  <FieldItems t="data.Pipeline">
+		    <Item value="%$TableXml%" />
+		    <Item value="%Columns/item%"/>
+		  </FieldItems>
+		  <Field t="fld.Field" FieldData="%@v{$_FieldItem/@Index}%" Title="Field">
+		    <FieldType t="fld_type.Text"/>
+		    <FieldAspect t="field_aspect.Title" Title="%$_FieldItem/@Caption%"/>
+		  </Field>
+		</xtml>		
+	</Component>
+
+	<Component id="WcfCall" type="action.Action">
+		<Param name="ServiceName" />
+		<Param name="Operation" />
+		<Param name="RequestXml" />
+		<Param name="OnSuccess" type="action.Action" script="true" />
+	  <xtml t="http.HttpCall" Url="/api/%$ServiceName%/%$Operation%">
+	    <Aspect t="http.RawPost" ContentType="text/json; charset=utf-8">
+	      <RawData t="data.Pipeline">
+	        <Item value="%$RequestXml%"/>
+	        <Item t="xml.TextToXml"/>
+	        <Item t="xml.XmlToJson" Xml="%%"/>
+	      </RawData>
+	    </Aspect>
+	    <Aspect t="http.ResultAsJsonToXml">
+	      <TopTag t="text.FirstSucceeding">
+	        <Item value="%$Operation%"/>
+	        <Item value="result"/>
+	      </TopTag>
+	    </Aspect>
+	    <OnSuccess t="xtml.UseParam" Param="OnSuccess">
+	      <Input t="wcf.CleanXmlSpecified" Xml="%%"/>
+	    </OnSuccess>
+	  </xtml>
+	</Component>
+
+<Component id="EnhanceGStudio" type="action.Action" hidden="true">
+  <xtml t="action.RunActions">
+    <Action t="object.AddToProperty" Object="%$_JBartStudio%" Property="DataMenuButtons">
+      <Value t="field.Fields">
+				<Field t="control.SeparatingLine" ID="SeparatingLine" Title="SeparatingLine">
+				  <Style t="gstudio.StudioMenuSeparator"/>
+				</Field>      	
+	      <Field t="control.Button" Title="Import WCF services...">
+		      <Style t="gstudio.StudioMenuItem"/>
+				  <Action t="operation.Link" OpenInANewTab="true" Link="http://localhost:61645/ImportWSDL.aspx"/>
+		    </Field>
+		  </Value>
+	  </Action>
+  </xtml>
+</Component>
+
+</xtml>

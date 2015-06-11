@@ -1,0 +1,9 @@
+<xtml ns="server_usage">
+
+<Usage t="action.ActionUsage" Of="server.ExportVirtualFile" IsTest="false" >
+	<Action t="server.ExportVirtualFile" FileName="contacts.csv" ContentType="application/vnd.ms-excel">
+		<Content value="שלמה,משה,דני" />
+	</Action>
+</Usage> 
+
+</xtml>

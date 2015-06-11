@@ -1,0 +1,68 @@
+<xtml package="true">
+
+	<xtml ns="youtube">
+
+		<Type id="Style" />
+
+		<Component id="YoutubeVideo" type="field.Fields" execution="native">
+	    <Param name="Title" titleField="true"/>
+	    <Param name="YoutubeKey" description="E.g. LxtUTDK5mWA"/>
+	    <Param name="Style" type="youtube.Style">
+	      <Default t="youtube_style.Default"/>
+	    </Param>
+	    <Param name="FieldAspect" type="field.FieldAspect[]" light="false" script="true"/>
+	    <Param name="ID" essential="true" idField="true" />
+		</Component>
+
+  <Component id="ExtractYoutubeKey" type="data.Data" execution="native">
+    <Param name="Url" Default="%%" />
+  </Component>
+
+	</xtml>
+
+ <xtml ns="youtube_style">
+
+ 		<Component id="Default" type="youtube.Style">
+ 			<Param name="Width" slider="true" sliderUnit="px" Default="420px" />
+ 			<Param name="Height" slider="true" sliderUnit="px" Default="315px" />
+	    <xtml t="ui.CustomStyle">
+	      <Html><![CDATA[<div />]]></Html>
+	      <Css><![CDATA[iframe {
+  width: %$Width%;	      
+  height: %$Height%;	      
+}
+	]]></Css>
+	        <Javascript><![CDATA[function render(youtubeVideo) {
+	  aa_youtube_video(youtubeVideo);
+	}]]></Javascript>
+	    </xtml>
+ 		</Component>
+
+ 		<Component id="ResponsiveVideo" type="youtube.Style">
+	    <xtml t="ui.CustomStyle">
+	      <Html><![CDATA[<div />]]></Html>
+	      <Css><![CDATA[
+#this {
+	position: relative;
+	padding-bottom: 56.25%;
+	padding-top: 30px;
+	height: 0;
+	overflow: hidden;	
+}
+iframe {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+}
+	]]></Css>
+	        <Javascript><![CDATA[function render(youtubeVideo) {
+	  aa_youtube_video(youtubeVideo);
+	}]]></Javascript>
+	    </xtml>
+ 		</Component>
+
+ </xtml>
+
+</xtml>

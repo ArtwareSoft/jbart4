@@ -1,0 +1,687 @@
+<xtml ns="ui_usage">
+	<Usage t="ui.ControlUsage" Of="ui.List" Data="a">
+		<Description value="arranges controls by a certain layout" />
+		<Control t="ui.Section">
+			<Control t="ui.Section" Title="line break layout">
+				<Control t="ui.List">
+					<Control t="ui.ButtonOld" Text="button" />
+					<Control t="ui.Text" Text="a label" />
+					<Layout t="ui.LineBreak" />
+				</Control>
+			</Control>
+			<Control t="ui.Section" Title="no layout">
+				<Control t="ui.List">
+					<Control t="ui.ButtonOld" Text="button" />
+					<Control t="ui.Text" Text="a label" />
+					<Layout t="ui.NoLayout" />
+				</Control>
+			</Control>
+		</Control>
+		<ExpectedResult t="yesno.Contains" IgnoreCase="true">
+			<Text value="line break layout" />
+			<Text value="div" />
+			<Text value="button" />
+			<Text1 value="div" />
+			<Text value="a label" />
+			<Text value="no layout" />
+			<Text value="span" />
+			<Text value="button" />
+			<Text value="span" />
+			<Text value="a label" />
+		</ExpectedResult>
+	</Usage>
+
+	<Usage t="ui.ControlUsage" Of="ui.Html" Data="hello">
+		<Control t="ui.Section">
+			<Control t="ui.Html">
+				<span style="color:red">some html contents</span>
+			</Control>
+			<Control t="ui.Html" DynamicContent="true">
+				<span style="color:purple">data is: %%</span>
+          </Control>
+				</Control>
+				<ExpectedResult t="yesno.Contains">
+				  <Text value="data is: hello"/>
+				</ExpectedResult>
+				<Description value="allows embedding of any html anywhere"/>
+				<TryItYourself value="change the data to something else and see the html changes"/>
+			</Usage>
+
+			<Usage t="ui.ControlUsage" Name="button" Data="hello">
+				<Control t="ui.ButtonOld" Text="Click me"/>
+				<ExpectedResult t="yesno.Contains">
+					<Text value="Click me" />
+				</ExpectedResult>
+			</Usage>
+
+      <Usage t="ui.ControlUsage" Name="control with condition" Data="hello">
+       <Control t="ui.Section" >
+        <Control t="ui.ButtonOld" Text="Click me1">
+         <Condition t="yesno.EqualsTo" To="wrong" />
+        </Control>
+        <Control t="ui.ButtonOld" Text="Click me2" />
+       </Control>
+       <ExpectedResult t="yesno.And">
+         <Item t="yesno.Contains">
+           <Text value="Click me2"/> 
+         </Item>
+         <Item t="yesno.NotContains">
+           <Text value="Click me1"/> 
+         </Item>
+       </ExpectedResult>
+      </Usage>
+
+  <Usage t="ui.ControlUsage" Of="ui.Button.OnClick" ResultType="Data">
+    <Data t="xml.Xml">
+      <Person name="Homer"/>
+    </Data>
+    <Control t="ui.ButtonOld" Text="Click here">
+      <OnClick t="action.WriteValue" To="%@name%" Value="Lisa"/>
+    </Control>
+    <RunOnControl t="uiaction.ButtonClick"/>
+    <ExpectedResult t="yesno.EqualsTo" Data="%@name%" To="Lisa"/>
+  </Usage>
+
+      <Usage t="ui.ControlUsage" Name="text control update" ResultType="Data">
+        <Data t="xml.Xml">
+          <Person name="Homer" />
+        </Data>
+        <Control t="ui.TextControl" Name="text_control" Data="%@name%"/>
+        <RunOnControl t="action.RunActions" RunOn="text_control">
+          <Action t="uiaction.SetText" Text="Lisa"/>
+        </RunOnControl>
+        <ExpectedResult t="yesno.EqualsTo">
+          <To t="xml.Xml">
+            <Person name="Lisa" />
+          </To>
+        </ExpectedResult>
+      </Usage>
+
+  <Usage t="ui.ControlUsage" Of="ui.TextArea.MaxLength">
+    <Control t="ui.TextControl" Data="aa">
+      <Style t="ui.Textarea" MaxLength="5"/>
+    </Control>
+    <ExpectedResult t="yesno.Contains">
+      <Text value="aa"/>
+    </ExpectedResult>
+  </Usage>
+
+			<Usage t="usage.DataUsage" Of="ui.ControlData">
+			  <Description value="retrieves the xtml script bound to the control"/>
+				<Result t="data.Pipeline">
+					<Item t="ui.ButtonOld" Text="click me" />
+					<Item t="ui.ControlData" Type="script"/>
+					<Item t="xml.XPath" XPath="@Text" />
+				</Result>
+				<ExpectedResult t="yesno.EqualsTo" To="click me" />
+			</Usage>
+
+			<Usage t="ui.ControlUsage" Of="ui.Text">
+      <Control t="ui.Text" Text="a label"/>
+      <ExpectedResult t="yesno.Contains">
+        <Text value="a label"/>
+      </ExpectedResult>
+    </Usage>
+
+  <Usage t="ui.ControlUsage" Of="ui.ExecJQuery">
+    <Control t="xml.WithChanges">
+      <Xml t="ui.Html">
+        <DIV>
+          <SPAN>Hello</SPAN>
+          <SPAN>Hi</SPAN>
+        </DIV>
+      </Xml>
+      <Change t="ui.ExecJQuery" Expression=".find('span').fadeOut('slow').fadeIn('slow')"/>
+    </Control>
+    <ExpectedResult t="yesno.Contains">
+      <Text value="Hello"/>
+    </ExpectedResult>
+  </Usage>
+
+  <Usage t="ui.ControlUsage" Of="uiaction.Refresh">
+    <Description value="shows a button that updates value and activates refresh"/>
+    <Data t="xml.Xml">
+      <Person name="Homer"/>
+    </Data>
+    <Control t="ui.Section">
+      <Control t="ui.Text" Text="the name is %@name%" Name="name_text"/>
+      <Control t="ui.ButtonOld" Text="Change the name" Name="Change">
+        <OnClick t="action.RunActions">
+          <Action t="action.WriteValue" To="%@name%" Value="Lisa"/>
+          <Action t="uiaction.Refresh" RunOn="name_text"/>
+        </OnClick>
+      </Control>
+    </Control>
+    <RunOnControl t="uiaction.ButtonClick" RunOn="Change"/>
+    <RunOnControlDescription value="Changes Homer to Lisa and calls refresh for the text"/>
+    <ExpectedResult t="yesno.Contains">
+      <Text value="the name is Lisa"/>
+    </ExpectedResult>
+  </Usage>
+
+      <Usage t="ui.ControlUsage" Name="refresh of section">
+        <Data t="xml.Xml">
+          <Person name="Homer" />
+        </Data>
+        <Control t="ui.Section">
+	        <Control t="ui.Section" Name="section" Title="Title1">
+	          <Level value="Heading 1"/>
+	          <Control t="ui.Text" Text="the name is %@name%" Name="name text" />
+	          <Control t="ui.Section" Title="Title2">
+	            <Level value="Heading 2"/>
+	            <Control t="ui.Text" Text="second try: %@name%" Name="name text" />
+	          </Control>
+	        </Control>
+        </Control>
+        <RunOnControl t="uiaction.Refresh" RunOn="section" />
+        <ExpectedResult t="yesno.EqualsTo">
+          <Data t="data.Pipeline">
+            <Item t="xml.XmlToText"/>
+            <Item t="text.CountOfSubtext" Text="Title1" />
+          </Data>
+          <To value="1"/>
+        </ExpectedResult>
+      </Usage>
+
+    <Usage t="ui.ControlUsage" Of="ui.SectionsList.Condition">
+        <Control t="ui.SectionsList" Title="The Simpsons">
+          <Section t="ui.SectionListPage" Title="dont show me" Condition="false"/>
+        </Control>
+        <ExpectedResult t="yesno.NotContains">
+          <Text value="Dont Show Me"/>
+        </ExpectedResult>
+    </Usage>
+
+    <Usage t="ui.ControlUsage" Of="ui.SectionsList">
+      <Data t="xml.Xml">
+        <xml>
+          <people><person name="homer"/></people>
+          <cities><city name="springfield"/></cities>
+          <factories><factory name="nuclear plant"/></factories>
+        </xml>
+      </Data>
+        <Control t="ui.SectionsList" Title="The Simpsons">
+          <Section t="ui.SectionListPage" Title="people">
+            <Control t="ui.Text" Text="%@name%" Data="%people/person%"/>
+          </Section>
+          <Section t="ui.SectionListPage" Title="cities">
+            <Control t="ui.Text" Text="%@name%" Data="%cities/city%"/>
+          </Section>
+          <Section t="ui.SectionListPage" Title="factories">
+            <Control t="ui.Text" Text="%@name%" Data="%factories/factory%"/>
+          </Section>
+        </Control>
+        <ExpectedResult t="yesno.Contains">
+          <Text value="People"/>
+          <Text value="Cities"/>
+          <Text value="springfield"/>
+        </ExpectedResult>
+    </Usage>
+
+    <Usage t="ui.ControlUsage" Of="ui.SectionsList.AutoExpand">
+      <Data t="xml.Xml">
+        <xml>
+          <people><person name="homer"/></people>
+          <cities><city name="springfield"/></cities>
+          <factories><factory name="nuclear plant"/></factories>
+        </xml>
+      </Data>
+        <Control t="ui.SectionsList" Title="The Simpsons" AutoExpand="false">
+          <Section t="ui.SectionListPage" Title="people">
+            <Control t="ui.Text" Text="%@name%" Data="%people/person%"/>
+          </Section>
+          <Section t="ui.SectionListPage" Title="cities">
+            <Control t="ui.Text" Text="%@name%" Data="%cities/city%"/>
+          </Section>
+          <Section t="ui.SectionListPage" Title="factories">
+            <Control t="ui.Text" Text="%@name%" Data="%factories/factory%"/>
+          </Section>
+        </Control>
+        <ExpectedResult t="yesno.Contains">
+          <Text value="People"/>
+          <Text value="Cities"/>
+          <Text value="springfield"/>
+        </ExpectedResult>
+    </Usage>
+
+    <Usage t="ui.ControlUsage" Of="ui.SectionsList.Level0">
+      <Data t="xml.Xml">
+        <xml>
+          <people><person name="homer"/></people>
+          <cities><city name="springfield"/></cities>
+        </xml>
+      </Data>
+        <Control t="ui.SectionsList" Title="The Simpsons" Level="0">
+          <Section t="ui.SectionListPage" Title="people">
+            <Control t="ui.Text" Text="%@name%" Data="%people/person%"/>
+          </Section>
+          <Section t="ui.SectionListPage" Title="cities">
+            <Control t="ui.Text" Text="%@name%" Data="%cities/city%"/>
+          </Section>
+        </Control>
+        <ExpectedResult t="yesno.Contains">
+          <Text value="The Simpsons"/>
+        </ExpectedResult>
+    </Usage>
+    
+    <Usage t="ui.ControlUsage" Of="ui.Section" Name="Box"
+     Description="shows a section with box style">
+     <Control t="ui.Section" Title="Announcement" >
+      <Control t="ui.Text" Text="Ladies and Gentleman" />
+      <Control t="ui.Text" Text="You are welcomed to the main show" />
+      <ItemsLayout t="ui.LineBreak" />
+     </Control>
+     <ExpectedResult t="yesno.Contains">
+       <Text value="Announcement"/>
+     </ExpectedResult>
+    </Usage>
+    
+    <Usage t="usage.DataUsage" Of="ui.DataFromJavaScript" >
+     <Data value="7" />
+     <Result t="ui.DataFromJavaScript" Expression="%% + 1" />
+     <ExpectedResult t="yesno.EqualsTo" To="8" />
+    </Usage>
+
+    <Usage t="usage.DataUsage" Of="ui.DataFromJavaScript" Name="Using data as object">
+     <Data t="xml.Xml" >
+      <Person name="Homer" />
+     </Data>
+     <Result t="ui.DataFromJavaScript" Expression="'hello ' + data.getAttribute('name')" />
+     <ExpectedResult t="yesno.EqualsTo" To="hello Homer" />
+    </Usage>
+
+    <Usage t="usage.DataUsage" Of="ui.DataFromJavaScript" Name="Using returning object">
+     <Data t="xml.Xml" >
+      <Person name="Homer" />
+     </Data>
+     <Result t="ui.DataFromJavaScript" Expression="var out = data.cloneNode(true); out.setAttribute('name','Lisa'); out;" />
+     <ExpectedResult t="yesno.EqualsTo" >
+      <To t="xml.Xml">
+       <Person name="Lisa" />
+      </To>
+     </ExpectedResult>
+    </Usage>
+
+    <Usage t="ui.ControlUsage" Of="ui.Html.DynamicContent" Description="use dynamic content inside ui.Html">
+     <Data value="Hello Homer" />
+     <Control t="ui.Html" DynamicContent="true" >
+      <span>%%</span>
+     </Control>
+     <ExpectedResult t="yesno.Contains">
+       <Text value="Hello Homer"/>
+     </ExpectedResult>
+    </Usage>
+
+    <Usage t="usage.DataUsage" Of="ui.ElementOfClass" Description="find html element with a certain class">
+     <Data t="ui.Html" >
+      <DIV>
+       <SPAN class="span1">Homer</SPAN>
+       <DIV>
+        <SPAN class="to_find">Marge first</SPAN>
+        <DIV>
+         <SPAN class="to_find">Marge second</SPAN>
+        </DIV>
+       </DIV>
+      </DIV>
+     </Data>
+     <Result t="data.Pipeline">
+      <Item t="ui.ElementOfClass" Cls="to_find" />
+      <Item t="xml.InnerText" />
+     </Result>
+     <ExpectedResult t="yesno.EqualsTo" To="Marge first" />
+    </Usage>
+
+   <Usage t="action.ActionUsage" Name="ui.UrlFragment">
+    <Var name="OriginalFragment" t="ui.UrlFragment"/>
+    <Action t="uiaction.SetUrlFragment" Fragment="Frag1" />
+    <Result t="ui.UrlFragment" />
+    <CleanAfter t="uiaction.SetUrlFragment" Fragment="%$OriginalFragment%" />
+    <ExpectedResult t="yesno.Contains">
+     <Data t="data.Url" />
+     <Text value="#Frag1" />
+    </ExpectedResult>
+   </Usage>
+
+    <Usage t="ui.ControlUsage" Of="ui.DynamicList" >
+     <Description value="similar to ui.List but the controls are defined dynamically"/>
+     <Control t="ui.DynamicList" >
+      <Items t="data.List">
+       <Item value="Homer" />
+       <Item value="Marge" />
+      </Items>
+      <Control t="ui.Text" Text="I am %%" />
+      <Layout t="ui.LineBreak"  />
+     </Control>
+     <ExpectedResult t="yesno.Contains">
+      <Text value="Homer" />
+      <Text value="Marge" />
+     </ExpectedResult>
+    </Usage>
+    
+    <Usage t="ui.ControlUsage" Name="button inside sections list" ResultType="Data">
+      <Data t="xml.Xml">
+        <Person name="Homer" />
+      </Data>
+      <Control t="ui.SectionsList">
+        <Section t="ui.SectionListPage">
+		      <Control t="ui.ButtonOld" Text="Click here" Name="btn">
+		        <OnClick t="action.WriteValue" To="%@name%" Value="Lisa"/>
+		      </Control>
+        </Section>
+      </Control>
+      <RunOnControl t="uiaction.ButtonClick" RunOn="btn"/>
+      <ExpectedResult t="yesno.EqualsTo">
+        <To t="xml.Xml">
+          <Person name="Lisa" />
+        </To>
+      </ExpectedResult>
+    </Usage>
+    
+ <Usage t="ui.ControlUsage" Of="ui.BindEvent" ResultType="Data">
+  <Data t="xml.Xml">
+    <person name="Homer" />
+  </Data>
+  <Control t="xml.WithChanges">
+   <Xml t="ui.Html">
+    <button id="btn"></button>
+   </Xml>
+   <Change t="ui.BindEvent" Event="click">
+    <Action t="action.WriteValue" To="%@name%" Value="Marge" />
+   </Change>
+  </Control>
+  <RunOnControl t="uiaction.Click" RunOn="btn"/>
+  <ExpectedResult t="yesno.EqualsTo">
+   <To t="xml.Xml">
+    <person name="Marge" />
+   </To>
+  </ExpectedResult>
+ </Usage>
+ 
+ <Usage t="ui.ControlUsage" Name="textbox update on every click - delay for update">
+   <Control t="ui.List">
+	   <Control t="ui.TextControl" Data="text">
+	     <OnUpdate t="uiaction.Refresh" RunOn="counter"/>
+	   </Control>
+	   <Control t="ui.Text" Name="counter">
+	     <Text t="text.AddPrefix" Prefix="number of updates: ">
+	       <Data t="data.UniqueNumber" />
+	     </Text>
+	   </Control>
+	 </Control>
+   <ExpectedResult t="yesno.Contains">
+     <Text value="text"/>
+   </ExpectedResult>
+ </Usage>
+   
+ <Usage t="ui.ControlUsage" Of="uiaction.SetMessageBarText">
+    <Control t="ui.List">
+     <Control t="ui.MessageBar" />
+     <Control t="ui.List">
+      <Control t="ui.ButtonOld" Text="Save" Name="Save">
+       <OnClick t="uiaction.SetMessageBarText" Text="Save succeeded" Type="Success" />
+      </Control>
+      <Control t="ui.ButtonOld" Text="Fail">
+       <OnClick t="uiaction.SetMessageBarText" Text="Save failed" Type="Error" />
+      </Control>
+      <Layout t="ui.Horizontal" /> 
+     </Control>
+    </Control>
+    <RunOnControl t="uiaction.ButtonClick" RunOn="Save" />
+    <ExpectedResult t="yesno.Contains">
+     <Text value="Save succeeded"/>
+    </ExpectedResult>
+    <TryItYourself value="1. Click on Save or Fail.
+    2. Change the message text of save" />
+ </Usage>
+  
+ <Usage t="ui.ControlUsage" Name="RunOn on nothing - dont work on any object">
+  <Control t="ui.ButtonOld" Text="My Button" Name="Button">
+   <OnClick t="uiaction.SetText" Text="new text" RunOn="%$Nothing%" />
+  </Control>
+  <RunOnControl t="uiaction.ButtonClick" RunOn="Button" />
+  <ExpectedResult t="yesno.Contains">
+   <Text value="My Button" />
+  </ExpectedResult>
+ </Usage>
+ 
+   <Usage t="ui.ControlUsage" Of="ui.Image">
+    <Data value="Kermit" />
+    <Control t="ui.Image" Height="80" Source="http://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Bufo_periglenes1.jpg/180px-Bufo_periglenes1.jpg" Title="Frog">
+     <OnClick t="uiaction.Alert" Text="Hi, I am %%" />
+    </Control>
+    <TryItYourself value="1. Click on the image, and see the text.
+    2. Change the click text to be : Hi, my name is Kermit" />
+    <ExpectedResult t="yesno.Contains" IgnoreOrder="true">
+     <Text value="eriglen" />
+     <Text value="Frog" />
+    </ExpectedResult>
+   </Usage>
+   
+	<Usage t="ui.ControlUsage" Of="ui.Horizontal">
+		<Control t="ui.List" >
+			<Control t="ui.ButtonOld" Text="click" />
+			<Control t="ui.Text" Text="hello" />
+			<Control t="ui.ButtonOld" Text="button 2" />
+			<Layout t="ui.Horizontal" VerticalAlign="middle" />
+		</Control>
+		<ExpectedResult t="yesno.Contains">
+			<Text value="click" />
+		</ExpectedResult>
+	</Usage>
+
+  <Usage t="ui.ControlUsage" Name="bug with quote">
+    <Control t="ui.TextControl" Data="10 &quot; 20"/>
+    <ExpectedResult t="yesno.Contains">
+      <Text value="20"/>
+    </ExpectedResult>
+  </Usage>
+  
+  <Usage t="ui.ControlUsage" Name="bug fix of refresh and data">
+    <Data t="xml.Xml">
+      <person>
+        <address city="New-York"/>
+      </person>
+    </Data>
+    <Control t="ui.List">
+      <Control t="ui.Section" Name="section" Data="%address%" Title="%@city%"/>
+      <Control t="ui.ButtonOld" Text="refresh" Name="btn" RunOn="section">
+        <OnClick t="uiaction.Refresh" RunOn="section"/>
+      </Control>
+    </Control>
+    <RunOnControl t="uiaction.ButtonClick" RunOn="btn"/>
+    <ExpectedResult t="yesno.Contains">
+      <Text value="New-York"/>
+    </ExpectedResult>
+  </Usage>
+
+  <Usage t="ui.ControlUsage" Of="ui.SpanList">
+    <Control t="ui.List">
+      <Control t="ui.ButtonOld" Text="button1" />
+      <Control t="ui.ButtonOld" Text="button2" />
+      <Layout t="ui.SpanList" /> 
+    </Control>
+    <ExpectedResult t="yesno.Contains">
+      <Text value="span"/>
+    </ExpectedResult>
+  </Usage>
+  
+  <Component id="ApplicativeComponent" type="ui.Control" >
+  	<xtml t="ui.Text" Text="%$Var%" />
+  </Component>
+  
+  <Usage t="ui.ControlUsage" Name="an empty list">
+    <Control t="ui.List"/>
+    <ExpectedResult t="yesno.NotEmpty"/>
+  </Usage>
+ 
+<Usage t="ui.ControlUsage" Of="ui.TextControl.OnKeyPressed">
+  <Data t="xml.Xml">
+    <Counter val="0"/>
+  </Data>
+
+  <Control t="ui.Section" Name="All">
+    <Control t="ui.TextControl">
+      <OnKeyPressed t="action.RunActions">
+        <Action t="xml.SetAttribute" AttributeName="val" Value="%$NewVal%">
+          <Var name="NewVal" t="data.Math" Expression="%@val% +1"/>
+        </Action>
+        <Action t="uiaction.Refresh" RunOn="All"/>
+      </OnKeyPressed>
+    </Control>
+    <Control t="ui.Text" Text="%@val%"/>
+  </Control>
+  <ExpectedResult value="true"/>
+</Usage>
+
+<Usage t="ui.ControlUsage" Of="ui.TextBox.KeyPressValidator">
+      <Data t="xml.Xml">
+        <Counter val="0"/>
+      </Data>
+      <Control t="ui.TextControl">
+        <Style t="ui.Textbox">
+          <KeyPressValidator t="text.MatchesRegex" Expression="[0-9]*"/>
+        </Style>
+      </Control>
+      <ExpectedResult value="true"/>
+    </Usage>
+
+    <Usage t="ui.ControlUsage" Name="RunOn : up - also go to same">
+      <Control t="ui.ButtonOld" Text="button1" Class="btn">
+        <OnClick t="uiaction.SetText" Text="button2" RunOn="up(.btn)" />
+      </Control>
+      <RunOnControl t="uiaction.ButtonClick" />
+      <ExpectedResult t="yesno.Contains" >
+        <Text value="button2" />
+      </ExpectedResult>
+    </Usage>
+    
+    <Usage t="ui.ControlUsage" Of="ui.Text.WithNewLines">
+      <Data value="a&#xD;&#xA;b&#xD;&#xA;c"/>
+      <Control t="ui.Text" Text="%%" />
+      <ExpectedResult t="yesno.Contains" IgnoreCase="true">
+        <Text value="br" />
+      </ExpectedResult>
+    </Usage>
+    
+  <Component id="HebrewTranlationsForUsage" type="text.MultiLangSuite">
+   <xtml t="text.MultiLangSuite" Language="hebrew">
+    <Pattern Original="No" Tranlation="לא" />
+   </xtml>
+  </Component>
+  
+    <Usage t="ui.ControlUsage" Of="ui.Text.MultiLang">
+      <Control t="ui.Text" Text="No" MultiLang="true" >
+        <Var name="Language" value="hebrew" />
+      </Control>
+      <ExpectedResult t="yesno.Contains" >
+        <Text value="לא" />
+      </ExpectedResult>
+    </Usage>
+    
+    <Usage t="ui.ControlUsage" Of="ui.Text.SpecialChars">
+      <Control t="ui.Text" Text="a &lt; b" />
+      <ExpectedResult t="yesno.Contains" >
+        <Text value="&lt;" />
+      </ExpectedResult>
+      </Usage>
+      
+  <Usage t="ui.ControlUsage" Of="ui.SuggestionBox">
+    <Data t="data.WritableText" DefaultValue="New-York"/>
+    <Control t="ui.List">
+      <Control t="ui.SuggestionBox" OptionImage="%$_Images%/default1616.gif" AllowTextNotInOptions="false">
+        <Options t="data.ListByCommas" List="Tel-Aviv,Jerusalem,New-York,Amsterdam,London,Cairo"/>
+        <OptionLabel value="%% mik"/>
+        <OptionDescription value="description of %%"/>
+      </Control>
+      <Control t="ui.SuggestionBox" OptionImage="%$_Images%/default1616.gif" AllowTextNotInOptions="true">
+        <Data t="data.WritableText" DefaultValue="a1"/>
+        <Options t="data.ListByCommas" List="a1,a2,bb,c"/>
+      </Control>
+      <Control t="ui.SuggestionBox" OptionImage="%$_Images%/default1616.gif" AllowTextNotInOptions="false">
+        <Data t="data.WritableText" DefaultValue="Pipeline"/>
+        <Options t="data.Pipeline">
+          <Item t="xtml.LoadedPlugins" />
+          <Item t="xtml.ComponentsOfPlugin" Plugin="%%" />
+          <Item value="%@id%"/>
+        </Options>
+      </Control>
+      <Layout t="ui.Horizontal"/>
+    </Control>
+    <ExpectedResult value="true"/>
+  </Usage>
+
+  <Usage t="ui.ControlUsage" Of="ui.SuggestionBox.AdditionalMenuItem">
+    <Data t="data.WritableText" DefaultValue="New-York"/>
+    <Var name="Cities" t="xml.Xml">
+      <cities>
+        <city id="Tel-Aviv"/>
+        <city id="Jerusalem"/>
+        <city id="New-York"/>
+        <city id="Amsterdam"/>
+        <city id="London"/>
+        <city id="Cairo"/>
+      </cities>
+    </Var>
+    <Control t="ui.Section">
+      <Control t="ui.SuggestionBox" OptionImage="%$_Images%/default1616.gif" Options="%$Cities/city/@id%" AllowTextNotInOptions="false">
+        <AdditionalMenuItem t="menu.MenuItem" Text="add a city" Image="%$_Images%/add1616.gif">
+          <Action t="dialog.OpenDialog" >
+            <Var name="Input"/>
+            <Dialog t="dialog.SingleQuestionDialog" Title="cmsart" Question="what is the city name ?" InitialValue="%$SuggestionBoxText%">
+              <RunOnOK t="action.RunActions" >
+                <Action t="xml.ChangeXml" Xml="%$Cities%">
+                <Change t="xml.AddChildren">
+                  <Children t="xml.Xml" DynamicContent="true">
+                    <city id="%%"/>
+                  </Children>
+                </Change>
+                </Action>
+                <Action t="action.WriteValue" To="%$Input%" Value="%%" />
+                <Action t="uiaction.Refresh"/>
+              </RunOnOK>
+            </Dialog>
+          </Action>
+        </AdditionalMenuItem>
+      </Control>
+    </Control>
+    <ExpectedResult value="true"/>
+  </Usage>
+    
+  <Usage t="ui.ControlUsage" Of="uiaction.MakeCssInline" >
+  	<Control t="uiaction.MakeCssInline" >
+  		<Control t="ui.List"  >
+  			<Control t="ui.ButtonOld" Class="button1 button2 button3" />
+  			<Control t="ui.List" Class="list2">
+  				<Control t="ui.Text" Class="mytext"/>
+  			</Control>
+  		</Control>
+  		<CssReplacer t="xml.Xml">
+  			<xml>
+				<Style Condition=".button2" Css="font-size:12px;" />
+				<Style Condition=".list2 .mytext" Css="color:red;" />
+  			</xml>
+  		</CssReplacer>
+  	</Control>
+  	<ExpectedResult t="yesno.Contains">
+  		<Text value="12px" />
+  		<Text value="red" />
+  	</ExpectedResult>
+  </Usage>
+
+  <Usage t="ui.ControlUsage" Of="ui_async.Control">
+    <Control t="ui_async.Control">
+      <Var name="Var1" t="data.WritableText" DefaultValue="old"/>
+      <Control t="ui.Text" Text="hello %$Var1%"/>
+      <AsyncAction t="action_async.AsyncActionOnAsyncData">
+        <Query t="data_async.SyncData" Query="abc"/>
+        <Action t="action_async.SyncAction">
+          <Action t="action.WriteValue" To="%$Var1%" Value="%%"/>
+        </Action>
+      </AsyncAction>
+    </Control>
+    <ExpectedResult t="yesno.Contains">
+      <Text value="hello abc"/>
+    </ExpectedResult>
+  </Usage>
+
+</xtml>

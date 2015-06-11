@@ -1,0 +1,77 @@
+<xtml ns="notification_box">
+
+    <Component id="NotificationBox" type="field.Fields" execution="native">
+      <Param name="ID" advanced="always" />
+      <Param name="Title" fieldTitle="true" />
+      <Param name="FieldAspect" type="field.FieldAspect[]" script="true" light="false"/>
+      <Param name="Style" type="notification_box.Style">
+        <Default t="notification_box.Default" />
+      </Param>
+      <Param name="TextToShowOnPreview"></Param>
+    </Component>
+
+
+    <Type id="Style" style="true" />
+
+<Component id="Default" type="notification_box.Style">
+  <Param name="DurationTime" Default="2000"/>
+  <xtml t="ui.CustomStyle" DurationTime="%$DurationTime%">
+    <Html><![CDATA[<div/>]]></Html>
+    <Css><![CDATA[#this
+{
+  background:#98AFC7;
+  border-radius:5px;
+  padding:5px 20px;
+  color:white;
+  font:bold 12px arial;
+  height:16px;
+  display:none;
+}
+#this.shown {
+  display:inline;
+}
+#this.aanotif_status_error {
+  background:pink;
+  color: #333;
+}]]></Css>
+    <Javascript><![CDATA[function(notificationBox) {
+  aa_notification_box(notificationBox,{
+    DurationTime: notificationBox.params.DurationTime
+  });
+}]]></Javascript>
+  </xtml>
+</Component>
+
+    <Component id="Yellow" type="notification_box.Style">
+      <Param name="DurationTime" Default="2000" />
+      <xtml t="ui.CustomStyle">
+        <Html><![CDATA[<div/>]]></Html>
+        <Css><![CDATA[
+#this { padding:15px 50px;
+-moz-border-radius: 3px; border-radius: 3px; -webkit-border-radius: 3px; 
+-webkit-box-shadow: 0 0 3px 5px rgba(50,50,50,0.5);
+background:#FEEFB3; border:none;
+margin-right:20px;​ 
+font-size: 12px;
+min-width:200px;
+display: none;
+}
+#this.shown { display: inline; }
+#this.aanotif_status_error { background: pink; }
+        ]]></Css>
+        <Javascript><![CDATA[function(notificationBox) {
+  aa_notification_box(notificationBox,{
+    DurationTime: notificationBox.params.DurationTime
+  });
+}]]></Javascript>
+      </xtml>
+    </Component>
+
+   <Component id="ShowNotification" type="action.Action" execution="native">
+     <Param name="NotificationBox" Default="GStudio_NotificationBox" description="One must create a notification box to show the notification. Insert the notification box id here" />
+     <Param name="Text" />
+     <Param name="Status" type="enum" Options="saving,saved,error,info" Default="info" />
+     <Param name="Duration" />
+   </Component>
+
+</xtml>

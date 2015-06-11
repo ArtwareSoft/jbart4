@@ -1,0 +1,120 @@
+<xtml ns="uiaction_usage">
+
+ <Usage t="ui.ControlUsage" Of="uiaction.ReplaceControl">
+  <Description value="Replaces a control. Best be used in control styles" />
+  <Control t="ui.Section">
+   <Control t="ui.ButtonOld" Name="btn" Text="replace control">
+    <OnClick t="uiaction.ReplaceControl" RunOn="text">
+     <NewControl t="ui.Text" Text="new text" />
+    </OnClick>
+   </Control>
+   <Control t="ui.Text" Name="text" Text="original text" />
+  </Control>
+  <RunOnControl t="uiaction.ButtonClick" RunOn="btn" />
+  <ExpectedResult t="yesno.Contains" IgnoreCase="true">
+   <Text value="new text" />
+  </ExpectedResult>
+  <TryItYourself value="make the button replace itself with something else" />
+ </Usage>
+
+ <Usage t="ui.ControlUsage" Of="uiaction.GoUp" Data="">
+  <Control t="ui.Section">
+   <Control t="ui.Section" Name="section" Title="section">
+    <Control t="ui.Text" Name="text" Text="first text under 'section'. should not change" />
+   </Control>
+   <Control t="ui.Section" Name="section" Title="section">
+    <Control t="ui.Text" Name="text" Text="text to be changed under 'section'. only this text should be changed" />
+    <Control t="ui.ButtonOld" Name="btn" Text="change text">
+     <OnClick t="uiaction.SetText" Text="new text">
+      <RunOn t="uiaction.ElementByID" ID="text">
+       <StartFrom t="uiaction.GoUp" TopId="section" />
+      </RunOn>
+     </OnClick>
+    </Control>
+   </Control>
+  </Control>
+  <RunOnControl t="uiaction.ButtonClick" RunOn="btn" />
+  <ExpectedResult t="yesno.Contains" IgnoreCase="true">
+   <Text value="first text under 'section'. should not change" />
+   <Text value="new text" />
+  </ExpectedResult>
+  <Description value="A locator which goes up to find an id. used in conjunction with a ui action" />
+  <TryItYourself value="Try to use a locator without GoUp and see what happens" />
+ </Usage>
+
+ <Usage t="ui.ControlUsage" Of="uiaction.GoUpAndDown">
+  <Control t="ui.Section">
+   <Control t="ui.Section" Class="section" Title="section">
+    <Control t="ui.Text" Class="text" Text="first text under 'section'. should not change" />
+   </Control>
+   <Control t="ui.Section" Class="section" Title="section">
+    <Control t="ui.Text" Class="text" Text="text to be changed under 'section'. only this text should be changed" />
+    <Control t="ui.ButtonOld" Name="btn" Text="change text">
+     <OnClick t="uiaction.SetText" Text="new text">
+      <RunOn t="uiaction.GoUpAndDown" UpClass="section" DownClass="text" />
+     </OnClick>
+    </Control>
+   </Control>
+  </Control>
+  <RunOnControl t="uiaction.ButtonClick" RunOn="btn" />
+  <ExpectedResult t="yesno.Contains" IgnoreCase="true">
+   <Text value="first text under 'section'. should not change" />
+   <Text value="new text" />
+  </ExpectedResult>
+  <Description value="A locator which goes up and then down to find a brother or cousin" />
+  <TryItYourself value="Try to use a locator without GoUpAndDown and see what happens" />
+ </Usage>
+
+ <Usage t="ui.ControlUsage" Of="uiaction.GoToPage">
+  <Data t="xml.Xml">
+   <url>http://www.google.com</url>
+  </Data>
+  <Control t="ui.List">
+   <Control t="ui.Text" Text="Url:" />
+   <Control t="ui.TextControl" Name="Url" Data="%%" />
+   <Control t="ui.ButtonOld" Text="Go to page">
+    <OnClick t="uiaction.GoToPage" Url="%%" />
+   </Control>
+   <Layout t="ui.Horizontal" />
+  </Control>
+  <ExpectedResult value="true" />
+  <TryItYourself value="1.Click on go to page. 2. Set the action to change the current page instead of openning new tab" />
+ </Usage>
+
+ <Usage t="usage.DataUsage" Of="ui.UrlFragment">
+  <RunBefore t="action.RunActions">
+   <Action t="uiaction.SetUrlFragment" Attribute="attr" Value="val1" />
+   <Action t="uiaction.SetUrlFragment" Attribute="attr2" Value="val2" />
+   <Action t="uiaction.SetUrlFragment" Attribute="attr" Value="val" />
+  </RunBefore>
+  <Result t="ui.UrlFragment" Attribute="attr" />
+  <ExpectedResult t="yesno.EqualsTo" To="val" />
+ </Usage>
+
+ <Usage t="ui.ControlUsage" Of="uiaction.DownloadFile" IsTest="false" ExpectedResult="true">
+ 	<Control t="ui.ButtonOld" Text="download file">
+ 		<OnClick t="uiaction.DownloadFile" Url="http://pdfmyurl.com?url=http://www.google.com" />
+ 	</Control>
+ </Usage>
+ 
+ <Usage t="ui.ControlUsage" Of="uiaction.BindHashChangeEvent" IsTest="false" ExpectedResult="true">
+      <Control t="ui.ControlWithAction">
+        <Control t="ui.List">
+          <Control t="ui.Text" Text="Click on back of the browser"/>
+          <Control t="ui.ButtonOld" Text="change url">
+            <OnClick t="uiaction.SetUrlFragment" Attribute="att">
+              <Value t="data.RandomNumber"/>
+            </OnClick>
+            <Style t="ui.ButtonAsHyperlink"/>
+          </Control>
+        </Control>
+        <RunBeforeControl t="action.RunActions">
+          <Action t="uiaction.BindHashChangeEvent">
+            <Action t="uiaction.Alert" Text="Clicked Back"/>
+          </Action>
+          <Action t="uiaction.SetUrlFragment" Attribute="att" Value="1"/>
+        </RunBeforeControl>
+      </Control>
+    </Usage>
+ 
+</xtml>

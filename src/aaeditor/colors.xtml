@@ -1,0 +1,387 @@
+<xtml ns="css_dt">
+<Component id="PreDefinedColors" type="data.Data" >
+<xtml t="xml.Xml"><Colors>
+  <group name="white">
+    <c name="White" hex="#FFFFFF"/>
+    <c name="Ivory" hex="#FFFFF0"/>
+    <c name="Splashed white" hex="#FEFDFF"/>
+    <c name="Snow" hex="#FFFAFA"/>
+    <c name="Cosmic latte" hex="#FFF8E7"/>
+    <c name="Floral white" hex="#FFFAF0"/>
+    <c name="Linen" hex="#FAF0E6"/>
+    <c name="Lavender blush" hex="#FFF0F5"/>
+    <c name="Seashell" hex="#FFF5EE"/>
+    <c name="Old lace" hex="#FDF5E6"/>
+    <c name="Ghost white" hex="#F8F8FF"/>
+    <c name="Isabelline" hex="#F4F0EC"/>
+    <c name="Anti-flash white" hex="#F2F3F4"/>
+    <c name="White smoke" hex="#F5F5F5"/>
+    <c name="Munsell" hex="#F2F3F4"/>
+    <c name="Honeydew" hex="#F0FFF0"/>
+    <c name="Mint cream" hex="#F5FFFA"/>
+    <c name="Magnolia" hex="#F8F4FF"/>
+    <c name="Beige" hex="#F5F5DC"/>
+    <c name="Cornsilk" hex="#FFF8DC"/>
+    <c name="Eggshell" hex="#F0EAD6"/>
+    <c name="Pearl" hex="#EAE0C8"/>
+    <c name="Papaya whip" hex="#FFEFD5"/>
+    <c name="Antique white" hex="#FAEBD7"/>
+    <c name="Navajo white" hex="#FFDEAD"/>
+    <c name="Vanilla" hex="#F3E5AB"/>
+    <c name="Blond" hex="#FAF0BE"/>
+    <c name="Lemon chiffon" hex="#FFFACD"/>
+    <c name="Cream" hex="#FFFDD0"/>
+  </group>
+  <group name="blue">
+    <c name="Teal" hex="#008080" />
+    <c name="Eton blue" hex="#96C8A2" />
+    <c name="Cambridge Blue" hex="#A3C1AD" />
+    <c name="Turquoise" hex="#40E0D0" />
+    <c name="Tiffany Blue" hex="#81D8D0" />
+    <c name="Cyan" hex="#00FFFF" />
+    <c name="Electric blue" hex="#7DF9FF" />
+    <c name="Celeste" hex="#B2FFFF" />
+    <c name="Alice blue" hex="#F0F8FF" />
+    <c name="Light blue" hex="#ADD8E6" />
+    <c name="Powder blue" hex="#B0E0E6" />
+    <c name="Non-photo blue" hex="#A4DDED" />
+    <c name="Sky blue" hex="#87CEEB" />
+    <c name="Baby blue" hex="#89CFF0" />
+    <c name="Maya blue" hex="#73C2FB" />
+    <c name="Deep sky blue" hex="#00BFFF" />
+    <c name="Dodger blue" hex="#1E90FF" />
+    <c name="Cornflower blue" hex="#6495ED" />
+    <c name="Royal blue" hex="#4169E1" />
+    <c name="Brandeis blue" hex="#0070FF" />
+    <c name="Bleu de France" hex="#318CE7" />
+    <c name="Azure" hex="#007FFF" />
+    <c name="True Blue" hex="#0073CF" />
+    <c name="Glaucous" hex="#6082B6" />
+    <c name="Tufts Blue" hex="#417DC1" />
+    <c name="Steel blue" hex="#4682b4" />
+    <c name="Carolina blue" hex="#56A0D3" />
+    <c name="Columbia blue" hex="#75B2DD" />
+    <c name="Bondi blue" hex="#0095B6" />
+    <c name="Cerulean" hex="#007BA7" />
+    <c name="Air Force blue" hex="#5D8AA8" />
+    <c name="UCLA Blue" hex="#536895" />
+    <c name="Blue" hex="#0000FF" />
+    <c name="Palatinate blue" hex="#273BE2" />
+    <c name="Dark blue" hex="#0000B8" />
+    <c name="Persian blue" hex="#1C39BB" />
+    <c name="Egyptian blue" hex="#1034A6" />
+    <c name="Sapphire" hex="#0F52BA" />
+    <c name="International Klein Blue" hex="#002FA7" />
+    <c name="Yale Blue" hex="#0F4D92" />
+    <c name="Navy blue" hex="#000080" />
+    <c name="Phthalo blue" hex="#000f89" />
+    <c name="Federal blue" hex="#16166B" />
+    <c name="Prussian blue" hex="#003153" />
+    <c name="Oxford blue" hex="#002147" />
+    <c name="Duke blue" hex="#001A57" />
+    <c name="Midnight blue" hex="#003366" />
+    <c name="Ultramarine" hex="#120A8F" />
+    <c name="Cobalt blue" hex="#0047AB" />
+    <c name="Iris" hex="#5A4FCF" />
+    <c name="Electric indigo" hex="#6F00FF" />
+    <c name="Majorelle Blue" hex="#6050DC" />
+    <c name="Periwinkle" hex="#CCCCFF" />
+  </group>
+  <group name="orange">
+    <c name="Brown" hex="#964B00" />
+    <c name="Rust" hex="#B7410E" />
+    <c name="Mahogany" hex="#C04000" />
+    <c name="Burnt orange" hex="#CC5500" />
+    <c name="Tenné" hex="#CD5700" />
+    <c name="Persian orange" hex="#D99058" />
+    <c name="Lion" hex="#C19A6B" />
+    <c name="Satin sheen gold" hex="#CBA135" />
+    <c name="Old gold" hex="#CFB53B" />
+    <c name="Gold (metallic)" hex="#D4AF37" />
+    <c name="Flame" hex="#E25822" />
+    <c name="Vermilion" hex="#E34234" />
+    <c name="Deep carrot orange" hex="#E9692C" />
+    <c name="Tangelo" hex="#F94D00" />
+    <c name="International orange" hex="#FF4F00" />
+    <c name="Orange-red" hex="#FF4500" />
+    <c name="Tea rose" hex="#F88379" />
+    <c name="Dark salmon" hex="#E9967A" />
+    <c name="Carrot orange" hex="#ED9121" />
+    <c name="Gamboge" hex="#EF9B0F" />
+    <c name="Tangerine" hex="#F28500" />
+    <c name="Orange" hex="#FF7F00" />
+    <c name="Pumpkin" hex="#FF7518" />
+    <c name="Safety orange" hex="#FF6700" />
+    <c name="Bittersweet" hex="#FF6F5E" />
+    <c name="Portland Orange" hex="#FF5A36" />
+    <c name="Tomato" hex="#FF6347" />
+    <c name="Coral" hex="#FF7F50" />
+    <c name="Salmon" hex="#FF8C69" />
+    <c name="Atomic tangerine" hex="#FF9966" />
+    <c name="ECE/SAE Amber" hex="#FF7E00" />
+    <c name="Princeton orange" hex="#FF8F00" />
+    <c name="Orange peel" hex="#FFA000" />
+    <c name="Orange (web)" hex="#FFA500" />
+    <c name="Amber" hex="#FFBF00" />
+    <c name="Gold" hex="#FFD700" />
+    <c name="Peach-orange" hex="#FFCC99" />
+    <c name="Apricot" hex="#FBCEB1" />
+    <c name="Sunset" hex="#FAD6A5" />
+    <c name="Peach-yellow" hex="#FADFAD" />
+    <c name="Peach" hex="#FFE5B4" />
+    <c name="Champagne" hex="#F7E7CE" />
+    <c name="Papaya whip" hex="#FFEFD5" />
+  </group>
+  <group name="brown">
+    <c name="Seal brown" hex="#321414" />
+    <c name="Bistre" hex="#3D2B1F" />
+    <c name="Taupe" hex="#483C32" />
+    <c name="Liver" hex="#534B4F" />
+    <c name="Umber" hex="#635147" />
+    <c name="Wenge" hex="#645452" />
+    <c name="Field drab" hex="#6C541E" />
+    <c name="Coffee" hex="#6F4E37" />
+    <c name="Sepia" hex="#704214" />
+    <c name="Bole" hex="#79443B" />
+    <c name="Chocolate" hex="#7B3F00" />
+    <c name="Russet" hex="#80461B" />
+    <c name="Maroon" hex="#800000" />
+    <c name="Sienna" hex="#882D17" />
+    <c name="Cordovan" hex="#893F45" />
+    <c name="Burnt umber" hex="#8A3324" />
+    <c name="Burgundy" hex="#900020" />
+    <c name="Chestnut" hex="#954535" />
+    <c name="Auburn" hex="#A52A2A" />
+    <c name="Rufous" hex="#A81C07" />
+    <c name="Redwood" hex="#AB4E52" />
+    <c name="Brown" hex="#964B00" />
+    <c name="Raw umber" hex="#926644" />
+    <c name="Chamoisee" hex="#A0785A" />
+    <c name="Beaver" hex="#9F8170" />
+    <c name="Rust" hex="#B7410E" />
+    <c name="Mahogany" hex="#C04000" />
+    <c name="Sinopia" hex="#CB410B" />
+    <c name="Tawny" hex="#CD5700" />
+    <c name="Burnt sienna" hex="#E97451" />
+    <c name="Copper" hex="#B87333" />
+    <c name="Camel" hex="#C19A6B" />
+    <c name="Fallow" hex="#C19A6B" />
+    <c name="Sand" hex="#C2B280" />
+    <c name="Lion" hex="#C19A6B" />
+    <c name="Ecru" hex="#C2B280" />
+    <c name="Tan" hex="#D2B48C" />
+    <c name="Earth yellow" hex="#E1A95F" />
+    <c name="Fawn" hex="#E5AA70" />
+    <c name="Sandy brown" hex="#F4A460" />
+    <c name="Fulvous" hex="#E48400" />
+    <c name="Ochre" hex="#CC7722" />
+    <c name="Bronze" hex="#CD7F32" />
+    <c name="Desert sand" hex="#EDC9AF" />
+    <c name="Buff" hex="#F0DC82" />
+    <c name="Khaki" hex="#F0E68C" />
+    <c name="Wheat" hex="#F5DEB3" />
+    <c name="Isabelline" hex="#F4F0EC" />
+    <c name="Beige" hex="#F5F5DC" />
+  </group>
+  <group name="pink">
+    <c name="Peach" hex="#FFE5B4"  />
+    <c name="Apricot" hex="#FDD5B1"  />
+    <c name="Coral pink" hex="#F88379"  />
+    <c name="Salmon" hex="#FA8072"  />
+    <c name="Brink pink" hex="#FB607F"  />
+    <c name="French rose" hex="#F64A8A"  />
+    <c name="Amaranth" hex="#E52B50"  />
+    <c name="Deep carmine" hex="#EF3038"  />
+    <c name="Cerise" hex="#DE3163"  />
+    <c name="Carmine" hex="#960018"  />
+    <c name="Ultra pink" hex="#FF6FFF"  />
+    <c name="Fuchsia" hex="#FF00FF"  />
+    <c name="Hot magenta" hex="#FF00CC"  />
+    <c name="Shocking pink" hex="#FC0FC0"  />
+    <c name="Hollywood cerise" hex="#F400A1"  />
+    <c name="Magenta" hex="#FF0090"  />
+    <c name="Persian Rose" hex="#FE28A2"  />
+    <c name="Deep pink" hex="#FF1493"  />
+    <c name="Rose" hex="#FF007F"  />
+    <c name="Ruby" hex="#E0115F"  />
+    <c name="Rose pink" hex="#FF66CC"  />
+    <c name="Hot pink" hex="#FF69B4"  />
+    <c name="Pink" hex="#FFCBDB"  />
+    <c name="Lavender pink" hex="#FBAED2"  />
+    <c name="Carnation pink" hex="#FFA6C9"  />
+    <c name="Amaranth pink" hex="#F19CBB"  />
+    <c name="Thulian pink" hex="#DE6FA1"  />
+    <c name="Puce" hex="#CC8899"  />
+    <c name="Fandango" hex="#B53389"  />
+  </group>
+  <group name="red">
+    <c name="Magenta" hex="#FF0090" />
+    <c name="Electric crimson" hex="#FF003F" />
+    <c name="Folly" hex="#FF004F" />
+    <c name="Rose" hex="#FF007F" />
+    <c name="Scarlet" hex="#FF2400" />
+    <c name="Red" hex="#FF0000" />
+    <c name="Rosewood" hex="#65000B" />
+    <c name="Tuscan red" hex="#66424D" />
+    <c name="Wine" hex="#722F37" />
+    <c name="Dark red" hex="#8B0000" />
+    <c name="Carmine" hex="#960018" />
+    <c name="Chestnut" hex="#9A1A00" />
+    <c name="Burgundy" hex="#9F1D35" />
+    <c name="Auburn" hex="#A52A2A" />
+    <c name="Redwood" hex="#AB4E52" />
+    <c name="Fire brick" hex="#B22222" />
+    <c name="Rust" hex="#B7410E" />
+    <c name="Cardinal" hex="#C41E3A" />
+    <c name="Red-violet" hex="#C71585" />
+    <c name="Terra cotta" hex="#CC4E3C" />
+    <c name="Crimson" hex="#DC143C" />
+    <c name="Cerise" hex="#DE3163" />
+    <c name="Ruby" hex="#E0115F" />
+    <c name="Flame" hex="#E25822" />
+    <c name="Raspberry" hex="#E30B5C" />
+    <c name="Vermilion" hex="#E34234" />
+    <c name="Amaranth" hex="#E52B50" />
+    <c name="Alizarin crimson" hex="#E32636" />
+    <c name="Lust" hex="#E62020" />
+  </group>
+  <group name="yellow">
+    <c name="Yellow" hex="#FFFF00" />
+    <c name="Cream" hex="#FFFDD0" />
+    <c name="Lemon chiffon" hex="#FFFACD" />
+    <c name="Maize" hex="#FBEC5D" />
+    <c name="Jonquil" hex="#FADA5E" />
+    <c name="Naples yellow" hex="#FADA5E" />
+    <c name="School bus yellow" hex="#ffd800" />
+    <c name="Gold" hex="#FFD700" />
+    <c name="Stil de grain yellow" hex="#FADA5E" />
+    <c name="Apricot" hex="#FBCEB1" />
+    <c name="Amber" hex="#FFBF00" />
+    <c name="Selective yellow" hex="#FFBA00" />
+    <c name="Sunglow" hex="#FFCC33" />
+    <c name="Mikado yellow" hex="#FFC40C" />
+    <c name="Saffron" hex="#F4C430" />
+    <c name="Goldenrod" hex="#DAA520" />
+    <c name="Gold (metallic)" hex="#D4AF37" />
+    <c name="Dark goldenrod" hex="#B8860B" />
+    <c name="Olive" hex="#808000" />
+    <c name="Lion" hex="#C19A6B" />
+    <c name="Khaki" hex="#C3B091" />
+    <c name="Ecru" hex="#CDB280" />
+    <c name="Buff" hex="#F0DC82" />
+    <c name="Vanilla" hex="#F3E5AB" />
+    <c name="Jasmine" hex="#F8DE7E" />
+    <c name="Navajo white" hex="#FFDEAD" />
+    <c name="Papaya whip" hex="#FFEFD5" />
+    <c name="Beige" hex="#F5F5DC" />
+    <c name="Green-yellow" hex="#ADFF2F" />
+    <c name="Lime" hex="#BFFF00" />
+  </group>
+  <group name="gray">
+    <c name="Black" hex="#000000" />
+    <c name="Taupe" hex="#483C32" />
+    <c name="Charcoal" hex="#36454F" />
+    <c name="Purple taupe" hex="#50404D" />
+    <c name="Davy's gray" hex="#555555" />
+    <c name="Medium taupe" hex="#674C47" />
+    <c name="Payne's gray" hex="#536878" />
+    <c name="Gray" hex="#808080" />
+    <c name="Battleship gray" hex="#848482" />
+    <c name="Taupe gray" hex="#8B8589" />
+    <c name="Slate gray" hex="#708090" />
+    <c name="Rose quartz" hex="#AA98A9" />
+    <c name="Cool gray" hex="#8C92AC" />
+    <c name="Cadet gray" hex="#91A3B0" />
+    <c name="Ash gray" hex="#B2BEB5" />
+    <c name="Silver" hex="#C0C0C0" />
+    <c name="Timberwolf" hex="#DBD7D2" />
+    <c name="White" hex="#FFFFFF" />
+  </group>
+  <group name="green">
+    <c name="Phthalo green" hex="#123524" />
+    <c name="Cal Poly Pomona" hex="#1E4D2B" />
+    <c name="Hunter green" hex="#355E3B" />
+    <c name="Pakistan green" hex="#006600" />
+    <c name="Dark olive green" hex="#556B2F" />
+    <c name="Dartmouth green" hex="#00693E" />
+    <c name="Dark spring green" hex="#177245" />
+    <c name="Fern green" hex="#4F7942" />
+    <c name="Pine green" hex="#01796F" />
+    <c name="Olive" hex="#808000" />
+    <c name="Teal" hex="#008080" />
+    <c name="Office green" hex="#008000" />
+    <c name="India green" hex="#138808" />
+    <c name="Sea green" hex="#2E8B57" />
+    <c name="Forest green" hex="#228B22" />
+    <c name="Olive drab" hex="#6B8E23" />
+    <c name="Islamic green" hex="#009900" />
+    <c name="Shamrock green" hex="#009E60" />
+    <c name="Asparagus" hex="#7BA05B" />
+    <c name="Pigment green" hex="#00A550" />
+    <c name="Persian green" hex="#00A693" />
+    <c name="Jungle green" hex="#29AB87" />
+    <c name="Mint" hex="#3EB489" />
+    <c name="Apple green" hex="#8DB600" />
+    <c name="Mantis" hex="#74C365" />
+    <c name="Pistachio" hex="#93C572" />
+    <c name="Paris Green" hex="#50C878" />
+    <c name="Lime green" hex="#32CD32" />
+    <c name="Lawn green" hex="#7CFC00" />
+    <c name="Spring bud" hex="#A7FC00" />
+    <c name="Mint cream" hex="#F5FFFA" />
+    <c name="Honeydew" hex="#F0FFF0" />
+    <c name="Harlequin" hex="#3FFF00" />
+    <c name="Green-yellow" hex="#ADFF2F" />
+    <c name="Lime" hex="#BFFF00" />
+    <c name="Chartreuse" hex="#7FFF00" />
+    <c name="Spring green" hex="#00FF7F" />
+    <c name="Bright green" hex="#66FF00" />
+    <c name="Yellow-green" hex="#80FF00" />
+    <c name="Green" hex="#00FF00" />
+  </group>
+  <group name="cyan">
+    <c name="Skobeloff" hex="#007A74" />
+    <c name="Pine green" hex="#01796F" />
+    <c name="Teal" hex="#008080" />
+    <c name="Sea green" hex="#2E8B57" />
+    <c name="Cerulean" hex="#007BA7" />
+    <c name="Persian green" hex="#00A693" />
+    <c name="Jungle green" hex="#29AB87" />
+    <c name="Mint" hex="#3EB489" />
+    <c name="Robin egg blue" hex="#00CCCC" />
+    <c name="Tiffany Blue" hex="#81D8D0" />
+    <c name="Turquoise" hex="#40E0D0" />
+    <c name="Magic mint" hex="#AAF0D1" />
+    <c name="Aqua" hex="#00FFFF" />
+    <c name="Electric blue" hex="#7DF9FF" />
+    <c name="Cyan" hex="#00FFFF" />
+    <c name="Celeste" hex="#B2FFFF" />
+    <c name="Aquamarine" hex="#7FFFD4" />
+    <c name="Alice blue" hex="#F0F8FF" />
+  </group>
+  <group name="violet">
+    <c name="Lavender (web)" hex="#E6E6FA" />
+    <c name="Indigo" hex="#6F00FF" />
+    <c name="Violet" hex="#8F00FF" />
+    <c name="Amethyst" hex="#9966CC" />
+    <c name="Thistle" hex="#D8BFD8" />
+    <c name="Lavender (floral)" hex="#B57EDC" />
+    <c name="Wisteria" hex="#C9A0DC" />
+    <c name="Orchid" hex="#DA70D6" />
+    <c name="Heliotrope" hex="#DF73FF" />
+    <c name="Fuchsia" hex="#FF00FF" />
+    <c name="Rose" hex="#FF007F" />
+    <c name="Magenta" hex="#FF0090" />
+    <c name="Cerise" hex="#DE3163" />
+    <c name="Fandango" hex="#B53389" />
+    <c name="Red-violet" hex="#C71585" />
+    <c name="Eggplant" hex="#614051" />
+    <c name="Plum" hex="#8E4585" />
+    <c name="Byzantium" hex="#702963" />
+    <c name="Purple" hex="#800080" />
+    <c name="Lavender blush" hex="#FFF0F5" />
+  </group>
+</Colors></xtml>
+</Component>
+
+</xtml>

@@ -1,0 +1,164 @@
+<xtml ns="xmlui_usage">
+
+    <Usage t="ui.ControlUsage" Of="xmlui.XmlSelector">
+      <Description value="allows selection of an xml node"/>
+      <Data t="xml.Xml">
+        <people>
+	        <person Name="Homer" Age="38" Gender="Male" MainHobby="Complaining">
+	          <wife>Marge</wife>
+	        </person>
+	        <person Name="Bart" Age="10" Gender="Male" MainHobby="Disturbing" />
+        </people>
+      </Data>
+      <Control t="ui.Section">
+        <Control t="ui.Text" Text="please click on one of the items in the xml tree:"/>
+	      <Control t="xmlui.XmlSelector" Name="xml">
+	        <OnSelect t="uiaction.SetText" RunOn="label">
+	          <Text t="data.Pipeline">
+	            <Var name="xpath" t="xml.XPathOfNode"/>
+	            <Item value="%$xpath%: %%"/>
+	          </Text>
+	        </OnSelect>
+	      </Control>
+	      <Control t="ui.Text" Name="label"/>
+      </Control>
+      <RunOnControl t="uiaction.Click">
+        <RunOn t="uiaction.ElementByInnerFilter">
+           <TopElement t="uiaction.ElementByID" ID="xml"/> 
+           <Filter t="yesno.EqualsTo" To="Bart"/>
+        </RunOn>
+      </RunOnControl>
+      <ExpectedResult t="yesno.Contains">
+       <Text value="Name=" /> 
+       <Text value="Homer" /> 
+       <Text value="Age=" /> 
+       <Text value="10" /> 
+       <Text value="person/@Name: Bart" /> 
+      </ExpectedResult>
+    </Usage>
+
+    <Usage t="ui.ControlUsage" Name="XmlSelector - relative xpath">
+      <Description value="allows selection of an xml node"/>
+      <Data t="xml.Xml">
+        <people>
+          <person name="Homer" age="38"/>
+        </people>
+      </Data>
+      <Control t="ui.List">
+        <Control t="xmlui.XmlSelector" Data="%person%" Name="xml">
+          <OnSelect t="uiaction.SetText" RunOn="label" Text="xpath: %$RelativeXPath%"/>
+        </Control>
+        <Control t="ui.Text" Name="label"/>
+      </Control>
+      <RunOnControl t="uiaction.Click">
+        <RunOn t="uiaction.ElementByInnerFilter">
+           <TopElement t="uiaction.ElementByID" ID="xml"/> 
+           <Filter t="yesno.EqualsTo" To="38"/>
+        </RunOn>
+      </RunOnControl>
+      <ExpectedResult t="yesno.Contains">
+       <Text value="xpath: @age" /> 
+      </ExpectedResult>
+    </Usage>
+
+  <Usage t="ui.ControlUsage" Of="xmlui.ShowXmlDialog" IsTest="false">
+    <Data t="xml.Xml">
+    	<xml>
+	      <people>
+	        <person Name="Homer" Age="38" Gender="Male" MainHobby="Complaining"/>
+	        <person Name="Bart" Age="10" Gender="Male" MainHobby="Disturbing" />
+	      </people>
+      </xml>
+    </Data>
+    <Control t="ui.ButtonOld" Text="show xml">
+      <OnClick t="xmlui.ShowXmlDialog" AutoWrite="true" Title="people" Xml="%*%">
+      	<OnUpdate1 t="xmlui.ShowXmlDialog" Xml="%%"/>
+      </OnClick>
+    </Control>
+    <RunOnControl t="uiaction.ButtonClick"/>
+    <CleanAfter t="dialog.CloseDialog"/>
+    <ExpectedResult t="yesno.Contains">
+      <Data t="dialog.TopDialogContent"/>
+      <Text value="Homer"/>
+    </ExpectedResult>
+  </Usage>
+  
+  <Usage t="ui.ControlUsage" Of="xmlui.CodeMirrorTextarea" IsTest="false">
+      <Data t="xml.Xml">
+        <people>
+          <person Name="Homer" Age="38" Gender="Male" MainHobby="Complaining"/>
+          <person Name="Bart" Age="10" Gender="Male" MainHobby="Disturbing"/>
+        </people>
+      </Data>
+      <Control t="ui.SectionsList">
+        <Section t="ui.SectionListPage" Title="Writable">
+          <Control t="xmlui.CodeMirrorTextarea" Type="xml" UpdateOnClick="true" Class="xmlrw">
+          	<Text t="xml.XmlToText" PrettyPrint="true" />
+            <OnUpdate t="action.RunActions" >
+          		<Condition t="yesno.IsEmpty">
+            		<Value t="xml.XmlParsingError" XmlAsText="%$ControlData%"/>
+          		</Condition>
+		          <Action t="xml.ChangeXml">
+		            <Change t="xml.ReplaceElement" Mode="keep original tag">
+		              <NewElement t="xml.TextToXml" Data="%$ControlData%"/>
+		            </Change>
+		          </Action>
+          		<Action t="uiaction.Refresh" RunOn=".xmlro"/>
+          	</OnUpdate>
+          </Control>
+        </Section>
+        <Section t="ui.SectionListPage" Title="Readonly">
+          <Control t="ui.List">
+            <Control t="xmlui.XmlSelector" Class="xmlro"/>
+            <Control t="ui.ButtonOld" Text="update">
+              <OnClick t="action.RunActions">
+                <Action t="xmlui.CallUpdateOfCodeMirror" RunOn=".xmlrw" />
+                <Action t="uiaction.Refresh" RunOn=".xmlro"/>
+              </OnClick>
+            </Control>
+          </Control>
+        </Section>
+      </Control>
+      <ExpectedResult value="true" />
+    </Usage>
+    
+  <Usage t="ui.ControlUsage" Of="xmlui.CodeMirrorTextarea.Text" IsTest="false">
+      <Data t="xml.Xml">
+        <people>
+          <person Name="Homer" Age="38" Gender="Male" MainHobby="Complaining"/>
+          <person Name="Bart" Age="10" Gender="Male" MainHobby="Disturbing"/>
+        </people>
+      </Data>
+      <Control t="ui.SectionsList">
+        <Section t="ui.SectionListPage" Title="Writable">
+          <Control t="xmlui.CodeMirrorTextarea" Type="text" UpdateOnClick="true" Class="xmlrw">
+          	<Text t="xml.XmlToText" PrettyPrint="true" />
+            <OnUpdate t="action.RunActions" >
+          		<Condition t="yesno.IsEmpty">
+            		<Value t="xml.XmlParsingError" XmlAsText="%$ControlData%"/>
+          		</Condition>
+		          <Action t="xml.ChangeXml">
+		            <Change t="xml.ReplaceElement" Mode="keep original tag">
+		              <NewElement t="xml.TextToXml" Data="%$ControlData%"/>
+		            </Change>
+		          </Action>
+          		<Action t="uiaction.Refresh" RunOn=".xmlro"/>
+          	</OnUpdate>
+          </Control>
+        </Section>
+        <Section t="ui.SectionListPage" Title="Readonly">
+          <Control t="ui.List">
+            <Control t="xmlui.XmlSelector" Class="xmlro"/>
+            <Control t="ui.ButtonOld" Text="update">
+              <OnClick t="action.RunActions">
+                <Action t="xmlui.CallUpdateOfCodeMirror" RunOn=".xmlrw" />
+                <Action t="uiaction.Refresh" RunOn=".xmlro"/>
+              </OnClick>
+            </Control>
+          </Control>
+        </Section>
+      </Control>
+      <ExpectedResult value="true" />
+    </Usage>
+  
+</xtml>

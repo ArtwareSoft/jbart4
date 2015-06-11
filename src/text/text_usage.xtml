@@ -1,0 +1,356 @@
+<xtml ns="text_usage">
+
+		<Usage t="usage.DataUsage" Of="text.Replace" Data="I am John(Bruce)" >
+			<Result t="text.Replace" Find="[(](.*)[)]" ReplaceWith="-$1" UseRegex="true" />
+			<ExpectedResult t="yesno.EqualsTo" To="I am John-Bruce" />
+		</Usage>
+		<Usage t="usage.DataUsage" Of="text.ReplaceMulti" Data="I am John Dave" >
+			<Result t="text.ReplaceMulti" >
+				<Find t="data.List">
+					<Item value="a" />
+					<Item value="e" />
+				</Find>
+				<ReplaceWith t="data.List">
+					<Item value="A" />
+					<Item value="E" />
+				</ReplaceWith>
+			</Result>
+			<ExpectedResult t="yesno.EqualsTo" To="I Am John DAvE" />
+		</Usage>
+		<Usage t="usage.DataUsage" Name="dynamic text" Data="input" Result="prefix %% suffix">
+		  <ExpectedResult t="yesno.EqualsTo" To="prefix input suffix"/>
+		</Usage>
+		<Usage t="usage.DataUsage" Name="text processing twice" Data="so">
+		  <Result t="text.Text" Text="%% and %%"/>
+		  <ExpectedResult t="yesno.EqualsTo" To="so and so"/>
+		</Usage>
+		<Usage t="usage.DataUsage" Name="dynamic text in pipeline">
+		  <Result t="data.Pipeline">
+				<Item t="data.List">
+					<Item value="John"/>
+					<Item value="Debby"/>
+				</Item>
+				<Item value="hello %%"/>
+          <Aggregator t="text.Concat" Separator="," /> 
+		  </Result>
+		  <ExpectedResult t="yesno.EqualsTo" To="hello John,hello Debby"/>
+		</Usage>
+		<Usage t="usage.DataUsage" Name="simple dynamic text pipeline" Data="hello">
+		  <Result t="data.Pipeline">
+				<Item value="%% world"/>
+				<Item value="my first %%"/>
+		  </Result>
+		  <ExpectedResult t="yesno.EqualsTo" To="my first hello world"/>
+		</Usage>
+		<Usage t="usage.DataUsage" Name="replace regex" Data="hello 123 world" >
+			<Result t="text.Replace" Find="[0-9]" ReplaceWith="" UseRegex="true" ReplaceAll="true" />
+		  <ExpectedResult t="yesno.EqualsTo" To="hello  world"/>
+		</Usage>
+		<Usage t="usage.DataUsage" Of="text.Split" Name="Get second" Data="hello world" >
+			<Result t="text.Split" Separator=" " Part="Second" />
+		  <ExpectedResult t="yesno.EqualsTo" To="world"/>
+		</Usage>
+		<Usage t="usage.DataUsage" Of="text.Split" Name="Split - All but first" Data="hello my world" >
+			<Result t="text.Concat" Separator=",">
+				<Items t="text.Split" Separator=" " Part="All but First" />
+			</Result>
+		  <ExpectedResult t="yesno.EqualsTo" To="my,world"/>
+		</Usage>
+		<Usage t="usage.DataUsage" Of="text.Split" Name="By index" Data="hello homer and marge" >
+			<Result t="text.Split" Separator=" " Part="By index" Index="3" />
+		  <ExpectedResult t="yesno.EqualsTo" To="and"/>
+		</Usage>
+		<Usage t="usage.DataUsage" Of="text.Split" Data="hello world" >
+			<Result t="data.Pipeline">
+       <Item t="text.Split" Separator=" "/>
+       <Aggregator t="text.Concat" Separator="," />
+      </Result>
+		  <ExpectedResult t="yesno.EqualsTo" To="hello,world"/>
+		</Usage>
+  
+  <Usage t="usage.DataUsage" Of="text.Capitalize">
+    <Result t="text.Capitalize" Data="ButtonAsHyperlink" Mode="capital to separate words"/>
+    <ExpectedResult t="yesno.EqualsTo" To="Button As Hyperlink"/>
+    <Description value="changes the captilazation of text"/>
+    <TryItYourself value="try using separate words to capital"/>
+  </Usage>
+
+  <Usage t="usage.DataUsage" Name="text.Capitalize - smart">
+    <Result t="text.Capitalize" Data="XPath" Mode="capital to separate words"/>
+    <ExpectedResult t="yesno.EqualsTo" To="XPath"/>
+  </Usage>
+  
+  <Usage t="usage.DataUsage" Name="text.Capitalize - separate words to capital">
+    <Result t="text.Capitalize" Data="I have 4 words" Mode="separate words to capital"/>
+    <ExpectedResult t="yesno.EqualsTo" To="IHave4Words"/>
+  </Usage>
+
+  <Component id="SpanishBasicTranlation" type="text.MultiLangSuite">
+   <xtml t="text.MultiLangSuite" Language="spanish">
+    <Pattern Original="OK" Tranlation="Aceptar" />
+    <Pattern Original="Cancel" Tranlation="Cancelar" />
+    <Pattern Original="How are you %% ?" Tranlation="Como estas %% ?" />
+    <Pattern Original="Hi %$Name%" Tranlation="Hola %$Name%" />
+    <Pattern Original="Hi" Tranlation="Hola" />
+   </xtml>
+  </Component>
+  
+  <Usage t="usage.DataUsage" Of="text.MultiLang">
+   <Var name="Language" value="spanish" />
+   <Data value="Homer" />
+   <Result t="text.MultiLang" Pattern="How are you %% ?"/>
+   <ExpectedResult t="yesno.EqualsTo" To="Como estas Homer ?"/>
+  </Usage>
+  
+  <Usage t="usage.DataUsage" Name="text.MultiLangSuite - pattern does not exist">
+   <Var name="Language" value="spanish" />
+   <Data value="Homer" />
+   <Result t="text.MultiLang" Pattern="Nothing"/>
+   <ExpectedResult t="yesno.EqualsTo" To="Nothing"/>
+  </Usage>
+  
+  <Usage t="usage.DataUsage" Name="text.MultiLangSuite - uses variables">
+   <Var name="Language" value="spanish" />
+   <Var name="Name" value="Homer" />
+   <Result t="text.MultiLang" Pattern="Hi %$Name%"/>
+   <ExpectedResult t="yesno.EqualsTo" To="Hola Homer"/>
+  </Usage>
+  
+  <Usage t="usage.DataUsage" Name="text.MultiLangSuite - dynanmic text">
+   <Var name="Language" value="spanish" />
+   <Var name="Word" value="Hi" />
+   <Result t="text.MultiLang" Pattern="%$Word%" Dynamic="true"/>
+   <ExpectedResult t="yesno.EqualsTo" To="Hola"/>
+  </Usage>
+  
+     <Usage t="usage.DataUsage" Of="text.FixCase">
+    <Data value="MY_NAME"/>
+   <Result t="text.Capitalize" Mode="upper to separate capital"/>
+   <ExpectedResult t="yesno.EqualsTo" To="My Name"/>
+  </Usage>
+  
+  <Usage t="usage.DataUsage" Of="text.Trim">
+  	<Data value=",Homer went to work." />
+  	<Result t="text.Trim" CharsToTrim=",."/>
+   	<ExpectedResult t="yesno.EqualsTo" To="Homer went to work"/>
+  </Usage>
+  
+<Usage t="usage.DataUsage" Name="use % inside dynamic text" >
+	<Data value="70" />
+	<Result value="%% \%" />
+	<ExpectedResult t="yesno.EqualsTo" To="70 %" />
+</Usage>
+
+<Usage t="usage.DataUsage" Name="text.ItemsEqual - when not">
+  <Result t="data.IfThenElse" Then="equals" Else="not equals">
+    <If t="text.ItemsEqual" Item1="a" Item2="b"/>
+  </Result>
+  <ExpectedResult t="yesno.EqualsTo" To="not equals"/>
+</Usage>
+
+<Usage t="usage.DataUsage" Of="text.RemoveSuffix" Data="aa.xxx">
+  <Result t="text.RemoveSuffix" Suffix=".xxx"/>
+  <ExpectedResult t="yesno.EqualsTo" To="aa"/>
+</Usage>
+
+<Usage1 t="usage.DataUsage" Of="text.FindInText" >
+	<Data value="hi Homer, please put the kids to sleep" />
+	<Result t="text.Concat" Seperator=",">
+		<Item t="text.FindInText" Pattern="Homer" />
+		<Item t="text.FindInText" Pattern="Nothing" />
+	</Result>
+	<ExpectedResult t="yesno.EqualsTo" To="true" />
+</Usage1>
+
+<Usage t="usage.DataUsage" Of="text.MatchesRegex" >
+  <Result t="text.Concat" Separator=",">
+  	<Item Data="Hi Homer" t="data.Same">
+ 		<Condition t="text.MatchesRegex" Expression="Hi .*" />
+   	</Item>
+  	<Item Data="abc" t="data.Same">
+ 		<Condition t="text.MatchesRegex" Expression="[a-z]b" />
+   	</Item>
+  	<Item Data="it is 4:55" t="data.Same">
+ 		<Condition t="text.MatchesRegex" Expression=".*[0-9]:[0-9]+" />
+   	</Item>
+  	<Item Data="empty" t="data.Same">
+ 		<Condition t="text.MatchesRegex" Data="" Expression="[ab]" />
+   	</Item>
+  </Result>
+  <ExpectedResult t="yesno.EqualsTo" To="Hi Homer,it is 4:55"/>
+</Usage>
+
+ <Usage t="usage.DataUsage" Of="text.StartsWith">
+  <Data value="hello world"/>
+  <Result t="text.StartsWith" With="hello"/>
+  <ExpectedResult t="yesno.EqualsTo" To="true" />
+ </Usage>
+
+ <Usage t="usage.DataUsage" Of="text.EndsWith">
+  <Data value="hello world"/>
+  <Result t="text.EndsWith" With="world"/>
+  <ExpectedResult t="yesno.EqualsTo" To="true" />
+ </Usage>
+ 
+<Usage t="usage.DataUsage" Of="text.Extract">
+  <Data value="val1 @@val2!!"/>
+  <Result t="text.Extract" EndMarker="!!">
+    <StartMarker value="va"/>
+    <StartMarker value="@@"/>
+  </Result>
+  <ExpectedResult t="yesno.EqualsTo" To="val2"/>
+</Usage>
+
+<Usage t="usage.DataUsage" Of="text.Extract.Regex">
+  <Data value="val1 @@val2!!"/>
+  <Result t="text.Extract" Regex="true" EndMarker="[!]+">
+    <StartMarker value="va"/>
+    <StartMarker value="[@]+"/>
+  </Result>
+  <ExpectedResult t="yesno.EqualsTo" To="val2"/>
+</Usage>
+
+<Usage t="usage.DataUsage" Of="text.Extract.Regex.Multiple">
+  <Data value="123a234b345c678"/>
+  <Result t="text.Concat" Separator=",">
+    <Items t="text.Extract" Regex="true" IncludingStartMarker="true">
+      <StartMarker value="[0-9]{3}"/>
+    </Items>
+  </Result>
+  <ExpectedResult t="yesno.EqualsTo" To="123a,234b,345c,678"/>
+</Usage>
+
+<Usage t="usage.DataUsage" Of="text.Extract.Regex.Bug1">
+  <Data value="0240"/>
+  <Result t="data.Count">
+    <Items t="text.Extract">
+      <StartMarker value="0"/>
+    </Items>
+  </Result>
+  <ExpectedResult t="yesno.EqualsTo" To="1"/>
+</Usage>
+
+<Usage t="usage.DataUsage" Of="text.Extract.Regex.Multiple.ExcludeEndMarker">
+  <Data value="123a234b345c678"/>
+  <Result t="text.Concat" Separator=",">
+    <Items t="text.Extract" Regex="true" EndMarker="(?=[0-9]+)">
+      <StartMarker value="[0-9]+"/>
+    </Items>
+  </Result>
+  <ExpectedResult t="yesno.EqualsTo" To="a,b,c"/>
+</Usage>
+
+ <Usage t="usage.DataUsage" Of="text.UrlEncoding">
+  <Result t="text.Concat" Separator=",">
+  	<Item t="text.UrlEncoding" Data="hi homer" />
+  	<Item t="text.UrlEncoding" Data="hi%20marge" Type="decode"/>
+  	<Item t="data.Pipeline">
+  		<Item t="text.UrlEncoding" Data="ספרדית" Type="encode"/>
+  		<Item t="text.UrlEncoding" Type="decode"/>
+  	</Item>
+  </Result>
+  <ExpectedResult t="yesno.EqualsTo" To="hi%20homer,hi marge,ספרדית"/>
+</Usage>
+
+ <Usage t="usage.DataUsage" Of="text.Substring">
+  <Result t="text.Concat" Separator=",">
+  	<Item t="text.Substring" Data="hi homer" Start="4"/>
+  	<Item t="text.Substring" Data="hi homer" Stop="3"/>
+  	<Item t="text.Substring" Data="hi homer" Stop="30"/>
+  	<Item t="text.Substring" Data="hi homer" Start="4" Stop="5"/>
+  </Result>
+  <ExpectedResult t="yesno.EqualsTo" To="homer,hi,hi homer,h"/>
+</Usage>
+
+ <Usage t="usage.DataUsage" Of="text.Between">
+  <Result t="text.Concat" Separator=",">
+    <Item t="text.Between" From="nice" To="shiny" IncludeFrom="false" IncludeTo="false" Data="hello nice and shiny world"/>
+    <Item t="text.Between" From="nice" To="shiny" IncludeFrom="true" IncludeTo="false" Data="hello nice and shiny world"/>
+    <Item t="text.Between" From="nice" To="shiny" IncludeFrom="false" IncludeTo="true" Data="hello nice and shiny world"/>
+    <Item t="text.Between" From="nice" To="shiny" IncludeFrom="true" IncludeTo="true" Data="hello nice nice and shiny shiny world"/>
+  </Result>
+  <ExpectedResult t="yesno.EqualsTo" To=" and ,nice and , and shiny,nice nice and shiny"/>
+</Usage>
+  
+<Usage t="usage.DataUsage" Of="text.PromoteStartingWith">
+  <Result t="data.Pipeline">
+    <Item t="data.ListByCommas" List="Input,cmsnode.a,b,cmsnodes.b,cc"/>
+    <Aggregator t="text.PromoteStartingWith" StartsWith="cmsnode"/>
+    <Aggregator t="text.Concat" Separator=","/>
+  </Result>
+  <ExpectedResult t="yesno.EqualsTo" To="cmsnode.a,cmsnodes.b,Input,b,cc"/> 
+</Usage>
+
+<Usage t="usage.DataUsage" Of="text.split.Empty">
+  <Result t="data.Pipeline">
+    <Item t="text.Split" Data="" Separator=","/>
+    <Aggregator t="data.Count" />
+  </Result>
+  <ExpectedResult t="yesno.EqualsTo" To="0"/> 
+</Usage>
+
+ <Usage t="usage.DataUsage" Of="text.DecodeMimeType" >
+  <Result value="%$A%-%$B%">
+  <Var name="A" t="text.DecodeMimeType" Data="=?UTF-8?B?16nXnNeV150g16LXnNeZ15vXnQ==?=" />
+  <Var name="B" t="text.DecodeMimeType" Data="=?utf-8?Q?hello=D7=9E=D7=9C=D7=90=D7=9B=D7=99 =D7=94=D7=A9=D7=9C=D7=95=D7=9D" />
+  </Result>
+  
+  <ExpectedResult t="yesno.EqualsTo" To="שלום עליכם-helloמלאכי השלום" />
+ </Usage>
+
+ <Usage t="usage.DataUsage" Of="text.Reverse" >
+ 	<Result t="text.Reverse" Data="abc" />
+ 	<ExpectedResult t="yesno.EqualsTo" To="cba" />
+ </Usage>
+ 
+ <Usage t="usage.DataUsage" Of="text.SplitLines" >
+ 	<Result t="text.Concat" Separator=",">
+ 		<Items t="text.SplitLines" Text="abc&#xA;&#xD;def" NewLineChars="&#xA;&#xD;" />
+ 	</Result>
+ 	<ExpectedResult t="yesno.EqualsTo" To="abc,def" />
+ </Usage>
+ 
+ <Usage t="usage.DataUsage" Of="text.Extract.Multi" >
+ 	<Result t="data.Pipeline" >
+ 	  <Item t="xml.Xml">
+ 	    <people>
+ 	      <person id="1">Homer</person>
+ 	      <person id="1">Marge</person>
+ 	    </people>
+ 	  </Item>
+ 	  <Item t="xml.XmlToText" />
+ 	  <Item t="text.Extract" Multi="true" >
+ 	    <StartMarker value="&lt;person" />
+ 	    <StartMarker value="&gt;" />
+ 	    <EndMarker value="&lt;" />
+ 	  </Item>
+ 	  <Aggregator t="text.Concat" Separator="," />
+ 	</Result>
+ 	<ExpectedResult t="yesno.EqualsTo" To="Homer,Marge" />
+ </Usage>
+ 
+ <Usage t="usage.DataUsage" Of="text.Extract.Multi.WithoutEndMarker" >
+ 	<Result t="data.Pipeline" >
+ 	  <Item t="xml.Xml">
+ 	    <people>
+ 	      <person id="1">Homer</person>
+ 	      <person id="2">Marge</person>
+ 	    </people>
+ 	  </Item>
+ 	  <Item t="xml.XmlToText" />
+ 	  <Item t="text.Extract" IncludingStartMarker="true">
+ 	    <StartMarker value="&lt;person" />
+ 	  </Item>
+ 	  <Aggregator t="text.Concat" Separator="," />
+ 	</Result>
+  <ExpectedResult t="yesno.EqualsTo" To="&lt;person id=&quot;1&quot;&gt;Homer&lt;/person&gt;,&lt;person id=&quot;2&quot;&gt;Marge&lt;/person&gt;&lt;/people&gt;"/>​
+ </Usage>
+ 
+ <Usage t="usage.DataUsage" Of="text.ToId" >
+ 	<Result t="text.ToId" Text="widget">
+    <UsedIDs t="text.Split" Data="widget,widget1,widget2,mywidget" />
+  </Result>
+ 	<ExpectedResult t="yesno.EqualsTo" To="widget3" />
+ </Usage>
+ 
+</xtml>

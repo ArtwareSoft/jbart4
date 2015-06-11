@@ -1,0 +1,28 @@
+<xtml ns="email">
+
+	<Type id="Email" />
+
+	<Component id="SendEmail" type="action.Action">
+		<Param name="Email" type="email.Email" />
+		<Param name="ServerUrl" Default="//jbartdb.appspot.com/bart.php?op=mail" />
+		<xtml t="http.HttpCall" Url="%$ServerUrl%">
+      <Aspect t="http.PostForm" UseStoredCookies="false" UseStoredHiddenInputs="false">
+        <PostData t="http.PostData" Name="body" Value="%$Email/Body%"/>
+        <PostData t="http.PostData" Name="subject" Value="%$Email/Subject%"/>
+        <PostData t="http.PostData" Name="to" Value="%$Email/To%"/>
+        <PostData t="http.PostData" Name="fromEmail" Value="%$Email/FromEmail%"/>
+        <PostData t="http.PostData" Name="fromName" Value="%$Email/FromName%"/>
+      </Aspect>
+    </xtml>
+	</Component>
+
+	<Component id="Email" type="email.Email">
+		<Param name="FromName" />
+		<Param name="FromEmail" />
+		<Param name="To" />
+		<Param name="Subject" />
+		<Param name="Body" />
+		<xtml t="object.ObjectFromParams" />
+	</Component>
+
+</xtml>

@@ -1,0 +1,105 @@
+<xtml package="true">
+
+  <xtml ns="img">
+
+    <Type id="Image" />
+    <Type id="Style" />
+    <Type id="AdjustSize" />
+    <Type id="Width" />
+    <Type id="Height" />
+
+    <Component id="Image" type="img.Image" execution="native">
+      <Param name="Url" />
+      <Param name="OriginalWidth" />
+      <Param name="OriginalHeight" />
+      <Param name="FrameWidth" type="img.Width" />
+      <Param name="FrameHeight" type="img.Height" />
+      <Param name="AdjustSize" type="img.AdjustSize">
+        <Default t="img.Center" />
+      </Param>
+    </Component>
+
+    <Component id="ImageInSprite" type="img.Image" execution="native">
+      <Param name="Url" script="true" image="true" />
+      <Param name="Width" Default="16" />
+      <Param name="Height" Default="16" />
+      <Param name="PositionInSprite" Default="0,0"/>
+      <Param name="PositionForHover" advanced="true"/>
+      <Param name="PositionForClick" advanced="true"/>
+    </Component>
+
+    <Component id="Center" type="img.AdjustSize" execution="native">
+      <Param name="RightToLeft" type="data.Boolean" />
+    </Component>
+    
+    <Component id="Fill" type="img.AdjustSize" execution="native" />
+    <Component id="Stretch" type="img.AdjustSize" execution="native" />
+    <Component id="CustomFill" type="img.AdjustSize" execution="native">
+      <Param name="MarginTop" />
+      <Param name="MarginLeft" />
+    </Component>
+
+    <Component id="FixedWidth" type="img.Width" execution="native">
+      <Param name="Width" slider="true" sliderUnit="" />
+      <xtml value="%$Width%" />
+    </Component>
+
+    <Component id="ContainerWidth" type="img.Width" execution="native">
+      <Param name="Margin" Default="0" slider="true" />
+      <Param name="Percentage" Default="100" />
+    </Component>
+
+    <Component id="FixedHeight" type="img.Height" execution="native">
+      <Param name="Height" slider="true" />
+    </Component>
+
+    <Component id="DeviceHeight" type="img.Height" execution="native">
+      <Param name="Margin" Default="0" slider="true" />
+      <Param name="Percentage" Default="100" />
+    </Component>
+
+    <Component id="CalculateImageSize" type="async_data.Data" execution="native">
+      <Param name="Url" />
+    </Component>
+
+  </xtml>
+
+  <xtml ns="img_type">
+
+  <Component id="Image" type="field_type.Type" execution="native" autoexapnd="true">
+    <Param name="Image" type="img.Image">
+      <Default t="img.Image" Url="%%" />
+    </Param>
+    <Param name="Style" type="img.Style">
+      <Default t="image_style.Default" />
+    </Param>
+    <Param name="DefaultImage" type="img.Image" description="For empty image" />
+  </Component>
+  
+  <Component id="EditableImage" type="field_type.Type" execution="native" autoexapnd="true" editable="true">
+    <Param name="FieldDataForImageWidth" Default="%!../@imageWidth%" />
+    <Param name="FieldDataForImageHeight" Default="%!../@imageHeight%"/>
+    <Param name="PreviewWidth" type="img.Width">
+      <Default t="img.FixedWidth" Width="100" />
+    </Param>
+    <Param name="PreviewHeight" type="img.Height">
+      <Default t="img.FixedHeight" Height="100" />
+    </Param>
+    <Param name="AdjustSizeForPreview" type="img.AdjustSize">
+      <Default t="img.Center" />
+    </Param>
+    <Param name="Style" type="editable_image.Style">
+      <Default t="editableimage_style.EditInPopup" />
+    </Param>
+    <Param name="EmptyImageURL" />
+  </Component>
+
+  </xtml>
+
+  <xtml ns="editable_image">
+
+    <Type id="Style" />
+
+  </xtml>
+
+</xtml>

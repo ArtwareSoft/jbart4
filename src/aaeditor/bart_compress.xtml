@@ -1,0 +1,379 @@
+<xtml ns="bart_dt_compress" plugin="jbart_editor" light="false">
+
+  <Component id="Components" type="data.Data" >
+      <Param name="Script"/>
+      <Param name="BlackList"/>
+      <Param name="ForNodeJS" type="data.Boolean" />
+      <Param name="ForEditor" type="data.Boolean" />
+      <xtml t="data.List">
+        <Var name="Base" t="data.Pipeline">
+          <Item value="%$Script///Component%" />
+          <Item t="xtml.ComponentId" />
+        </Var>
+        <Item t="data.Pipeline">
+          <Item t="data.Pipeline">
+            <Item t="data.IfThenElse" >
+              <If t="yesno.OR" Data="%$Script%">
+                <Item t="xml.IsOfTag" Tag="bart_dev"/>
+                <Item t="xml.IsOfTag" Tag="bart_sample"/>
+                <Item t="xml.IsOfTag" Tag="jbart_project"/>
+              </If>
+              <Then t="data.List">
+                <Item t="bart_dt_compress.JBartUsedComponents" WidgetSource="%$Script%"/>
+                <Item t="data.Pipeline">
+                  <Item t="bart_dt_compress.ComponentsWhiteList" />
+                  <Item t="xtml.ComponentDefinition" ID="%%"/>
+                </Item>
+              </Then>
+              <Else value="%$Script%"/>
+            </Item>
+            <Item t="bart_dt_compress.FindAllPts" ForEditor="%$ForEditor%" Xtml="%%" BlackList="%$BlackList%" ForNodeJS="%$ForNodeJS%" />
+            <Aggregator t="data.ExpandWithRelated" MaxDepth="20" LogRelationsTo="%$XtmlRelations%">
+              <Relation t="data.Pipeline">
+                <Item t="xtml.ComponentDefinition" ID="%%"/>
+                <Item t="data.List">
+                  <Item value="%xtml%"/>
+                  <Item value="%NativeHelper%"/>
+                  <Item value="%Param/Default%"/>
+                </Item>
+                <Item t="bart_dt_compress.FindAllPts" Xtml="%%" BlackList="%$BlackList%" ForNodeJS="%$ForNodeJS%"/>
+                <Item t="yesno.PassesFilter">
+                  <Filter t="yesno.Not">
+                    <Of t="yesno.Contains">
+                      <Text value="aaeditor"/>
+                      <Text value="_dt"/>
+                    </Of>
+                  </Filter>
+                </Item>
+              </Relation>
+            </Aggregator>
+            <Aggregator t="yesno.PassesFilter">
+              <Filter t="yesno.NotInList" List="%$Base%" Item="%Item%" />
+            </Aggregator>
+            <Aggregator t="data.Sort" Type="text" Order="Descending">
+              <SortBy t="data.Pipeline">
+                <Item value="%Item%"/>
+                <Item t="text.Split" Separator="." Part="First"/>
+              </SortBy>
+            </Aggregator>
+          </Item>
+          <Item value="%Item%"/>
+        </Item>
+        <Item t="bart_dt_compress.ComponentsWhiteList" />
+      </xtml>
+    </Component>
+  
+  <Component id="Xtml" type="data.Data">
+    <Param name="Components" />
+   <xtml t="data.Pipeline">
+     <Item t="data.List">
+       <Item t="data.Pipeline">
+         <Item value="%$Components%" />
+         <Aggregator t="data.GroupBy" Items="%%">
+           <GroupBy t="text.Split" Separator="." Part="First"/>
+           <Group t="xml.WithChanges">
+             <Xml t="xml.Xml" DynamicContent="true">
+               <xtml ns="%ID%"/>
+             </Xml>
+             <Change t="xml.AddChildren" CloneChildren="true">
+               <Children t="data.Pipeline">
+                 <Item value="%Items%"/>
+                 <Item t="xtml.ComponentDefinition" ID="%%"/>
+                 <Item1 t="bart_dt_compress.CompressComponent" />
+               </Children>
+             </Change>
+           </Group>
+         </Aggregator>
+       </Item>
+       <Item t="xml.WithChanges">
+         <Xml t="xml.Xml">
+           <xtml ns="text"/>
+         </Xml>
+         <Change t="xml.AddChildren">
+           <Children t="xtml.TypeDefinition" Type="text.HebrewText"/>
+         </Change>
+       </Item>
+     </Item>
+     <Aggregator t="xml.Wrap">
+       <Head t="xml.Xml">
+         <xtml package="true"/>
+       </Head>
+     </Aggregator>
+   </xtml>
+  </Component>
+  
+  <Component id="ContentOfGC" type="data.Data" execution="native" />
+
+  <Component id="GCs" type="data.Data">
+      <Param name="Components"/>
+      <Param name="LogUsage" type="data.Boolean"/>
+      <xtml t="data.Pipeline">
+        <Item value="%$Components%"/>
+        <Aggregator t="data.GroupBy" Items="%%">
+          <GroupBy t="text.Split" Separator="." Part="First"/>
+          <Group t="data.Pipeline">
+            <Item value="%Items%"/>
+            <Aggregator t="text.Concat" Separator=",&#xa;" Prefix="aa_gcs(&quot;%$ns%&quot;, { &#xa;" Suffix="&#xa;});"/>
+            <Var value="%ID%" name="ns"/>
+            <Item t="data.Pipeline">
+              <Item t="bart_dt_compress.ContentOfGC" />
+              <Item t="yesno.PassesFilter">
+                <Filter t="yesno.NotEmpty" Value="%%"/>
+              </Item>
+            </Item>
+          </Group>
+        </Aggregator>
+        <Aggregator t="text.Concat" Separator="&#xa;&#xa;/*********/&#xa;&#xa;&#xa;&#xa;"/>
+        <Var value="   var index = content.indexOf(&quot;{&quot;);&#xa;   out = content.substring(0,index+1) + &quot;\n&quot; + &quot;aa_gc_use('&quot; + data + &quot;',&quot; + content.length + &quot;);\n&quot;+ content.substring(index+1);&#xa;" name="Log" Condition="%$LogUsage%"/>
+      </xtml>
+    </Component>
+  
+  <Component id="DependentFunctions" type="data.Data" execution="native">
+    <Param name="Code" Default="%%" />
+  </Component>
+  
+  <Component id="JsInXtml" type="data.Data" execution="native">
+    <Param name="Xtmls" />
+  </Component>
+  
+  <Component id="JsFunctionCode" type="data.Data" execution="native" />
+
+  <Component id="JsUtils" type="data.Data">
+      <Param name="GCs"/>
+      <Param name="LogUsage" type="data.Boolean"/>
+      <Param name="WidgetXml" />
+      <Param name="JsToAdd" />
+      <Param name="WithStudio" type="data.Boolean" />
+      <Param name="Xtmls" />
+      <Param name="CrawlerNodeJS" />
+      <xtml t="data.Pipeline">
+        <Item t="data.Pipeline">
+          <Item t="data.List">
+            <Item t="data.Pipeline">
+              <Item t="data.List">
+                <Item t="bart_dt_compress.JsInXtml" Xtmls="%$Xtmls%"/>
+                <Item value="%$GCs%"/>
+                <Item value="%$JsToAdd%" />
+              </Item>
+              <Item t="bart_dt_compress.DependentFunctions"/>
+            </Item>
+            <Item t="text.Split" Separator="," Text="%$WidgetXml/compress/@js_white_list%" />
+            <Item t="bart_dt_compress.FunctionsWhiteList" CrawlerNodeJS="%$CrawlerNodeJS%" WithStudio="%$WithStudio%"/>            
+          </Item>
+          <Aggregator t="data.ExpandWithRelated" MaxDepth="13" LogRelationsTo="%$JsRelations%">
+            <Relation t="data.Pipeline">
+              <Item t="bart_dt_compress.JsFunctionCode" />
+              <Item t="bart_dt_compress.DependentFunctions" Code="%%" />
+              <Item1 t="yesno.PassesFilter" remark="Functions BlackList">
+                 <Filter t="yesno.NotEqualsTo" To="aa_uidocument"/>
+              </Item1>
+            </Relation>
+          </Aggregator>
+        </Item>
+        <Aggregator t="text.Concat" Separator="&#xa;&#xa;&#xa;&#xa;" Prefix="%$AjaxartObject%&#xa;" Suffix="%$Globals%&#xa;%$JsToAdd%&#xa;">
+          <Var name="AjaxartObject" t="bart_dt_compress.AjaxartObject" />
+          <Var name="Globals" t="bart_dt_compress.Globals" WithStudio="%$WithStudio%"/>
+          <ItemText t="data.Pipeline">
+            <Item value="%Item%"/>
+            <Item t="bart_dt_compress.JsFunctionCode" />
+          </ItemText>
+        </Aggregator>
+        <Var name="Log" value="  if (content.indexOf(&quot;//aa_mark_component_usage&quot;) &gt; -1)&#xa;    content = content.replace(&quot;//aa_mark_component_usage&quot;,&quot;aa_mark_component_usage&quot;);&#xa;  out = &quot;aa_mark('&quot; + data + &quot;',&quot; + content.length + &quot;);\n&quot;;&#xa;  var index = content.indexOf('{');&#xa;  out += content.substring(0,index+1) + &quot;\n&quot; + &quot;aa_use('&quot;+ data + &quot;',&quot; + content.length + &quot;);\n&quot; + content.substring(index+1);&#xa;" Condition="%$LogUsage%"/>
+      </xtml>
+    </Component>
+  
+  <Component id="BlackList" type="data.Data">
+    <xtml value="field.TextFilterControl" />
+  </Component>
+  
+  <Component id="FunctionsWhiteList" type="data.Data">
+    <Param name="WithStudio" />
+    <Param name="CrawlerNodeJS" />
+    <xtml t="data.List">
+      <Item t="data.ListByCommas" List="aa_gcs,ajaxart.load_plugin,ajaxart.ready,ajaxart.parsexml,ajaxart.start,jbart_init,aa_init_ipad,aa_visible,aa_visible_selectable,aad_jbart_data_arrived,jBart.ready,jbart_data,aa_determine_device,_xml,aa_screen_size,jBart.aa_crossdomain_call,aa_crossdomain_call,jBart.activator,jBart.xpath,jBart.parsexml,aa_extendJQuery,aa_runFromNodeJS,aa_wicked_good_xpath,aa_json2,aa_parsexml,aa_same"/>
+      <Item t="data.ListByCommas" List="aa_crawlerRunFromNodeJS,aa_crawlerGetResults,aa_crawlerGetQueues" Condition="%$CrawlerNodeJS%" />
+      <Item1 t="data.ListByCommas" List="aa_setImage,aa_propertysheet,aa_picklist_native_combo,aa_jbart_textbox,aa_item_data,aa_fade_transition,aa_loadRequiresJSFiles" />
+    </xtml>
+  </Component>
+  
+  <Component id="ComponentsWhiteList" type="data.Data">
+    <xtml t="data.ListByCommas" List="jbart_api.ShowWidget,validation.DefaultOld,bart_url.BrowserUrl,jbart.TextboxCss,validation.CustomStyleOld,xtml.Params,object.Object" />
+  </Component>
+  
+  <Component id="AjaxartObject" type="data.Data">
+    <xtml t="data.Pipeline">
+      <Item t="data.List">
+        <Item value="var ajaxart = { xtmls_to_trace: [], trace_level: 2, 
+         traces : [], components: [], componentsXtmlCache: [], usages: [], types: [], plugins: [], gcs: {}, 
+         log_str: '', loading_objects : 0, logs: {}, default_values: [], inPreviewMode: false, stack_trace: [], build_version: 'ART_NOW', 
+         base_lib: '//jbartlib.appspot.com/lib', base_images: '//jbartlib.appspot.com/images',
+         classes: {}, xml: {}, cookies: {}, ui: {}, yesno: {}, dialog: { openPopups: []}, xmlsToMonitor: [], lookup_cache: {}, occurrence_cache: {}, 
+         unique_number: 1, action: {}, runningTimers: {}, runDelayed: [], hasVarsRegex: /\%[^ ,;\(\)]/ , STRING_WITH_EXP: /%[^ ,;\(\)]/, NOT_EXP: /^[ ,;\(\)]/, debugData: [],
+         suggestbox: {}, customsuggestbox: {} };
+         window.jBartWidgets = window.jBartWidgets || { vars: {} };" />
+        <Item value="window.jBart = { vars: {}, api: {}, utils: {}, dialogs: {}, bart: {}, db: {}, studiobar: {} };" />
+        <Item value="aa_save_manager = {};" />
+        <Item value="ajaxart.log = " />
+        <Item t="data.JavaScript" Code="ajaxart.log.toString()" />
+      </Item>        
+      <Aggregator t="text.Concat" Separator="&#10;" />
+    </xtml>
+  </Component>
+
+  <Component id="Globals" type="data.Data">
+    <Param name="WithStudio" type="data.Boolean" />
+    <xtml t="data.Pipeline">
+      <Item t="data.List">
+        <Item value="" />
+        <Item value="try {" />
+        <Item value="aa_determine_device();" />
+        <Item value="aa_wicked_good_xpath();" />
+        <Item value="aa_json2();" />
+        <Item value="} catch(e) {}" />
+        <Item value="var aa_noOfOpenDialogs= 0,aa_dialogCounter= 0,openDialogs = [], aa_openDialogs = [];" />
+        <Item value="var aa_intest,aa_incapture;" />
+        <Item value="var aa_navigation_codes = [38,40, 33,34,63277,63276];" />
+        <Item value="var aa_xmlinfos = [], aa_async_finished_listeners = [];" />
+        <Item value="jbart_init();" />
+        <Item value="aa_extendJQuery();" />
+        <Item1 value="window.ajaxart_runevent = ajaxart_runevent;" remark="ugly, Supports onclick from html"/>
+        <Item t="data.List" Condition1="%$WithStudio%">
+          <Item value="jBart.studiobar = jBart.studiobar || {}" />
+          <Item value="bartdt_captured_element = null;" />
+          <Item value="var aa_save_manager = { modified :{} };" />
+      </Item>
+      </Item>
+      <Aggregator t="text.Concat" Separator="&#10;" />
+    </xtml>
+  </Component>
+  
+  <Component id="JBartUsedComponents">
+      <Param name="WidgetSource"/>
+      <xtml t="data.List" Data="%$WidgetSource%">
+        <Item value="%//Resource[@t='jbart_resource.Data']%"/>
+        <Item value="%//Resource[@t='bart_resource.Xml']%"/>
+        <Item value="%//Resource[@t='bart_resource.Value']%"/>
+        <Item value="%//ApplicationFeature%"/>
+        <Item t="data.Pipeline">
+          <Item value="%//Component%"/>
+          <Item t="yesno.PassesFilter" Filter="%@id% != 'App'"/>
+        </Item>
+        <Item value="%//Page%"/>
+      </xtml>
+    </Component>
+  
+  <Component id="JSMinCompress" type="data.Data" execution="native">
+    <Param name="Script" ><Default value="%%" /></Param>
+    <Param name="Level" type="enum"><Default value="conservative" />
+      <value>minimal</value>
+      <value>conservative</value>
+      <value>agressive</value>
+    </Param>
+    <Param name="Comments" />
+  </Component>
+  
+  <Component id="FindAllPts" type="data.Data" execution="native">
+    <Param name="Xtml" />
+    <Param name="BlackList" Description="comma separated"/>
+    <Param name="ForNodeJS" type="data.Boolean" />
+    <Param name="ForEditor" type="data.Boolean" />
+  </Component>
+    
+  <Component id="CompressComponent" type="data.Data" execution="native" >
+    <Param name="Component" Default="%%" />
+  </Component>
+
+  <Component id="SizeOfComponent" type="data.Data">
+      <Param name="ID" essential="true"/>
+      <xtml t="data.Pipeline">
+        <Item t="xtml.ComponentDefinition" ID="%$ID%"/>
+        <Item t="xml.XmlToText"/>
+        <Item t="text.Length"/>
+      </xtml>
+    </Component>
+
+  <Component id="DependentComponents" type="data.Data">
+      <Param name="ID" essential="true"/>
+      <xtml t="data.List">
+        <Var name="Definition" t="xtml.ComponentDefinition" ID="%$ID%"/>
+        <Item t="data.Pipeline">
+          <Item value="%$Definition%"/>
+          <Item t="data.List">
+            <Item value="%xtml%"/>
+            <Item value="%NativeHelper%"/>
+            <Item1 value="%Param/Default%"/>
+          </Item>
+          <Item value="%//@t%"/>
+          <Item t="xml.XmlToText"/>
+          <Aggregator t="data.MakeUnique"/>
+        </Item>
+        <Item value="ajaxart.gcs.%$ID%"/>
+      </xtml>
+    </Component>
+
+  <Component id="Definition" type="data.Data">
+      <Param name="ID" essential="true"/>
+      <xtml t="data.FirstSucceeding">
+        <Item t="xtml.ComponentDefinition" ID="%$ID%"/>
+        <Item t="bart_dt_compress.FunctionDefinition" Name="%$ID%"/>
+      </xtml>
+  </Component>
+    
+  <Component id="Dependent" type="data.Data">
+      <Param name="ID" essential="true"/>
+      <xtml t="data.IfThenElse">
+        <If t="yesno.NotEmpty">
+          <Data t="xtml.ComponentDefinition" ID="%$ID%"/>
+        </If>
+        <Then t="bart_dt_compress.DependentComponents" ID="%$ID%"/>
+        <Else t="data.Pipeline">
+          <Item t="bart_dt_compress.DependentFunctions">
+            <Code t="bart_dt_compress.FunctionDefinition" Name="%$ID%"/>
+          </Item>
+          <Aggregator t="data.MakeUnique"/>
+        </Else>
+      </xtml>
+    </Component>
+  
+  <Component id="FunctionDefinition" type="data.Data" execution="native">
+      <Param name="Name" essential="true"/>
+  </Component>
+   
+   <Component id="WidgetAsJs" type="data.Data">
+    <Param name="Widget" Default="%$_WidgetXml%" />
+    <Param name="WidgetID" />
+    <xtml t="data.Pipeline">
+      <Var name="ID" t="data.Pipeline">
+        <Item t="text.FirstSucceeding">
+          <Item value="%$WidgetID%" />
+          <Item value="%$_WidgetXml/@id%" />
+        </Item>
+        <Item t="text.Replace" Find="/" ReplaceWith="_"  />
+      </Var>
+      <Var name="Components" t="bart_dt_compress.Components" Script="%$Widget%" BlackList="%$Widget/compress/@black_list%" />
+      <Var name="Xtml" t="bart_dt_compress.Xtml" Components="%$Components%" />
+      <Var name="AllXtml" t="data.List">
+        <Item value="%$Xtml%" />
+        <Item value="%$Widget%" />
+      </Var>
+      <Var name="GCs" t="bart_dt_compress.GCs" Components="%$Components%" />
+      <Var name="Utils" t="bart_dt_compress.JsUtils" GCs="%$GCs%" WidgetXml="%$Widget%" JsToAdd="%$Widget/compress/@js_to_add%" Xtmls="%$AllXtml%"/>
+      <Var name="XtmlInOneLine" t="bart_dt.XmlInOneLine" Xml="%$Xtml%" />
+      <Var name="WidgetInOneLine" t="bart_dt.XmlInOneLine">
+        <Xml t="xml.WithChanges" Xml="%$Widget%" >
+          <Change t="xml.SetAttribute" AttributeName="id" Value="%$ID%" />
+        </Xml>
+      </Var>
+      <Item t="text.Concat" Separator="&#xa;" Items="">
+        <Item value="(function(){" />
+        <Item value="%$Utils%" />
+        <Item value="%$GCs%" />
+        <Item value="ajaxart.load_xtml_content('',aa_parsexml('%$XtmlInOneLine%'));&#xa;" />
+        <Item value="var jBartWidget_%$ID% = '%$WidgetInOneLine%'; " />
+        <Item value="jBartWidgets.%$ID% = jBart.activator(jBartWidget_%$ID%);" /> 
+        <Item value="}());" />
+      </Item>
+    </xtml>
+   </Component>
+
+</xtml>

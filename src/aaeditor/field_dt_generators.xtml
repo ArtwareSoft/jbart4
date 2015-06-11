@@ -1,0 +1,326 @@
+<xtml ns="fieldgenerator_dt" light="false">
+
+  <Component id="ToROItemListXtml" type="data.Data">
+    <Param name="ParentXtml" />
+    <Param name="Config" Default="%%" />
+    <xtml t="data.Pipeline">
+      <Item t="xml.WithChanges">
+        <Var name="ID" t="text.ToId" Text="%$Config/@Title%" UsedIDs="%$ParentXtml/Field/@ID%" />
+        <Xml t="xml.Xml" DynamicContent="true">
+          <Field t="field.ItemList" Title="%$Config/@Title%" ID="%$ID%">
+            <View t="itemlist_style.Simple" />
+            <FieldAspect t="field_aspect.ItemListContainer">
+              <Items t="itemlist.Items" Items="\%*\%"/>
+            </FieldAspect>
+            <FieldAspect t="itemlist_aspect.ItemSelection" />
+            <FieldAspect t="itemlist_aspect.ShowTextWhenNoItems" />
+            <Field t="control.Label" Title="Title" ID="title" Text="%@Title%" />
+          </Field>
+        </Xml>
+      </Item>
+    </xtml>
+  </Component>
+  
+  <Component id="ToListXtml" type="data.Data">
+    <Param name="ParentXtml" />
+    <Param name="NewItemList" type="data.Boolean"/>
+    <Param name="Config" Default="%%" />
+    <xtml t="data.IfThenElse" If="true" Data="%$Config%">
+      <Var name="ID" t="text.ToId" Text="%@Title%" UsedIDs="%$ParentXtml/Field/@ID%" />
+      <Var name="FirstChildID" t="text.Replace" Find=" " ReplaceWith="_" >
+        <Text t="text.Split" Part="First" Text="%@Fields%" Separator="," />
+      </Var>
+      <Var name="Title" value="%@Title%" />
+      <Var name="HideTitle" t="yesno.Not" Of="%@Is_Section%" />
+      <Var name="NotInplace" t="yesno.Not" Of="%@InplaceDetails%" />
+      <Var name="ReadOnly" value="%@read_only%" />
+      <Var name="Writable" t="yesno.Not" Of="%@read_only%" />
+      <Var name="ItemName" t="text.Capitalize" Data="%@TitleForSingle%" />
+      <Var name="ItemNameID" t="text.ToId" Text="%$ItemName%" />
+      <Var name="Path" value="%@Path%" />
+      <Var name="PathParent" t="text.RemoveSuffix" Data="%@Path%" Separator="/" EmptyIfNoSeparator="true" />
+      <Var name="PathTag" t="text.FirstSucceeding">
+          <Item t="text.Split" Part="Last" Text="%$Path%" Separator="/" />
+          <Item value="%$Path%" />
+      </Var>      
+      <Var name="ParentXmlVal" t="data.IfThenElse" If="%$PathParent% == ''" Then="\%\%" Else="\%!%$PathParent%\%" />
+      <Then t="xml.WithChanges">
+        <Xml t="xml.Xml" DynamicContent="true">
+          <Field t="field.ItemListContainer" ID="%$ID%_Top" Title="%$Title%">
+            <Items t="itemlist.XmlItems" ParentXml="%$ParentXmlVal%" Tag="%$PathTag%" />
+            <Field t="field.Layout" ID="%$ID%_Toolbar" Title="Toolbar">
+              <Layout t="layout.HorizontalHtmlTable" Spacing="5px"/>
+              <FieldAspect t="itemlist_aspect.RefreshOnSelectionChange"/>
+              <Field t="field.Button" ID="Add_%$ItemNameID%" Title="Add %$ItemName%">
+                <Style t="button.Hyperlink"/>
+                <Image t="image.ImageOld" Url="%$_Images%/add1616.gif"/>
+                <Action t="operation.OpenDialog" Title="Add %$ItemName%">
+                  <DialogData t="xml.ByTag" Tag="%$PathTag%"/>
+                  <Contents t="ui.InnerPage" Title="Add %$ItemName%">
+                    <Field t="field.PropertySheet" ID="PropertySheet" Title="Properties" HideTitle="true" />
+                  </Contents>
+                  <RunOnOK t="itemlist_action.AddItemToItemList" />
+                </Action>
+              </Field>
+              <Field t="field.Button" ID="Delete_%$ItemNameID%" Title="Delete %$ItemName%">
+                <Style t="button.Hyperlink"/>
+                <Image t="image.ImageOld" Url="%$_Images%/delete1616.gif"/>
+                <Action t="itemlist_action.DeleteSelectedItem"/>
+              </Field>
+            </Field>​
+            <Field t="field.ItemList" Title="%$Title%" ID="%$ID%_List">
+               <View t="itemlist_style.JBartTable" />
+               <FieldAspect t="itemlist_aspect.ItemSelection" />
+               <FieldAspect t="itemlist_aspect.TableColumnDragAndDrop" />
+               <FieldAspect t="itemlist_aspect.DragAndDropItems" />
+               <FieldAspect t="itemlist_aspect.ShowTextWhenNoItems" />
+               <FieldAspect t="itemlist_aspect.UpdateOnAddOrDeleteItem" />
+               <Field t="field.Layout" ID="Details" Title="Details">
+                <Layout t="layout.Vertical" Spacing=""/>
+                <Field t="field.PropertySheet" ID="Fields" Title="Fields">
+                </Field>
+                <FieldAspect t="field_aspect.DetailsInplace"/>
+                <Field t="field.Button" ID="Close_details" Title="Close details">
+                    <Style t="button.Hyperlink"/>
+                    <Action t="itemlist_action.ToggleDetailsInplace"/>
+                    <FieldAspect t="field_feature.Css">
+                      <Css><![CDATA[#this { } #wrapper { padding-top: 7px; }]]></Css>
+                    </FieldAspect>
+                </Field>
+               </Field>​               
+            </Field>
+          </Field>
+        </Xml>
+        <Var name="InplaceHyperlink" t="xml.Xml">
+          <FieldAspect t="field_aspect.Hyperlink">
+            <Action t="itemlist_action.ToggleDetailsInplace" DetailsField="Details">
+              <Item t="itemlist_item.ItemInContext"/>
+            </Action>
+          </FieldAspect>
+        </Var>
+        <Var name="ChildFields" t="data.Pipeline">
+          <Condition t="yesno.NotEmpty" Value="%@Fields%" />
+          <Item t="text.Split" Data="%@Fields%" Separator="," />
+          <Item t="field_dt.FieldNameToXtml" />
+          <Item t="data.IfThenElse" Else="%%">
+            <If t="yesno.And">
+              <Item value="%$Config/@InplaceDetails%" />
+              <Item value="%@ID%==%$FirstChildID%" />
+            </If>
+            <Then t="xml.WithChanges" Xml="%%">
+              <Change t="xml.AddChildren" Children="%$InplaceHyperlink%" CloneChildren="true"/>
+            </Then>
+          </Item>
+        </Var>
+        <Var name="ReadOnlyChildFields" t="data.Pipeline">
+          <Item value="%$ChildFields%" />
+          <Item t="xml.WithChanges" Xml="%%">
+            <Change t="xml.AddChildren">
+              <Children t="xml.Xml">
+                <FieldAspect t="field_aspect.ReadOnly" />
+              </Children>
+            </Change>
+          </Item> 
+        </Var>
+        <Var name="DetailsChildFields" t="data.Pipeline">
+          <Condition t="yesno.NotEmpty" Value="%@Fields%" />
+          <Item t="text.Split" Data="%@Fields%" Separator="," />
+          <Item t="field_dt.FieldNameToXtml" />
+        </Var>
+        <Change t="xml.Delete" Data="%Field/Field[@ID='Details']%" Condition="%$NotInplace%" />
+        <Change t="xml.Delete" Data="%Field[@Title='Toolbar']%" Condition="%$ReadOnly%" />
+        <Change t="xml.Delete" Data="%Field/FieldAspect[@t='itemlist_aspect.DragAndDropItems']%" Condition="%$ReadOnly%" />
+        <Change t="xml.AddChildren" Data="%Field[@t='field.ItemList']%" Children="%$ReadOnlyChildFields%" />
+        <Change t="xml.AddChildren" Data="%Field[@Title='Toolbar']/Field[1]/Action/Contents/Field%" Children="%$ChildFields%" CloneChildren="true"/>
+        <Change t="xml.AddChildren" Data="%Field/Field[@ID='Details']/Field[@ID='Fields']%" Children="%$DetailsChildFields%" CloneChildren="true" Condition="%$Config/@InplaceDetails%" />
+      </Then>
+    </xtml>
+  </Component>
+  
+  <Component id="XmlSampleToItemList" type="data.Data">
+    <Param name="SampleItem" />
+    <Param name="Tag" />
+    <xtml t="fieldgenerator_dt.ToListXtml" NewItemList="true">
+      <Var name="Title" t="text.Capitalize" Data="%$Tag%" />
+      <Var name="Plural" t="text.Capitalize">
+        <Data t="field_dt.PluralText" Data="%$Tag%" />
+      </Var>
+      <Var name="Fields" t="data.Pipeline">
+        <Item t="xml.Attributes" Data="%$SampleItem/*%" />
+        <Item t="xml.AttributeName" />
+        <Item t="text.Replace" Find="_" ReplaceWith=" " /> 
+        <Aggregator t="data.Subset" From="1" Count="5" />
+        <Aggregator t="text.Concat" Separator="," />
+      </Var>
+      <Var name="Path" t="xml.Tag" Data="%$SampleItem/*%" />
+      <Config t="xml.Xml" DynamicContent="true">
+        <config Title="%$Plural%" TitleForSingle="%$Title%" Fields="%$Fields%" Path="%$Path%"/>
+      </Config>
+    </xtml> 
+  </Component>
+  
+  <Component id="HasDetailsInplace" type="data.Boolean" description="Given xtml of itemlist returns if it has details inplace">
+    <Param name="Xtml" />
+    <xtml t="yesno.NotEmpty">
+      <Value t="xml.FindXmlByAttribute" ParentXml="%$Xtml%" Attribute="t" Value="itemlist_action.ToggleDetailsInplace" />
+    </xtml>
+  </Component>
+
+  <Component id="HasDetailsReplacingAll" type="data.Boolean" description="Given xtml of itemlist returns if it has replacing all">
+    <Param name="Xtml" />
+    <xtml t="yesno.NotEmpty">
+      <Value t="xml.FindXmlByAttribute" ParentXml="%$Xtml%" Attribute="t" Value="itemlist_action.OpenDetailsReplacingAll" />
+    </xtml>
+  </Component>
+  
+  <Component id="AddDetailsReplacingAll" type="action.Actions" description="Adds inplace details to itemlist (design time)">
+    <Param name="Xtml" />
+    <Param name="Config" />
+    <xtml t="action.RunActions">
+      <Var name="HyperlinkField" value="%$Xtml/Field[@ID='{$Config/@HyperlinkFieldID}']%" />
+      <Var name="FieldsForDetails" value="%$Xtml/Field%" />
+      <Action t="xml.AddXmlChildren" Parent="%$HyperlinkField%">
+        <Children t="xml.WithChanges">
+          <Xml t="xml.Xml">
+            <FieldAspect t="field_aspect.Hyperlink">
+              <Action t="itemlist_action.OpenDetailsReplacingAll">
+                <Item t="itemlist_item.ItemInContext"/>
+                <Details t="field.InnerPage" Title="Details">
+                  <Field t="field.Button" ID="Close_details" Title="Back">
+                    <Style t="button.Bootstrap">
+                      <Size t="bootstrap_btn.Small"/>
+                      <Type t="bootstrap_btn.Default"/>
+                    </Style>
+                    <Action t="itemlist_action.CloseDetailsReplacingAll" />
+                    <FieldAspect t="field_feature.Css">
+                      <Css><![CDATA[#this { } #wrapper { padding: 10px 0; }]]></Css>
+                    </FieldAspect>
+                  </Field>
+                  <Field t="field.PropertySheet" ID="Fields" Title="Fields" />
+                </Details>
+              </Action>
+            </FieldAspect>
+          </Xml>
+          <Change t="xml.AddChildren" Data="%Action/Details/Field[@ID='Fields']%" Children="%$FieldsForDetails%" CloneChildren="true" />
+        </Children>
+      </Action>
+    </xtml>
+  </Component>
+  
+  <Component id="SuggestFieldsToAdd" type="data.Data">
+    <Param name="ParentXtml" />
+    <xtml t="data.Pipeline">
+      <Var name="Field" t="xtml.RunXtml" Xtml="%$ParentXtml%" />
+      <Var name="ExistingFieldDataList" value="%$ParentXtml/Field/@Title%" />
+      <Var name="PageXtml" t="field_dt.UpToPageDef" Data="%$ParentXtml%" />
+      <Var name="PageSampleItems" t="bart_dt.PageSampleItems" PageXtml="%$PageXtml%" />
+      <Var name="SampleData" t="field_dt.FieldSampleData" PageData="%$PageSampleItems%" Field="%$ParentXtml%" Page="%$PageXtml%" />
+      <Item t="data.IfThenElse" If="%$Field/IsFilterGroup%">
+        <Then t="fieldgenerator_dt.SuggestFieldsForFilter" ParentXtml="%$ParentXtml%" />
+        <Else t="fieldgenerator_dt.SuggestFieldsFromSampleData" SampleData="%$SampleData%" />
+      </Item>
+      <Item t="object.ExtendObject" Object="%%">
+        <Property name="fieldExists" t="yesno.IsInList" List="%$ExistingFieldDataList%" Item="%@Title%" /> 
+      </Item>
+    </xtml>
+  </Component>
+  
+  <Component id="SuggestFieldsFromSampleData" type="data.Data" execution="native">
+    <Param name="SampleData" /> 
+  </Component>
+  
+  <Component id="FieldXtmlFromSuggestion" type="data.Data">
+    <Param name="FieldInfo" />
+    <Param name="Writable" type="data.Boolean" />
+    <xtml t="data.Pipeline">
+      <Var name="WritableText" t="data.IfThenElse" If="%$Writable%" Then="rw" Else="ro" />
+      <Var name="FieldData" t="data.IfThenElse" If="%$Writable%" Then="\%!%$FieldInfo/path%\%" Else="\%%$FieldInfo/path%\%" />
+      <Var name="FieldType" t="data.Switch" Value="%$FieldInfo/type%__%$WritableText%">
+        <Case If="image__ro">
+          <Then t="fieldgenerator_dt.FieldTypeByPT" PT="fld_type.Image" />
+        </Case>
+        <Case If="image__rw">
+          <Then t="fieldgenerator_dt.FieldTypeByPT" PT="fld_type.EditableImage" />
+        </Case>
+        <Case IfCondition="%$WritableText% == 'ro'">
+          <Then t="fieldgenerator_dt.FieldTypeByPT" PT="fld_type.Text" />
+        </Case>
+        <Case IfCondition="%$WritableText% == 'rw'">
+          <Then t="fieldgenerator_dt.FieldTypeByPT" PT="fld_type.EditableText" />
+        </Case>
+      </Var>
+      <Item t="data.FirstSucceeding">
+        <Var name="Section" value="%$FieldInfo/isSection%_%$WritableText%" />
+        <Var name="ItemList" value="%$FieldInfo/isItemlist%_%$WritableText%" />
+        <Item t="data.Pipeline" Condition="%$Section% == 'true_rw'" >
+          <Item t="xml.Xml" DynamicContent="true">
+            <Field t="field.PropertySheet1" ID="%$FieldInfo/id%" Title="%$FieldInfo/title%">
+              <SectionStyle t="section.Default"/>
+              <FieldAspect t="field_aspect.FieldData" FieldData="%$FieldData%" />
+            </Field>
+          </Item>
+        </Item> 
+        <Item t="data.Pipeline" Condition="%$Section% == 'true_ro'"> 
+          <Item t="xml.Xml" DynamicContent="true">
+            <Field t="control.Layout" ID="%$FieldInfo/id%" Title="%$FieldInfo/title%">
+              <SectionStyle t="section.Default"/>
+              <FieldAspect t="field_aspect.FieldData" FieldData="%$FieldData%" />
+            </Field>​
+          </Item>
+        </Item> 
+        <Item t="data.Pipeline" Condition="%$ItemList% == 'true_rw'" >
+          <Item t="xml.Xml" DynamicContent="true">
+            <Field t="control.Label" ID="%$FieldInfo/id%" Title="%$FieldInfo/title%" Text="Generation of itemlist is not implemented yet">
+            </Field>
+          </Item>
+        </Item> 
+        <Item t="data.Pipeline" Condition="%$ItemList% == 'true_ro'">
+          <Item t="xml.Xml" DynamicContent="true">
+            <Field t="field.ItemList" ID="%$FieldInfo/id%" Title="%$FieldInfo/title%">
+              <View t="itemlist_style.Simple" />
+              <FieldAspect t="field_aspect.ItemListContainer">
+                <Items t="itemlist.XmlItems" ParentXml="\%\%" Tag="%$FieldInfo/path%"/>
+              </FieldAspect>
+              <FieldAspect t="itemlist_aspect.ItemSelection" />
+              <FieldAspect t="itemlist_aspect.ShowTextWhenNoItems" />
+            </Field>
+          </Item>
+        </Item> 
+        <Item t="xml.WithChanges">
+          <Xml t="xml.Xml" DynamicContent="true">
+            <Field t="fld.Field" ID="%$FieldInfo/id%" Title="%$FieldInfo/title%" FieldData="%$FieldData%" />
+          </Xml>
+          <Change t="xml.AddChildren" Children="%$FieldType%" />
+        </Item>
+      </Item>
+    </xtml>
+  </Component>
+  
+  <Component id="FieldTypeByPT" type="data.Data">
+    <Param name="PT" />
+    <xtml t="xml.Xml" DynamicContent="true">
+      <FieldType t="%$PT%" />
+    </xtml>
+  </Component>
+
+  <Component id="FilterNameToXtml" type="data.Data" description="Generates a filter out of a field name">
+    <Param name="Name" Default="%%" />
+      <xtml t="data.Pipeline">
+          <Var name="IDBase" t="text.ToId" Data="%$Name%" />
+          <Var name="ID" value="Filter_%$IDBase%" />
+          <Var name="Title" value="Filter By %$Name%" /> 
+          <Var name="FieldData" value="\%@%$IDBase%\%" />
+          <Item t="xml.Xml" DynamicContent="true">
+            <Field t="fld.Field" Title="%$Title%" ID="%$ID%" FieldData="\%!@%$IDBase%\%">
+              <FieldType t="fld_type.EditableText"/>
+              <FieldAspect t="field_aspect.DescriptionForEmptyText" Description="%$Title%"/>
+              <FieldAspect t="itemlist_aspect.Filter" FieldData="%$FieldData%">
+                <FilterType t="itemlist_filter.Text"/>
+              </FieldAspect>
+              <FieldAspect t="field_aspect.ClearValueButton" />
+            </Field>
+          </Item>
+    </xtml>
+  </Component>
+
+</xtml>

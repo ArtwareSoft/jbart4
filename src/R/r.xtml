@@ -1,0 +1,251 @@
+<xtml ns="R" plugin="R">
+
+<Type id="2DPivotStyle"/>
+
+  <Component id="R" type="jbart.PluginDefinition">
+    <xtml t="xml.Xml">
+      <plugin id="R" name="R Connector" description="jBart wrapping to R analysis package" />
+    </xtml>
+  </Component>
+
+  <Component id="R2DPivot" type="field.Fields" execution="native">
+    <Param name="ID" advanced="always" essential="true" idField="true" />
+    <Param name="Title" essential="true" autoaspects="false" titleField="true" />
+    <Param name="DataMatrix" description="csv format labeled matrix"/>
+    <Param name="Style" type="R.2DPivotStyle">
+      <Default t="R.PivotTableText" />
+    </Param>
+    <Param name="FieldAspect" type="field.FieldAspect[]" script="true" light="false" />    
+  </Component>
+
+  <Component id="PivotTableText" type="R.2DPivotStyle">
+  <xtml t="ui.CustomStyle" base="R.PivotTableText">
+    <Html><![CDATA[<table>
+  <tr class="header_line">
+    <td class="top_left"/>
+    <td class="header_top"/>
+  </tr>
+  <tr class="value_line">
+    <td class="header_left"/>
+    <td class="value_cell"/>
+  </tr>
+</table>]]></Html>
+    <Css><![CDATA[.header_line { }
+.header_top { text-align:center; background-color:#DBDBDB; }
+.header_left { background-color:#DBDBDB; }
+.value_cell { text-align:right; width: 62px; padding-right: 32px; }
+]]></Css>
+    <Javascript><![CDATA[function render(pivot) { 
+ aa_r_table_pivot(pivot);
+}]]></Javascript>
+  </xtml>  
+</Component>
+
+
+  <Component id="SaveRScript" type="action.Action">
+      <Param name="ProjectDir"/>
+      <Param name="FileName"/>
+      <Param name="Script"/>
+      <Param name="DT_RServer" Default="http://localhost:8087"/>
+      <xtml t="async.RunAsyncActions">
+        <Action t="http.HttpCall" Url="/?op=SaveFile">
+          <Aspect t="http.RawPost"> 
+            <RawData t="data.Pipeline">
+            <Item t="object.Object">
+              <TextProperty name="Contents" value="%$Script%"/>
+              <TextProperty name="Path" value="%$ProjectDir%/temp/%$FileName%"/>
+            </Item>
+            <Item t="data.StringifyJson"/>
+          </RawData>
+          </Aspect>
+       </Action>
+      </xtml>
+  </Component>
+
+  <Component id="LoadFileContent" type="action.Action">
+      <Param name="ProjectDir"/>
+      <Param name="FileName"/>
+      <Param name="To" script="true"/>
+      <Param name="ProcessResults" Default="%%" script="true"/>
+      <xtml t="http.HttpCall" Url="/?op=filesContent&amp;dir=%$ProjectDir%&amp;files=%$FileName%">
+        <Aspect t="http.WriteResultValue">
+          <To t="xtml.UseParam" Param="To"/>
+          <ProcessResults t="xtml.UseParam" Param="ProcessResults"/>
+        </Aspect>
+      </xtml>
+  </Component>
+
+  <Component id="GetCSVFiles" type="action.Action">
+      <Param name="ProjectDir"/>
+      <xtml t="http.HttpCall" Url="/?op=ls&amp;dir=%$CustomerMapping/@Project%">
+        <OnSuccess t="action.WriteValue" To="%!$CustomerMapping/@csvfiles%">
+          <Value t="data.Pipeline">
+            <Item t="text.Trim"/>
+            <Item t="text.Split"/>
+            <Item t="yesno.PassesFilter">
+              <Filter t="yesno.Contains">
+                <Text value=".csv"/>
+              </Filter>
+            </Item>
+            <Aggregator t="text.Concat" Separator=","/>
+          </Value>
+        </OnSuccess>
+      </xtml>
+    </Component>
+
+  <Component id="RunRInProjectDir" type="action.Action">
+      <Param name="Title"/>
+      <Param name="ProjectDir" Default="%$CustomerMapping/@Project%"/>
+      <Param name="Expression"/>
+      <Param name="ResultFiles" description="The files we expect to change in the destination dir. Will be deleted before" essential="true"/>
+      <Param name="ResultDestination" Default="%$ResultsDir%"/>
+      <Param name="Utility" type="data.Boolean"/>
+      <xtml t="async.RunAsyncActions">
+        <Condition t="yesno.Not">
+          <Of t="data.InPreviewMode"/>
+        </Condition>
+        <Var name="UtilitiesDir" t="data.IfThenElse" Then="%$ServerSettings/@jbart_base_dir%nodejs/R/" Else="" If="%$DTOnly/@inDT%"/>
+        <Action t="R.SaveRScript" ProjectDir="%$ProjectDir%" FileName="utilities.R">
+          <Condition t="yesno.Not" Of="%$DTOnly/@inDT%"/>
+          <Script t="clienttool.MapperRScripts"/>
+        </Action>
+
+        <Action t="R.SaveRScript" ProjectDir="%$ProjectDir%" FileName="script.R" Script="setwd('%$ProjectDir%/temp');source('%$UtilitiesDir%utilities.R');%$UtilitySources%&#xa;%$CustomerMappingSource%&#xa;Sys.time();%$Expression%">
+          <Var name="CustomerMappingSource" t="data.IfThenElse" If="%$Utility%" Else="source('CustomerMapping.R');source('Population.R');"/>
+        </Action>
+        <Action t="http.HttpCall" Remark="RemoveResultFiles" Url="/?op=removeTempFiles&amp;dir=%$ProjectDir%&amp;file=%$ResultFiles%">
+          <Condition t="yesno.NotEmpty" Value="%$ResultFile%"/>
+        </Action>
+        <Action t="http.HttpCall" Remark="Run R" Url="/?op=runR&amp;dir=%$ProjectDir%"/>
+        <Action t="http.HttpCall" Remark="Assign Results" Url="/?op=filesContent&amp;dir=%$ProjectDir%/temp&amp;files=script.Rout,%$ResultFiles%">
+          <Condition t="yesno.NotEmpty">
+            <Data t="xml.Tag" Data="%$ResultDestination%"/>
+          </Condition>
+          <OnSuccess t="action.RunActionOnItems">
+            <Action t="action.IfThenElse">
+              <Then t="xml.ReplaceXmlElement" NewElement="%%" Element="%$ResultDestination/file[@name='{@name}']%"/>
+              <If t="yesno.NotEmpty">
+                <Value value="%$ResultDestination/file[@name='{@name}']%"/>
+              </If>
+              <Else t="xml.AddXmlChildren" Parent="%$ResultDestination%" Children="%%"/>
+            </Action>
+            <Items t="data.Pipeline">
+              <Item t="xml.TextToXml"/>
+              <Item value="%file%"/>
+              <Item t="xml.TextToXml"/>
+            </Items>
+          </OnSuccess>
+        </Action>
+      </xtml>
+    </Component>
+
+<Component id="GetServerSettings" type="action.Action">
+    <xtml t="http.HttpCall" Remark="get settings" Url="/?op=settings">
+       <OnSuccess t="action.WriteValue" Value="%%" To="%$ServerSettings%" />
+    </xtml>
+</Component>
+
+    
+  <Component id="GoogleComboChart" type="R.2DPivotStyle">
+    <xtml t="ui.CustomStyle">
+      <Html><![CDATA[<div/>]]></Html>
+      <Css><![CDATA[#this { width: 900px; height: 500px;}]]></Css>
+   <Javascript><![CDATA[function render(pivot) { 
+ aa_drawComboChart(pivot);
+}]]></Javascript>
+    </xtml>
+  </Component>
+
+  <Component id="Xml2RList" type="data.Data">
+      <Param name="Xml">
+        <Default value="%%"/>
+      </Param>
+      <Param name="AttListIds" description="attributes names of R lists"/>
+      <Param name="ElemListIds" description="element names of R lists"/>
+      <Param name="WithoutName" type="data.Boolean"/>
+      <xtml t="data.Pipeline">
+        <Item value="%$Xml%"/>
+        <Item t="data.List">
+          <Item t="data.Pipeline">
+            <Item t="xml.Attributes"/>
+            <Item t="data.IfThenElse" Else="%$AttName% = &quot;%%&quot;">
+              <Var name="AttName" t="xml.AttributeName"/>
+              <If t="yesno.Contains" AllText=",%$AttListIds%,">
+                <Text value="%$AttName%"/>
+              </If>
+              <Then t="data.Pipeline">
+                <Item t="text.Split"/>
+                <Item value="&quot;%%&quot;"/>
+                <Aggregator t="text.Concat" Separator="," Prefix="%$AttName% = c(" Suffix=")"/>
+              </Then>
+            </Item>
+          </Item>
+          <Aggregator t="text.Concat">
+            <Separator t="data.List">
+              <Item value=","/>
+              <Item t="text.NewLine"/>
+              <Aggregator t="text.Concat"/>
+            </Separator>
+          </Aggregator>
+          <Item t="data.IfThenElse" If="%$Multiple%">
+            <If1 t="yesno.Contains">
+              <Text t="data.Pipeline">
+                <Item t="xml.Tag"/>
+                <Item value=",%%,"/>
+              </Text>
+              <AllText value=",%$ElemListIds%,"/>
+            </If1>
+            <Else t="data.Pipeline">
+              <Item value="%*%"/>
+              <Item t="R.Xml2RList" ElemListIds="%$ElemListIds%" AttListIds="%$AttListIds%"/>
+            </Else>
+            <Then t="data.List">
+              <Item value="list("/>
+              <Item t="data.Pipeline">
+                <Item value="%*%"/>
+                <Item t="R.Xml2RList" WithoutName="true" ElemListIds="%$ElemListIds%" AttListIds="%$AttListIds%"/>
+                <Aggregator t="text.Concat" Separator=","/>
+              </Item>
+              <Item value=")"/>
+              <Aggregator t="text.Concat"/>
+            </Then>
+          </Item>
+        </Item>
+        <Aggregator t="text.Concat">
+          <Separator t="data.List">
+            <Item value=","/>
+            <Item t="text.NewLine"/>
+            <Aggregator t="text.Concat"/>
+          </Separator>
+          <Prefix t="data.List">
+            <Item name="VarName" t="data.List">
+              <Item t="xml.Tag" Data="%$Xml%"/>
+              <Item value=" = "/>
+              <Aggregator t="text.Concat"/>
+              <Condition t="yesno.Not" Of="%$WithoutName%"/>
+            </Item>
+            <Item value="list(">
+              <Condition t="yesno.Not" Of="%$Multiple%"/>
+            </Item>
+            <Item t="text.NewLine"/>
+            <Aggregator t="text.Concat"/>
+          </Prefix>
+          <Suffix t="data.List">
+            <Item t="text.NewLine"/>
+            <Aggregator t="text.Concat"/>
+            <Item value=")"/>
+            <Condition t="yesno.Not" Of="%$Multiple%"/>
+          </Suffix>
+        </Aggregator>
+        <Var name="Multiple" t="yesno.Contains">
+          <Text t="data.Pipeline">
+            <Item t="xml.Tag" Data="%$Xml%"/>
+            <Item value=",%%,"/>
+          </Text>
+          <AllText value=",%$ElemListIds%,"/>
+        </Var>
+      </xtml>
+    </Component>
+
+ 
+</xtml>

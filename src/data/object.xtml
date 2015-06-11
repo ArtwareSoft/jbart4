@@ -1,0 +1,93 @@
+<xtml ns="object" light="false">
+
+  <Type id="Object" />
+
+  <Component id="Object" type="data.Data" execution="native">
+    <Param name="Property" type="data.Data[]" has_name="true" />
+    <Param name="TextProperty" type="data.Data[]" has_name="true" />
+    <Param name="BooleanProperty" type="data.Data[]" has_name="true" />
+    <Param name="IntegerProperty" type="data.Data[]" has_name="true" />
+    <Param name="Method" type="action.Action[]" has_name="true" />
+  </Component>
+
+  <Component id="ObjectFromParams" type="data.Data" execution="native">
+    <Param name="Property" type="data.Data[]" />
+    <Param name="Method" type="data.Data[]" />
+  </Component>
+
+  <Component id="RunMethod" type="*" execution="native" dtsupport="false">
+    <Param name="Object" Default="%%"/>
+    <Param name="Method" essential="true" />
+    <Param name="Input" Default="%%"/>
+    <Param name="Param" type="data.Data[]">
+      <ParamAspect t="xtml_dt_aspect.RequiresName" />
+    </Param>
+  </Component>
+
+  <Component id="FastRunMethod" type="*" execution="native" description="Object cannot be changed in batch calls" dtsupport="false">
+    <Param name="Object" Default="%%"/>
+    <Param name="Method" essential="true" />
+  </Component>
+
+  <Component id="SetProperty" type="action.Action" execution="native">
+    <Param name="Object" Default="%%"/>
+    <Param name="Property" essential="true"  />
+    <Param name="Value" essential="true" />
+    <Param name="IsSingleProperty" type="data.Boolean" />
+  </Component>
+
+  <Component id="SetTextProperty" type="action.Action" execution="native">
+    <Param name="Object" Default="%%"/>
+    <Param name="Property" essential="true"  />
+    <Param name="Value" essential="true" />
+  </Component>
+  
+  <Component id="SetNumericProperty" type="action.Action" execution="native">
+    <Param name="Object" Default="%%"/>
+    <Param name="Property" essential="true"  />
+    <Param name="Value" essential="true" />
+  </Component>
+
+  <Component id="ClearProperty" type="action.Action" execution="native">
+    <Param name="Object" Default="%%"/>
+    <Param name="Property" essential="true"  />
+  </Component>
+  
+  <Component id="SetBooleanProperty" type="action.Action" execution="native">
+    <Param name="Object" Default="%%"/>
+    <Param name="Property" essential="true"  />
+    <Param name="Value" essential="true" />
+  </Component>
+
+  <Component id="SetMethod" type="action.Action" execution="native">
+      <Param name="Object" Default="%%" />
+      <Param name="Method" essential="true"/>
+      <Param name="Xtml" essential="true"/>
+    </Component>
+
+  <Component id="AddToProperty" type="action.Action" execution="native">
+    <Param name="Object" Default="%%"/>
+    <Param name="Property" essential="true"  />
+    <Param name="Value" essential="true" />
+  </Component>
+
+  <Component id="HasMethod" type="data.Boolean" execution="native" dtsupport="false">
+    <Param name="Object" Default="%%"/>
+    <Param name="Method" essential="true" />
+  </Component>
+  
+  <Component id="ExtendObject" type="data.Data" execution="native">
+    <Param name="Object" />
+    <Param name="Property" type="data.Data[]" />
+    <Param name="TextProperty" type="data.Data[]" />
+    <Param name="Method" type="data.Data[]" />
+    <Param name="AddToProperty" />
+    <NativeHelper t="object.Object"/>
+  </Component>
+  
+  <Component id="Clone" type="data.Data" execution="native">
+    <Param name="Object" />
+  </Component>
+  
+  <Component id="IsObject" type="data.Boolean" execution="native" />
+</xtml>

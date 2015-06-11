@@ -1,0 +1,9 @@
+{
+	"config" : { 
+		"port" : "80",
+		"widgets_base_dir": "widgets/"
+	},
+	"scripts": {
+	    "start": "node studio/server/studio-server.js"
+	}
+}

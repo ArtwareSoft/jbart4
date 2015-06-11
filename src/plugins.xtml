@@ -1,0 +1,19 @@
+<xtml ns="plugins">
+
+  <Component id="PluginDefinitions" type="data.Data">
+    <xtml t="xml.WithChanges">
+      <Xml t="xml.Xml">
+      <plugins>
+      </plugins>
+      </Xml>
+      <Change t="xml.AddChildren">
+        <Children t="data.Pipeline">
+          <Item t="xtml.ComponentsOfType" Type="jbart.PluginDefinition" />
+          <Item t="xtml.ComponentDefinition" ID="%%" ToXtml="true"/>
+          <Item t="xtml.RunXtml" Xtml="%%" />
+        </Children>
+      </Change>
+    </xtml>
+  </Component>
+
+</xtml>

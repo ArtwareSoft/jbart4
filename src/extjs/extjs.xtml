@@ -1,0 +1,44 @@
+<xtml ns="extjs" plugin="extjs">
+
+  <Type id="CoBrowseChannel" />
+  <Type id="FormUpdateStyle" />
+
+  <Component id="CoBrowsePluginDefiniton" type="jbart.PluginDefinition">
+    <xtml t="xml.Xml">
+      <plugin id="extjs" name="Sencha Ext JS" description="Note that purchasing Ext JS is required" />
+    </xtml>
+  </Component>
+
+		<Component id="ExtGrid" type="itemlist_style.View">
+		  <Param name="RTL" type="data.Boolean" />
+		  <Param name="Width" Default="100%" />
+		  <Param name="Height" Default="200" slider="true" sliderUnit="" />
+		  <Param name="ColumnWidthByContent" type="data.Boolean" />
+		  <Param name="ColumnWidth" Default="150" slider="true" sliderUnit="" />
+		  <xtml t="ui.CustomStyle" RTL="%$RTL%" Height="%$Height%" ColumnWidthByContent="%$ColumnWidthByContent%" ColumnWidth="%$ColumnWidth%">
+		    <Html><![CDATA[<div/>]]></Html>
+		    <Css><![CDATA[#this {
+		  width: %$Width%;
+		}]]></Css>
+		    <Javascript><![CDATA[function(itemlist) {
+		  var settings = { 
+		    rtl: itemlist.params.RTL == 'true',
+		    flex: itemlist.params.ColumnWidthByContent == 'true',
+		    columnWidth: parseInt(itemlist.params.ColumnWidth),
+		    height: parseInt(itemlist.params.Height)
+		  };
+		  aa_ext_grid(itemlist,settings);
+		}]]></Javascript>
+		  </xtml>
+		</Component>
+
+		<Component id="ExtGridColumnProperties" type="field.FieldAspect">
+			<Param name="IsLocked" type="data.Boolean" />
+			<Param name="Width" slider="true" sliderUnit="" />
+			<xtml t="action.RunActions">
+				<Action t="object.SetBooleanProperty" Object="%$_Field%" Property="ExtLocked" Value="%$IsLocked%" />
+				<Action t="object.SetNumericProperty" Object="%$_Field%" Property="ExtWidth" Value="%$Width%" />
+			</xtml>
+		</Component>
+
+</xtml>

@@ -1,0 +1,79 @@
+<xtml ns="cobrowse" plugin="cobrowse">
+
+  <Type id="CoBrowseChannel" />
+  <Type id="FormUpdateStyle" />
+
+  <Component id="CoBrowsePluginDefiniton" type="jbart.PluginDefinition">
+    <xtml t="xml.Xml">
+      <plugin id="cobrowse" name="CoBrowsing" enhanceGStudio="cobrowse.EnhanceGStudio"/>
+    </xtml>
+  </Component>
+
+  <Component id="CoBrowseScrollPosition" type="jbart.ApplicationFeature" execution="native">
+  </Component>
+
+  <Component id="CoBrowseSendRecieveCurrentSize" type="jbart.ApplicationFeature" execution="native">
+  </Component>
+
+  <Component id="CoBrowseJoinNotification" type="jbart.ApplicationFeature" execution="native">
+    <Param name="NotificationInAgentWhenVisitorJoins" script="true" type="action.Action" />
+  </Component>
+
+  <Component id="CoBrowseVisualContainerScrollPosition" type="field.FieldAspect" execution="native">
+  </Component>
+
+  <Component id="CoBrowseGotoParticipant" type="action.Action">
+    <xtml t="object.RunMethod" Object="%$_AppContext%" Method="CoBrowseGotoParticipant" />
+  </Component>
+
+  <Component id="CoBrowseSuggestGoto" type="action.Action">
+    <xtml t="object.RunMethod" Object="%$_AppContext%" Method="CoBrowseSuggestGoto" />
+  </Component>
+
+  <Component id="CoBrowseAgentSideOnly" type="field.FieldAspect" execution="native" />
+  <Component id="CoBrowseVisitorSideOnly" type="field.FieldAspect" execution="native" />
+
+  <Component id="GoToUIState" type="action.Action" execution="native">
+    <Param name="NewUIState" />
+  </Component>
+
+  <Component id="RunActionAndKeepUIState" type="action.Action" execution="native">
+    <Param name="Action" type="action.Action" />
+  </Component>
+
+    <Type id="MarkableItemStyle" />
+
+  <Component id="SimulateRoomMerge" type="data.Data" execution="native">
+    <Param name="MyClone" />
+    <Param name="MyLatest" />
+    <Param name="OtherLatest" />
+  </Component>
+
+<Component id="EnhanceGStudio" type="action.Action" hidden="true">
+  <xtml t="action.RunActions">
+    <Action t="object.AddToProperty" Object="%$_JBartStudio%" Property="MainMenuButtons" >
+      <Value t="google_drive.MainMenuButton" ID="gstudio_cobrowse" Title="LMC">
+        <Field t="control.Button" Title="Switch to agent" Condition="%$CoBrowseSide% == 'visitor'">
+          <Style t="gstudio.StudioMenuItem"/>
+          <Action t="action.RunActions">
+            <Action t="action.WriteValue" To="%$_AppContext/AppXtml/DataResource[@ResourceID='CoBrowseSide']/@Value%" Value="agent" />
+            <Action t="gstudio.StrongRefresh" />
+          </Action>
+         </Field>
+        <Field t="control.Button" Title="Switch to visitor" Condition="%$CoBrowseSide% == 'agent'">
+          <Style t="gstudio.StudioMenuItem"/>
+          <Action t="action.RunActions">
+            <Action t="action.WriteValue" To="%$_AppContext/AppXtml/DataResource[@ResourceID='CoBrowseSide']/@Value%" Value="visitor" />
+            <Action t="gstudio.StrongRefresh" />
+          </Action>
+         </Field>
+         <Field value="%$_JBartStudio/CoBrowse_MoreMenuItems%" />
+      </Value>
+    </Action>
+    <Action t="gstudio.ToggleTopCss" ShowCondition="true">
+      <Css><![CDATA[#this { background: #ECF0F1;} ]]></Css>
+    </Action>
+  </xtml>
+</Component>
+
+</xtml>

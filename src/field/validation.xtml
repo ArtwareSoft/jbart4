@@ -1,0 +1,140 @@
+<xtml package="true">
+
+<xtml ns="validation">
+
+  <Type id="Validiation" />
+
+  <Component id="ContainsText" type="validation.Validiation" execution="native" autoexpand="true">
+    <Param name="Text" />
+  </Component>
+
+  <Component id="MatchesRegularExpression" type="validation.Validiation" execution="native">
+    <Param name="Expression" />
+  </Component>
+
+  <Component id="IsChecked" type="validation.Validiation" gallery="IsChecked">
+    <xtml t="yesno.NotEqualsTo" To="true"/>
+  </Component>
+
+  <Component id="IsNumber" type="validation.Validiation" execution="native" />
+
+  <Component id="Unique" type="validation.Validiation" execution="native" gallery="UniquenessValidation">
+    <Param name="OtherValues" />
+  </Component>
+  
+  <Component id="CustomValidation" type="validation.Validiation">
+    <Param name="SuccessCondition" type="data.Boolean" script="true"/>
+    <xtml t="yesno.Not">
+      <Of t="xtml.UseParam" Param="SuccessCondition" />
+    </xtml>
+  </Component>
+
+  <Type id="Style" />
+
+  <Component id="Default" type="validation.Style">
+    <xtml t="ui.CustomStyle">
+      <Html><![CDATA[<div/>]]></Html>
+      <Css><![CDATA[
+.aa_error_message {
+  display: block;
+  color: #C24343;
+  padding-top:3px;
+}
+input.aa_error { background: pink !important; }
+]]></Css>
+      <Javascript><![CDATA[function init(validationStyle) {
+  aa_initValidationStyle(validationStyle,{});
+}]]></Javascript>
+    </xtml>
+  </Component>
+
+  <Component id="DefaultOld" deprecated="true">
+    <xtml t="validation.CustomStyleOld">
+      <Html><![CDATA[<div />]]></Html>
+      <Css><![CDATA[#this { color:red; }]]></Css>
+      <CssForInput><![CDATA[#this { background: pink !important; }]]></CssForInput>
+      <Javascript><![CDATA[function (validation) {
+  validation.innerHTML = validation.errorText;
+  validation.init({ 
+    showError: function(control,errorElement,mandatory) {
+       jQuery(errorElement).insertAfter(jQuery(control).parent().children().slice(-1));
+       if (mandatory) jQuery(errorElement).hide(); 
+    },
+    showErrorSummary: function(top,summary) {
+      summary.setAttribute('tabindex','1000');
+      top.appendChild(summary);
+      summary.focus();
+    }
+  });
+}]]></Javascript>
+      <CssForSummary><![CDATA[#this { display:block; color:red; font-weight:bold; margin-top:2px; font-family:Arial; font-size:11px; }]]></CssForSummary>
+    </xtml>
+  </Component>
+  
+  <Component id="CustomStyleOld">
+    <Param name="Html" codemirror="true" />
+    <Param name="Css" codemirror="true" />
+    <Param name="Javascript" codemirror="true" />
+    <Param name="CssForSummary" codemirror="true" codemirrortype="css"/>
+    <Param name="CssForInput" codemirror="true" codemirrortype="css"/>
+    <Param name="DesignTime_Save">
+      <Field t="bart_dt.StyleSave">
+        <ExtraAction t="xml.AddXmlChildren" Parent="%$NewXtml%">
+          <Children t="data.Pipeline">
+            <Item t="xml.Xml">
+              <xtml>
+                <CssForSummary><![CDATA[%$Xtml/CssForSummary%]]></CssForSummary>
+                <CssForInput><![CDATA[%$Xtml/CssForInput%]]></CssForInput>
+              </xtml>
+            </Item>
+            <Item value="%*%" />
+          </Children>
+        </ExtraAction>
+      </Field>
+    </Param>
+    <ParamGenerator t="action.RunActions">
+      <Var name="Style" t="xtml.RunXtml" Xtml="%$PrevXtml%" />
+      <Action t="bart_dt.StyleGenerator" />
+      <Action t="action.WriteValue" To="%!@CssForSummary%" Value="%$Style/CssForSummary%" />
+      <Action t="action.WriteValue" To="%!@CssForInput%" Value="%$Style/CssForInput%" />
+    </ParamGenerator>
+    <xtml t="object.Object">
+      <TextProperty name="Html" value="%$Html%" />
+      <TextProperty name="Css" value="%$Css%" />
+      <TextProperty name="Javascript" value="%$Javascript%" />
+      <TextProperty name="CssForSummary" value="%$CssForSummary%" />
+      <TextProperty name="CssForInput" value="%$CssForInput%" />
+    </xtml> 
+  </Component>  
+
+</xtml>
+
+<xtml ns="field_aspect">
+
+  <Component id="Validation" type="field.FieldAspect" execution="native" context="FieldType=editable,FieldComponent=control.Layout">
+    <Param name="ValidationLogic" type="validation.Validiation" script="true" essential="true" />
+    <Param name="CheckValidation" type="enum" Options="on change,on blur,on save" Default="on blur"/>
+    <Param name="ErrorMessage" />
+    <Param name="AddTitleToErrorMessage" type="data.Boolean" Default="true" />
+    <Param name="ShowErrorMessageNextToField" type="data.Boolean" Default="true" advanced="true" />
+  </Component>
+
+  <Component id="ValidationStyle" type="field.FieldAspect" execution="native">
+    <Param name="Style" type="validation.Style">
+      <Default t="validation.Default" />
+    </Param>
+  </Component>
+
+</xtml>
+
+<xtml ns="app_feature">
+
+  <Component id="ValidationStyle" type="jbart.ApplicationFeature" execution="native">
+    <Param name="Style" type="validation.Style">
+      <Default t="validation.Default" />
+    </Param>
+  </Component>
+
+</xtml>
+
+</xtml>

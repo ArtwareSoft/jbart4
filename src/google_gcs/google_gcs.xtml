@@ -1,0 +1,14 @@
+<xtml ns="google_gcs" >
+
+    <Component id="LogoutGoogleUser" type="action.Action" execution="native">
+    	<Param name="ReloadPageAfter" type="data.Boolean" Default="true" />
+    </Component>
+
+    <Component id="UploadFileToGoogleCloudStorage" type="action.Action" execution="native">
+      <Param name="FileName" />
+      <Param name="Content" />
+      <Param name="Bucket" />
+      <Param name="ContentType" Default="text/plain"/>
+    </Component>
+
+</xtml>

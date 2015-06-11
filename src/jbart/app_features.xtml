@@ -1,0 +1,195 @@
+<xtml package="true">
+<xtml ns="appfeature">
+
+  <Component id="Responsive" type="jbart.ApplicationFeature" execution="native">
+    <NativeHelper name="WidthForStudio" t="data.Pipeline" >
+      <Item t="gstudio.CurrentPageXtml" />
+      <Item value="%FieldAspect[@t = 'field_aspect.PagePreviewSize']%" />
+      <Item t="xtml.RunXtml" Xtml="%%" Field="Size" />
+      <Item value="%Width%" />
+    </NativeHelper>
+  </Component>
+
+  <Component id="ConfirmationOnCloseBrowserPage" type="jbart.ApplicationFeature" execution="native">
+    <Param name="ConditionForConfirmation" type="data.Boolean" script="true" Default="true" />
+    <Param name="ConfirmationText" type="data.Data" script="true" Default="Are you sure you want to leave this page?" />
+  </Component>
+
+  <Component id="CssForHtmlHead" type="bart.ApplicationFeature,jbart.ApplicationFeature" execution="native">
+    <Param name="Css" codemirror="true" />
+  </Component>
+
+  <Component id="Css" type="bart.ApplicationFeature,jbart.ApplicationFeature" >
+    <Param name="Css" codemirror="true" />
+    <xtml t="object.SetProperty" Object="%$_AppContext%" Property="Css" Value="%$Css%" /> 
+  </Component>	
+
+  <Component id="RunAction" type="bart.ApplicationFeature,jbart.ApplicationFeature" execution="native">
+    <Param name="Action" type="action.Action" script="true" />
+  </Component>
+
+  <Component id="DeployedHtmlLoader" type="jbart.ApplicationFeature">
+    <Param name="Loader" type="app_loader.Style">
+      <Default t="app_loader.Circle" />
+    </Param>
+    <xtml t="object.SetMethod" Object="%$_AppContext%" Method="LoaderBodyElement">
+      <Xtml t="data.Pipeline">
+        <Item t="data.List">
+          <Item value="&lt;style&gt;%$Loader/Css%&lt;/style&gt;" />
+          <Item value="&lt;div id='jbart_loading'&gt;%$Loader/Html%&lt;/div&gt;" />
+        </Item>
+        <Aggregator t="text.Concat">
+          <Separator t="text.NewLine"/>
+        </Aggregator>
+      </Xtml>
+    </xtml>
+  </Component>
+
+  <Component id="DeployedHtmlHeadElement" type="jbart.ApplicationFeature">
+    <Param name="HeadElement" codemirror="true" script="true"/>
+    <xtml t="object.SetMethod" Object="%$_AppContext%" Method="DeployHeadElements">
+      <Xtml t="xtml.UseParam" Param="HeadElement" />
+    </xtml>
+  </Component>
+
+  <Component id="DeployedHtmlBodyElement" type="jbart.ApplicationFeature">
+    <Param name="BodyElement" codemirror="true" script="true"/>
+    <xtml t="object.SetMethod" Object="%$_AppContext%" Method="DeployBodyElements">
+      <Xtml t="xtml.UseParam" Param="BodyElement" />
+    </xtml>
+  </Component>
+
+  <Component id="SendEmailOnRuntimeError" type="jbart.ApplicationFeature">
+    <Param name="EMail" Default="support@artwaresoft.com" />
+    <xtml t="object.SetMethod" Object="%$_AppContext%" Method="LogRuntimeError">
+      <Xtml t="http.HttpCall" Url="//jbartdb.appspot.com/bart.php?op=mail">
+        <Aspect t="http.PostForm" UseStoredCookies="false" UseStoredHiddenInputs="false">
+          <PostData t="http.PostData" Name="body" Value="%%"/>
+          <PostData t="http.PostData" Name="subject" Value="Runtime Error (%$_WidgetXml/@id%)"/>
+          <PostData t="http.PostData" Name="to" Value="%$EMail%"/>
+          <PostData t="http.PostData" Name="fromEmail" Value="noreply@artwaresoft.com"/>
+          <PostData t="http.PostData" Name="fromName" Value="Artwaresoft"/>
+        </Aspect>
+      </Xtml>
+    </xtml>
+  </Component>
+
+</xtml>
+
+<xtml ns="app_loader">
+
+  <Component id="Style" />
+
+<Component id="Circle" type="app_loader.Style">  <xtml t="ui.CustomStyle">    <Html><![CDATA[<div id="circleG">
+<div id="circleG_1" class="circleG">
+</div>
+<div id="circleG_2" class="circleG">
+</div>
+<div id="circleG_3" class="circleG">
+</div>
+</div>]]></Html>    <Css><![CDATA[
+#circleG {
+  width:149px;
+  margin:auto;
+  height:30px;
+  margin-top:210px;
+  position:absolute;
+  top:25\%;
+  left:0;
+  right:0;
+}
+.jbart_loading {
+  position:relative;
+}
+.jbart_loading,
+head,
+body {
+  height:100\%;
+}
+.circleG {
+  background-color:#C4C4C4;
+  float:left;
+  height:32px;
+  margin-left:17px;
+  width:32px;
+  -moz-animation-name:bounce_circleG;
+  -moz-animation-duration:1.2s;
+  -moz-animation-iteration-count:infinite;
+  -moz-animation-direction:linear;
+  -moz-border-radius:21px;
+  -webkit-animation-name:bounce_circleG;
+  -webkit-animation-duration:1.2s;
+  -webkit-animation-iteration-count:infinite;
+  -webkit-animation-direction:linear;
+  -webkit-border-radius:21px;
+  -ms-animation-name:bounce_circleG;
+  -ms-animation-duration:1.2s;
+  -ms-animation-iteration-count:infinite;
+  -ms-animation-direction:linear;
+  -ms-border-radius:21px;
+  -o-animation-name:bounce_circleG;
+  -o-animation-duration:1.2s;
+  -o-animation-iteration-count:infinite;
+  -o-animation-direction:linear;
+  -o-border-radius:21px;
+  animation-name:bounce_circleG;
+  animation-duration:1.2s;
+  animation-iteration-count:infinite;
+  animation-direction:linear;
+  border-radius:21px;
+}
+#circleG_1 {
+  -moz-animation-delay:0.24s;
+  -webkit-animation-delay:0.24s;
+  -ms-animation-delay:0.24000000000000005s;
+  -o-animation-delay:0.24000000000000005s;
+  animation-delay:0.24000000000000005s;
+}
+#circleG_2 {
+  -moz-animation-delay:0.56s;
+  -webkit-animation-delay:0.56s;
+  -ms-animation-delay:0.56s;
+  -o-animation-delay:0.56s;
+  animation-delay:0.56s;
+}
+#circleG_3 {
+  -moz-animation-delay:0.72s;
+  -webkit-animation-delay:0.72s;
+  -ms-animation-delay:0.72s;
+  -o-animation-delay:0.72s;
+  animation-delay:0.72s;
+}
+@-moz-keyframes bounce_circleG {
+  0\% {} 50\% {
+    background-color:#6B6B6B
+  }
+  100\% {}
+}
+@-webkit-keyframes bounce_circleG {
+  0\% {} 50\% {
+    background-color:#6B6B6B
+  }
+  100\% {}
+}
+@-ms-keyframes bounce_circleG {
+  0\% {} 50\% {
+    background-color:#6B6B6B
+  }
+  100\% {}
+}
+@-o-keyframes bounce_circleG {
+  0\% {} 50\% {
+    background-color:#6B6B6B
+  }
+  100\% {}
+}
+@keyframes bounce_circleG {
+  0\% {} 50\% {
+    background-color:#6B6B6B
+  }
+  100\% {}
+}]]></Css>  </xtml></Component>
+
+</xtml>
+
+</xtml>

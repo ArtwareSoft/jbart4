@@ -1,0 +1,148 @@
+<xtml ns="aaeditor" light="false">
+  
+ <Component id="State" type="data.Data">
+  <Param name="GlobalPreviewXtml">
+   <Default t="xtml.Xtml" Xtml="%%" />
+  </Param>
+  <Param name="TreeXtml">
+   <Default t="xtml.Xtml" Xtml="%%" />
+  </Param>
+  <Param name="SelectedInTree" />
+  <Param name="SaveAction" script="true" type="action.Action"/> 
+
+  <xtml t="xtml.Params">
+   <Param name="GlobalPreviewXtml" value="%$GlobalPreviewXtml%" />
+   <Param name="TreeXtml" value="%$TreeXtml%" />
+   <Param name="SelectedInTree" value="%$SelectedInTree%" />
+   <Param name="Clipboard" value="" />
+   <Param name="ModifiedComponents" t="xml.Xml">
+     <update />
+   </Param>
+   <Param name="OriginalGlobalPreviewXtml" value="%$GlobalPreviewXtml%" />
+   <ScriptParam name="Save" t="xtml.UseParam" Param="SaveAction"/>
+  </xtml>
+ </Component>
+
+ <Component id="UpdateEditorState" type="action.Action">
+  <Param name="GlobalPreviewXtml">
+   <Default t="xtml.Xtml" Xtml="%%" />
+  </Param>
+  <Param name="TreeXtml">
+   <Default t="xtml.Xtml" Xtml="%%" />
+  </Param>
+  <Param name="SelectedInTree" />
+  <xtml t="action.RunActions">
+   <Action t="object.SetProperty" Object="%$AAEditorState%" Property="GlobalPreviewXtml" Value="%$GlobalPreviewXtml%" />
+   <Action t="object.SetProperty" Object="%$AAEditorState%" Property="TreeXtml" Value="%$TreeXtml%" />
+   <Action t="object.SetProperty" Object="%$AAEditorState%" Property="SelectedInTree" Value="%$SelectedInTree%" />
+  </xtml>
+ </Component>
+
+ <Component id="GlobalPreviewControl" type="ui.Control">
+  <xtml t="ui.List" Name="aaeditor global">
+   <Control t="debugui.RuntimeObjectControl">
+   	<Condition t="yesno.And" Remark="no global preview for actions">
+   		<Item t="yesno.ItemsNotEqual" Item1="action.ActionUsage" >
+   			<Item2 t="data.Pipeline" >
+   				<Item value="%$AAEditorState/GlobalPreviewXtml/script%" />
+   				<Item value="%@t%" />
+   			</Item2>
+   		</Item>
+   		<Item t="yesno.ItemsNotEqual" Item1="action.Action"  >
+	   		<Item2 t="data.Pipeline" >
+	   			<Item value="%$AAEditorState/GlobalPreviewXtml/script%" />
+	   			<Item value="%@t%" />
+	   			<Item t="xtml.ComponentDefinition" ID="%%" />
+	   			<Item value="%@type%" />
+	   		</Item2>
+   		</Item>
+   	</Condition>
+			<Object t="data.Pipeline">
+				<Var name="OpenDialog" value="false" Remark="avoid dialog popup when global preview is dialog" />
+				<Item t="xtml.RunXtml" Xtml="%$AAEditorState/GlobalPreviewXtml%" >
+					<Method value="Result">
+	   				<Condition t="xml.IsOfTag" Tag="Usage" Data="%$AAEditorState/GlobalPreviewXtml/script%" />
+	   			</Method>
+   			</Item>
+   			<Item t="data.IfThenElse" Else="%%" >
+   				<Var name="Comp" t="data.Pipeline">
+   					<Item value="%$AAEditorState/GlobalPreviewXtml/script%" />
+   					<Item value="%@t%_Preview" />
+   				</Var>
+					<If t="xtml.ComponentExists" ComponentID="%$Comp%"/>
+					<Then t="xtml.RunXtmlByComponentId" ComponentID="%$Comp%">
+            <Var name="Preview" t="data.Struct">
+            	<Item Name="Output" Value="%%" /> 
+            </Var>
+          </Then>
+        </Item>
+   		</Object>
+   </Control>
+  </xtml>
+ </Component>
+
+ <Component id="Refresh" type="action.Action" light="false">
+  <Param name="Original" type="data.Boolean" />
+  <Param name="SelectedInTree" type="data.Boolean" />
+  <Param name="GlobalPreview" type="data.Boolean" />
+  <Param name="LocalPreview" type="data.Boolean" />
+
+  <xtml t="action.RunActions" >
+   <Action t="uiaction.Refresh" RunOn="aaeditor preview" Condition="%$LocalPreview%" />
+   <Action t="uiaction.Refresh" RunOn="aaeditor global" Condition="%$GlobalPreview%" />
+   <Action t="uiaction.Refresh" RunOn=".aaeditor_global_original" Condition="%$Original%" />
+   <Action t="data.IfThenElse" Condition="%$SelectedInTree%">
+   	<If t="yesno.IsEmpty" Value="%$AAEditorState/SelectedInTree/ParentXtml%" Remark="root" />
+   	<Then t="uiaction.Refresh" RunOn="script tree control" />
+   	<Else t="tree.RefreshSelected" RunOn="script tree control" Condition="%$SelectedInTree%"
+    RefreshParentChildren="true" IdentifierForSelected="%Field%" RefreshChildren="true">
+    <IdentifierForCurrent t="data.IfThenElse" Else="%Field%">
+     <If t="yesno.Contains" Data="%Field%">
+      <Text value="[+]" />
+     </If>
+     <Then t="text.Text" Text="%$FieldTag%[%$Index%]">
+      <Var name="FieldTag" t="text.RemoveSuffix" Data="%Field%" Separator="[" />
+      <Var name="Index" t="data.Pipeline">
+       <Item value="%ParentXtml/{$FieldTag}%" />
+       <Aggregator t="data.Count" />
+      </Var>
+     </Then>
+    </IdentifierForCurrent>
+    </Else>
+   </Action>
+  </xtml>
+ </Component>
+
+ <Component id="RefreshScriptDialog" type="action.Action">
+  <xtml t="aaeditor.Refresh" SelectedInTree="true" GlobalPreview="true" LocalPreview="true" />
+ </Component>
+ 
+ <Component id="IsMultipleObject" type="data.Data" execution="native">
+  <Param name="Value" ><Default value="%%" /></Param>
+ </Component>
+ 
+ <Component id="InPreview" type="ui.Control" execution="native">
+   <Param name="Control" type="ui.Control" script="true"/>
+ </Component>
+ 
+ <Component id="HowLong" type="action.Action" execution="native" light="false">
+ 	<Param name="Usage" />
+ </Component>
+
+ <Component id="ComponentTitle" type="data.Data" execution="native" internal="true">
+ </Component>
+ 
+ <Component id="Save" type="action.Action" light="false">
+   <xtml t="object.RunMethod" Object="%$XtmlDtContext%" Method="Save" />
+ </Component>
+ 
+ <Component id="ClearCaches" type="action.Action" execution="native" light="false"/>
+ 
+ <Component id="ComponentsOfTypeNew" type="data.Data" execution="native">
+  <Param name="Type" />
+  <Param name="ForAllTypes" type="data.Boolean"/>
+  <Param name="LightOnly" type="data.Boolean"/>
+</Component>
+ 
+ 
+</xtml>

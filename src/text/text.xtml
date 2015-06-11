@@ -1,0 +1,371 @@
+<xtml ns="text">
+
+<Type id="NumberFormat"/>   
+<Type id="MultiLangSuite" />
+
+<Component id="Concat" type="data.Aggregator" execution="native">
+      <Param name="Items" light="false">
+        <Default t="data.Same"/>
+      </Param>
+      <Param name="Item" light="false" type="data.Data[]"/>
+      <Param name="Separator" short="true" essential="true"/>
+      <Param name="LastSeparator" advanced="true" short="true"/>
+      <Param name="ItemText" short="true">
+        <Default t="data.Same"/>
+      </Param>
+      <Param name="Prefix" advanced="true"/>
+      <Param name="Suffix" advanced="true"/>
+      <Param name="MaxLength" advanced="true"/>
+      <Param name="SuffixForMax" advanced="true">
+        <Default value="..."/>
+      </Param>
+    </Component>
+
+<Component id="Length" type="data.Data" execution="native" >
+  <Param name="Data" title="Text" />
+</Component>
+
+<Component id="AddPrefix" type="data.Data" execution="xtml" >
+  <Param name="Data" title="Text" />
+  <Param name="Prefix" ><Default value="..."></Default></Param>
+	<xtml t="data.Pipeline" >
+		<Item t="data.List">
+			<Item value="%$Prefix%"/>
+			<Item t="data.Same" />
+		</Item>
+  		<Aggregator t="text.Concat" />
+	</xtml>
+</Component>
+
+<Component id="RemoveSuffix" type="data.Data" execution="native">
+  <Param name="Data" title="Text" />
+  <Param name="Suffix" />
+  <Param name="Separator"/>
+  <Param name="EmptyIfNoSeparator"><Default value="false" /></Param>
+</Component>
+
+<Component id="ExtractSuffix" type="data.Data">
+  <Param name="Data" title="Text"/>
+  <Param name="Separator" essential="true"/>
+  <xtml t="text.Split" Separator="%$Separator%" Part="Last"/>
+</Component>
+
+<Component id="RemovePrefix" type="data.Data" execution="native">
+  <Param name="Data" title="Text" />
+  <Param name="Prefix"/>
+  <Param name="Separator"/>
+</Component>
+
+<Component id="KeepPrefix" type="data.Data" hidden="true">
+  <Param name="Data" title="Text" />
+  <Param name="Separator"/>
+  <Param name="KeepSeparator" type="data.Boolean"/>
+  <xtml t="text.ExtractPrefix" Separator="%$Separator%" KeepSeparator="%$KeepSeparator%"/>
+</Component>
+
+<Component id="ExtractPrefix" type="data.Data" execution="native">
+  <Param name="Data" title="Text" />
+  <Param name="Separator"/>
+  <Param name="KeepSeparator" type="data.Boolean"/>
+  <Param name="UseRegex" type="data.Boolean"/>
+  <Param name="Default"/>
+</Component>
+
+<Component id="Replace" type="data.Data" execution="native" >
+	<Param name="Find" essential="true"/>
+	<Param name="ReplaceWith" essential="true"/>
+	<Param name="UseRegex" type="data.Boolean" ><Default value="false" /></Param>
+	<Param name="ReplaceAll" type="data.Boolean" ><Default value="true" /></Param>
+	<Param name="Text" Default="%%" />
+</Component>
+
+<Component id="ReplaceWithRegex" type="data.Data" execution="native" >
+  <Param name="Pattern" essential="true" description="/w- alphnumberic, /s- whitespace, ^- beginline, $-endline"/>
+  <Param name="ReplaceWith" essential="true" description="Can use '$1 $2' to pick matches."/>
+  <Param name="Flags" description="g- global, m-multiline"/>
+  <Param name="Text" ><Default value="%%" /></Param>
+</Component>
+
+<Component id="ReplaceMulti" type="data.Data" execution="native" >
+	<Param name="Find" essential="true"/>
+	<Param name="ReplaceWith" essential="true"/>
+	<Param name="ReplaceAll" type="data.Boolean" ><Default value="true" /></Param>
+	<Param name="Text" ><Default value="%%" /></Param>
+</Component>
+
+<Component id="Pad" type="data.Data" execution="native" >
+  <Param name="Length"/>
+  <Param name="Filler"><Default value="0"/></Param>
+  <Param name="Text" ><Default value="%%" /></Param>
+</Component>
+
+<Component id="SplitByCommas" type="data.Data" execution="native">
+  <Param name="Text" Default="%%"/>
+</Component>
+
+<Component id="Between" type="data.Data" execution="native">
+  <Param name="From" essential="true"/>
+  <Param name="To" essential="true"/>
+  <Param name="IncludeFrom" type="data.Boolean"><Default value="false"/></Param>
+  <Param name="IncludeTo" type="data.Boolean"><Default value="false"/></Param>
+</Component>
+
+<Component id="CountOfSubtext" type="data.Data" execution="native" >
+  <Param name="Text" />
+</Component>
+
+<Component id="PromoteStartingWith" type="data.Aggregator" execution="native">
+  <Param name="StartsWith"/>
+</Component>
+
+<Component id="Capitalize" type="data.Data" execution="native">
+  <Param name="Data" title="Text" />
+  <Param name="Mode" type="enum">
+    <Default value="capital each word"/>
+    <value>capital to separate words</value>
+    <value>separate words to capital</value>
+    <value>capital first word</value>
+    <value>capital each word</value>
+    <value>upper to separate capital</value>
+  </Param>
+</Component>
+
+<Component id="StartsWith" type="data.Boolean" execution="native">
+  <Param name="Text"><Default t="data.Same"/></Param>
+  <Param name="With" essential="true"/>
+</Component>
+
+<Component id="NotStartsWith" type="data.Boolean">
+  <Param name="Text"><Default t="data.Same"/></Param>
+  <Param name="With" essential="true"/>
+  <xtml t="yesno.Not">
+    <Of t="text.StartsWith" Text="%$Text%" With="%$With%"/>
+  </xtml>
+</Component>
+
+<Component id="EndsWith" type="data.Boolean" execution="native">
+  <Param name="Text" Default="%%"/>
+  <Param name="With" essential="true"/>
+</Component>
+ 
+<Component id="Trim" type="data.Data" execution="xtml">
+  <Param name="Text"><Default value="%%" /></Param>
+  <Param name="CharsToTrim"><Default value=" \n\s\t&#xa;&#xd;" /></Param>
+  <xtml t="data.Pipeline" Data="%$Text%">
+  	<Item t="text.Replace" Find="^[%$CharsToTrim%]+" ReplaceWith="" UseRegex="true" />
+  	<Item t="text.Replace" Find="[%$CharsToTrim%]+$" ReplaceWith="" UseRegex="true" />
+  </xtml>
+</Component>
+
+<Component id="FindInText" type="data.Boolean" execution="native">
+  <Param name="Data" title="Text" />
+  <Param name="Pattern" essential="true"><Default value="%%" /></Param>
+  <Param name="UseRegex" type="data.Boolean"><Default value="false" /></Param>
+</Component>
+
+<Component id="ToLowerCase" type="data.Data" execution="native">
+  <Param name="Data" title="Text" />
+</Component>
+<Component id="ToUpperCase" type="data.Data" execution="native">
+  <Param name="Data" title="Text" />
+</Component>
+
+<Component id="ToChars" type="data.Data" execution="native">
+  <Param name="Data" title="Text" />
+</Component>
+
+<Component id="ItemsEqual" type="data.Boolean">
+  <Param name="Item1" essential="true"/>
+  <Param name="Item2" essential="true"/>
+  <Param name="Trim" type="data.Boolean"><Default value="true"/></Param>
+  <Param name="CaseSensitive" type="data.Boolean"><Default value="false"/></Param>
+  <xtml t="yesno.ItemsEqual">
+    <Item1 t="data.Pipeline">
+      <Item value="%$Item1%"/>
+      <Item t="data.IfThenElse" If="%$Trim%" Else="%%">
+        <Then t="text.Trim"/>
+      </Item>
+      <Item t="data.IfThenElse" If="%$CaseSensitive%" Then="%%">
+        <Else t="text.ToLowerCase"/>
+      </Item>
+    </Item1>
+    <Item2 t="data.Pipeline">
+      <Item value="%$Item2%"/>
+      <Item t="data.IfThenElse" If="%$Trim%" Else="%%">
+        <Then t="text.Trim"/>
+      </Item>
+      <Item t="data.IfThenElse" If="%$CaseSensitive%" Then="%%">
+        <Else t="text.ToLowerCase"/>
+      </Item>
+    </Item2>
+  </xtml>
+</Component>
+
+  <Component id="MatchesRegex" type="data.Boolean" description="Match regular expression" execution="native">
+    <Param name="Expression" essential="true" description="e.g., [0-9]* "/>
+    <Param name="Text" ><Default value="%%" /></Param>
+  </Component>
+
+<Component id="UrlEncoding" type="data.Data" execution="native">
+  <Param name="Data" title="Text" />
+	<Param name="Type" type="enum"><Default value="encode" />
+		<value>encode</value>
+		<value>decode</value>
+	</Param>
+</Component>
+
+<Component id="Substring" type="data.Data" execution="native">
+	<Param name="Text" Default="%%" essential="true"/>
+	<Param name="Start" Description="start from 1" essential="true" Default="1" />
+	<Param name="Stop" Description="start from 1, result does not contain this char" essential="true"/>
+</Component>
+
+<Component id="Encode" type="data.Data" execution="native"/>
+
+<Component id="IsSubPathOf" type="data.Boolean">
+  <Param name="Item"/>
+  <Param name="Base"/>
+  <Param name="Separator"/>
+  <Param name="OnlyDirect" type="data.Boolean"/>
+  <xtml t="yesno.And">
+    <Item t="text.StartsWith" Data="%$Item%" With="%$Base%"/>
+    <Item t="yesno.ItemsNotEqual" Item1="%$Item%" Item2="%$Base%"/>
+    <Item t="yesno.OR">
+      <Item t="yesno.Not" Of="%$OnlyDirect%"/>
+      <Item t="yesno.NotContains" Text="%$Separator%">
+        <Data t="text.RemovePrefix" Data="%$Item%" Prefix="%$Base%"/>
+      </Item>
+    </Item>
+  </xtml>
+</Component>
+
+<Component id="NewLine" type="data.Data">
+  <xtml value="&#xA;" />
+</Component>
+
+<Component id="NormalizeNewLines" type="data.Data" execution="native" description="\r\n -> \n">
+ <Param name="Text" Default="%%"/>
+</Component>
+
+<Component id="TabCharacter" type="data.Data">
+  <xtml value="&#009;" />
+</Component>
+
+<Component id="Translate" type="data.Data" execution="native">
+      <Param name="Text" essential="true"/>
+    </Component>
+
+<Component id="TranslatePattern" type="data.Data" execution="native">
+      <Param name="Pattern" essential="true"/>
+    </Component>
+
+<Component id="DecodeMimeType" type="data.Data" execution="native">
+  <Param name="Text" Default="%%"/>
+  <Param name="Encoding" type="enum" Options="auto,Base64,Quoted Printable"><Default value="auto"/></Param>
+  <Param name="Charset" type="enum" Options="utf-8,windows-1255"><Default value="utf-8"/></Param>
+</Component>
+
+ <Component id="Reverse" type="data.Data" execution="native">
+ 	<Param name="Text" ><Default value="%%" /></Param>
+ </Component>
+
+ <Component id="SplitLines" type="data.Data" execution="native">
+ 	<Param name="Text" ><Default value="%%" /></Param>
+ 	<Param name="NewLineChars" ><Default value="&#xA;" /></Param>
+ </Component>
+
+<Component id="RemoveEmptyLines" type="data.Data" description="delete clean empty line">
+  <xtml t="text.ReplaceWithRegex" Pattern="^\s*\n" Flags="gm"/>
+</Component>
+
+ <Component id="Truncate" type="data.Data" execution="native">
+   <Param name="Text" Default="%%"/>
+   <Param name="Length" Defaul="20" />
+   <Param name="Suffix" Default ="..."/>
+ </Component>
+ 
+ <Component id="ToIdText" type="data.Data" execution="native" />
+ <Component id="ToId" type="data.Data" execution="native">
+   <Param name="Text" Default="%%"/>
+   <Param name="UsedIDs" />
+ </Component>
+ 
+ <Component id="AddToCommaText" type="action.Action" execution="native" light="false">
+   <Param name="Text" />
+   <Param name="ToAdd" />
+ </Component>
+ 
+ <Component id="RemoveFromCommaText" type="action.Action" execution="native" light="false">
+   <Param name="Text" />
+   <Param name="ToRemove" />
+ </Component>
+
+<Component id="MultiLangSuite" execution="native" description="A list of key values, where key is translated into value">
+ <Param name="Language" />
+ <Param name="item" type="KeyValue[]" desctiption="A key value array"/>
+</Component>
+
+  <Component id="Extract" type="data.Data" execution="native">
+      <Param name="From" Default="%%"/>
+      <Param name="StartMarker" type="data.Data[]" essential="true" description="defines the beginning of the extracted area"/>
+      <Param name="EndMarker" essential="true" description="defines the end of the extracted area"/>
+      <Param name="IncludingStartMarker" type="data.Boolean"/>
+      <Param name="IncludingEndMarker" type="data.Boolean"/>
+      <Param name="Trim" type="data.Boolean" description="Trim white spaces from the result"/>
+      <Param name="Regex" type="data.Boolean" description="Use regular expression for markers"/>
+      <Param name="OnlyFirstResult" type="data.Boolean" />
+    </Component>
+
+  <Type id="HebrewText" HebChars="אבגדהוזחטיכלמנסעפצקרשתןףךץ" />
+
+    <Component id="FirstSucceeding" type="data.Data" execution="native">
+      <Param name="Item" type="data.Data[]" essential="true"/>
+    </Component>
+    <Component id="MultiLang" type="data.Data" execution="native">
+      <Param name="Pattern" script="true" essential="true"/>
+    </Component>
+    <Component id="Split" type="data.Data" execution="native" >
+      <Param name="Separator" Default="," />
+      <Param name="Text" Default="%%"/>
+      <Param name="Part" type="enum" Default="All" Options="All,First,ButFirst,Second,By index,Last,All but Last,All but First,All but First and Last" />
+      <Param name="Index" type="data.Data" description="Relevant only for 'By Index' Part"/>
+      <Param name="NoEmptyValues" type="data.Boolean" />
+      <Param name="Regex" type="data.Boolean" description="Use regular expression as a separator"/>
+      <Param name="Default" description="default result if empty value"/>
+    </Component>
+    <Component id="Text" type="data.Data" execution="native">
+      <Param name="Text" essential="true"/>
+      <Param name="RemoveEmptyParenthesis" type="data.Boolean"/>
+    </Component>
+
+    <Component id="NumberFormat" type="text.NumberFormat,data.Data" execution="native">
+      <Param name="Symbol"/>
+      <Param name="SymbolAtRight" description="attach the symbol to the right side" type="data.Boolean"/>
+      <Param name="MinusInParenthesis" type="data.Boolean" />
+      <Param name="NoCommaSeparator" type="data.Boolean" />
+      <Param name="Cents" type="data.Boolean" />
+    </Component>
+    
+    <Component id="Percent" type="text.NumberFormat">
+      <xtml t="text.NumberFormat" SymbolAtRight="true" Symbol="%"/>
+    </Component>
+
+  <Component id="TimeFromNow" type="data.Data" execution="native">
+    <Param name="Time" />
+  </Component>
+  
+  <Component id="MomentTimeFormat" type="data.Data" execution="native">
+    <Param name="Time" Default="%%" />
+    <Param name="Format" Default="DD/MM/YYYY HH:mm:ss" description="http://momentjs.com" />
+  </Component>
+
+  <Component id="TimeDurationAsHumanText" type="data.Data" execution="native">
+    <Param name="FromTimeInMillis" essential="true"/>
+    <Param name="ToTimeInMillis" >
+      <Default t="date.Now" />
+    </Param>
+  </Component>
+  
+
+</xtml>
+

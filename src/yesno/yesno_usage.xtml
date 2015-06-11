@@ -1,0 +1,255 @@
+<xtml ns="yesno_usage">
+
+ <Usage t="usage.DataUsage" Of="yesno.PassesFilter">
+  <Data t="xml.Xml">
+   <people>
+    <person name="Homer" />
+    <person name="Marge" />
+   </people>
+  </Data>
+  <Result t="data.Pipeline">
+   <Item value="%person%" />
+   <Item t="yesno.PassesFilter">
+    <Filter t="yesno.EqualsTo" Data="%@name%" To="Homer" />
+   </Item>
+  </Result>
+  <ExpectedResult t="yesno.EqualsTo">
+   <To t="xml.Xml">
+    <person name="Homer" />
+   </To>
+  </ExpectedResult>
+ </Usage>
+
+ <Usage t="usage.DataUsage" Of="yesno.PassesFilter" Name="expression">
+  <Data t="data.List">
+   <Item value="item1" />
+   <Item value="item2" />
+  </Data>
+  <Result t="data.Pipeline">
+   <Item t="yesno.PassesFilter" Filter="%% == 'item1'" />
+   <Aggregator t="text.Concat" Separator="," />
+  </Result>
+  <ExpectedResult t="yesno.EqualsTo" To="item1" />
+ </Usage>
+
+ <Usage t="usage.DataUsage" Of="yesno.PassesFilter" Name="math expression">
+  <Result t="data.Pipeline">
+   <Item t="data.List">
+    <Item value="3" />
+    <Item value="5" />
+   </Item>
+   <Item t="yesno.PassesFilter" Filter="%% &gt; 4" />
+   <Aggregator t="text.Concat" Separator="," />
+  </Result>
+  <ExpectedResult t="yesno.EqualsTo" To="5" />
+ </Usage>
+
+ <Usage t="usage.DataUsage" Of="yesno.EqualsTo" Name="compare xml element to text">
+  <Data t="xml.Xml">
+    <value>1</value>
+  </Data>
+  <Result value="%%"/>
+  <ExpectedResult t="yesno.EqualsTo" To="1" />
+ </Usage>
+ 
+ <Usage t="usage.DataUsage" Of="yesno.EqualsTo" Name="compare xml element to attribute">
+  <Data t="xml.Xml">
+    <value>1</value>
+  </Data>
+  <Result value="%%"/>
+  <ExpectedResult t="yesno.EqualsTo" >
+   <To t="data.Pipeline">
+    <Item t="xml.Xml">
+     <xml val="1" />
+    </Item>
+    <Item value="%@val%" />
+   </To>
+  </ExpectedResult>
+ </Usage>
+ 
+ <Usage t="usage.DataUsage" Of="yesno.Not">
+   <Data t="xml.Xml">
+     <people> <person name="Homer"/> <person name="Marge"/> </people>
+   </Data>
+   <Result t="data.Pipeline">
+     <Item value="%person/@name%"/>
+     <Item t="yesno.PassesFilter">
+        <Filter t="yesno.Not">
+          <Of t="yesno.Contains">
+            <Text value="me"/>
+          </Of>
+        </Filter>
+     </Item>
+     <Aggregator t="text.Concat" Separator=","/>
+   </Result>
+   <ExpectedResult t="yesno.EqualsTo" To="Marge"/>
+ </Usage>
+
+ <Usage t="usage.DataUsage" Of="yesno.And">
+   <Data t="xml.Xml">
+     <people> <person name="Homer"/> <person name="Marge"/> </people>
+   </Data>
+   <Result t="data.Pipeline">
+     <Item value="%person/@name%"/>
+     <Item t="yesno.PassesFilter">
+        <Filter t="yesno.And">
+          <Item t="yesno.Contains">
+            <Text value="e"/>
+          </Item>
+          <Item t="yesno.Contains">
+            <Text value="o"/>
+          </Item>
+        </Filter>
+     </Item>
+     <Aggregator t="text.Concat" Separator=","/>
+   </Result>
+   <ExpectedResult t="yesno.EqualsTo" To="Homer"/>
+ </Usage>
+ 
+  <Usage t="usage.DataUsage" Of="yesno.OR">
+   <Data t="xml.Xml">
+     <people> <person name="Homer"/> <person name="Marge"/> <person name="Bart"/> </people>
+   </Data>
+   <Result t="data.Pipeline">
+     <Item value="%person/@name%"/>
+     <Item t="yesno.PassesFilter">
+        <Filter t="yesno.OR">
+          <Item t="yesno.Contains">
+            <Text value="H"/>
+          </Item>
+          <Item t="yesno.Contains">
+            <Text value="M"/>
+          </Item>
+        </Filter>
+     </Item>
+     <Aggregator t="text.Concat" Separator=","/>
+   </Result>
+   <ExpectedResult t="yesno.EqualsTo" To="Homer,Marge"/>
+ </Usage>
+
+ <Usage t="usage.DataUsage" Of="yesno.DynamicAnd">
+   <Data t="xml.Xml">
+     <people> <person name="Homer"/> <person name="Marge"/> </people>
+   </Data>
+   <Result t="data.Pipeline">
+     <Item value="%person/@name%"/>
+     <Item t="yesno.PassesFilter">
+        <Var name="Person"/>
+        <Filter t="yesno.DynamicAnd">
+          <DynamicItems t="data.List">
+            <Item value="e"/>
+            <Item value="o"/>
+          </DynamicItems>
+          <ConditionOnItem t="yesno.Contains" AllText="%$Person%">
+            <Text value="%%"/>
+          </ConditionOnItem>
+        </Filter>
+     </Item>
+     <Aggregator t="text.Concat" Separator=","/>
+   </Result>
+   <ExpectedResult t="yesno.EqualsTo" To="Homer"/>
+ </Usage>
+ 
+ <Usage t="usage.DataUsage" Of="yesno.IsInList">
+   <Data t="xml.Xml">
+     <people> <person name="Homer"/> <person name="Marge"/><person name="Bart"/><person name="Lisa"/> </people>
+   </Data>
+   <Result t="data.Pipeline">
+     <Item value="%person/@name%"/>
+     <Item t="yesno.PassesFilter">
+        <Filter t="yesno.IsInList">
+          <List t="data.List">
+            <Item value="Homer"/>
+            <Item value="Bart"/>
+            <Item value="Mr. Berns"/>
+          </List>
+        </Filter>
+     </Item>
+     <Aggregator t="text.Concat" Separator=","/>
+   </Result>
+   <ExpectedResult t="yesno.EqualsTo" To="Homer,Bart"/>
+ </Usage>
+ 
+ <Usage t="usage.DataUsage" Of="yesno.Contains">
+   <Data t="xml.Xml">
+     <people> <person name="Homer"/> <person name="Marge"/> </people>
+   </Data>
+   <Result t="yesno.Contains">
+            <Text value="person"/>
+            <Text value="Homer"/>
+   </Result>  
+   <ExpectedResult t="yesno.EqualsTo" To="true"/>
+ </Usage>
+	<Usage t="usage.DataUsage" Of="yesno.ItemsEqual">
+		<Data value="" />
+		<Result t="yesno.ItemsEqual" Item1="a" Item2="a" />
+		<ExpectedResult t="yesno.EqualsTo" To="true" />
+	</Usage>
+	<Usage t="usage.DataUsage" Of="yesno.ItemsNotEqual">
+		<Data value="" />
+		<Result t="yesno.ItemsNotEqual" Item1="a" Item2="b" />
+		<ExpectedResult t="yesno.EqualsTo" To="true" />
+	</Usage>
+	<Usage t="usage.DataUsage" Of="yesno.NumberInRange">
+		<Data value="5.1" />
+		<Result t="yesno.NumberInRange" From="2.1" To="5.2" />
+		<ExpectedResult t="yesno.EqualsTo" To="true" />
+	</Usage>
+  
+  <Usage t="usage.DataUsage" Of="yesno.IsXml">
+    <Data value="" />
+    <Result value="%$a%,%$Elem%,%$Array%">
+        <Var name="a" t="yesno.IsXml" Data="aa"/>
+        <Var name="Elem"  t="yesno.IsXml">
+          <Data t="xml.Xml">
+            <Hello name="world"/>
+          </Data>
+        </Var>
+        <Var name="Array" t="yesno.IsXml">
+          <Var name="Top" t="xml.Xml">
+            <top>
+            <Hello name="nice"/>
+            <Hello name="world"/>
+            </top>
+          </Var>
+          <Data value="%$Top/*%"/>
+        </Var>
+    </Result>
+    <ExpectedResult t="yesno.EqualsTo" To=",true,true" />
+  </Usage>
+
+  <Usage t="usage.DataUsage" Of="yesno.IsStruct">
+    <Data value="" />
+    <Result value="%$struct%,%$text%,%$xml%">
+        <Var name="struct"  t="yesno.IsStruct">
+          <Data t="data.Struct">
+            <Item Name="Hello" Value="world"/>
+          </Data>
+        </Var>
+        <Var name="text" t="yesno.IsStruct" Data="aa"/>
+        <Var name="xml" t="yesno.IsStruct">
+          <Data t="xml.Xml">
+            <a isStruct="true"/>
+          </Data>
+        </Var>
+    </Result>
+    <ExpectedResult t="yesno.EqualsTo" To="true,," />
+  </Usage>	
+
+  <Usage t="usage.DataUsage" Of="yesno.IsNumber">
+      <ExpectedResult t="yesno.EqualsTo" To="33,1.5"/>
+      <Result t="data.Pipeline">
+        <Item t="data.List">
+          <Item value="abc"/>
+          <Item value="33"/>
+          <Item value="1.5"/>
+          <Item value="as2"/>
+        </Item>
+        <Item t="yesno.PassesFilter">
+          <Filter t="yesno.IsNumber"/>
+        </Item>
+        <Aggregator t="text.Concat" Separator=","/>
+      </Result>
+    </Usage>
+    
+</xtml>

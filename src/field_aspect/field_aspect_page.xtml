@@ -1,0 +1,115 @@
+<xtml package="true">
+<xtml ns="field_aspect">
+
+  <Component id="PagePreviewData" type="field.FieldAspect" description="Used by the studio to show preview for the page" context="pageForStudio=true">
+    <Param name="PreviewData" script="true" essential="true" />
+    <xtml t="object.SetMethod" Object="%$_Field%" Method="PagePreviewData">
+      <Xtml t="xtml.UseParam" Param="PreviewData" />
+    </xtml>
+  </Component>
+
+  <Component id="PagePreviewVariable" type="field.FieldAspect" description="Used by the studio to show preview for the page" context="pageForStudio=true">
+    <Param name="VarName" essential="true" />
+    <Param name="VarValue" script="true" essential="true" />
+    <xtml t="object.AddToProperty" Object="%$_Field%" Property="PagePreviewVariable">
+      <Value t="object.Object" VarName="%$VarName%">
+      	<Property name="Value" t="xtml.UseParam" Param="VarValue" />
+      </Value>
+    </xtml>
+  </Component>
+
+  <Component id="PagePreviewSize" type="field.FieldAspect" context="pageForStudio=true">
+    <Param name="Size" type="preview_device.Size" >
+			<FieldAspect t="field_feature.HandleEvent">
+			  <Event t="field_feature.Update"/>
+			  <Action t="gstudio.Refresh"/>
+			</FieldAspect>
+    </Param>
+    <Param name="Style" type="visual_container.Style" >
+    	<Default t="visual_container.MobileSkin"/>
+			<FieldAspect t="field_feature.HandleEvent">
+			  <Event t="field_feature.Update"/>
+			  <Action t="gstudio.Refresh"/>
+			</FieldAspect>
+    </Param>
+    <Param name="SetHeightAsMinHeight" type="data.Boolean" />
+    <xtml t="object.Object" >
+    	<Method name="Run" t="field_aspect.VisualContainer" ID="studio_preview" IsDesktop="%$Size/IsDesktop%" SetHeightAsMinHeight="%$SetHeightAsMinHeight%">
+	      <Style t="xtml.UseParam" Param="Style"/>
+	      <Width t="img.FixedWidth" Width="%$Size/Width%"/>
+	      <Height t="img.FixedHeight" Height="%$Size/Height%"/>
+	    </Method>
+    </xtml>
+  </Component>
+  
+  <Component id="PagePreviewShowSettings" type="field.FieldAspect" context="pageForStudio=true">
+  	<xtml t="action.RunActions" />
+  </Component>
+
+  <Component id="VisualContainer" type="field.FieldAspect" execution="native">
+  	<Param name="Width" type="img.Width" />
+  	<Param name="Height" type="img.Height" />
+  	<Param name="Style" type="visual_container.Style">
+  		<Default t="visual_container.MobileSkin" />
+  	</Param>
+  	<Param name="HeightByCss" type="data.Boolean" />
+  	<Param name="DoNotPutWidthInElement" type="data.Boolean" />
+  	<Param name="ID" />
+  	<Param name="CssClass" />
+    <Param name="SetHeightAsMinHeight" type="data.Boolean" />
+  </Component>
+
+</xtml>
+
+<xtml ns="preview_device">
+	<Type id="Size" />
+
+	<Component id="Desktop" type="preview_device.Size">
+		<xtml t="preview_device.CustomSize" Width="1300" Height="" IsDesktop="true"/>
+	</Component>
+
+	<Component id="SamsungGalaxyS3S4" type="preview_device.Size">
+		<xtml t="preview_device.CustomSize" Width="360" Height="640" />
+	</Component>
+
+	<Component id="AppleIPhone5" type="preview_device.Size">
+		<xtml t="preview_device.CustomSize" Width="320" Height="444" />
+	</Component>
+
+	<Component id="AppleIPhone4IPhone3" type="preview_device.Size">
+		<xtml t="preview_device.CustomSize" Width="320" Height="480" />
+	</Component>
+
+	<Component id="SamsungGalaxyS2" type="preview_device.Size">
+		<xtml t="preview_device.CustomSize" Width="320" Height="356" />
+	</Component>
+
+	<Component id="AsusGalaxy7" type="preview_device.Size">
+		<xtml t="preview_device.CustomSize" Width="320" Height="533" />
+	</Component>
+
+	<Component id="CustomSize" type="preview_device.Size" autoexpand="true">
+		<Param name="Width" slider="true">
+			<FieldAspect t="field_feature.HandleEvent">
+			  <Event t="field_feature.Update"/>
+			  <Action t="gstudio.Refresh"/>
+			</FieldAspect>
+		</Param>
+		<Param name="Height" slider="true">
+			<FieldAspect t="field_feature.HandleEvent">
+			  <Event t="field_feature.Update"/>
+			  <Action t="gstudio.Refresh"/>
+			</FieldAspect>
+		</Param>
+		<Param name="IsDesktop" type="data.Boolean"/>
+		<xtml t="object.Object">
+			<TextProperty name="Width" value="%$Width%" />
+			<TextProperty name="Height" value="%$Height%" />
+			<BooleanProperty name="IsDesktop" value="%$IsDesktop%" />
+		</xtml>
+	</Component>
+	
+
+</xtml>
+
+</xtml>

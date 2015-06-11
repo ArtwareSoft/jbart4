@@ -1,0 +1,96 @@
+<xtml ns="aaeditor" light="false">
+
+  <Component id="ShowBasicComponents" type="data.Data" hidden="true">
+    <xtml t="ui.UrlFragment" />
+  </Component>
+
+  <Component id="SelectDialogData" type="data.Data">
+    <Param name="TreeItemData" />
+    <xtml t="xml.WithChanges">
+      <Var name="Type" t="text.RemoveSuffix" Data="%$TreeItemData/Type%" Separator="[" />
+      <Var name="ValueType" t="data.IfThenElse" Then="primitive" Else="component">
+        <If t="yesno.IsOneOf" Value="%$Type%">
+          <Option value="data.Data" />
+          <Option value="data.Boolean" />
+          <Option value="enum" />
+          <Option value="dynamic_enum" />
+        </If>
+      </Var>
+      <Xml t="xml.Xml" DynamicContent="true">
+        <aaeditor valuetype="%$ValueType%" type="%$Type%" primitive="" component="" />
+      </Xml>
+      <Change t="xml.SetAttribute" AttributeName="primitive">
+        <Condition t="xml.IsAttribute" Data="%$TreeItemData/Xtml%" />
+        <Value value="%$TreeItemData/Xtml%" />
+      </Change>
+      <Change t="xml.SetAttribute" AttributeName="primitive">
+        <Condition t="yesno.NotEmpty" Data="%$TreeItemData/Xtml/@value%" />
+        <Value value="%$TreeItemData/Xtml/@value%" />
+      </Change>
+      <Change t="xml.SetAttribute" AttributeName="component">
+        <Value value="%$TreeItemData/Xtml/@t%" />
+      </Change>
+    </xtml>
+  </Component>
+
+  <Component id="KeyPressedChangesValue" type="data.Boolean">
+    <Param name="KeyPressed" />
+    <xtml t="yesno.OR" Data="%$KeyPressed%">
+      <Item t="text.MatchesRegex" Expression="[a-zA-Z ]" />
+      <Item t="yesno.Empty" />
+    </xtml>
+  </Component>
+
+  <Component id="PrimitiveTextBox" type="ui.Control">
+    <xtml t="ui.CustomSuggestionBox" OptionLabel="" TriggerChars="%$/" Class="primitive_text_box" Data="a">
+      <Var name="Context" t="aaeditor.CalcLocalPreviewData" />
+      <Options t="data.Switch">
+        <Case If="" Then="">
+          <IfCondition t="text.EndsWith" With="$" />
+          <Then t="xtml.VariablesOfContext" ScriptAndContext="%$TesterResult%" />
+        </Case>
+      </Options>
+    </xtml>
+  </Component>
+
+    <Component id="OpenPrimitiveAsDialog">
+      <Param name="Context"/>
+      <Param name="RunOnOK" type="action.Action" script="true"/>
+      <Param name="RunOnCancel" type="action.Action" script="true"/>
+      <xtml t="dlg.OpenDialog" Title="Set value of %$AttrName%">
+        <Var name="Attribute" value="%$AAEditorState/SelectedInTree/Xtml%"/>
+        <Var name="AttrName" t="xml.AttributeName" Data="%$Attribute%"/>
+        <Var name="AsText" t="data.WritableText" DefaultValue="%%"/>
+        <Contents t="ui.List">
+          <Control t="ui.ButtonOld" Text="Insert Dynamic Value ..." Image="%$_Images%/add1616.gif">
+            <Style t="ui.ButtonAsHyperlink"/>
+            <OnClick t="dialog.OpenDialog">
+              <Dialog t="dialog.Dialog" Title="Insert Dynamic Value">
+                <Content t="ui.Document">
+                  <Fields t="field.Field1" Title="Expression">
+                    <Control t="aaeditor.EditPrimitiveTextWithPreview" DisableLargeText="true" Context="%$Context%"/>
+                  </Fields>
+                </Content>
+                <DialogData t="data.WritableText"/>
+                <RunOnOK t="xmlui.InsertTextToCodeMirror" Text="%%" RunOn="updown(.aa_dlg,.dt_primitive_textarea)"/>
+              </Dialog>
+            </OnClick>
+          </Control>
+          <Control t="xmlui.CodeMirrorTextarea" AutoFocus="true" Type="text" Class="dt_primitive_textarea" Data="%$AsText%">
+            <Width t="ui.ScreenSize" Axis="width" Margin="300" AsHtmlString="true"/>
+            <Height t="ui.ScreenSize" Axis="height" Margin="200" AsHtmlString="true"/>
+          </Control>
+        </Contents>
+        <Feature t="dlg.RunBeforeOK">
+          <Action t="xmlui.CallUpdateOfCodeMirror" RunOn=".dt_primitive_textarea" />
+        </Feature>
+        <RunOnOK t="action.RunActions">
+          <Action t="xtml.UseParam" Param="RunOnOK" Data="%$AsText%"/>
+        </RunOnOK>
+        <Feature t="dlg.RunOnCancel">
+          <Action t="xtml.UseParam" Param="RunOnCancel" />
+        </Feature>
+      </xtml>
+    </Component>
+    
+</xtml>  

@@ -1,0 +1,35 @@
+<xtml ns="bart_dt">
+
+  <Component id="Credits" type="ui.Control">
+      <xtml t="ui.Document">
+        <Aspect t="uiaspect.Css" Inline="max-height:200px"/>
+        <Field t="bart_dt.Credit" DisplayName="jQuery" Url="//www.jquery.com"/>
+        <Field t="bart_dt.Credit" DisplayName="TinyMCE" Url="//www.tinymce.com"/>
+        <Field t="bart_dt.Credit" DisplayName="Code Mirror" Url="//codemirror.net"/>
+        <Field t="bart_dt.Credit" DisplayName="Pretty Office Icon Set Part 7 (Bill Lee)" Url="//www.customicondesign.com"/>
+        <Field t="bart_dt.Credit" DisplayName="Ravenna Icon Pack" Url="//www.doublejdesign.co.uk/"/>
+        <Field t="bart_dt.Credit" DisplayName="YUUMINCO Icon Pack by dReamxis" Url="//findicons.com/pack/980/yuuminco"/>
+        <Field t="bart_dt.Credit" DisplayName="AEON Icon Pack by Asher" Url="//findicons.com/pack/986/aeon"/>
+        <Field t="bart_dt.Credit" DisplayName="Silk Icon Pack by Mark James" Url="//findicons.com/pack/1581/silk"/>
+        <Field t="bart_dt.Credit" DisplayName="Human-O2 Icon Pack by schollidesign" Url="//findicons.com/pack/1035/human_o2"/>
+        <Field t="bart_dt.Credit" DisplayName="FatCow Web Hosting" Url="//www.fatcow.com" Images="studio/textfield.png,studio/service.png,studio/text_uppercase.png" FindIcons="http://findicons.com/icon/164019/textfield?id=426945"/>
+        <Field t="bart_dt.Credit" DisplayName="dReamxis" Url="//dreamxis.deviantart.com"/>
+        <Field t="bart_dt.Credit" DisplayName="Momenticons" Url="//momentumdesignlab.com"/>
+        <Field t="bart_dt.Credit" DisplayName="Patricia Clausnitzer" Url="//pc.de/icons/"/>
+        <Field t="bart_dt.Credit" DisplayName="Momenticons" Url="//momentumdesignlab.com"/>
+        <Field t="bart_dt.Credit" DisplayName="Ruby Software" Url="//www.rubysoftware.nl/" Images="studio/add_folder.png" FindIcons="http://findicons.com/icon/26235/add_folder?id=325006" />
+        <Field t="bart_dt.Credit" DisplayName="Bdate Kaspar/Franziska Sponsel" Url="//rrze-icon-set.berlios.de/index.html" Images="studio/tree.png" FindIcons="//findicons.com/icon/84717/tree_diagramm_move?id=397472" />
+        <Field t="bart_dt.Credit" DisplayName="Asher" Url="//kyo-tux.deviantart.com" Images="studio/home.png" FindIcons="//findicons.com/icon/68703/home" />
+        <Field t="bart_dt.Credit" DisplayName="FatCow Web Hosting" Url="//www.fatcow.com" Images="studio/gallery2.png" FindIcons="//findicons.com/icon/164073/application_view_gallery" />
+        <Field t="bart_dt.Credit" DisplayName="GNOME icon artists" Url="//gnome.org" Images="studio/monitor.png" FindIcons="//findicons.com/icon/67222/gnome_utilities_system_monitor?id=373096" />
+        <Field t="bart_dt.Credit" DisplayName="Crayola Kidd" Url="//n/A" Images="studio/config.png" FindIcons="//findicons.com/icon/206452/config_settings?id=335084" />
+        <Field t="bart_dt.Credit" DisplayName="Oxygen" Url="//www.oxygen-icons.org/" Images="studio/blackboard.png,studio/add24.png" FindIcons="//findicons.com/icon/238337/applications_education?id=372198,//findicons.com/icon/238265/contact_new?id=404948" />
+        <Field t="bart_dt.Credit" DisplayName="Yusuke Kamiyamane" Url="//www.pinvoke.com" Images="studio/block_share.png,studio/toolbox.png,studio/select2.png" FindIcons="//findicons.com/icon/116760/block_share?id=119484,//findicons.com/icon/116953/toolbox,//findicons.com/icon/118280/layer_select?id=122751" />
+        <Field t="bart_dt.Credit" DisplayName="Burak OZTURK" Url="//findicons.com/pack/811/developer_kit" Images="studio/duplicate.png" FindIcons="//findicons.com/icon/73339/copy?id=335600" />
+        <Field t="bart_dt.Credit" DisplayName="RandomJabber" Url="//findicons.com/pack/1694/sizcons" Images="studio/history.png" FindIcons="//findicons.com/icon/184112/clock?id=334012" />
+        <Field t="bart_dt.Credit" DisplayName="Siena" Url="//www.doublejdesign.co.uk" Images="studio/newfeature.png,studio/calculator.png" FindIcons="http://findicons.com/icon/177299/label_new_blue,http://findicons.com/icon/177230/calculator_green?id=329331" />
+      </xtml>
+    </Component>
+  
+
+</xtml>

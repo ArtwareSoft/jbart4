@@ -1,0 +1,929 @@
+<xtml ns="bart_dt" light="false">
+
+  <Component id="ControlInContext" type="ui.Control">
+    <Param name="DB" />
+    <Param name="Control" type="ui.Control" script="true" />
+    <xtml t="ui.List">
+      <Var name="_BartDTDB" value="%$DB%" />
+      <Var name="_InBartDesignTime" value="true" />
+      <Var name="BartUnits" value="%$DB/bart_unit/bart_unit%" />
+      <Var name="BartMainUnit" t="data.Pipeline">
+        <Item value="%$BartUnits%" />
+        <Item t="data.First" />
+      </Var>
+      <Var name="BartAppXtml" t="data.Pipeline">
+        <Item value="%$BartUnits/Component[@id='App']/xtml%" />
+        <Aggregator t="data.First" />
+      </Var>
+      <Control t="xtml.UseParam" Param="Control" />
+    </xtml>
+  </Component>
+
+  <Component id="ExternalJSFiles" type="ui.Control">
+      <xtml t="ui.Document" Data="%$_WidgetXml%">
+        <Field t="field.Text" ID="Text" Title="Description" Text="Notice, these files are automatically loaded &lt;b&gt;only&lt;/b&gt; at the studio. The embedding html should include them manually.">
+          <Style t="uitext.YellowBox"/>
+          <FieldAspect t="field_aspect.Css" Inline="white-space: normal;&#xa;"/>
+        </Field>
+        <Field t="field.XmlMultipleGroup" ID="files" Title="Files" TitleForSingle="File" HideTitle="true">
+          <FieldAspect t="field_aspect.HideTitle"/>
+          <Items t="field.InnerItems" Path="externalJS/file"/>
+          <Presentation t="uiaspect.RichTable"/>
+          <Aspect t="uiaspect.DefaultFeatures" ItemSelection="true" Toolbar="true" ItemDetails="true" AutoDoubleClick="false"/>
+          <Operations t="operation.Operations">
+            <Operation t="operation.Operation" ID="NewItem" Title="New File" Target="new" Icon="images/add1616.png" Shortcut="Alt+N" WritableOnly="true">
+              <Action t="operation.New"/>
+            </Operation>
+            <Operation t="operation.Operation" ID="DeleteItem" Target="item" Title="Delete File" Icon="images/delete1616.gif" Shortcut="Delete" WritableOnly="true">
+              <Action t="operation.Delete" AskForConfirmation="true"/>
+              <Operations t="operation.Operations"/>
+            </Operation>
+            <Operation t="operation.Operation" ID="xml" Title="xml" Target="items" Icon="%$_Images%/studio/xml4.gif">
+              <Action t="xmlui.ShowXmlDialog" AutoWrite="true" Title="External Js Files" Xml="%..%" AutoWriteAllowTagChange=""/>
+              <Operations t="operation.Operations"/>
+            </Operation>
+          </Operations>
+          <Field t="field.OpenButton" Title="Open" ID="Open" ID__Manual="" ExpandCollapseImages="true">
+            <ButtonStyle t="ui.ButtonAsImage" HoverIndication="true" MultiLangImage="false"/>
+          </Field>
+          <Field t="field.Field" FieldData="%!@file_name%" ID="file_name" Title="File Name" ReadOnlyText="">
+            <Type t="field_aspect.Text"/>
+            <FieldAspect t="field_aspect.Resizer" Disable="true" RememberLastWidth="false"/>
+            <FieldAspect t="field_aspect.Css" Inline="width: 280px;"/>
+            <FieldAspect t="field_aspect.HideInProperties"/>
+          </Field>
+          <Field t="field.Field" FieldData="%!@file_name%" ID="file_name_inner" Title="File Name" ReadOnlyText="">
+            <Type t="field_aspect.Text"/>
+            <FieldAspect t="field_aspect.Resizer" Disable="true" RememberLastWidth="false"/>
+            <FieldAspect t="field_aspect.HideInTable"/>
+          </Field>
+          <Field t="field.Field" FieldData="%!@load_condition%" ID="load_condition" Title="Load Condition" ReadOnlyText="">
+            <Type t="field_aspect.Text"/>
+            <FieldAspect t="field_aspect.Resizer" Disable="" RememberLastWidth="false"/>
+            <FieldAspect t="field_aspect.HideInTable"/>
+            <FieldAspect t="field_aspect.Description" Description="Keep empty for jQuery.getScript"/>
+          </Field>
+          <Aspect t="uiaspect.ItemDetails" Transactional="true">
+            <OpenIn t="uiaspect.DetailsInplace" CloseInplaceSiblings="" ToolbarLocation="bottom" AutoOpenWhenZooming="none">
+              <InplaceToolbar t="uiaspect.DetailsToolbar">
+                <ButtonStyle t="ui.ButtonAsHyperlink"/>
+              </InplaceToolbar>
+            </OpenIn>
+            <OpenNewIn t="uiaspect.DetailsInplace" CloseInplaceSiblings="" ToolbarLocation="bottom" AutoOpenWhenZooming="none">
+              <InplaceToolbar t="uiaspect.DetailsToolbar">
+                <ButtonStyle t="ui.ButtonAsHyperlink"/>
+              </InplaceToolbar>
+            </OpenNewIn>
+          </Aspect>
+          <Field t="field.Field" FieldData="%!@cloud_base_url%" ID="cloud_base_url" Title="Cloud Base Url" ReadOnlyText="">
+            <Type t="field_aspect.Text"/>
+            <FieldAspect t="field_aspect.HideInTable"/>
+          </Field>
+          <Field t="field.Field" FieldData="%!@local_base_url%" ID="local_base_url" Title="Local Base Url" ReadOnlyText="">
+            <Type t="field_aspect.Text"/>
+            <FieldAspect t="field_aspect.HideInTable"/>
+          </Field>
+        </Field>
+        <Item t="data_items.Items" Items="%%"/>
+        <Presentation t="uiaspect.PropertySheet"/>
+        <Operations t="operation.Operations"/>
+      </xtml>
+    </Component>
+  
+  <Component id="PageInput" type="data.Data">
+    <Param name="Page" />
+    <xtml t="data.IfThenElse" If="%$Page/Type%=='single'" Else="%$Inputs%">
+      <Var name="Inputs" t="data.FirstSucceeding">
+        <Item value="%Items%">
+          <Data t="object.RunMethod" Object="%$Page%" Method="Items" />
+        </Item>
+        <Item t="bart_resource.ResourceValue" ResourceID="%$Page/ResourceID%" />
+        <Item t="bart_resource.ResourceValue" ResourceID="%$Page/Resource%" />
+        <Item value="%$_BartDtDB/{$Page/ContentType}/*%" />
+        <Item t="xml.ByTag" Tag="%$Page/ContentType%" />
+      </Var>
+      <Then t="data.Pipeline">
+        <Item value="%$Inputs%" />
+        <Aggregator t="data.First" />
+      </Then>
+    </xtml>
+  </Component>
+
+  <Component id="PageSampleItems" type="data.Data">
+    <Param name="PageXtml" />
+    <xtml t="data.FirstSucceeding">
+      <Item t="data.Pipeline">
+        <Item t="xtml.RunXtml" Xtml="%$PageXtml/DefaultResource%" />
+        <Item value="%Items%" />
+      </Item>
+      <Item value="%$_BartDtDB/{$PageXtml/@ContentType}/*%">
+        <Condition t="yesno.NotEmpty" Value="%$PageXtml/@ContentType%" />
+      </Item>
+      <Item t="xtml.RunXtml" Xtml="%$PageXtml/FieldAspect[@t='field_aspect.FieldData']%" Field="FieldData" />
+    </xtml>
+  </Component>
+
+  <Component id="PageDataPreview" type="data.Data">
+    <Param name="Page" />
+    <xtml t="data.FirstSucceeding">
+      <Item t="data.IfThenElse" If="%=Count($Items)%==1" Then="%$Items%" >
+      <Var name="Items" t="data.FirstSucceeding">
+        <Item t="data.Pipeline">
+          <Item value="%$_BartDtDB/{$Page/ContentType}/*%" />
+          <Aggregator t="data.First" />
+        </Item>
+        <Item t="bart_resource.ResourceValue" ResourceID="%$Page/Resource%" />
+      </Var>
+      <Else t="xml.WithChanges">
+        <Xml t="xml.ByTag" Tag="items"/>
+        <Change t="xml.AddChildren" Children="%$Items%" CloneChildren="true" />
+      </Else>
+      </Item>
+      <Item t="xml.ByTag" Tag="nosampledata" />
+    </xtml>
+  </Component>
+
+  <Component id="PagePreview" type="ui.Control" execution="native">
+    <Param name="Page" />
+    <Param name="Stretch" type="data.Boolean" Default="true" />
+    <NativeHelper name="Control" t="ui.List" Class="aa_preview">
+        <Layout t="ui.LineBreak" IncludeSpacing="false"/>
+        <Control t="ui.Html" DynamicContent="true">
+          <style type="text/css">%$_AppContext/CssDefinitions%</style>
+        </Control>
+        <Control t="ui.Document">
+           <Presentation t="uiaspect.Group">
+              <Layout t="group.Default" />
+           </Presentation>
+          <Fields t="field.CustomControl" ShowTitle="false">
+            <Control t="object.RunMethod" Object="%$Page%" Method="Control">
+              <Var name="Language" t="object.RunMethod" Object="%$_AppContext%" Method="Language" />
+              <Class value="runtime %$Right2Left%">
+                <Var name="Right2Left" value="right2left" Condition="%$Language% == 'hebrew'" />
+              </Class>
+            </Control>
+        </Fields>
+        <Aspect t="uiaspect.StretchToBottomRight" StretchToBottom="true" StretchToRight="true" MarginFromBrowserRight="20" Condition="%$Stretch%">
+          <MarginFromBrowserBottom t="field_dt.PaneBottomMargin" />
+        </Aspect>
+        </Control>
+    </NativeHelper>
+  </Component>
+  
+  <Component id="ResourcesContext" type="data.Data" execution="native" />
+
+  <Component id="RefreshDataModel" type="action.Action">
+    <xtml t="object.SetProperty" Object="%$_AppContext%" Property="Pages">
+      <Value t="xtml.RunXtml" Xtml="%$BartAppXtml/Pages%" />
+    </xtml>
+  </Component>
+
+  <Component id="GoToEditPage" type="action.Action">
+    <Param name="Page" Default="%%"/>
+    <Param name="TreePath" />
+    <xtml t="action.RunActions">
+      <Action t="object.RunMethod" Object="%$_BartDevDtContext%" Method="GoToEditPage">
+        <Var name="Page" value="%$Page%" />
+        <Var name="TreePath" value="" />
+      </Action>
+      <Action t="dialog.CloseDialog" />
+    </xtml>
+  </Component>
+
+  <Component id="MainUnit" type="data.Data">
+    <xtml value="%$BartMainUnit/@id%" />
+  </Component>
+
+  <Component id="HtmlToEmbed" type="data.Data">
+      <Param name="WidgetId"/>
+      <Param name="ResourceId"/>
+      <xtml t="data.Pipeline">
+        <Var name="WidgetInOneLine" t="bart_dt.XmlInOneLine" Xml="%$_WidgetXml%"/>
+        <Var name="WidgetJs" t="data.IfThenElse" If="%@hosting% == 'cloud'" Then="//jbartdb.appspot.com/widget.js?id=%$WidgetId%" Else="jbart_%$WidgetId%.js"/>
+        <Var name="_SampleData" t="data.Pipeline">
+          <Item value="%$PageSampleItems%"/>
+          <Aggregator t="xml.Wrap" HeadTag="data"/>
+        </Var>
+        <Var name="_SampleDataInOneLine" t="bart_dt.XmlInOneLine" Xml="%$_SampleData%"/>
+        <Var name="PageClass" value=" jBartWidgetPage_%@page%" Condition="%@page% != ''"/>
+        <Var name="MoreParams" value="page: '%@page%'" Condition="%@page% != ''"/>
+        <Item><![CDATA[<!DOCTYPE html>
+<div>
+<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+<script type="text/javascript" src="%$WidgetJs%"></script>
+  <div id="%$WidgetId%_placeholder"></div>
+  <script type="text/javascript">
+    jBartWidgets.%$WidgetId%.show(document.getElementById('%$WidgetId%_placeholder'),{%$MoreParams%});
+  </script>
+  <div id="ajaxart_log" style="display:none"></div>
+</div>]]>
+        </Item>
+      </xtml>
+    </Component>
+  
+  <Component id="IsMobile" type="data.Boolean">
+    <xtml t="text.StartsWith" With="mobile" Text="%$_WidgetXml/@view%" />
+  </Component>
+
+  <Component id="EmbedXtmlItem" type="action.Action">
+      <xtml t="dlg.OpenDialog" Title="Embed Widget">
+        <Contents t="bart_dt.EmbedXtmlContent"/>
+        <Feature t="dlg.Resizer"/>
+        <Feature t="dlg.Buttons">
+          <Buttons t="dlg.Close"/>
+        </Feature>
+      </xtml>
+    </Component>
+
+  <Component id="JavascriptForCompress" type="data.Data">
+    <Param name="FullPackage" type="data.Boolean" />
+    <Param name="ForNodeJS" type="data.Boolean" />
+    <Param name="CrawlerNodeJS" type="data.Boolean" />
+    <Param name="Clean" type="data.Boolean" />
+    <Param name="ForEditor" type="data.Boolean" />
+    <Param name="IncludeWidget" type="data.Boolean" />
+    <Param name="WrapWithClosure" type="data.Boolean" />
+    <xtml t="text.Concat">
+      <Var name="JsInComponents" t="object.Object" />
+      <Var name="XtmlRelations" value=" " />
+      <Var name="JsRelations" value=" " />
+      <Var name="Source" t="xml.TextToXml" Data="%$_WidgetXml%" />
+      <Var name="Components" t="data.IfThenElse" If="%$FullPackage%">
+        <Then t="xtml.AllComponentIds" />
+        <Else t="bart_dt_compress.Components" ForEditor="%$ForEditor%" Script="%$Source%" BlackList="%$_WidgetXml/compress/@black_list%" CrawlerNodeJS="%$CrawlerNodeJS%" ForNodeJS="%$ForNodeJS%" />
+      </Var>
+      <Var name="Xtml" t="bart_dt_compress.Xtml" Components="%$Components%" />
+      <Var name="AllXtml" t="data.List">
+        <Item value="%$Xtml%" />
+        <Item value="%$_WidgetXml%" />
+      </Var>
+      <Var name="GCs" t="bart_dt_compress.GCs" Components="%$Components%" LogUsage="%$_WidgetXml/compress/@log_relations%" />
+      <Var name="Utils" t="bart_dt_compress.JsUtils" GCs="%$GCs%" WidgetXml="%$_WidgetXml%" LogUsage="%$_WidgetXml/compress/@log_relations%" JsToAdd="%$_WidgetXml/compress/@js_to_add%" Xtmls="%$AllXtml%" CrawlerNodeJS="%$CrawlerNodeJS%"/>
+      <Var name="XtmlInOneLine" t="bart_dt.XmlInOneLine" Xml="%$Xtml%" />
+      <Var name="XtmlSize" t="text.Length">
+        <Data t="xml.XmlToText" Data="%$Xtml%" />
+      </Var>
+      <Var name="UtilsSize" t="text.Length" Data="%$Utils%" />
+      <Var name="GCsSize" t="text.Length" Data="%$GCs%" />
+      <Var name="All" t="text.Concat" Separator="&#xa;">
+        <Item value="%$Utils%" />
+        <Item value="%$GCs%" />
+        <Item value="ajaxart.load_xtml_content('',aa_parsexml('%$XtmlInOneLine%'));&#xa;" />
+        <Item value="var aa_xtml_total = %$XtmlSize%;&#xa;" />
+      </Var>
+      <Item value="(function(){" Condition="%$WrapWithClosure%" />
+      <Item t="data.Pipeline">
+        <Item value="%$All%" />
+        <Item t="data.IfThenElse" If="%$Clean%" Else="%%">
+          <Then t="text.Replace" Text="%%" Find="debugger" ReplaceWith="" />
+        </Item>
+      </Item>
+      <Item t="bart_dt.WidgetAsJavascript" Condition="%$IncludeWidget%" />
+      <Item value="}());" Condition="%$WrapWithClosure%"/>
+    </xtml>
+  </Component>
+
+  <Component id="SaveWidgetCompressedJBart" type="action.Action">
+    <Param name="OnSuccess" type="action.Action" script="true" />
+    <Param name="FullPackage" type="data.Boolean" />
+    <xtml t="action.RunActions">
+      <Var name="All" t="bart_dt.JavascriptForCompress" FullPackage="%$FullPackage%" Clean="true"  />
+      <Var name="AllForEditor" t="bart_dt.JavascriptForCompress" ForEditor="true" FullPackage="false" Clean="true" Condition="%$_WidgetXml/embed/@editor%" />
+      <Var name="AllNodeJS" t="data.IfThenElse" If="%$_WidgetXml/compress/@nodejs%" Else="%%">
+        <Then t="bart_dt.JavascriptForCompress" FullPackage="false" ForNodeJS="true" Clean="true" />
+      </Var>
+      <Var name="FileName" value="jbart_%$WidgetId%.js" />
+      <Var name="PackageFileName" value="c:/dropbox/public/jbart/jbartAll.js" />
+      <Var name="WidgetID" t="text.Split" Separator="/" Text="%$_WidgetXml/@id%" Part="Last"/>
+      <Var name="SettingsJS" t="text.FirstSucceeding">
+        <Item t="bart_dt.XmlInOneLine" Xml="%$Settings%" Prefix="window.jBartWidget_%$WidgetID%_Settings = jbart_data('" Suffix="','single');">
+          <Condition t="yesno.NotEmpty" Value="%$Settings%" />
+        </Item>
+      </Var>
+      <Var name="WidgetAsJavascript" t="bart_dt.WidgetAsJavascript" />
+      <Action t="action.RunActions">
+            <Action t="action.IfThenElse" If="%$FullPackage%">
+              <Then t="action.RunActions">
+                <Action t="bart_dt.SaveAndCompressJSFile" FilePath="%$PackageFileName%">
+                  <Contents t="text.Concat" Separator="&#xa;">
+                    <Item value="%$All%;" />
+                  </Contents>
+                </Action>
+              </Then>
+              <Else t="action.RunActions">
+                <Action t="bart_dt.SaveAndCompressJSFile" FilePath="%$_WidgetXml/embed/@dir%jbart_%$WidgetId%.js">
+                  <Contents t="text.Concat" Separator="&#xa;">
+                    <Item value="(function(){" />
+                    <Item value="%$All%;" />
+                    <Item value="%$WidgetAsJavascript%" />
+                    <Item value="}());" />
+                  </Contents>
+                </Action>
+                <Action t="async.SaveFileInLocalComputer" FilePath="%$_WidgetXml/embed/@dir%jbart_%$WidgetId%_src.js" AlsoCreateDirectory="true">
+                  <FileContents t="text.Concat" Separator="&#xa;">
+                    <Item value="(function(){" />
+                    <Item value="try {" />
+                    <Item value="%$All%;" />
+                    <Item value="%$WidgetAsJavascript%" />
+                    <Item value="} catch(e) { window.jbErrorException = e; }" />                   
+                    <Item value="}());" />
+                  </FileContents>
+                </Action>
+                <Action t="async.SaveFileInLocalComputer" FilePath="%$_WidgetXml/embed/@dir%jbart_%$WidgetId%_widget.js" AlsoCreateDirectory="true">
+                  <FileContents t="text.Concat" Separator="&#xa;">
+                    <Item value="(function(){" />
+                    <Item value="%$WidgetAsJavascript%" />
+                    <Item value="}());" />
+                  </FileContents>
+                </Action>
+                <Action t="async.SaveFileInLocalComputer" FilePath="%$_WidgetXml/embed/@dir%jbart_%$WidgetId%_editor.js" AlsoCreateDirectory="true" Condition="%$_WidgetXml/embed/@editor%">
+                  <FileContents t="text.Concat" Separator="&#xa;">
+                    <Item value="%$AllForEditor%" />
+                    <Item value="%$WidgetAsJavascript%" />
+                  </FileContents>
+                </Action>
+                <Action t="async.SaveFileInLocalComputer" FilePath="%$_WidgetXml/embed/@dir%jbart_%$WidgetId%_settings.js" FileContents="%$SettingsJS%">
+                  <Condition t="yesno.NotEmpty" Value="%$SettingsJS%" />
+                </Action>
+                <Action t="async.SaveFileInLocalComputer" FilePath="%$_WidgetXml/embed/@dir%jbart_nodejs_%$WidgetId%_src.js" AlsoCreateDirectory="true" Condition="%$_WidgetXml/compress/@nodejs%">
+                  <FileContents t="text.Concat" Separator="&#xa;">
+                    <Item value="(function(){" />
+                    <Item value="%$AllNodeJS%;" />
+                    <Item t="bart_dt.WidgetAsJavascript" NodeJS="true" />
+                    <Item value="}());" />
+                  </FileContents>
+                </Action>
+                <Action t="async.SaveFileInLocalComputer" FilePath="%$_WidgetXml/embed/@dir%rel.js">
+                  <Condition t="yesno.And">
+                    <Item value="%$_WidgetXml/compress/@uncompressed%" />
+                    <Item value="%$_WidgetXml/compress/@log_relations%" />
+                  </Condition>
+                  <FileContents t="data.JavaScript" Code="function(data,html_elem,context) {&#xa;  return 'var rel = {};\n' + context.vars.JsRelations[0]; &#xa;}" />
+                </Action>
+                <Action t="async.SaveFileInLocalComputer" FilePath="%$_WidgetXml/embed/@dir%rel_xtml.js">
+                  <Condition t="yesno.And">
+                    <Item value="%$_WidgetXml/compress/@uncompressed%" />
+                    <Item value="%$_WidgetXml/compress/@log_relations%" />
+                  </Condition>
+                  <FileContents t="data.JavaScript" Code="function(data,html_elem,context) {&#xa;  return context.vars.XtmlRelations[0] + '\n' &#xa;}" />
+                </Action>
+                <Action t="async.SaveFileInLocalComputer" FilePath="%$_WidgetXml/embed/@dir%xtml.xtml">
+                  <Condition t="yesno.And">
+                    <Item value="%$_WidgetXml/compress/@uncompressed%" />
+                    <Item value="%$_WidgetXml/compress/@log_relations%" />
+                  </Condition>
+                  <FileContents t="xml.XmlToText" Data="%$Xtml%" PrettyPrint="true" />
+                </Action>
+                <Action t="xtml.UseParam" Param="OnSuccess" />
+              </Else>
+          </Action>
+      </Action>
+    </xtml>
+  </Component>
+  
+  <Component id="WidgetAsJavascript" type="data.Data">
+    <Param name="NodeJS" type="data.Boolean" />
+    <xtml t="data.IfThenElse" If="%$NodeJS%">
+      <Else value="window.jBartWidget_%$WidgetId% = '%$WidgetInOneLine%'; jBartWidgets.%$WidgetId% = jBart.activator(jBartWidget_%$WidgetId%); %$JsToAdd%" />
+      <Then value="window.jBartWidget_%$WidgetId% = '%$WidgetInOneLine%'; GLOBAL.jbartRunFromNodeJS = function(profile,data) { return aa_runFromNodeJS(jBartWidget_%$WidgetId%,profile,data); }" />
+      <Var name="WidgetInOneLine" t="bart_dt.XmlInOneLine" >
+        <Xml t="data.IfThenElse" If="%$_WidgetXml/embed/@with_data%" Then="%$_WidgetXml%">
+          <Else t="xml.WithChanges">
+            <Xml t="data.Pipeline">
+              <Item value="%$_WidgetXml%"/>
+              <Item t="xml.XmlToText"/>
+              <Item t="xml.TextToXml"/>
+            </Xml>
+            <Change t="action.RunActionOnItems">
+              <Items t="data.List">
+                <Item t="data.Pipeline">
+                  <Item t="xtml_dt.FindXtmlByT" ParentXtml="%%" T="bart_resource.Xml" FindAll="true"/>
+                  <Item value="%Xml%"/>
+                </Item>
+                <Item t="data.Pipeline">
+                  <Item t="xtml_dt.FindXtmlByT" ParentXtml="%%" T="jbart_resource.Data" FindAll="true"/>
+                  <Item value="%Value%"/>
+                </Item>
+              </Items>
+              <Action t="xml.Delete" />
+            </Change>
+          </Else>
+        </Xml>
+      </Var>
+    </xtml>
+  </Component>
+
+  <Component id="SaveWidgetSource" type="action.Action">
+    <Param name="OnSuccess" type="action.Action" script="true" />
+      <xtml t="async.SaveFileInLocalComputer" FilePath="%$_WidgetXml/embed/@dir%%$WidgetId%.js">
+        <Var name="Content" t="bart_dt.WidgetAsJavascript" />
+        <FileContents value="%$Content%"/>
+        <OnSuccess t="xtml.UseParam" Param="OnSuccess" />
+      </xtml>
+  </Component>
+  
+  <Component id="EmbedXtmlContent" type="ui.Control">
+      <xtml t="ui.List">
+        <Var name="WidgetId" t="text.Split" Separator="/" Text="%$_WidgetXml/@id%" Part="Last"/>
+        <Var name="ResourceId" t="data.FirstSucceeding">
+          <Item value="%$_WidgetXml/bart_dev/db/bart_unit/bart_unit/Component[@id='App']/xtml/DataResource[@t='bart_resource.Xml']/@ResourceID%"/>
+        </Var>
+        <Var name="WidgetInOneLine" t="bart_dt.XmlInOneLine" Xml="%$_WidgetXml%"/>
+        <Control t="ui.ControlWithAction">
+          <RunBeforeControl t="action.WriteValue" Value="datefilter.DateFilterControl,field.TextFilterControl">
+            <Condition t="yesno.IsEmpty" Value="%$_WidgetXml/compress/@black_list%"/>
+            <To t="data.Pipeline">
+              <Item value="%$_WidgetXml%"/>
+              <Item t="xml.XPath" XPath="compress" CreateIfDoesNotExist="true"/>
+              <Item t="xml.XPath" XPath="@black_list" CreateIfDoesNotExist="true"/>
+            </To>
+          </RunBeforeControl>
+          <Control t="ui.Document">
+            <Item t="data_items.Items">
+              <Items t="xml.Xml" DynamicContent="true">
+                <xml Widget_data="%$_WidgetXml/@feed%"/>
+              </Items>
+            </Item>
+            <Presentation t="uiaspect.PropertySheet" Space="18px" HeaderSpace="0"/>
+            <Fields t="field.Fields">
+              <Field t="field.XtmlControl">
+                <Control t="ui.Text" Class="embed_notification" Text1="File saved successfully"/>
+                <FieldAspect t="field_aspect.HideTitle"/>
+                <FieldAspect t="field_aspect.Css" Inline="color:green;"/>
+              </Field>
+              <Field t="field.XmlGroup" Title="top" ID="Top" ID__Manual="" Path="">
+                <FieldAspect t="field_aspect.Section" HideTitle="true" Underline="true"/>
+                <Presentation t="uiaspect.PropertySheet" AlighLastToRight="" Widths="250px" PropertiesWidth=""/>
+                <Operations t="operation.Operations"/>
+              </Field>
+              <Field t="field.Group" Title="Widget Source" ID="Group">
+                <FieldAspect t="field_aspect.Section"/>
+                <Layout t="uiaspect.PropertySheet"/>
+                <GroupData t="group.DataFlow" FlowData="%$_WidgetXml/!embed%"/>
+                <Field t="field.Field" ID="dir" Title="Directory" FieldData="%!@dir%"/>
+                <Field t="field.Field" ID="with_data" Title="Include sample data" FieldData="%!@with_data%">
+                  <Type t="field_aspect.Boolean">
+                    <Options t="picklist.OptionsInplace">
+                      <Options t="picklist.SimpleOptions" Options="Widget,Widget without data"/>
+                    </Options>
+                  </Type>
+                </Field>
+                <Field t="field.Button" ID="get" Title="Get Widget Source" ButtonText="%@as%">
+                  <Style t="button.Hyperlink"/>
+                  <Image t="image.ImageOld" Url="%$_Images%/studio/download.png"/>
+                  <Action t="bart_dt.SaveWidgetSource">
+                    <OnSuccess t="uiaction.SetText" Text="file saved succesfully to %$_WidgetXml/embed/@dir%%$WidgetId%.js" RunOn=".embed_notification"/>
+                  </Action>
+                </Field>
+                <Field t="field.Group" Title="">
+                  <Layout t="uiaspect.Horizontal" HideInnerTitles="">
+                    <Css><![CDATA[]]></Css>
+                  </Layout>
+                  <Field t="field.Button" ID="compress" Title="Get Compressed jBart Version">
+                    <Style t="button.Hyperlink"/>
+                    <Image t="image.ImageOld" Url="%$_Images%/studio/cut.png"/>
+                    <Action t="bart_dt.SaveWidgetCompressedJBart">
+                      <OnSuccess t="uiaction.SetText" Text="compression finished" RunOn=".embed_notification"/>
+                    </Action>
+                  </Field>
+                  <Field t="field.Button" ID="compress_set" Title="settings ...">
+                    <Style t="button.Hyperlink"/>
+                    <Action t="dlg.OpenDialog" Title="compression settings" NoCancel="">
+                      <Contents t="ui.Document">
+                        <Item t="data_items.Items" Items="%$_WidgetXml/!compress%"/>
+                        <Fields t="field.Fields">
+                          <Field t="field.Field" FieldData="%!@black_list%" Title="Black List" ReadOnlyText="">
+                            <Type t="field_aspect.Text"/>
+                            <FieldAspect t="field_feature.Css">
+                              <Css><![CDATA[#this { width: 400px; }]]></Css>
+                            </FieldAspect>
+                          </Field>
+                          <Field t="field.Field" FieldData="%!@js_white_list%" Title="Function White List" ReadOnlyText="">
+                            <Type t="field_aspect.Text"/>
+                            <FieldAspect t="field_feature.Css">
+                              <Css><![CDATA[#this { width: 400px; }]]></Css>
+                            </FieldAspect>
+                          </Field>
+                          <Field t="field.Field" FieldData="%!@js_to_add%" Title="Additional Java Script" ReadOnlyText="">
+                            <Type t="field_aspect.MultiLineText">
+                              <Style t="textarea.Default" Height="40px" Width="400px"/>
+                            </Type>
+                          </Field>
+                          <Field t="field.Field" FieldData="%!@log_relations%" Title="Log Relations">
+                            <Type t="field_aspect.Boolean"/>
+                            <FieldAspect t="field_aspect.Description" Description="Add include to http://dl.dropbox.com/u/24083519/jMarker.js.  &#xa;In runtime use ctril+shift+1-5"/>
+                          </Field>
+                          <Field t="field.Field" FieldData="%!@uncompressed%" Title="generate uncompressed version">
+                            <Type t="field_aspect.Boolean"/>
+                          </Field>
+                          <Field t="field.Field" FieldData="%!@nodejs%" Title="Generate a compressed nodejs version">
+                            <Type t="field_aspect.Boolean"/>
+                          </Field>
+                        </Fields>
+                      </Contents>
+                      <Style t="dialog_style.DefaultDialog"/>
+                    </Action>
+                    <Image t="image.ImageOld" Url="%$_Images%/studio/project.png"/>
+                  </Field>
+                  <FieldAspect t="field_aspect.HideTitle"/>
+                  <Field t="field.Button" ID="Button" Title="Upload to jbart db">
+                    <Image t="image.ImageOld" Url="http://images-1.findicons.com/files/icons/42/basic/16/up.png" KeepImageProportions="true" AsDivBackground=""/>
+                    <Style t="button.Hyperlink"/>
+                    <FieldAspect t="field_aspect.HideByCondition" CheckConditionForEveryItem="">
+                      <ShowCondition t="yesno.Contains">
+                        <AllText t="data.Url"/>
+                        <Text value="http://localhost"/>
+                      </ShowCondition>
+                    </FieldAspect>
+                    <Action t="action.RunActions" customxtml="true">
+                      <Action t="dlg.CloseDialog"/>
+                      <Action t="object.RunMethod" Object="%$_JBartStudio%" Method="ShowProgressIndicator">
+                        <Input t="object.Object" Text="Uploading to jbart db"/>
+                      </Action>
+                      <Action t="action.WriteValue" Value="force" To="%$_WidgetXml/@vid%"/>
+                      <Action t="action.RunOnNextTimer" WaitInMSec="100">
+                        <Action t="jbart_studio.SaveProjectToJBartDB"/>
+                      </Action>
+                    </Action>
+                  </Field>
+                  <Operations t="operation.Operations"/>
+                  <Field t="control.Button" ID="Create_a_package" Title="Upload studio to 8888">
+                    <Style t="ui.CustomCss">
+                      <Style t="btn.HyperlinkWithImage"/>
+                      <Css><![CDATA[.hypelink_text { font-family:"lucida grande",tahoma,verdana,arial,sans-serif; 
+  color:blue; font-size: 11px; text-decoration: none; 
+  display: inline-block; }
+#this:hover .hypelink_text { text-decoration:underline; }
+.hypelink_img { padding-right: 6px; padding-bottom: 2px; display: inline-block; 
+  vertical-align:middle; }
+#this:active .hypelink_img { opacity:0.6; }
+#this { cursor:pointer; }
+]]></Css>
+                    </Style>
+                    <FieldAspect t="field_aspect.HideTitle"/>
+                    <Image t="image.Image" KeepImageProportions="true" Width="" Height="" Url="%$_Images%/studio/bucket.jpg">
+                      <ImageProportions t="image.KeepProportions" FillImage="true" CenterImage=""/>
+                    </Image>
+                    <Action t="jbart_studio.UploadCurrentStudio" WriteToLocalFileSystem="true">
+                      <OnSuccess t="uiaction.SetText" Text="package created" RunOn=".embed_notification" StayInControl="" DoNotFireEvents="" Mode="ReplaceAll"/>
+                    </Action>
+                  </Field>
+                </Field>
+                <Field t="field.Field" ID="SuccessMessage">
+                  <FieldAspect t="field_aspect.ReadOnly"/>
+                </Field>
+                <Operations t="operation.Operations"/>
+              </Field>
+              <Field t="field.XmlGroup" Title="Html" ID="Code" ID__Manual="" Path="">
+                <FieldAspect t="field_aspect.Section" CollapsedByDefault="false">
+                  <Style t="section.DefaultExpandCollapse"/>
+                </FieldAspect>
+                <Presentation t="uiaspect.PropertySheet"/>
+                <Operations t="operation.Operations"/>
+                <Field t="field.Group" ID="data" Title="Widget Data">
+                  <Layout t="uiaspect.Horizontal" Spacing="10px"/>
+                  <Field t="field.Field" FieldData="%!$_WidgetXml/!@feed%">
+                    <Title value="Widget_data"/>
+                    <FieldAspect t="field_aspect.RefreshDependentFields" FieldsIds="html,link_group" RefreshOn="every click" RefreshScope="screen"/>
+                    <FieldAspect t="field_aspect.DescriptionForEmptyText" Description="url of data source"/>
+                    <FieldAspect t="field_aspect.Css" OnElement="content" Inline="width:370px; font-size:10px;"/>
+                    <FieldAspect t="field_aspect.HideTitle"/>
+                  </Field>
+                  <Field t="field.Field" Title="Cross Domain Proxy" FieldData="%!$_WidgetXml/!@cross_domain%">
+                    <Type t="field_aspect.Boolean"/>
+                    <FieldAspect t="field_aspect.RefreshDependentFields" FieldsIds="link_group" RefreshOn="every click" RefreshScope="screen"/>
+                    <FieldAspect t="field_aspect.DefaultValue" Value="true"/>
+                  </Field>
+                  <FieldAspect t="field_aspect.GlobalCss" GlobalCss="#this .fld_Widget_data_title { font-weight:normal; }"/>
+                  <GroupData t="group.DataFlow" FlowData="%%"/>
+                </Field>
+                <Field t="field.Group" ID="link_group">
+                  <Layout t="uiaspect.Group">
+                    <Style t="group.Horizontal" Spacing="5px"/>
+                  </Layout>
+                  <GroupData t="group.DataFlow">
+                    <FlowData t="data.Pipeline">
+                      <Var name="Host" t="ui.DataFromJavaScript" Expression="'http://' + window.location.href.split('/')[2] + '/'"/>
+                      <Var name="_WidgetData" t="data.Pipeline">
+                        <Condition t="yesno.NotEmpty" Value="%$_WidgetXml/@feed%"/>
+                        <Item value="%$_WidgetXml/@feed%"/>
+                        <Item t="text.Replace" Find="&amp;" ReplaceWith="_AMP_"/>
+                        <Item t="text.Replace" Find="[+]" ReplaceWith="\%2B"/>
+                        <Item t="data.IfThenElse" If="%$_WidgetXml/@cross_domain%" Else="%%">
+                          <Then t="data.Pipeline">
+                            <Item t="text.Replace" Find="\%" ReplaceWith="\%25"/>
+                            <Item value="/bart.php?op=proxy\%26url=%%"/>
+                          </Then>
+                        </Item>
+                        <Item value="&amp;data=%%"/>
+                      </Var>
+                      <Item value="%$Host%widgetpage?id=%$_WidgetXml/@id%%$_WidgetData%"/>
+                    </FlowData>
+                  </GroupData>
+                  <Field t="field.Field" Title="Cloud Page Link" ID="link" FieldData="%!%">
+                    <FieldAspect t="field_aspect.Css" Inline="width:500px;font-size:10px;"/>
+                    <FieldAspect t="field_aspect.Writable"/>
+                  </Field>
+                  <Field t="field.Button" Tooltip="Get QR Code">
+                    <Style t="button.ImageOnly"/>
+                    <Image t="image.ImageOld" Url="%$_Images%/studio/qr.png" KeepImageProportions="true"/>
+                    <Action t="uiaction.GoToPage" Url="http://api.qrserver.com/v1/create-qr-code/?data=%%"/>
+                  </Field>
+                </Field>
+                <Field t="field.XmlField" Path="@page" ID="page" Title="Page">
+                  <Type t="field_aspect.Picklist" AllowEmptyValue="true">
+                    <Options t="picklist.DynamicOptions">
+                      <Options t="data.Pipeline">
+                        <Item t="data.List">
+                          <Item t="bart_dt.GalleryNodeAppXtml" Path="Pages/Page/@ID"/>
+                          <Item t="bart_dt.GalleryNodeAppXtml" Path="../../Component[@type='jbart.MyWidgetPage']/xtml/@ID"/>
+                        </Item>
+                        <Item t="yesno.PassesFilter">
+                          <Filter t="yesno.Not" Of="%../@InternalPage%"/>
+                        </Item>
+                      </Options>
+                    </Options>
+                  </Type>
+                  <FieldAspect t="field_aspect.RefreshDependentFields" FieldsIds="html" RefreshScope="screen"/>
+                  <FieldAspect t="field_aspect.DescriptionForEmptyText" Description="page to show"/>
+                </Field>
+                <Field t="field.XmlField" Path="@hosting" ID="server" Title="Hosting">
+                  <Type t="picklist.Picklist" AllowEmptyValue="false" AllowValueNotInOptions="true" Multiple="false" Mandatory="false" RecalculateForEachCell="false">
+                    <Options t="picklist.OptionsInplace">
+                      <Options t="picklist.RichOptions">
+                        <Option t="picklist.Option" Option="cloud" DisplayName="jBart cloud (google app engine)" Image=""/>
+                        <Option Option="my server" DisplayName="" Image="" t="picklist.Option"/>
+                      </Options>
+                    </Options>
+                    <ControlStyle t="picklist.Radio" Vertical="false"/>
+                  </Type>
+                  <FieldAspect t="field_aspect.DefaultValue" Value="my server"/>
+                  <FieldAspect t="field_aspect.RefreshDependentFields" FieldsIds="html,Download" RefreshOn="every click" RefreshScope="screen"/>
+                  <FieldAspect t="field_aspect.UnindentOptionPage"/>
+                </Field>
+                <Field t="field.XmlField" Path="@html" ID="html" Title="html">
+                  <Type t="field_aspect.MultiLineText" NoWrap="true" Rows="8">
+                    <Style t="textarea.Default" Height="" Width=""/>
+                  </Type>
+                  <FieldAspect t="field_aspect.Calculated" ManualOverride="false" MathFormula="" PrimitiveField="true">
+                    <Formula t="bart_dt.HtmlToEmbed" WidgetId="%$_WidgetXml/@id%" ResourceId="%$ResourceId%"/>
+                  </FieldAspect>
+                  <FieldAspect t="field_aspect.CellPresentation" Content="control"/>
+                  <FieldAspect t="field_aspect.Css" OnElement="content" Inline="min-width: 600px;height:160px;"/>
+                  <FieldAspect t="field_aspect.HideTitle"/>
+                </Field>
+              </Field>
+            </Fields>
+            <Operations t="operation.Operations"/>
+          </Control>
+        </Control>
+      </xtml>
+    </Component>
+  <Component id="EmbeddedHtml" type="data.Data">
+      <Param name="WidgetId"/>
+      <Param name="HostingPrefix"/>
+      <Param name="Title"/>
+      <Param name="EmbedScript"/>
+      <xtml t="text.Text" Text="&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.0 Transitional//EN&quot; &quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd&quot;&gt;&#xa;&lt;html&gt;&#xa; &lt;head&gt; &#xa; &lt;title&gt;%$Title%&lt;/title&gt;&#xa; &lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html; charset=UTF-8&quot; /&gt;&#xa; &lt;script type=&quot;text/javascript&quot; src=&quot;http://www.artwaresoft.com/jquery.js&quot;&gt;&lt;/script&gt;&#xa; &lt;script type=&quot;text/javascript&quot; src=&quot;jbart.js&quot;&gt;&lt;/script&gt;&#xa; &lt;script type=&quot;text/javascript&quot; src=&quot;%$WidgetId%.js&quot;&gt;&lt;/script&gt;&#xa; &lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;clean.css&quot;/&gt;&#xa; &lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;default.css&quot;/&gt;&#xa; &#xa;&lt;/head&gt;  &#xa; &#xa;&lt;body style=&quot;margin:0; padding:0;&quot; &gt;&#xa; &lt;img style=&quot;position:absolute;top:74px;&quot; src=&quot;&quot; onselectstart=&quot;return false&quot; onmousedown=&quot;return false;&quot; onclick=&quot;return true;&quot; /&gt; &#xa; &lt;div style=&quot;background-image: url(http://www.artwaresoft.com/images/studio/logofill.png); background-attachment: initial; background-origin: initial; background-clip: initial; background-color: initial; height: 73px; width: 100\\%; background-position: initial initial; background-repeat: initial initial;&quot;&gt;&#xa; &lt;a href=&quot;http://www.artwaresoft.com&quot;&gt;&lt;img src=&quot;http://www.artwaresoft.com/images/studio/logo.png&quot; height=&quot;73px&quot; border=&quot;0&quot; /&gt;&lt;/a&gt;&#xa; &lt;div id=&quot;jBartWidget_%$WidgetId%&quot; class=&quot;jBartWidget jBartWidget_%$WidgetId%&quot;&gt;&lt;/div&gt;&#xa; &lt;span style=&quot;color:wheat; font-size:30px; position:absolute; top:20px; left:250px;&quot; &gt;%$Title%&lt;/span&gt;&#xa;&lt;/body&gt; &#xa;&#xa;&lt;/html&gt;"/>
+    </Component>
+                             
+  <Component id="XmlInOneLine" type="data.Data">
+    <Param name="Xml"/>
+    <Param name="Prefix" />
+    <Param name="Suffix" />
+    <xtml t="data.Pipeline">
+      <Item t="bart_dt.XmlToOneJSLine" Data="%$Xml%" />
+      <Item value="%$Prefix%%%%$Suffix%" />
+    </xtml>
+  </Component>
+  
+  <Component id="XmlToOneJSLine" type="data.Data" execution="native">
+  </Component>
+  
+   <Component id="GalleryNodeAppXtml" type="data.Data">
+     <Param name="Path" />
+     <xtml value="%$_WidgetXml/bart_dev/db/bart_unit/bart_unit/Component[@id='App']/xtml/{$Path}%" />
+   </Component>
+   
+   <Component id="ComponentsTopElement" type="data.Data">
+     <xtml t="data.FirstSucceeding">
+       <Item value="%$_WidgetXml/db/bart_unit/bart_unit%" />
+       <Item value="%$_WidgetXml/bart_dev/db/bart_unit/bart_unit%" />
+       <Item value="%$_WidgetXml/xtml%" />
+       <Item value="%$_BartDTDB/bart_unit/bart_unit%" />
+     </xtml>
+   </Component> 
+ 
+   <Component id="StyleGenerator" type="action.Action">
+     <xtml t="action.RunActions" >
+       <Var name="Style" t="xtml.RunXtml" Xtml="%$PrevXtml%" />
+       <Condition t="yesno.NotEmpty" Value="%$Style%" />
+       <Action t="action.WriteValue" To="%!@Html%" Value="%$Style/Html%" />
+       <Action t="action.WriteValue" To="%!@Css%">
+         <Value t="text.Replace" Data="%$Style/Css%" Find="%" ReplaceWith="\\%" />
+       </Action>
+       <Action t="action.WriteValue" To="%!@Javascript%" Value="%$Style/Javascript%" />
+     </xtml>
+   </Component>
+ 
+   <Component id="DialogStyleGenerator" type="action.Action">
+     <xtml t="action.RunActions" >
+       <Var name="Style" t="xtml.RunXtml" Xtml="%$PrevXtml%" />
+       <Action t="action.WriteValue" To="%!@Html%" Value="%$Style/Html%" />
+       <Action t="action.WriteValue" To="%!@Css%" >
+         <Value t="text.Replace" Data="%$Style/Css%" Find="%" ReplaceWith="\\%" />
+       </Action>
+       <Action t="action.WriteValue" To="%!@Javascript%" Value="%$Style/Javascript%" />
+       <Action t="action.WriteValue" To="%!@Mode%" Value="%$Style/Mode%" />
+       <Action t="xml.AddXmlChildren" Parent="%%" Children="%$Style/FeatureXtml%" CloneChildren="true" />
+     </xtml>
+   </Component>
+
+   <Component id="DoSaveStyle" type="field.Fields">
+      <Param name="ExtraAction" type="action.Action" script="true"/>
+      <Param name="Type"/>
+      <xtml t="dlg.OpenDialog" Title="Share Style">
+        <Var name="Xtml" value="%%"/>
+        <Var name="DialogData" t="xml.Xml">
+          <xml name="my style"/>
+        </Var>
+        <Contents t="ui.Document">
+          <Field t="field.Text" Text="Enter a name for the new style" Title="">
+            <Style t="uitext.PlainText"/>
+          </Field>
+          <Field t="field.Field" FieldData="%!$DialogData/@name%" ReadOnlyText="" Title="">
+            <FieldAspect t="field_aspect.Mandatory"/>
+            <FieldAspect t="field_aspect.HideTitle"/>
+            <Type t="field_aspect.Text"/>
+            <FieldAspect t="field_aspect.RefreshDependentFields" FieldsIds="SaveAsNew" RefreshOn="every click" RefreshScope="screen"/>
+          </Field>
+          <Field t="field.XmlMultipleGroup" Title="Current Styles in Widget">
+            <Condition value="%$_AppContext/AppXtml/../../Component[@type='{$Type}']/@id% != ''"/>
+            <FieldAspect t="field_aspect.Section"/>
+            <Items t="field.CustomItems" Items="%$_AppContext/AppXtml/../../Component[@type='{$Type}']%"/>
+            <Presentation t="uiaspect.RichTable"/>
+            <Aspect t="uiaspect.ReadOnly"/>
+            <Field t="field.Text" ID="Text" Title="Name" Text="%@id%" HideTitle="false"/>
+            <Field t="field.Button" Title="Override">
+              <Style t="button.JBartButton"/>
+              <Action t="action.RunActions">
+                <Action t="action.WriteValue" To="%$DialogData/!@id%" Value="%@id%"/>
+                <Action t="dlg.CloseDialog" CloseType="OK"/>
+              </Action>
+            </Field>
+          </Field>
+          <Field t="control.Button" ID="Button" Title="Reuse Style" HideTitle="true" ButtonText="Share as '%@base%'">
+            <Style t="btn.HyperlinkWithImage"/>
+            <Action t="operation.RunXtmlAction">
+              <Action t="styles_dt.MakeGlobalToOriginalStyle" SaveComponent="true"/>
+            </Action>
+            <FieldAspect t="field_aspect.HideTitle"/>
+            <Image t="image.Image" KeepImageProportions="true" Width="" Height="" Url="%$_Images%/studio/back1616.png">
+              <ImageProportions t="image.KeepProportions" FillImage="true" CenterImage=""/>
+            </Image>
+            <FieldAspect t="field_aspect.Hidden">
+              <OnCondition t="field_aspect.CheckConditionForEveryItem" DataForCondition="Item data" WhenHidden="Do not render">
+                <ShowCondition t="yesno.NotEmpty" Value="%@base%"/>
+              </OnCondition>
+            </FieldAspect>
+          </Field>
+        </Contents>
+        <RunOnOK t="action.RunActions">
+          <Var name="ComponentsTop" t="bart_dt.ComponentsTopElement"/>
+          <Var name="ID" t="text.FirstSucceeding">
+            <Item value="%$DialogData/@id%"/>
+            <Item t="data.Pipeline">
+              <Item t="text.Capitalize" Data="%$DialogData/@name%" Mode="separate words to capital"/>
+              <Item t="text.ToId" UsedIDs="%$ComponentsTop/Component/@ID%"/>
+            </Item>
+          </Var>
+          <Var name="Style" t="xtml.RunXtml" Xtml="%$Xtml%"/>
+          <Var name="Type" value="%$_Field/ParamXml/@type%"/>
+          <Var name="Comp" t="data.IfThenElse" If="%$Xtml/@t% == 'ui.CustomStyleByField'">
+            <Then t="xml.WithChanges">
+              <Xml t="xml.Xml" DynamicContent="true">
+                <Component id="%$ID%" type="%$Type%">
+                  <xtml/>
+                </Component>
+                </Xml>
+                <Change t="xml.ReplaceElement" Element="%xtml%" NewElement="%$Xtml%" />
+              </Then>
+              <Else t="xml.Xml" DynamicContent="true" EncodeDynamicContent="false" >
+                <Component id="%$ID%" type="%$Type%">
+                  <xtml t="ui.CustomStyle">
+                    <Html><![CDATA[%$Style/Html%]]></Html>
+                    <Css><![CDATA[%$Style/Css%]]></Css>
+                    <Javascript><![CDATA[%$Style/Javascript%]]></Javascript>
+                  </xtml>
+                </Component>
+              </Else>
+            </Var>
+            <Var name="NewXtml" value="%$Comp%" />
+            <Action t="xtml.UseParam" Param="ExtraAction" />
+            <Action t="xml.Delete" Data="%$ComponentsTop/Component[@id='{$ID}']%" />
+            <Action t="xml.ReplaceElement" Element="%$Xtml%">
+              <NewElement t="xml.Xml" DynamicContent="true">
+                <tag t="sample.%$Comp/@id%" />
+              </NewElement>
+            </Action>
+            <Action t="xml.AddXmlChildren" Parent="%$ComponentsTop%" Children="%$Comp%" />
+            <Action t="bart_dt.RefreshWidgetComponents" />
+            <Action t="field.RefreshFieldByElement" Element="%$FieldCellElement%" />
+          </RunOnOK>
+      </xtml>
+   </Component>
+ 
+   <Component id="StyleSave" type="field.Fields">
+     <Param name="ExtraAction" type="action.Action" script="true" />
+     <xtml t="field.Button" Title="Save Style">
+        <Style t="button.Hyperlink"/>
+        <Action t="bart_dt.DoSaveStyle" Type="%$_Field/ParamXml/@type%">
+          <ExtraAction t="xtml.UseParam" Param="ExtraAction" />
+        </Action>
+     </xtml>
+   </Component>
+ 
+   <Component id="DialogStyleSave" type="field.Fields">
+     <Param name="Type" />
+     <Param name="StylePT" />
+     <xtml t="field.Button" Title="Save Style">
+        <Style t="button.Hyperlink"/>
+        <Action t="dialog.OpenDialog">
+          <Var name="Xtml" value="%%" />
+          <Dialog t="dialog.SingleQuestionDialog" Title="Save style" Question="Enter the name of the new style" InitialValue="my dialog">
+            <RunOnOK t="action.RunActions" >
+              <Var name="ComponentsTop" t="bart_dt.ComponentsTopElement" />
+              <Var name="ID" t="text.ToId" UsedIDs="%$ComponentsTop/Component/@ID%" />
+              <Var name="Comp" t="xml.WithChanges">
+                <Xml t="xml.Xml" DynamicContent="true">
+                  <Component id="%$ID%" type="%$Type%">
+                    <xtml t="%$StylePT%" Html="%$Xtml/@Html%" Css="%$Xtml/@Css%" Javascript="%$Xtml/@Javascript%" Mode="%$Xtml/@Mode%"/>
+                  </Component>
+                </Xml>
+                <Change t="xml.AddChildren" Data="%xtml%" CloneChildren="true" Children="%$Xtml/Feature%" />
+              </Var>
+              <Action t="xml.AddXmlChildren" Parent="%$ComponentsTop%" Children="%$Comp%" />
+              <Action t="bart_dt.RefreshWidgetComponents" />
+            </RunOnOK>
+          </Dialog>
+        </Action>
+     </xtml>
+   </Component>
+ 
+   <Component id="Refresh" type="action.Action">
+     <xtml t="uiaction.Refresh" RunOn=".bartdt_tree" />
+   </Component>
+
+   <Component id="XtmlToJSon" type="data.Data" execution="native" >
+      <Param name="Xtml" Default="%%" />
+   </Component>  
+ 
+   <Component id="EditProjectProperties" type="field.Field">
+      <xtml t="field.Group">
+        <FieldAspect t="field_aspect.HideTitle"/>
+        <Field t="field.Field" Title="Name" FieldData="%!$_WidgetXml/!@name%"/>
+        <Field t="field.Field" Title="Type" FieldData="%!$_WidgetXml/!@type%" ReadOnlyText="">
+          <Type t="picklist.Picklist">
+            <Options t="picklist.OptionsInplace">
+              <Options t="picklist.SimpleOptions" Options="widget,feature,labs,system,widget jBartApp, feature jbartApp,prototype,only for tests,private,tutorial"/>
+            </Options>
+          </Type>
+          <FieldAspect t="field_aspect.DefaultValue" Value="draft"/>
+        </Field>
+        <Field t="field.Field" Title="Image" FieldData="%!$_WidgetXml/!@image%">
+          <Type t="field_aspect.ImageOld" EditDirectly="true"/>
+        </Field>
+        <Field t="field.Field" Title="Description" FieldData="%!$_WidgetXml/!@description%">
+          <Type t="field_aspect.MultiLineText"/>
+        </Field>
+      </xtml>
+    </Component>
+
+  <Component id="RefreshWidgetComponents" type="action.Action">
+    <xtml t="action.RunActions">
+      <Action t="xtml.LoadComponents" Namespace="%$BartAppXtml/../../@id%" Components="%BartAppXtml/../../Component%" ClearNSBEfore="true"/>
+      <Action t="aaeditor.ClearCaches" />
+    </xtml>  
+  </Component>    
+
+  <Component id="SaveFile" type="action_async.Action">
+    <Param name="FileName" />
+    <Param name="Content" />
+    <Param name="RelativePath" type="data.Boolean"/>
+    <xtml t="async.SaveFileInLocalComputer" FilePath="%$Prefix%%$FileName%" FileContents="%$Content%">
+      <Var name="Prefix" t="data.IfThenElse" Then="../" Else="">
+        <If value="%$RelativePath%" />
+      </Var>
+    </xtml>
+  </Component>
+
+  <Component id="SaveAndCompressJSFile" type="action.Action">
+    <Param name="FilePath" />
+    <Param name="Contents" />
+    <xtml t="http.HttpCall" Url="/?op=saveAndCompressJS&amp;filename=%$FilePath%">
+          <Aspect t="http.RawPost" RawData="%$Contents%" />
+    </xtml>
+  </Component>
+
+</xtml>
+ 

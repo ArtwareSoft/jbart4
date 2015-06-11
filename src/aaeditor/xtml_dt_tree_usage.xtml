@@ -1,0 +1,180 @@
+<xtml ns="xtml_dt_tree_usage" light="false">
+
+  <Component id="ItemInTree" type="data.Data">
+      <Param name="TopXtml"/>
+      <Param name="TwoLevelDown" type="data.Boolean"/>
+      <Param name="ParamNameToFilter"/>
+      <xtml t="data.Pipeline">
+        <Item t="xtml_dt_tree.TreeDataItems" TopXtml="%$TopXtml%" Type="data.Data"/>
+        <Item t="object.RunMethod" Method="NextLevel" Object="%%" Input="%Items%"/>
+        <Item t="data.IfThenElse" If="%$TwoLevelDown%" Else="%%">
+          <Then t="object.RunMethod" Method="NextLevel" Object="%%" Input="%Items%"/>
+        </Item>
+        <Item value="%Items%"/>
+        <Item t="yesno.PassesFilter">
+          <Filter t="data.IfThenElse" Then="true">
+            <If t="yesno.IsEmpty" Value="%$ParamNameToFilter%"/>
+            <Else t="text.StartsWith" With="%$ParamNameToFilter%">
+              <Text t="object.RunMethod" Method="Text"/>
+            </Else>
+          </Filter>
+        </Item>
+      </xtml>
+    </Component>
+
+  <Test1 t="usage.DataUsage" Of="xtml_dt_tree.NextLevel.Case" IsTest="false">
+      <Var name="TopXtml" t="xml.Xml" >
+        <xtml t="data.Switch" >
+          <Case />
+        </xtml>
+      </Var>
+      <Data t="xtml_dt_tree_usage.ItemInTree" TopXtml="%$TopXtml%" />
+      <Result t="text.Concat" >
+        <Items t="object.RunMethod" Method="NextLevel" />
+        <ItemText t="object.RunMethod" Method="Text" />
+      </Result>
+      <ExpectedResult t="yesno.Contains" >
+        <Text value="If" />
+        <Text value="Then" />
+      </ExpectedResult>
+    </Test1>
+
+  <Test1 t="ui.ControlUsage" Of="xtml_dt_tree.Tree.GoToPreviousPath.ComponentDef" >
+      <Var name="Xtml" t="data.Pipeline">
+        <Item t="xtml.ComponentDefinition" ID="xtml_dt_tree.Tree" ToXtml="true"/>
+        <Item value="%Operations/Operation[@ID='EditAsXml']%"/>
+      </Var>
+      <Control t="xtml_dt_tree.Tree" TopXtml="%$Xtml%"/>
+      <RunBefore t="action.WriteToCookie" Cookie="aaeditor_path" Value="Action/OnUpdate" Value1="Action/ShowXmlDialog/xtml/Dialog"/>
+      <ExpectedResult t="yesno.Contains" RunOn=".aa_selected_itemtext" Data="%$ControlElement%">
+        <Text value="Dialog ="/>
+      </ExpectedResult>
+   </Test1>
+
+  <Component id="Test1">
+    <Param name="Param1" essential="true"><Default value="def" /></Param>
+  </Component>  
+
+    <Test1 t="action.ActionUsage" Name="xtml_dt_tree.OpenComponent" IsTest="false">
+      <Var name="Component" t="xtml.ComponentDefinition" ID="debugui.OpenComponent"/>
+      <Action t="dialog.OpenDialog">
+        <Dialog t="dialog.Dialog" CloseOnEnter="false" CloseOnEsc="false" AlwaysLTR="true" Buttons="" Class="aaeditor" Title="%$Component/@id%" Width="400px">
+          <Content t="xtml_dt_tree.Tree" TopXtml="%$Component/xtml%" Type="%$Component/@type%" CssStyle="height:450px"/>
+        </Dialog>
+      </Action>
+    </Test1>
+
+    <Test t="ui.ControlUsage" Name="xtml_dt_tree.Top.Undo" IsTest="false">
+      <Var name="TopXtml" t="xml.Xml">
+        <xtml t="text.Text">
+          <Text t="data.Math" Expression="1+2"/>
+        </xtml>
+      </Var>
+      <Var name="_UndoData" t="xtml_dt_tree.UndoData"/>
+      <Control t="xtml_dt_tree.Tree" TopXtml="%$TopXtml%" Type="ui.Control"/>
+      <RunOnControl t="action.RunActions">
+        <Action t="object.RunMethod" Method="Update">
+          <Var name="_ElemsOfOperation" t="ui.DataFromJavaScript" Expression="jQuery(control).find('.aa_item')[0];"/>
+          <Var name="Item" t="ui.DataFromJavaScript" Expression="context.vars._ElemsOfOperation[0].ItemData[0];"/>
+          <Data value="%$Item%"/>
+          <Param name="Value" value="abc"/>
+        </Action>
+        <Action t="object.RunMethod" Method="Undo">
+          <Var name="_ElemsOfOperation" t="ui.DataFromJavaScript" Expression="jQuery(control).find('.aa_item')[0];"/>
+          <Var name="Item" t="ui.DataFromJavaScript" Expression="context.vars._ElemsOfOperation[0].ItemData[0];"/>
+          <Data value="%$Item%"/>
+        </Action>
+      </RunOnControl>
+      <ExpectedResult t="yesno.NotContains">
+        <Text value="abc"/>
+      </ExpectedResult>
+    </Test>
+    
+    <Test t="action.ActionUsage" Name="xtml_dt_tree.OpenScriptEditor" IsTest="false">
+      <Var name="Xtml" t="xml.Xml">
+        <Control t="ui.Section" Title="Hi Homer">
+          <Control t="ui.Text" Text="hello"/>
+          <Control t="ui.ButtonOld"/>
+          <Control t="ui.Text">
+            <Text t="data.Math" Expression="10+20"/>
+          </Control>
+        </Control>
+      </Var>
+      <Action t="xtml_dt_tree.OpenScriptEditor" Xtml="%$Xtml%" XtmlType="data.Data" Title="Script Editor">
+        <MainCircuit t="xtml.RunXtml" Xtml="%$Xtml%">
+          <Input t="xml.Xml">
+            <person name="Homer" Age="32"/>
+          </Input>
+        </MainCircuit>
+        <GlobalPreview t="xtml.RunXtml" Xtml="%$Xtml%"/>
+      </Action>
+      <CleanAfter t="dialog.CloseDialog"/>
+      <ExpectedResult t="yesno.Contains">
+        <Data t="dialog.TopDialogContent"/>
+        <Text value="Section"/>
+        <Text value="30"/>
+      </ExpectedResult>
+    </Test>
+
+    <Test t="usage.DataUsage" Name="xtml_dt_tree.Image" IsTest="false">
+      <Var name="TopXtml" t="xml.Xml">
+        <xtml t="ui.List">
+          <Control t="ui.ButtonOld"/>
+        </xtml>
+      </Var>
+      <Data t="xtml_dt_tree_usage.ItemInTree" TopXtml="%$TopXtml%"/>
+      <Result t="object.RunMethod" Method="Image"/>
+      <ExpectedResult t="yesno.EqualsTo" To="%$_Images%/studio/app.gif"/>
+    </Test>
+
+    <Test t="ui.ControlUsage" Name="xtml_dt_tree.Tree.Xml" IsTest="false">
+      <Var name="Xtml" t="xml.Xml">
+        <Text t="data.Pipeline">
+          <Item t="xml.Xml">
+            <company employee=""/>
+          </Item>
+        </Text>
+      </Var>
+      <Control t="xtml_dt_tree.Tree" TopXtml="%$Xtml%" Type="data.Data">
+        <MainCircuit t="xtml.RunXtml" Xtml="%$Xtml%">
+          <Input t="xml.Xml">
+            <person name="homer"/>
+          </Input>
+        </MainCircuit>
+      </Control>
+      <ExpectedResult value="true"/>
+    </Test>
+
+    <Test t="ui.ControlUsage" Name="xtml_dt_tree.ComponentDef" IsTest="false">
+      <Var name="Xtml" t="xtml.ComponentDefinition" ID="xtml_dt_tree.ComponentDef"/>
+      <Control t="xtml_dt_tree.Tree" TopXtml="%$Xtml%" Type="ui.Control"/>
+      <ExpectedResult value="true"/>
+    </Test>
+    
+    <Test1 RunInAllTests="true" t="ui.ControlUsage" Name="xtml_dt_tree.Undo">
+      <Var name="TopXtml" t="xml.Xml">
+        <xtml t="text.Text">
+          <Text t="data.Math" Expression="1+2"/>
+        </xtml>
+      </Var>
+      <Var name="_UndoData" t="xtml_dt_tree.UndoData"/>
+      <Control t="xtml_dt_tree.Tree" TopXtml="%$TopXtml%" Type="ui.Control"/>
+      <RunOnControl t="action.RunActions">
+        <Action t="object.RunMethod" Method="Update">
+          <Var name="_ElemsOfOperation" t="ui.DataFromJavaScript" Expression="jQuery(control).find('.aa_item')[1];"/>
+          <Var name="Item" t="ui.DataFromJavaScript" Expression="context.vars._ElemsOfOperation[0].ItemData[0];"/>
+          <Data value="%$Item%"/>
+          <Param name="Value" value="=data.Pipeline"/>
+        </Action>
+        <Action t="object.RunMethod" Method="Undo">
+          <Var name="_ElemsOfOperation" t="ui.DataFromJavaScript" Expression="jQuery(control).find('.aa_item')[1];"/>
+          <Var name="Item" t="ui.DataFromJavaScript" Expression="context.vars._ElemsOfOperation[0].ItemData[0];"/>
+          <Data value="%$Item%"/>
+        </Action>
+      </RunOnControl>
+      <ExpectedResult t="yesno.Contains">
+        <Text value="1+2"/>
+      </ExpectedResult>
+    </Test1>
+
+</xtml>

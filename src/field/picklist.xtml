@@ -1,0 +1,614 @@
+<xtml package="true">
+
+<xtml ns="fld_type">
+
+  <Component id="Picklist" type="field_type.Type" execution="native" autoexapnd="true" editable="true">
+    <Param name="Options" type="editable_picklist.Options">
+      <Default t="editable_picklist.OptionsByCommas" />
+    </Param>
+
+    <Param name="AllowEmptyValue" type="data.Boolean" />
+    <Param name="AllowValueNotInOptions" type="data.Boolean" description="Not supported by all styles"/>
+    <Param name="Style" type="editable_picklist.Style">
+      <Default t="editable_picklist.JBartPicklist" />
+    </Param>
+  </Component>
+  
+</xtml>
+
+<xtml ns="editable_picklist">
+
+    <Type id="Style" style="true" />
+
+    <Component id="NativeCombo" type="editable_picklist.Style">
+      <xtml t="ui.CustomStyle">
+        <Html><![CDATA[<select/>]]></Html>
+        <Css><![CDATA[#this { 
+width: 160px; border: 1px solid #BDC7D8; font-size: 11px; padding: 3px; padding-left:0px; 
+background: url(%$_Images%/css/shadow2.png) repeat-x scroll 0 0 transparent;
+}
+#this:focus {
+  border-color: rgba(82, 168, 236, 0.8);
+  outline: 0;
+  outline: thin dotted 9;
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(82, 168, 236, 0.6);
+}
+]]></Css>
+        <Javascript><![CDATA[function(picklist) {
+    aa_picklist_native_combo(picklist,{ Element: picklist.control } );
+  }]]></Javascript>
+      </xtml>
+    </Component>
+
+<Component id="RadioButtons" type="editable_picklist.Style">
+  <Param name="AddRadioButtonForEmptyValue" type="data.Boolean"/>
+  <xtml t="ui.CustomStyle" AddRadioButtonForEmptyValue="%$AddRadioButtonForEmptyValue%">
+    <Html><![CDATA[<div>
+  <div class="aa_option">
+    <input type="radio" class="aa_option_radio" />
+    <span class="aa_option_text" />
+  </div>        
+  <div style="clear:both"/>
+</div>]]></Html>
+    <Css><![CDATA[#this {
+  padding-top:3px;
+}
+.aa_option {
+  float:left;
+  white-space:absolute;
+  margin-right:15px;
+  font-size:12px;
+  cursor:pointer;
+}
+.right2left #this .aa_option {
+  float: right;
+  margin-right:0;
+  margin-left:15px;
+}
+.aa_option_radio {
+  margin-top:0;
+  margin-right:0;
+  margin-bottom:0;
+  margin-left:0;
+  vertical-align:top;
+}
+.aa_option_text {
+  color:#666666;
+  padding-left:3px;
+  margin:0;
+  vertical-align:text-bottom;
+  display:inline-block;
+}
+.right2left #this .aa_option_text {
+  padding-left:0;
+  padding-right:3px;
+}
+
+.aa_option.disabled {
+  opacity:0.4;
+  cursor:default;
+}]]></Css>
+    <Javascript><![CDATA[function(picklist) {
+  aa_picklist_radio_buttons(picklist, { addRadioButtonForEmptyValue: picklist.params.AddRadioButtonForEmptyValue == 'true'} );
+}]]></Javascript>
+  </xtml>
+</Component>
+
+<Component id="RadioFadeRight" type="editable_picklist.Style">
+  <xtml t="ui.CustomStyle" base="editable_picklist.RadioFadeRight">
+    <Html><![CDATA[<div>
+<div class="aa_inner">
+  <div class="aa_option">
+    <input type="radio" class="aa_option_radio" />
+    <span class="aa_option_text" />
+  </div>        
+  <div style="clear:both"/>
+</div>
+</div>]]></Html>
+    <Css><![CDATA[#this {
+  position: relative;
+  height: 40px;
+  opacity: 0.4;
+  margin-top:-30px;
+}
+.aa_inner {
+  padding-top: 3px;
+  position: absolute;
+  right: 0px;
+  top: 10px;
+}
+#this:hover {
+  opacity: 1;
+}
+.aa_option {
+  white-space: absolute;
+  margin-right: 15px;
+  display: none;
+  float: left;
+}
+#this:hover .aa_option {
+  display: block;
+}
+.aa_option.selected {
+  display: block;
+}
+.aa_option_radio {
+  vertical-align: top;
+  margin: 0 0 0 0;
+}
+.aa_option_text {
+  cursor: pointer;
+  color: #666666;
+  padding-left: 3px;
+  vertical-align: text-bottom;
+  display: inline-block;
+  margin: 0 0 0 0;
+}
+]]></Css>
+    <Javascript><![CDATA[function(picklist) {
+  aa_picklist_radio_buttons(picklist);
+}]]></Javascript>
+  </xtml>
+</Component>
+
+<Component id="JBartPicklist" type="editable_picklist.Style">
+  <Param name="Width" Default="150px" slider="true" sliderUnit="px"/>
+  <xtml t="ui.CustomStyle">
+    <Css><![CDATA[#this {
+  display:inline-block;
+}
+.aa_picklist_div {
+  position:relative;
+  cursor:arrow;
+  width:%$Width%;
+  height:24px;
+  border:1px solid #BDC7D8;
+  font-size:11px;
+  padding:3px;
+  background:url(_jbartImages_/css/shadow2.png) repeat-x scroll 0 0 transparent;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  box-sizing:border-box;
+}
+.aa_picklist_div:focus {
+  border-color:rgba(82, 168, 236, 0.8);
+  outline:0;
+  outline:thin dotted 9;
+  box-shadow:inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(82, 168, 236, 0.6);
+}
+.aa_picklist_div>.aa_picklist_text {
+  vertical-align:top;
+  display:inline-block;
+  padding-top:2px;
+}
+.aa_picklist_div>.aa_picklist_image {
+  display:inline-block;
+  padding-right:5px;
+}
+.aa_picklist_div>.aa_picklist_drop_image {
+  position:absolute;
+  right:20px;
+  top:6px;
+  display:inline-block;
+}
+.right2left #this .aa_picklist_div>.aa_picklist_drop_image {
+  right: inherit;
+  left: 1px;
+}
+.aa_picklist_div:hover .aa_picklist_drop_image:before, .aa_picklist_div:hover .aa_picklist_drop_image:after, .aa_picklist_div.aa_opened_popup .aa_picklist_drop_image:before, .aa_picklist_div.aa_opened_popup .aa_picklist_drop_image:after {
+  background:#528DD1;
+}
+.aa_picklist_drop_image:before, .aa_picklist_drop_image:after {
+  position:absolute;
+  background:#8EB5E2;
+  width:3px;
+  height:8px;
+  border-radius:2px 2px 0 0;
+  content:"";
+  left:10px;
+  top:0;
+  -moz-border-radius:2px 2px 0 0;
+  -webkit-transform:rotate(-45deg);
+  -moz-transform:rotate(-45deg);
+  -ms-transform:rotate(-45deg);
+  -o-transform:rotate(-45deg);
+  transform:rotate(-45deg);
+  -webkit-transform-origin:0 100\%;
+  -moz-transform-origin:0 100\%;
+  -ms-transform-origin:0 100\%;
+  -o-transform-origin:0 100\%;
+  transform-origin:0 100\%;
+}
+.aa_picklist_drop_image:after {
+  left:8px;
+  -webkit-transform:rotate(45deg);
+  -moz-transform:rotate(45deg);
+  -ms-transform:rotate(45deg);
+  -o-transform:rotate(45deg);
+  transform:rotate(45deg);
+  -webkit-transform-origin:100\% 100\%;
+  -moz-transform-origin:100\% 100\%;
+  -ms-transform-origin:100\% 100\%;
+  -o-transform-origin:100\% 100\%;
+  transform-origin:100\% 100\%;
+}
+#this.aa_error .aa_picklist_div,
+.aa_picklist.aa_error #this .aa_picklist_div {
+  background:#fbebeb;
+  border:1px solid #feb2b2;
+}
+.aa_picklist_div>.aa_picklist_text.placeholder {
+  font-style:italic;
+  color:#8B8B8B;
+}
+#popup.aa_picklist_popup {
+  padding:0 0 2px 0;
+  box-shadow:2px 2px 7px 1px rgba(50, 50, 50, 0.5);
+  overflow-y:auto;
+  overflow-x:hidden;
+  font:12px arial;
+  background:white;
+  border:1px solid gray;
+  min-height:50px;
+  max-height:200px;
+}
+#popup.aa_picklist_popup:focus {
+  outline:none;
+}
+.ie #popup.aa_picklist_popup {
+  border:1px solid black;
+}
+#popup.aa_picklist_popup.aa_hide_searchbox .aa_picklist_popup_input {
+  display:none;
+}
+#popup.aa_picklist_popup .aa_picklist_popup_input {
+  font-size:11px;
+  width:100\%;
+  box-sizing:border-box;
+  height:22px;
+  padding-top:3px;
+  padding-right:3px;
+  padding-bottom:3px;
+  padding-left:3px;
+  border-top:none;
+  border-left:none;
+  border-right:none;
+  border-bottom:1px solid rgba(82, 168, 236, 0.8);
+  outline:none;
+}
+#popup.aa_picklist_popup .aa_picklist_popup_input:focus {
+  outline:0;
+}
+#popup.aa_picklist_popup .aa_picklist_item {
+  cursor:pointer;
+  width:100\%;
+  height:18px;
+  clear:both;
+  cursor:pointer;
+}
+#popup.aa_picklist_popup .aa_picklist_item:focus {
+  outline:none;
+}
+#popup.aa_picklist_popup .aa_picklist_item_image {
+  float:left;
+  padding:1px 5px 0 3px;
+}
+#popup.aa_picklist_popup .aa_picklist_item_image img {
+  height:14px;
+}
+#popup.aa_picklist_popup .aa_picklist_item.selected {
+  background:#D9E8FB;
+}
+#popup.aa_picklist_popup .aa_picklist_item_text {
+  padding-top:2px;
+  padding-right:4px;
+  padding-bottom:2px;
+  padding-left:4px;
+  white-space:nowrap;
+}
+#popup.aa_picklist_popup .aa_highlight {
+  color:blue;
+}
+#popup.aa_picklist_popup .aa_picklist_no_results {
+  padding:3px 5px;
+}
+#popup.aa_picklist_popup .aa_picklist_show_all {
+  padding:5px 5px;
+  cursor:pointer;
+  color:#333;
+}
+#popup .aa_picklist_item.disabled {
+  opacity:0.4;
+  cursor:default;
+}]]></Css>
+    <Html><![CDATA[<div>
+  <div class="aa_picklist_div">
+    <div class="aa_picklist_image"/>
+    <div class="aa_picklist_text"/>
+    <div class="aa_picklist_drop_image"/>
+  </div>
+  <div class="aa_picklist_popup">
+    <div>
+      <input class="aa_picklist_popup_input" />
+      <div>
+        <div class="aa_picklist_item">
+          <div class="aa_picklist_item_image" />
+          <div class="aa_picklist_item_text" />
+        </div>
+        <div class="aa_picklist_no_results" />
+        <div class="aa_picklist_show_all" />
+      </div>
+    </div>
+  </div>
+</div>]]></Html>
+    <Javascript><![CDATA[function render(picklist) { 
+  aa_picklist(picklist);
+}]]></Javascript>
+  </xtml>
+</Component>
+
+<Component id="OpenOptionsWithImages" type="editable_picklist.Style">
+  <xtml t="ui.CustomStyle" base="editable_picklist.OpenOptionsWithImages">
+    <Html><![CDATA[<div>
+  <div class="aa_option">
+    <div class="aa_option_image" />
+    <div class="aa_option_text" />
+  </div>        
+  <div style="clear:both"/>
+</div>]]></Html>
+    <Css><![CDATA[#this {
+  padding-top:3px;
+}
+.aa_option {
+  float:left;
+  white-space:absolute;
+  margin-right:15px;
+  border-right:1px solid #ccc;
+  padding-right:20px;
+  cursor:pointer;
+}
+.aa_option.last {
+  border:none;
+}
+.aa_option_image {
+  margin-top:0;
+  margin-right:0;
+  margin-bottom:0;
+  margin-left:0;
+  vertical-align:top;
+}
+.aa_option_text {
+  color:#666666;
+  padding-left:3px;
+  margin-top:0;
+  margin-right:0;
+  margin-bottom:0;
+  margin-left:0;
+  vertical-align:text-bottom;
+  display:inline-block;
+}
+.aa_option.selected .aa_option_text {
+  color:#000;
+  font-weight:bold;
+}
+.aa_option.disabled {
+  opacity: 0.4;
+  cursor: default;
+}]]></Css>
+    <Javascript><![CDATA[function(picklist) {
+  aa_picklist_open_options(picklist,{});
+}]]></Javascript>
+  </xtml>
+</Component>
+
+  <Component id="IfThenElsePicklistStyle" type="editable_picklist.Style">
+    <Param name="If" type="data.Boolean" script="true" />
+    <Param name="StyleForThen" type="editable_picklist.Style" script="true" />
+    <Param name="StyleForElse" type="editable_picklist.Style" script="true" />
+    <xtml t="data.IfThenElse">
+      <If t="xtml.UseParam" Param="If" />
+      <Then t="xtml.UseParam" Param="StyleForThen" />
+      <Else t="xtml.UseParam" Param="StyleForElse" />
+    </xtml>
+  </Component>
+
+  <Component id="JBartPicklistOld" type="editable_picklist.Style" deprecated="true">
+    <Param name="Width" Default="150px" slider="true" sliderUnit="px" />
+    <Param name="MaxPopupHeight" Default="250px" slider="true" sliderUnit="px" />
+    <xtml t="ui.CustomStyleByField">
+      <Field t="fld.Field" ID="aa_picklist_style" FieldData="%%" Title="picklist base">
+        <FieldType t="fld_type.Lookup">
+          <Style t="lookup.EditableOld" Width="%$Width%" />
+          <Options value="%$ApiObject/Field/Options%" />
+        </FieldType>
+        <FieldAspect t="field_aspect.DescriptionForEmptyText" Description="%$ApiObject/Field/DescriptionForEmptyText%" Css="%$ApiObject/Field/DescriptionForEmptyTextCss%" />
+        <FieldAspect t="field_feature.Css">
+          <Css><![CDATA[#wrapper { display: inline-block;  outline: none; } ]]></Css>
+        </FieldAspect>
+        <FieldAspect t="field_aspect.ClearValueButton" Condition="%$ApiObject/Field/AllowEmptyValue%">
+          <Style t="lookup.ClearValueInPicklist" />
+        </FieldAspect>
+        <FieldAspect t="field_aspect.HandleEvent" Event="mouse click">
+          <Action t="popup.OpenPopup">
+            <Style t="popup.PicklistPopup" />
+            <Contents t="field.InnerPage" Title="popup contents">
+              <Field t="field.ItemListContainer" Title="Options" ID="Picklist_options">
+                <Items t="itemlist.Items" Items="%$ApiObject/Field/Options%" />
+                <FieldAspect t="field_aspect.HandleEvent" Event="load">
+                   <Action t="object.RunMethod" Object="%$ApiObject/Field%" Method="OnOpenPopup" />
+                </FieldAspect>
+                <Field t="field.Layout" ID="Filters" Title="Filters">
+                  <FieldAspect t="itemlist_aspect.FilterGroup" />
+                  <FieldAspect t="field_feature.Css">
+                    <Css><![CDATA[#this { padding-bottom: 8px; }]]></Css>
+                  </FieldAspect>
+                  <Field t="fld.Field" FieldData="%!@search%" ID="search" Title="Search">
+                    <FieldAspect t="field_aspect.Hidden">
+                        <OnCondition t="field_aspect.CheckConditionOnce">
+                          <ShowCondition t="yesno.Not" Of="%$ApiObject/Field/HideSearchBox%" />
+                        </OnCondition>
+                      </FieldAspect>
+                      <FieldType t="fld_type.EditableText">
+                      <Style t="editable_text.JBartPicklistSearchbox" />
+                    </FieldType>
+                    <FieldAspect t="field_aspect.HandleEvent" Event="update" Condition="%$ApiObject/Field/AllowValueNotInOptions%">
+                      <Action t="editable_picklist.AddValueNotInOptionsToList" OptionText="%%" />
+                    </FieldAspect>                    
+                    <FieldAspect t="itemlist_aspect.Filter" ImmediateFilter="true" FieldData="%text%">
+                      <FilterType t="itemlist_filter.Text" />
+                    </FieldAspect>
+                    <FieldAspect t="field_aspect.ItemListSelectionWithKeyboard" />
+                  </Field>
+                </Field>
+                <Field t="field.ItemList" Title="Options List" ID="Picklist_options_list">
+                      <FieldAspect t="itemlist_aspect.ItemClick">
+                        <OnClick t="editable_picklist.PicklistSelect" />
+                      </FieldAspect>
+                  <FieldAspect t="field_feature.Css">
+                    <Css><![CDATA[#this { max-height:%$MaxPopupHeight%; }]]></Css>
+                  </FieldAspect>
+                  <Field t="field.Layout" ID="Horizontal" Title="Horizontal">
+                    <Layout t="layout.HorizontalCss3" Spacing="0px" />
+                    <FieldAspect t="field_aspect.OnClick">
+                      <Action t="editable_picklist.PicklistSelect">
+                        <Option t="itemlist_item.ItemOfList" Result="item">
+                          <Item t="itemlist_item.SelectedItem" />
+                        </Option>
+                      </Action>
+                    </FieldAspect>
+                    <FieldAspect t="field_feature.Css">
+                      <Css><![CDATA[#this { cursor: pointer; width: 100%; }
+              ]]></Css>
+                    </FieldAspect>
+                    <Field t="fld.Field" FieldData="%image%" ID="image" Title="Option Image">
+                      <FieldType t="fld_type.Image">
+                        <Image t="image.Image" Url="%%" KeepImageProportions="true" Width="16px" Height="16px" />
+                        <Style t="image.PlainImage" />
+                      </FieldType>
+                      <FieldAspect t="field_feature.Css">
+                        <Css><![CDATA[#this { padding-left:3px; padding-right:3px; padding-top:5px; }
+              ]]></Css>
+                      </FieldAspect>
+                      <FieldAspect t="field_aspect.Hidden">
+                        <OnCondition t="field_aspect.CheckConditionForEveryItem" WhenHidden="Do not render"
+                          ShowCondition="%image% != ''" />
+                      </FieldAspect>
+                    </Field>
+                    <Field t="fld.Field" FieldData="%text%" Title="Option Text">
+                      <FieldType t="fld_type.Text">
+                        <Style t="uitext.PlainText" />
+                      </FieldType>
+                      <FieldAspect t="field_feature.Css">
+                        <Css><![CDATA[#this { cursor:pointer; padding-top: 2px; padding-right: 4px; padding-bottom: 2px; padding-left: 4px; }]]></Css>
+                      </FieldAspect>
+                      <FieldAspect t="field_aspect.HighlightSubTextOnFilter">
+                        <HighlightCss><![CDATA[#this { color: blue; } ]]></HighlightCss>
+                      </FieldAspect>                      
+                    </Field>
+                  </Field>
+                  <View t="itemlist_style.Simple" />
+                  <FieldAspect t="itemlist_aspect.ItemSelection" KeyboardSupport="true" AlwaysOneSelected="true"
+                    MouseSupport="mouse hover">
+                    <SelectedByDefault t="editable_picklist.SelectedOptionInPopup" />
+                  </FieldAspect>
+                  <FieldAspect t="itemlist_aspect.ShowTextWhenNoItems" Text="No results match your search">
+                    <Style t="ui.CustomStyle">
+                      <Html><![CDATA[<div />]]></Html>
+                      <Css><![CDATA[#this { padding-bottom: 3px; padding-left: 5px; }]]></Css>
+                      <Javascript><![CDATA[function(textObj) { 
+  aa_textLabel(textObj);
+}]]></Javascript>
+                    </Style>
+                  </FieldAspect>
+                  <FieldAspect t="itemlist_aspect.LongList" MaxTimeToRenderItems="200" TextForShowMore="show more...">
+                  </FieldAspect>
+                </Field>
+                <Layout t="layout.Default" />
+              </Field>
+            </Contents>
+          </Action>
+        </FieldAspect>
+      </Field>
+    </xtml>
+  </Component>
+
+  <Component id="SelectedOptionInPopup" type="itemlist.FindSelected" execution="native" description="The selected in popup should be the current code value" />
+  
+  <Component id="AddValueNotInOptionsToList" type="action.Action" execution="native" light="false" description="Allowing value not in options - adds/sets the option for not in text">
+    <Param name="OptionText" />
+  </Component>
+    
+  <Component id="PicklistSelect" type="action.Action" execution="native" light="false">
+    <Param name="Option" Default="%%" />
+  </Component>
+
+</xtml>
+
+<xtml ns="fld_aspect">
+
+  <Component id="PicklistProperties" type="field.FieldAspect" execution="native" description="Recalc, hide search box" context="FieldTypeComponent=fld_type.Picklist">
+     <Param name="AutoRecalcOptions" type="data.Boolean" />
+     <Param name="DelayOptionCalculation" type="data.Boolean" />
+     <Param name="HideSearchBox" type="data.Boolean" />
+     <Param name="PopupContents" type="ui.Page" />
+     <Param name="TextForNoResults" Default="No results match your search" />
+     <Param name="MaxItemsToShow" Default="50" />
+     <Param name="TextForShowAll" Default="Show all" />
+     <Param name="TextForEmptyValueInPopup" Default="" />
+     <Param name="TextForEmptyValueInRadio" Default="none" />
+     <Param name="SelectOnHover" type="data.Boolean" />
+  </Component>
+
+  <Component id="HideUnselectedPicklistOptions" type="field.FieldAspect" execution="native" description="Hide and show sibling fields according to the selected options" context="FieldTypeComponent=fld_type.Picklist">
+  </Component>
+
+  <Component id="PicklistDisplayNameInPicklistBox" type="field.FieldAspect" execution="native" description="The display of an id in the picklist box (not the popup)" context="FieldTypeComponent=fld_type.Picklist">
+    <Param name="IdToDisplayName" />
+  </Component>
+
+</xtml>
+
+<xtml ns="picklist_action">
+
+  <Component id="SelectItemInPicklistPopup" type="action.Action">
+    <Param name="ItemCode" Default="%%" />
+    <xtml t="object.RunMethod" Object="%$_Picklist%" Method="SelectAndClose" Input="%$ItemCode%" />
+  </Component>
+
+</xtml>
+
+<xtml ns="lookup">
+  <Component id="EditableOld" type="lookup.Style" light="false">
+    <Param name="Width" Default="150px" slider="true" sliderUnit="px" />
+    <xtml t="ui.CustomStyle">
+      <Html><![CDATA[<div class="aa_picklist_div" tabindex="0"><img class="image"/><span class="text"/><div class="picklist_image"/></div>]]></Html>
+      <Css><![CDATA[
+#this { position: relative;
+cursor: arrow;
+width: %$Width%; height: 14px;
+border: 1px solid #BDC7D8; font-size: 11px; padding: 3px; 
+background: url(_jbartImages_/css/shadow2.png) repeat-x scroll 0 0 transparent;
+white-space: nowrap;
+overflow: hidden;
+text-overflow:ellipsis;  
+}
+#this>.text { vertical-align:top;}
+#this>.image { padding-right: 5px; display: inline-block; }
+#this>.picklist_image { 
+position: absolute; right: 2px; top: 1px; display: inline-block; width:16px; height:17px;
+background: url(_jbartImages_/./openpopup_xp_style.gif) no-repeat 0 0; 
+}
+.aa_picklist.aa_error #this.aa_picklist_div {
+background:#fbebeb; border: 1px solid #feb2b2;
+}
+]]></Css>
+      <Javascript><![CDATA[function(lookup) {
+lookup.setImage('.image',lookup.image,true);
+jQuery(lookup).find('>.text').html( lookup.text );        
+}]]></Javascript>
+    </xtml>
+  </Component>
+
+</xtml>
+</xtml>

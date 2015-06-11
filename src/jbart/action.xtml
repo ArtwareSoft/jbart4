@@ -1,0 +1,188 @@
+<xtml jbart="true" ns="action">
+
+  <Type id="Action" icon="%$_Images%/studio/run.gif" >
+    <ComponentAspect t="component_aspect.Image" Image="%$_Images%/studio/run.gif" />
+    <MoreComponents>
+      <component id="action.RunActions" itemsParam="Action" />
+      <component id="action.IfThenElse" itemsParam="Then" />
+      <component id="async.RunAsyncActions" itemsParam="Action" />
+      <component id="action.Switch" itemsParam="Default" />
+      <component id="async.RunOnNextTimer" itemsParam="Action" />
+      <component id="action.ActionByCondition" itemsParam="Action" />
+    </MoreComponents>
+  </Type>
+
+  <Component id="RunActions" type="action.Action" execution="native" decorator="Action">
+    <Param name="Action" type="action.Action[]" essential="true" />
+  </Component>
+  <Component id="RunActionOnItems" type="action.Action" synonyms="RunOnMultipleData" execution="native">
+    <Param name="Items" essential="true" />
+    <Param name="Action" type="action.Action" script="true" essential="true" >
+      <RunningInput t="xtml.RunXtml" Xtml="%$_Xtml%" Field="Items"/>
+    </Param>
+    <Param name="IndicateLastItem" type="data.Boolean" description="available in _IsLastItem variable"/>
+    <Param name="IndicateItemIndex" type="data.Boolean" description="available in _ItemIndex variable"/>
+    <xtml t="data.Pipeline">
+      <Item value="%$Items%" />
+      <Item t="xtml.UseParam" Param="Action" />
+    </xtml>
+  </Component>
+
+<Component id="ActionByCondition" type="action.Action">
+  <Param name="Condition" type="data.Boolean" script="true" essential="true"/>
+  <Param name="Action" type="action.Action" script="true" essential="true"/>
+  <xtml t="xtml.UseParam" Param="Action"/>
+</Component>
+
+  <Component id="WriteValue" type="action.Action" execution="native">
+    <Param name="To" essential="true" />
+    <Param name="Value" essential="true" />
+  </Component>
+
+  <Component id="ToggleBooleanValue" type="action.Action">
+    <Param name="To" essential="true" />
+    <xtml t="action.WriteValue" To="%$To%">
+      <Value t="data.IfThenElse" If="%$To%" Then="false" Else="true" />
+    </xtml>
+  </Component>
+
+  <Component id="WriteValueWithoutAutoSave" type="action.Action" execution="native">
+    <Param name="To" essential="true" />
+    <Param name="Value" essential="true" />
+  </Component>
+
+  <Component id="SetWindowTitle" type="action.Action" execution="native">
+    <Param name="Title" essential="true">
+      <Default value="%%" />
+    </Param>
+  </Component>
+
+  <Component id="JBartDebugAlert" type="action.Action" execution="native" description="Shows the message on the top left side">
+      <Param name="Message" essential="true"/>
+    </Component>
+
+  <Component id="ActionUsage" type="usage.Usage" execution="xtml">
+    <Param name="Name" />
+    <Param name="Of" />
+    <Param name="Description" />
+    <Param name="Action" type="action.Action" script="true" />
+    <Param name="CleanAfter" type="action.Action" script="true" />
+    <Param name="ExpectedResult" type="data.Boolean" script="true" />
+    <Param name="Result" script="true" Default="%%" />
+    <Param name="RunInAllTests" type="data.Boolean" />
+    <Param name="AssignedTo" />
+    <xtml t="usage.DataUsage">
+      <Name value="%$Name%"/>
+      <Of value="%$Of%"/>
+      <RunBefore t="xtml.UseParam" Param="Action" />
+      <Result t="xtml.UseParam" Param="Result" />
+      <ExpectedResult t="xtml.UseParam" Param="ExpectedResult" />
+      <CleanAfter t="xtml.UseParam" Param="CleanAfter" />
+    </xtml>
+  </Component>
+
+ <Component id="IfThenElse" type="action.Action" execution="native">
+      <Param name="If" type="data.Boolean" essential="true" script="true"/>
+      <Param name="Then" type="action.Action" script="true" essential="true"/>
+      <Param name="Else" type="action.Action" script="true" essential="true"/>
+    </Component>
+ 
+ <Component id="Switch" type="action.Action" execution="native" light="false">
+  <Param name="Value"><Default t="data.Same"/></Param>
+  <Param name="Case" type="inline[]" essential="true">
+   <Param name="If" essential="true"/>
+   <Param name="IfCondition" type="data.Boolean" script="true" essential="true"/>
+   <Param name="Then" type="action.Action" script="true" essential="true"/>
+  </Param>
+  <Param name="Default" type="action.Action" />
+ </Component>
+ 
+ <Component id="IncrementNumber" type="action.Action" light="false">
+   <Param name="Number"><Default t="data.Same"/></Param>
+   <Param name="Max"/>
+   <xtml t="action.WriteValue" To="%$Number%">
+     <Value t="data.IfThenElse">
+       <If t="yesno.IsEmpty" Value="%$Max%"/>
+       <Then t="data.Math" Expression="%$Number%+1"/> 
+       <Else t="data.Math" Expression="(%$Number%+1)&gt;%$Max% ? %$Max% : %$Number%+1"/> 
+     </Value>
+   </xtml>
+ </Component>
+
+ <Component id="DecrementNumber" type="action.Action" light="false">
+   <Param name="Number" Default="%%" />
+   <Param name="Min"/>
+   <xtml t="action.WriteValue" To="%$Number%">
+     <Value t="data.IfThenElse">
+       <If t="yesno.IsEmpty" Value="%$Min%"/>
+       <Then t="data.Math" Expression="%$Number%-1"/> 
+       <Else t="data.Math" Expression="(%$Number%-1)&lt;%$Min% ? %$Min% : %$Number%-1"/> 
+     </Value>
+   </xtml>
+ </Component>
+
+ <Component id="DelayedRun" type="action.Action" execution="native" description="Run on next timer" light="false">
+   <Param name="DelayInMilli" Default="500"/>
+   <Param name="UniqueActionID"/>
+   <Param name="Action" type="action.Action" script="true" essential="true"/>
+ </Component>
+ 
+ <Component id="WriteToLog" type="action.Action" execution="native" light="false">
+   <Param name="Message" essential="true"/>
+   <Param name="Level" type="enum" Options="error,warning,general" />
+ </Component>
+ 
+ <Component id="WriteToCookie" type="action.Action" execution="native">
+   <Param name="Cookie" essential="true"/>
+   <Param name="Value" essential="true"/>
+ </Component> 
+
+ <Component id="RunOnNextTimer" type="action.Action" execution="native" deprecated="true" hidden="true">
+      <Param name="Action" type="action.Action" script="true" essential="true"/>
+      <Param name="RunNow" type="data.Boolean"/>
+      <Param name="WaitInMSec">
+        <Default value="1"/>
+      </Param>
+</Component>
+
+ <Component id="ReRunOnInterval" type="action.Action" execution="native" description="setInterval">
+      <Param name="Action" type="action.Action" script="true" essential="true"/>
+      <Param name="ID" description="several actions with same id will be unified"/>
+      <Param name="ContinueCondition" type="data.Boolean" script="true" description="Check before each run. If false, stops the runs till the action is called again"/>
+      <Param name="IntervalInMSec" Default="10000"/>
+</Component>
+
+ <Component id="ActionReturningResult" type="action.Action" execution="native" light="false">
+   <Param name="Action" type="action.Action"/>
+   <Param name="Result"/>
+ </Component>
+
+ <Component id="DoNothing" type="action.Action">
+   <xtml t="action.RunActions"/>
+ </Component>
+ 
+ <Component id="AddToCommas" type="action.Action" execution="native">
+    <Param name="To"><Default value="%%" /></Param>
+    <Param name="Value" essential="true"/>
+ </Component>
+     
+<Component id="LoadCssFiles" type="action_async.Action" execution="native">
+  <Param name="CssFiles" essential="true" description="comma separated. Ensure 'real' commas are encoded as %2C"/>
+</Component>
+
+<Component id="PreloadImages" type="action.Action" execution="native">
+  <Param name="Images" />
+</Component>
+
+<Component id="WriteNodeJSResult" type="action.Action" execution="native" description="Runs in the nodejs context">
+  <Param name="Result" />
+</Component>
+
+  <Component id="RunDelayedAction" type="action.Action" execution="native">
+    <Param name="ID" Description="Will clear previous delayed actions with this id" />
+    <Param name="Milliseconds" Default="300" />
+    <Param name="Action" type="action.Action" script="true" />
+  </Component>
+  
+</xtml>
+

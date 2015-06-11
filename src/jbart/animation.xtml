@@ -1,0 +1,97 @@
+<xtml ns="animation">
+
+  <Type id="Animation" />
+  <Type id="HideAnimation" />
+  
+  <Component id="CssBasedAnimation" type="animation.Animation" execution="native">
+    <Param name="Css" codemirror="true" description="can use \%$ScreenWidth\% and \%$ScreenHeight\%"
+      Default="#this.beforeAnimation {}; &#xA; #this.afterAnimation {};" 
+      />
+  </Component>
+  
+  <Component id="ComingFromRight" type="animation.Animation">
+    <Param name="TransitionType" Default="500ms linear"/>
+    <xtml t="animation.CssBasedAnimation">
+      <Css><![CDATA[
+#this.beforeAnimation{ -webkit-transform:translate3d(%$ScreenWidth%,0,0); }
+#this.afterAnimation{ -webkit-transform:translate3d(0,0,0); -webkit-transition:-webkit-transform %$TransitionType%; }​
+]]></Css>
+    </xtml>
+  </Component>
+  
+  <Component id="ComingFromLeft" type="animation.Animation">
+    <Param name="TransitionType" Default="500ms linear"/>
+    <xtml t="animation.CssBasedAnimation">
+      <Css><![CDATA[
+#this.beforeAnimation{ -webkit-transform:translate3d(-%$ScreenWidth%,0,0); }
+#this.afterAnimation{ -webkit-transform:translate3d(0,0,0); -webkit-transition:-webkit-transform %$TransitionType%; }​
+]]></Css>
+    </xtml>
+  </Component>
+  
+  <Component id="ComingFromTop" type="animation.Animation">
+    <Param name="TransitionType" Default="500ms linear"/>
+    <xtml t="animation.CssBasedAnimation">
+      <Css><![CDATA[
+#this.beforeAnimation{ -webkit-transform:translate3d(0,-%$ScreenHeight%,0); }
+#this.afterAnimation{ -webkit-transform:translate3d(0,0,0); -webkit-transition:-webkit-transform %$TransitionType%; }​
+]]></Css>
+    </xtml>
+  </Component>
+  
+  <Component id="ComingFromBottom" type="animation.Animation">
+    <Param name="TransitionType" Default="500ms linear"/>
+    <xtml t="animation.CssBasedAnimation">
+      <Css><![CDATA[
+#this.beforeAnimation{ -webkit-transform:translate3d(0,%$ScreenHeight%,0); }
+#this.afterAnimation{ -webkit-transform:translate3d(0,0,0); -webkit-transition:-webkit-transform %$TransitionType%; }​
+]]></Css>
+    </xtml>
+  </Component>
+  
+  <Component id="JQueryShow" type="animation.Animation" execution="native">
+    <Param name="Duration" Default="0" Description="in miliseconds"/>
+  </Component>
+
+  <Component id="Hide" type="action.Action" execution="native">
+    <Param name="FieldId" />
+    <Param name="AnimationType" type="animation.HideAnimation" >
+      <Default t="animation.JQueryHide" />
+    </Param>
+    <Param name="OnDone" type="action.Action" script="true" />
+  </Component>
+
+  <Component id="CssBasedHideAnimation" type="animation.HideAnimation" execution="native">
+    <Param name="Css" codemirror="true" description="can use \%$ScreenWidth\% and \%$ScreenHeight\%"/>
+  </Component>
+
+  <Component id="GoingRight" type="animation.HideAnimation">
+    <Param name="TransitionType" Default="500ms linear"/>
+    <xtml t="animation.CssBasedHideAnimation" Css="-webkit-transform:translate3d(%$ScreenWidth%,0,0); -webkit-transition:-webkit-transform %$TransitionType%;" />
+  </Component>
+
+  <Component id="GoingLeft" type="animation.HideAnimation">
+    <Param name="TransitionType" Default="500ms linear"/>
+    <xtml t="animation.CssBasedHideAnimation" Css="-webkit-transform:translate3d(-%$ScreenWidth%,0,0); -webkit-transition:-webkit-transform %$TransitionType%;" />
+  </Component>
+
+  <Component id="GoingDown" type="animation.HideAnimation">
+    <Param name="TransitionType" Default="500ms linear"/>
+    <xtml t="animation.CssBasedHideAnimation" Css="-webkit-transform:translate3d(0,%$ScreenHeight%,0); -webkit-transition:-webkit-transform %$TransitionType%;" />
+  </Component>
+
+  <Component id="GoingUp" type="animation.HideAnimation">
+    <Param name="TransitionType" Default="500ms linear"/>
+    <xtml t="animation.CssBasedHideAnimation" Css="-webkit-transform:translate3d(0,-%$ScreenHeight%,0); -webkit-transition:-webkit-transform %$TransitionType%;" />
+  </Component>
+
+  <Component id="FadingOut" type="animation.HideAnimation">
+    <Param name="TransitionType" Default="500ms linear"/>
+    <xtml t="animation.CssBasedHideAnimation" Css="opacity:0; -webkit-transition:opacity %$TransitionType%;" />
+  </Component>
+
+  <Component id="JQueryHide" type="animation.HideAnimation" execution="native">
+    <Param name="Duration" Default="0" Description="in miliseconds"/>
+  </Component>
+
+</xtml>

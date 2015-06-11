@@ -1,0 +1,208 @@
+<xtml ns="ui">
+
+  <Type id="TextControlStyle" />
+  <Type id="ComboStyle" />
+  <Type id="Validation" >
+    <MoreComponents>
+      <component id="ui.ValidationList" itemsParam="Validation" />
+    </MoreComponents>
+  </Type>
+  <Type id="MessageBarStyle" />
+  <Type id="ValidationFailureLevel" type="enum">
+   <value>Error</value>
+   <value>Warning</value>
+  </Type>
+  <Type id="InputAspect" />
+
+	<Component id="TextControl" type="ui.Control" execution="xtml" databind="true" hidden="true">
+		<Param name="Style" type="ui.TextControlStyle" script="true" paramVars="TextControlContext">
+			<Default t="ui.Textbox" />
+		</Param>
+		<Param name="OnUpdate" type="action.Action" script="true" />
+		<Param name="UpdateOnEveryClick" type="data.Boolean" ><Default value="true" /></Param>
+		<Param name="Width" />
+		<Param name="Focus" type="data.Boolean" script="true" />
+		<Param name="OnKeyPressed" type="action.Action" script="true" />
+		<Param name="ReadOnly" type="data.Boolean" />
+
+		<xtml t="ui.ControlWithAction">
+			<Var name="Input" />
+			<Control t="xtml.UseParam" Param="Style">
+				<Var name="TextControlContext" t="xtml.Params">
+					<Param name="UpdateOnEveryClick" value="%$UpdateOnEveryClick%" />
+					<Param name="Width" value="%$Width%" />
+					<Param name="ReadOnly" t="yesno.OR">
+					  <Item value="%$ReadOnly%" />
+					  <Item t="yesno.Not">
+					  	<Of t="yesno.IsWritableText" />
+					  </Item>
+					</Param>
+					<ScriptParam name="UpdateData" t="action.RunActions">
+						<Action t="action.WriteValue" To="%%" Value="%$ControlData%"/>
+						<Action t="xtml.UseParam" Param="OnUpdate" />
+					</ScriptParam>
+					<ScriptParam name="OnKeyPressed" t="xtml.UseParam" Param="OnKeyPressed" />
+				</Var>
+			</Control>
+			<RunAfterControl t="uiaction.Focus" Condition="%$Focus%" />
+		</xtml>
+	</Component>
+
+	<Component id="Textbox" type="ui.TextControlStyle" execution="xtml">
+		<Param name="OnKeyDown" script="true" />
+        <Param name="KeyPressValidator" type="data.Boolean" script="true" />
+        <Param name="MaxLength" />
+      <xtml t="xml.WithChanges">
+        <Var name="InputType" t="text.FirstSucceeding">
+          <Item value="%$TextControlContext/InputType%"/>
+          <Item value="text"/>
+        </Var>
+        <Var name="ReadOnlyClass" value="readonly" Condition="%$TextControlContext/ReadOnly%"/>
+        <Xml t="ui.Html" DynamicContent="true">
+          <input maxlength="%$MaxLength%" type="%$InputType%" class="aatextbox %$ReadOnlyClass%" value="%%"
+            onkeydown="ajaxart_runevent(this, '', 'OnKeyDown', null, event);"/>
+        </Xml>
+        <Change t="ui.DataBind"/>
+        <Change t="ui.BindEvent">
+          <Var name="EventType" t="data.IfThenElse" If="%$TextControlContext/UpdateOnEveryClick%" Then="keyup" Else="blur"/>
+          <Event value="%$EventType%"/>
+          <Action t="action.RunActions">
+            <Condition t="yesno.ItemsNotEqual" Item1="%$KeyPressed%" Item2="enter"/>
+            <Action t="xtml.RunXtml" Xtml="%$TextControlContext/UpdateData%">
+              <Var name="ControlData" t="ui.DataFromJavaScript" Expression="element.value"/>
+            </Action> 
+          </Action>
+        </Change>
+       <Change t="xml.SetAttribute" AttributeName="onkeypress" Value="return ajaxart_ui_validate(event,this);" >
+         <Condition t="yesno.NotEmpty" Data="%$KeyPressValidator%"/>
+       </Change>
+        <Change t="ui.BindEvent" Event="keydown">
+          <Action t="xtml.RunXtml" Xtml="%$TextControlContext/OnKeyPressed%">
+            <Var name="ControlData" t="ui.DataFromJavaScript" Expression="element.value"/>
+          </Action>
+        </Change>
+        <Change t="ui.RunJavaScript" Expression="data.readOnly=true">
+          <Condition value="%$TextControlContext/ReadOnly%"/>
+        </Change>
+        <Change t="ui.SetCssText" Style="width:%$TextControlContext/Width%">
+          <Condition t="yesno.NotEmpty" Data="%$TextControlContext/Width%"/>
+        </Change>
+      </xtml>
+	</Component>
+
+  <Component id="Textarea" type="ui.TextControlStyle">
+  	<Param name="Rows"><Default value="1" /></Param>
+  	<Param name="Cols"><Default value="80" /></Param>
+    <Param name="Autogrow" type="data.Boolean"><Default value="true"/></Param>
+    <Param name="MaxLength" />
+    <Param name="Wrap" type="enum" Options="hard,soft,off"/>
+
+  <xtml t="xml.WithChanges">
+    <Xml t="data.IfThenElse">
+      <If t="yesno.Empty" Data="%$MaxLength%"/>
+      <Then t="ui.Html" DynamicContent="true">
+        <textarea style="width: 100\%;" class="textcontrol_area" rows="%$Rows%" cols="%$Cols%" wrap="%$Wrap%"
+          onchange="ajaxart_runevent(this,'TextControlContext','UpdateData',this.value) " onkeyup="onchange() ">%%</textarea>
+      </Then>
+      <Else t="ui.Html" DynamicContent="true">
+        <textarea style="width: 100\%;" class="textcontrol_area" rows="%$Rows%" cols="%$Cols%" wrap="%$Wrap%"
+          onchange="ajaxart_runevent(this,'TextControlContext','UpdateData',this.value) " onkeyup="onchange() "
+          onkeypress="return ajaxart_ui_imposeMaxLength(event, this, %$MaxLength%) ">%%</textarea>
+      </Else>
+    </Xml>
+    <Change t="ui.BindEvent" Event="blur">
+    	<Action t="uiaction.ValidateField" />
+    </Change>
+    <Change t="ui.BindEvent" Event="focus">
+    	<Action t="uiaction.CleanFieldValidation" />
+    </Change>
+    <Change t="ui.DataBind"/>
+  </xtml>
+  </Component>
+
+ <Component id="Validation" type="ui.Validation" execution="xtml" >
+  <Param name="SuccessCondition" type="data.Boolean" script="true" />
+  <Param name="Message" script="true"/>
+  <Param1 name="Level" type="ui.ValidationFailureLevel"><Default value="Error"/></Param1>
+  <xtml t="server.ImmediateAction">
+  	 <Action t="action.IfThenElse">
+  	 	<If t="xtml.UseParam" Param="SuccessCondition" />
+  	 	<Else t="uiaction.ShowValidationError" >
+		   	<Message t="text.MultiLang" Dynamic="true" >
+		   		<Pattern t="xtml.UseParam" Param="Message" />
+		   	</Message>
+	   	</Else>
+  	 </Action>
+  </xtml>
+ </Component>
+
+ <Component id="ValidationList" type="ui.Validation" execution="native">
+  <Param name="Validation" type="ui.Validation[]" />
+ </Component>
+ 
+ <Component id="MessageBar" type="ui.Control"> 
+  <Param name="Style" type="ui.MessageBarStyle" ><Default t="ui.DefaultMessageBar" /></Param>
+  <Param name="Type" type="enum"><Default value="notification" />
+  	<value>validation</value>
+  	<value>notification</value>
+  </Param>
+  <xtml t="data.Pipeline" Class="%$Type%">
+  	<Item value="%$Style%"  />
+  </xtml>
+ </Component>
+ 
+ <Component id="DefaultMessageBar" type="ui.MessageBarStyle" databind="true">
+  <xtml t="data.Pipeline" Class="message_bar" >
+   <Item t="ui.Text" Class="message_bar_text"/>
+   <Item t="xml.Wrap">
+    <Head t="ui.Html">
+     <div />
+    </Head>
+   </Item>
+   <Item1 t="xml.WithChanges" Xml="%%">
+    <Change t="uiaction.Hide" RunOn="%%"/>
+   </Item1>
+  </xtml>
+ </Component>
+ 
+ <Component id="OKButton" type="ui.Control">
+  <Param name="Text" />
+  <Param name="OnClick" type="action.Action" script="true"/>
+  <Param name="Style" type="ui.ButtonStyle" script="true" paramVars="ButtonContext"><Default t="ui.StandardButton"/></Param>
+  <Param name="Image" />
+  <Param name="Tooltip" />
+  <Param name="ExtraValidations" type="ui.Validation" script="true" />
+   <xtml Class="OKButton" t="xtml.UseParam" Param="Style">
+    <Var name="ButtonContext" t="xtml.Params">
+      <Param name="Text" t="text.MultiLang" Pattern="%$Text%" Dynamic="true"/>
+      <Param name="Image" value="%$Image%" />
+      <Param name="Tooltip" value="%$Tooltip%" />
+      <ScriptParam name="OnClick" t="uiaction.Validate">
+        <Condition t="yesno.Not">
+          <Of t="ui.HasClass" Cls="aa_loading" Data="%$ControlElement%"/>
+        </Condition>
+      	<OnSuccess t="xtml.UseParam" Param="OnClick" />
+      	<ExtraValidation t="xtml.UseParam" Param="ExtraValidations" />
+      </ScriptParam>
+    </Var>
+  </xtml>
+ </Component>
+ 
+ <Component id="MandatoryMessage">
+  <xtml t="text.MultiLang" Pattern="Please enter value for %$FieldTitle%" />
+ </Component>
+ 
+    <Component id="SuggestionBox" type="ui.Control" execution="native" databind="true"> 
+      <Param name="Options"/>
+      <Param name="OptionLabel" type="data.Data" script="true"/>
+      <Param name="OptionLabelInTextbox" type="data.Data" script="true"/>
+      <Param name="OptionImage" type="data.Data" script="true"/>
+      <Param name="OptionDescription" type="data.Data" script="true"/>
+      <Param name="AllowTextNotInOptions" type="data.Boolean"><Default value="false"/></Param>
+      <Param name="OnUpdate" type="action.Action" script="true"/>
+      <Param name="AdditionalMenuItem" t="menu.MenuItem[]"/>
+      <Param name="TextForEmpty" />
+      <Param name="MaxItems"> <Default value="20" /> </Param>
+    </Component>
+
+</xtml>

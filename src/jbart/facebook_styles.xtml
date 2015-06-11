@@ -1,0 +1,229 @@
+<xtml package="true">
+
+
+  <xtml ns="button" jbart="true">
+
+    <Component id="FacebookBlue" type="button.Style" styleGuide="facebook">
+      <xtml t="ui.CustomStyle"
+        Html="&lt;button class=&quot;aa_button_clickable aa_button_text&quot; tabindex=&quot;1&quot;/&gt;"
+        Javascript="function(button) {&#xa;  button.setInnerHTML('.aa_button_text',button.text);  &#xa;button.setOnClick('.aa_button_clickable',button.Action);&#xa;}">
+        <Css>
+<![CDATA[#this 
+{
+background-image: url(https://s-static.ak.facebook.com/rsrc.php/v1/yT/r/Ami4lrB-c2A.png) 0 -49px no-repeat;
+background-color: #5B74A8;
+border-color: #29447E #29447E #1A356E;
+border: 1px solid #999;
+border-bottom-color: #888;
+-webkit-box-shadow: 0 1px 0 rgba(0, 0, 0, .1);
+cursor: pointer;
+display: inline-block;
+font-size: 11px;
+font-weight: bold;
+line-height: 13px;
+padding: 5px 8px;
+text-align: center;
+text-decoration: none;
+vertical-align: top;
+white-space: nowrap;  
+color: white;
+margin: 0;
+}
+
+#this:active {
+  background:#4f6aa3;border-bottom-color:#29447e;
+}
+]]>
+        </Css>
+      </xtml>
+    </Component>
+
+  <Component id="FacebookHyperlink" type="button.Style" styleGuide="facebook">
+    <xtml t="ui.CustomStyle"
+      Html="&lt;span class=&quot;aa_button_clickable&quot;&gt;&#xd;  &lt;span class=&quot;aa_button_img&quot;/&gt;&#xd;  &lt;span class=&quot;aa_button_text&quot;/&gt;&#xd;&lt;/span&gt;"
+      Javascript="function(button) {&#xa;  button.setInnerHTML('.aa_button_text',button.text);  &#xa;  button.setImageSource('.aa_button_img',button.image);  &#xa;  button.setOnClick('.aa_button_clickable',button.Action);&#xa;}">
+      <Css>
+<![CDATA[#this { color: #3B5998;cursor:pointer;text-decoration: none;font-family: "lucida grande",tahoma,verdana,arial,sans-serif;
+font-size:11px; }
+#this >.aa_button_text:hover { text-decoration: underline }
+#this .aa_button_img img { cursor:pointer; padding-bottom:2px; padding-right: 4px; vertical-align:middle; }]]>
+      </Css>
+    </xtml>
+  </Component>
+    
+    <Component id="FacebookGray" type="button.Style" styleGuide="facebook">
+      <xtml t="ui.CustomStyle"
+        Javascript="function(button) {&#xa;  button.setInnerHTML('.aa_button_text',button.text);  &#xa;button.setOnClick('.aa_button_clickable',button.Action);&#xa;}">
+        <Html>
+<![CDATA[<button class="aa_button_clickable aa_button_text" tabindex="1"/>]]>
+        </Html>
+        <Css>
+<![CDATA[#this 
+{
+font-family: 'Lucida Grande', Tahoma, Verdana, Arial, sans-serif;
+background-color: #EEE;
+border: 1px solid #999;
+border-bottom-color: #888;
+-webkit-box-shadow: 0 1px 0 rgba(0, 0, 0, .1);
+cursor: pointer;
+display: inline-block;
+font-size: 11px;
+font-weight: bold;
+line-height: 13px;
+padding: 5px 8px;
+text-align: center;
+text-decoration: none;
+vertical-align: top;
+white-space: nowrap;  
+color: #333;
+background-image: url(http://static.ak.fbcdn.net/rsrc.php/v1/yT/r/Ami4lrB-c2A.png);
+background-repeat: no-repeat;
+background-position: 0 -98px;
+margin: 0;
+}
+
+#this:active {
+  background:#ddd;border-bottom-color:#999;-webkit-box-shadow:0 1px 0 rgba(0, 0, 0, .05)
+}
+]]>
+        </Css>
+      </xtml>
+    </Component>
+
+  </xtml>
+
+  <xtml ns="section">
+
+    <Component id="Facebook" type="section.Style" styleGuide="facebook">
+      <xtml t="ui.CustomStyle">
+        <Html>
+<![CDATA[<div>
+  <div class="section_title"><div class="section_title_text"/></div>
+  <div class="section_body"/>
+</div>]]>
+        </Html>
+        <Css>
+<![CDATA[#this >.section_title {
+font-size: 11px;
+font-family: "lucida grande",tahoma,verdana,arial,sans-serif;
+line-height: 1.28;
+background-color: #F2F2F2;
+border-bottom: none;
+border-top: solid 1px #E2E2E2;
+padding: 4px 6px 5px 0px;
+margin-bottom: 8px;
+}
+#this >.section_title .section_title_text {
+  color: #333;font-size: 11px;
+padding-left: 6px; font-weight:bold; display: inline;
+}
+
+]]>
+        </Css>
+        <Javascript>
+<![CDATA[function(section) {  
+  section.setInnerHTML('.section_title_text',section.Title);  
+  section.addSectionBody('.section_body');
+}]]>
+        </Javascript>
+      </xtml>
+    </Component>
+
+  </xtml>
+
+
+  <xtml ns="tabcontrol">
+
+    <Component id="FacebookLikeTabs" type="tabcontrol.Style" styleGuide="facebook">
+      <xtml t="ui.CustomStyle"
+        Html="&lt;div&gt;&#xd;  &lt;div&gt;&#xd;    &lt;div class=&quot;aatabs_tab&quot;&gt;&#xd;      &lt;div class=&quot;aatabs_tab_image&quot;/&gt;&#xd;      &lt;div class=&quot;aatabs_tab_text&quot;/&gt;&#xd;    &lt;/div&gt;&#xd;  &lt;/div&gt;&#xd;  &lt;div class=&quot;aatabs_contents&quot;/&gt;&#xd;&lt;/div&gt;"
+        Javascript="function(tabcontrol) {&#xa; tabcontrol.addTabs('.aatabs_tab','.aatabs_contents',&#xa;   function(tab) {        &#xa;      tab.setInnerHTML('.aatabs_tab_text',tab.Title);         &#xa;      tab.setImageSource('.aatabs_tab_image',tab.Image);   &#xa;   tab.setOnClick('',tab.Select); });&#xa;}">
+        <Css>
+<![CDATA[#this .aatabs_tab { font-size: 93\%; font-family: arial; float: left; padding: 6px 15px 4px 6px; cursor: pointer;
+  background: #6D84B4; margin-right:2px; min-width:30px; 
+}
+#this .aatabs_tab_text { padding:0 0 0 5px; float:left; color: white; }
+#this .aa_selected_tab  { background: #1D4088; color: white; }
+#this .aatabs_tab_image { float: left }
+#this .aatabs_contents { clear: both; padding:15px 0 15px 5px; border: 1px solid #B4BBCD; background: #F2F2F2;}
+.right2left #this .aatabs_tab { float: right; padding: 6px 6px 4px 15px;  }
+.right2left #this .aatabs_tab_image { float: right}
+.right2left #this .aatabs_tab_text { float: right; padding:0 5px 0 0;}
+]]>
+        </Css>
+      </xtml>
+    </Component>
+
+  </xtml>
+  
+  <xtml ns="group">
+  
+  <Component id="FacebookTitle" type="uitext.Style" styleGuide="facebook">
+    <xtml t="ui.CustomStyle">
+      <Html><![CDATA[<div />]]></Html>
+      <Css><![CDATA[#this { 
+color: #1C2A47;
+font-size: 16px;
+font-family: "lucida grande",tahoma,verdana,arial,sans-serif;
+line-height: 1.28; font-weight: bold;
+}]]></Css>
+      <Javascript><![CDATA[function(text) { text.setInnerHTML('',text.text); }]]></Javascript>
+    </xtml>
+  </Component>​
+​  
+  </xtml>
+  
+  <xtml ns="section_style">
+  
+    <Component id="FacebookYellow" type="section.Style" styleGuide="facebook">
+      <xtml t="ui.CustomStyle">
+        <Html>
+<![CDATA[<div>
+  <button class="aa_close_section">&#215;</button>
+  <div class="section_body"/>
+</div>]]></Html>
+        <Css>
+<![CDATA[#this {
+font-family: "lucida grande",tahoma,verdana,arial,sans-serif;
+font-size: 13px;
+  color: #333;
+background-color: #FFF9D7;
+border: 1px solid #E2C822;
+  padding: 10px;
+  padding-bottom:0;
+margin-bottom: 10px;
+}
+.aa_close_section:hover { opacity: 0.4; }
+.aa_close_section {
+  position: relative;
+  top: -9px;
+  right: -10px;
+  line-height: 18px;
+cursor: pointer;
+background: transparent;  
+  float: right;
+  opacity: 0.2;
+  border:0;
+font-size: 20px;
+font-weight: bold;  
+  color: black;
+text-shadow: 0 1px 0 white;
+  text-align: center;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+]]>
+        </Css>
+        <Javascript>
+<![CDATA[function(section) {  
+  section.$el.find('.aa_close_section').click(function() {
+    section.$el.animate( { height: 'hide' } , 600);
+  });
+  section.setInnerHTML('.section_title',section.Title);  
+  section.addSectionBody('.section_body');
+}]]>
+        </Javascript>
+      </xtml>
+    </Component>
+
+</xtml>  
+</xtml>

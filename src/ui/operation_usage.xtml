@@ -1,0 +1,64 @@
+<xtml ns="uiaspect_usage">
+
+  <Usage t="ui.ControlUsage" Of="operation.Paste">      <Var name="Items" t="xml.Xml">        <a>          <a name="1">            <a name="1.1"/>            <a name="1.2"/>          </a>          <a name="2">            <a name="2.1">              <a name="2.1.1"/>              <a name="2.1.2"/>            </a>            <a name="2.2"/>          </a>          <a name="3"/>        </a>      </Var>      <Control t="ui.List" Class="top">        <Control t="ui.ItemList" Class="mytree">          <Items t="xml.WritableXmlList" ItemList="%$Items/a%"/>          <Aspect t="uiaspect.ItemImage" ItemImage="%$_Images%/studio/person3.gif"/>          <Aspect t="uiaspect.ItemText" ItemText="%@name%"/>          <Aspect t="uiaspect.ItemSelection"/>          <Aspect t="uiaspect.NextLevels">            <NextLevel t="data_items.Items" Items="%*%"/>            <NextLevelAspect t="uiaspect.ItemImage" ItemImage="%$_Images%/studio/person3.gif"/>            <NextLevelAspect t="uiaspect.ItemText" ItemText="%@name%"/>          </Aspect>          <Aspect t="uiaspect.ExpandCollapse"/>          <Aspect t="uiaspect.Indent"/>          <Aspect t="uiaspect.DragAndDropMover"/>          <Aspect t="uiaspect.Toolbar"/>          <Aspect t="uiaspect.Shortcuts"/>          <Operations t="operation.Operations">            <Operation t="operation.Cut"/>            <Operation t="operation.Copy"/>            <Operation t="operation.Paste">              <CopyPasteAction t="action.RunActions">                <Action t="xml.AddChildren" Children="%$Clipboard%" CloneChildren="true"/>                <Action t="uiaction.Refresh" RunOn="updown(.top,.mytree)"/>              </CopyPasteAction>              <CutPasteAction t="action.RunActions">                <Action t="xml.AddChildren" Children="%$Clipboard%" CloneChildren="false"/>                <Action t="uiaction.Refresh" RunOn="updown(.top,.mytree)"/>              </CutPasteAction>            </Operation>          </Operations>        </Control>      </Control>      <ExpectedResult value="true"/>    </Usage>
+
+
+  <Usage t="ui.ControlUsage" Of="uiaspect.SynchToolbar">      <Var name="Items" t="xml.Xml">        <Persons>          <Person Name="Homer" Gender="Male"/>          <Person Name="Marge" Gender="Female"/>        </Persons>      </Var>      <Control t="ui.ItemList">        <Items t="xml.XmlItems" Parent="%$Items%" Tag="Person"/>        <Fields t="field.Fields">          <Field t="field.XmlField" Path="@Name"/>          <Field t="field.XmlField" Path="@Gender"/>        </Fields>        <Aspect t="uiaspect.DefaultFeatures"/>        <Aspect t="uiaspect.Table"/>        <Aspect t="uiaspect.Toolbar" RefreshStrategy="item selection"/>        <Operations t="operation.Operations">          <Operation t="operation.Operation" Target="items" Title="manage the world" Disabled="%@Gender% == 'Male'"/>          <Operation t="operation.StdOperations"/>        </Operations>      </Control>      <ExpectedResult t="yesno.NotContains">        <Text value="manage the world"/>      </ExpectedResult>    </Usage>
+
+  <Usage IsTest="false" t="ui.ControlUsage" Of="uiaspect.Shortcuts">
+      <Var name="Items" t="xml.Xml">
+        <Persons>
+          <Person Name="Homer" Gender="Male"/>
+          <Person Name="Marge" Gender="Female"/>
+        </Persons>
+      </Var>
+      <Control t="ui.ItemList">
+        <Items t="xml.XmlItems" Parent="%$Items%" Tag="Person"/>
+        <Fields t="field.Fields">
+          <Field t="field.XmlField" Path="@Name"/>
+          <Field t="field.XmlField" Path="@Gender"/>
+        </Fields>
+        <Aspect t="uiaspect.DefaultFeatures"/>
+        <Aspect t="uiaspect.Table"/>
+        <Aspect t="uiaspect.Shortcuts"/>
+        <Aspect t="uiaspect.Toolbar"/>
+        <Operations t="operation.StdOperations"/>
+      </Control>
+      <RunOnControl t="uiaction.FireEvent" Event="keyup"/>
+      <ExpectedResult t="yesno.NotContains">
+        <Text value="Name:"/>
+      </ExpectedResult>
+    </Usage>
+
+<Usage t="ui.ControlUsage" Of="operation.RunOperationFromParent">
+  <Var name="Board" t="xml.ByTag" Tag="board" />
+  <Var name="People" t="uiaspect_usage.PeopleData" />
+  <Control t="ui.ItemList">
+    <Items t="xml.XmlItems" Parent="%$People%" Tag="person" />
+    <Presentation t="uiaspect.Table" />
+    <Aspect t="uiaspect.DefaultFeatures" />
+    <Fields t="field.SimpleXmlFields" Paths="@name,@age" />
+    <Operations t="operation.Operations">
+      <Operation t="operation.StdOperations" OpenItemDetails="true" />
+      <Operation t="operation.Operation" ID="op1" Title="do something">
+        <Action t="action.WriteValue" To="%$Board/!@name%" Value="%@name%" />
+      </Operation>
+    </Operations>
+    <Aspect t="uiaspect.ItemDetails">
+      <OpenIn t="uiaspect.DetailsReplacingAll" />
+      <ItemPage t="ui.ItemPage" FieldsFromList="*">
+        <Operations t="operation.Operation" ID="op1" Title="do something">
+          <Action t="operation.RunOperationFromParent" Operation="op1" />
+        </Operations>
+        <Aspect t="uiaspect.Toolbar" />
+      </ItemPage>
+    </Aspect>
+  </Control>
+  <RunOnControl t="action.RunActions">
+    <Action t="uiaction.Click" RunOn=".OpenItemDetails" />
+    <Action t="uiaction.Click" RunOn=".op1" />
+  </RunOnControl>
+  <ExpectedResult t="yesno.ItemsEqual" Item1="%$Board/@name%" Item2="Homer" />
+</Usage>
+  
+</xtml>

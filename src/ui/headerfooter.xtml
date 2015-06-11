@@ -1,0 +1,75 @@
+<xtml ns="headerfooter" light="false">
+
+  <Type id="HeaderFooterControl" />
+
+  <Component id="FastAddItem" type="headerfooter.HeaderFooterControl">
+    <Param name="Page" type="ui.SinglePage" script="true" />
+    <Param name="IncludeAddButton" type="data.Boolean" description="to create call headerfooter.DoAddItem"><Default value="true"/></Param>
+    <xtml t="ui.List" Class="add_item_top">
+      <Var name="Subset" t="object.RunMethod" Object="%$_Items%" Method="SubsetForNewItem" />
+      <Var name="_FastAddItemObject" t="headerfooter.FastAddItemObject" Subset="%$Subset%" OriginalCntr="%$_Cntr%"/>
+      <Var name="_OriginalCntr" value="%$_Cntr%" />
+      <Control t="ui.ShowSinglePage" Item="%$Subset%" Class="add_item_page" >
+        <Page t="xtml.UseParam" Param="Page" />
+      </Control>
+      <Control t="ui.ButtonOld" Text="Add" Class="FastAdd" Condition="%$IncludeAddButton%">
+        <OnClick t="headerfooter.DoAddItem" />
+      </Control>
+    </xtml>
+  </Component>
+  
+  <Component id="CustomControl" type="headerfooter.HeaderFooterControl">
+    <Param name="Control" type="ui.Control" script="true" />
+    <xtml t="xtml.UseParam" Param="Control" />
+  </Component>
+
+  <Component id="FastAddItemObject" hidden="true">
+    <Param name="Subset" />
+    <Param name="OriginalCntr" />
+    <xtml t="object.Object">
+      <Method name="Do" t="action.RunActions">
+        <Condition t="validation.PassingValidations" RunOn="updown(.add_item_top,.add_item_page)" />
+        <Action t="object.RunMethod" Object="%$Subset%" Method="Save" Input="%$Subset/Items%" />
+        <Action t="uiaction.AddItemElement" Item="%$Subset/Items%" SelectIt="%$_DoAddItemContext/SelectIt%">
+          <Var name="_Cntr" value="%$OriginalCntr%" />
+          <RunOn t="uiaspect.ContainerControl" Container="%$OriginalCntr%"/>
+          <DoOnAddedElement t="object.RunMethod" Object="%$_DoAddItemContext%" Method="DoOnAddedElement" />
+        </Action>
+        <Action t="uiaction.Refresh" RunOn="up(.add_item_top)" />
+      </Method>
+    </xtml>
+  </Component>
+  
+  <Component id="DoAddItem" type="action.Action">
+    <Param name="SelectIt" type="data.Boolean"/>
+    <Param name="DoOnAddedElement" type="action.Action" script="true" />
+    <xtml t="object.RunMethod" Object="%$_FastAddItemObject%" Method="Do">
+      <Var name="_DoAddItemContext" t="object.Object" SelectIt="%$SelectIt%">
+        <Method name="DoOnAddedElement" t="xtml.UseParam" Param="DoOnAddedElement" />
+      </Var>
+    </xtml>
+  </Component>
+
+  <Component id="ItemListPresentation" type="field.Fields" >
+    <Aspect t="component_aspect.Image" Image="%$_Images%/studio/chart1616.png"/>
+    <Param name="Title"/>
+    <Param name="Presentation" type="uiaspect.ItemListPresentation" script="true"/>
+    <Param name="Field" type="field.Fields[]" light="false" script="true" />
+    <Param name="Aspect" type="uiaspect.Aspect[]" script="true" light="false" />
+    <Param name="FieldAspect" type="field.FieldAspect[]" script="true" light="false" />
+    <xtml t="field.CustomControl" Title="%$Title%" ShowTitle="true">
+      <ID t="text.ToIdText" Data="%$Title%"/>
+      <Control t="ui.ItemList" ID="%$_Cntr/ID%_%$ID%">
+        <Var name="ID" t="text.ToIdText" Data="%$Title%"/>
+        <Presentation t="xtml.UseParam" Param="Presentation"/>
+        <Fields t="xtml.UseParamArray" Param="Field"/>
+        <Aspect t="uiaspect.InheritsItems"/>
+        <Aspect t="xtml.UseParamArray" Param="Aspect"/>
+      </Control>
+      <FieldAspect t="field_aspect.HeaderFooterField" RefreshStrategy="container change" RunAfterPresentation="true"/> 
+      <FieldAspect t="field_aspect.Section"/>
+      <FieldAspect t="xtml.UseParamArray" Param="FieldAspect"/> 
+    </xtml>
+  </Component>
+
+</xtml>

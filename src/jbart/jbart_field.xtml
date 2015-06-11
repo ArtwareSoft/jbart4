@@ -1,0 +1,489 @@
+<xtml package="true">
+
+<xtml ns="field_feature">
+
+  <Component id="Hidden" type="field.FieldAspect" execution="native" description="Hide or Show on condition">
+    <Param name="ShowCondition" type="data.Boolean" script="true" Default="false" />
+    <Param name="DataForCondition" type="enum" Options="Item data,Field data" Default="Item data" />
+    <Param name="WhenHidden" type="enum" Options="Do not render,Render as hidden html" Default="Do not render" Description="Render as hidden html enables future visibility"/>
+  </Component>
+
+  <Component id="HiddenTableColumn" type="field.FieldAspect" execution="native" description="Hide or Show table column on condition">
+    <Param name="ShowCondition" type="data.Boolean" script="true" Default="false" />
+  </Component>
+
+</xtml>
+<xtml ns="field_aspect">
+
+  <Type id="HiddenContition" />
+  
+  <Component id="DefaultValue" type="field.FieldAspect" execution="native">
+    <Param name="Value" script="true" essential="true" />
+  </Component>
+
+  <Component id="ForceCData" type="field.FieldAspect" description="Relevant for field data of xml element. The value will always be cdata">
+    <xtml t="object.SetBooleanProperty" Object="%$_Field%" Property="ForceCData" Value="true" />
+  </Component>
+
+  <Component id="CheckConditionForEveryItem" type="field_aspect.HiddenContition" execution="native">
+    <Param name="ShowCondition" type="data.Boolean" script="true" />
+    <Param name="DataForCondition" type="enum" Options="Item data,Field data" Default="Item data" />
+    <Param name="WhenHidden" type="enum" Options="Do not render,Render as hidden html" Default="Do not render" Description="Render as hidden html enables future visibility"/>
+  </Component>
+
+  <Component id="CheckConditionOnce" type="field_aspect.HiddenContition" execution="native">
+    <Param name="ShowCondition" type="data.Boolean" script="true" description="condition is checked on the general data and not for each item" />
+  </Component>
+
+  <Component id="Hidden" type="field.FieldAspect" execution="native" description="Hide or Show field on condition" hidden="true" deprecated="true" light="false">
+    <Param name="OnCondition" type="field_aspect.HiddenContition" />
+  </Component>
+
+  <Component id="DetailsInplace" type="field.FieldAspect" context="InItemList=true">
+    <xtml t="field_aspect.Hidden" />
+  </Component>
+
+  <Component id="DisableByCondition" type="field.FieldAspect" execution="native">
+    <Param name="EnableCondition" type="data.Boolean" script="true" essential="true" />
+    <Param name="DisableText"/>
+    <Param name="CssForDisabled" css="true" Default="{ opacity: 0.5; }" />
+  </Component>
+
+  <Component id="HideInProperties" type="field.FieldAspect" category="ui">
+      <xtml t="object.SetBooleanProperty" Object="%$_Field%" Property="HiddenForProperties" Value="true"/>
+  </Component>
+
+  <Component id="TextSummary" type="field.FieldAspect" gallery="TextSummary" promoted="true" description="convert, transform, pre process text for display" execution="native">
+      <Param name="Text" script="true" essential="true">
+        <Default value="%%"/>
+      </Param>
+      <Param name="IgnoreEmptyValues" type="data.Boolean" />
+  </Component>
+    
+  <Component id="NumberFormat" type="field.FieldAspect" execution="native" category="number" hidden="true">
+    <Param name="Format" script="true" type="text.NumberFormat" essential="true" Default="%%"/>
+  </Component>
+
+  <Component id="GroupAggregator" type="field.FieldAspect" category="group by" gallery="GroupBy" description="Display text in the group line for this field in group by mode">
+    <Param name="Formula" type="data.Aggregator" script="true" essential="true" />
+    <Param name="PostFormula" type="data.Data" script="true" Default="%%"/>
+    <xtml t="object.SetMethod" Object="%$_Field%" Method="GroupAggregator">
+      <Xtml t="xtml.UseParam" Param="PostFormula">
+        <Input t="xtml.UseParam" Param="Formula" />
+      </Xtml>
+    </xtml>
+  </Component>
+
+  <Component id="GroupBySettings" type="field.FieldAspect" category="group by">
+    <Param name="AutoExpandGroups" type="data.Boolean"/>
+    <Param name="UseImage" type="data.Boolean"><Default value="true"/></Param>
+    <Param name="ShowEmptyGroups" type="data.Boolean"/>
+    <Param name="GroupText" script="true">
+      <Default value="%Name% (%Count%)"/>
+    </Param>
+    <xtml t="action.RunActions">
+      <Action t="object.SetBooleanProperty" Object="%$_Field%" Property="GroupBy_AutoExpandGroups" Value="%$AutoExpandGroups%" />
+      <Action t="object.SetBooleanProperty" Object="%$_Field%" Property="GroupBy_UseImage" Value="%$UseImage%" />
+      <Action t="object.SetBooleanProperty" Object="%$_Field%" Property="GroupBy_ShowEmptyGroups" Value="%$ShowEmptyGroups%" />
+      <Action t="object.SetMethod" Object="%$_Field%" Method="GroupBy_GroupText">
+        <Xtml t="xtml.UseParam" Param="GroupText" />
+      </Action>
+    </xtml>
+  </Component>
+
+  <Component id="ReadOnly" type="field.FieldAspect" category="model" description="Define this field as read only">
+    <xtml t="object.SetMethod" Object="%$_Field%" Method="ReadOnly" Xtml="true" />
+  </Component>
+
+  <Component id="Writable" type="field.FieldAspect" category="model" jbart="false" description="Define this field as writable in a read only group">
+    <xtml t="object.SetBooleanProperty" Object="%$_Field%" Property="Writable" Value="true" />
+  </Component>
+
+  <Component id="OnKeyUp" type="field.FieldAspect" category="advanced" execution="native">
+    <Param name="Action" type="action.Action" script="true" ParamVars="KeyCode" essential="true" />
+  </Component>
+
+  <Component id="OnHover" type="field.FieldAspect" category="advanced" execution="native">
+    <Param name="Action" type="action.Action" script="true" essential="true" />
+  </Component>
+  
+  <Component id="OnClick" type="field.FieldAspect" category="advanced" execution="native" description="triggerd when the user clicks on the field, not spcifically onchange">
+    <Param name="Action" type="action.Action" script="true" essential="true" />
+  </Component>
+  
+  <Component id="Mandatory" type="field.FieldAspect" execution="native" description="Defines this field as mandatory and allows to modify the error message">
+    <Param name="ErrorMessage" script="true"/>
+  </Component>
+  
+  <Component id="Description" type="field.FieldAspect" execution="native" description="Field Description. Visible in property sheets and tables">
+    <Param name="Description" essential="true" />
+  </Component>
+  
+  <Component id="Title" type="field.FieldAspect" execution="native" category="ui">
+    <Param name="Title" essential="true"  />
+  </Component>
+  
+  <Component id="SortMethodOld" type="field.FieldAspect" execution="native" category="list">
+    <Param name="Method" type="enum" essential="true" >
+      <Default value="lexical" />
+      <value>lexical</value>
+      <value>numeric</value>
+      <value>date</value>
+    </Param>
+  </Component>
+  
+  <Component id="HideTitle" type="field.FieldAspect" category="ui" promoted="true">
+   <xtml t="object.SetBooleanProperty" Object="%$_Field%" Property="HideTitle" Value="true"/>
+  </Component>
+
+  <Component id="HidePropertyTitle" type="field.FieldAspect" description="Hides the title in a property sheet">
+   <xtml t="object.SetBooleanProperty" Object="%$_Field%" Property="HidePropertyTitle" Value="true"/>
+  </Component>
+  
+  <Component id="ShowTitle" type="field.FieldAspect" category="ui" light="false">
+   <xtml t="object.SetBooleanProperty" Object="%$_Field%" Property="HideTitle" Value="false"/>
+  </Component>
+  
+  <Component id="Calculated" type="field.FieldAspect" execution="native" category="calculated" gallery="Calculated">
+      <Param name="Formula" script="true" essential="true"/>
+      <Param name="ManualOverride" type="data.Boolean"/>
+      <Param name="MathFormula" type="data.Boolean"/>
+      <Param name="PrimitiveField" type="data.Boolean">
+        <Default value="true"/>
+      </Param>
+      <Param name="ToggleButtonCss" css="true" Default="{color: blue;cursor:pointer; padding-left: 5px; } #this:hover { text-decoration:underline; }" /> 
+    </Component>
+
+  <Component id="RefreshDependentFields" type="field.FieldAspect" execution="native" description="Recalculate and refresh other fields when this field changes">
+    <Param name="FieldsIds" type="dynamic_enum_multi" AllowValueNotInOptions="true" essential="true" >
+      <Options t="field_dt.SiblingFieldIDs" />
+    </Param>
+    <Param name="RefreshOn" type="enum" Default="every click" Options="exit field,every click,every click with delay" />
+    <Param name="RefreshScope" type="enum" Options="screen,sibling,table line" Default="screen" />
+  </Component>
+
+  <Component id="Password" type="field.FieldAspect" execution="native" jbart="false">
+    <Param name="HashPassword" type="data.Boolean"><Default value="true"/></Param>
+  </Component>
+
+  <Component id="FilterAspects" type="field.FieldAspect" category="list" description="Modify the filter control (e.g. DescriptionForEmptyText)">
+    <Param name="Aspect" type="field.FieldAspect[]" script="true" essential="true" />
+    <Param name="Type" essential="true" type="field_aspect.FieldType" script="true" />
+    <xtml t="object.SetProperty" Object="%$_Field%" Property="FilterAspects" >
+      <Value t="data.JustInTimeCalculation">
+        <Content t="data.List">
+          <Item t="xtml.UseParam" Param="Type" />
+          <Item t="xtml.UseParamArray" Param="Aspect" />
+        </Content>
+      </Value>
+    </xtml>
+  </Component>
+
+  <Component id="UnindentOptionPage" type="field.FieldAspect" category="picklist" hidden="true" deprecated="true" description="Deprecated">
+    <xtml t="object.SetBooleanProperty" Object="%$_Field%" Property="UnindentOptionPage" Value="true" />
+  </Component>
+
+  <Component id="IndentOptionPage" type="field.FieldAspect" category="picklist" description="Indent the ontology page with the title's left">
+    <xtml t="object.SetBooleanProperty" Object="%$_Field%" Property="IndentOptionPage" Value="true" />
+  </Component>
+
+  <Component id="PopupWidth" type="field.FieldAspect" category="picklist" light="false">
+      <Param name="WidthOption" type="enum" Options="launcher width,by css class" essential="true">
+        <Default value="launcher width"/>
+      </Param>
+      <xtml t="object.SetProperty" Object="%$_Field%" Property="PopupWidthOption" Value="%$WidthOption%"/>
+    </Component>
+  
+  <Component id="PopupStyle" type="field.FieldAspect">
+      <Param name="Style" type="dialog_style.Style"/>
+      <xtml t="object.SetProperty" Object="%$_Field%" Property="PopupStyle" Value="%$Style%"/>
+    </Component>
+  
+  <Component id="ItemInTree" type="field.FieldAspect" category="document tree" labs="true" description="Modify text, image or css/style of the tree node in a document tree">
+    <Param name="ItemText" script="true" >
+      <PreviewContext t="xtml_dt.PreviewContext" >
+        <Input t="data.Pipeline">
+          <Var name="Field" t="xtml.RunXtml" Xtml="%$_Xtml/..%" />
+          <Item t="field_dt.PreviewFieldData" />
+          <Item t="object.RunMethod" Object="%$Field%" Method="InnerItems" />
+          <Item value="%Items%" />
+        </Input>
+      </PreviewContext>
+    </Param>
+    <Param name="ItemImage" script="true">
+      <PreviewContext t="xtml_dt.PreviewContext" >
+        <Input t="data.Pipeline">
+          <Var name="Field" t="xtml.RunXtml" Xtml="%$_Xtml/..%" />
+          <Item t="field_dt.PreviewFieldData" />
+          <Item t="object.RunMethod" Object="%$Field%" Method="InnerItems" />
+          <Item value="%Items%" />
+        </Input>
+      </PreviewContext>
+    </Param>
+    <Param name="ItemCss" />
+    <xtml t="field_aspect.Aspects">
+      <FieldAspect t="object.SetMethod" Object="%$_Field%" Method="ItemTextInTree">
+        <Xtml t="xtml.UseParam" Param="ItemText" />
+      </FieldAspect>
+      <FieldAspect t="object.SetMethod" Object="%$_Field%" Method="ItemImageInTree">
+        <Xtml t="xtml.UseParam" Param="ItemImage" />
+      </FieldAspect>
+      <FieldAspect t="object.SetMethod" Object="%$_Field%" Method="ItemCss">
+        <Xtml t="xtml.UseParam" Param="ItemCss" />
+      </FieldAspect>
+    </xtml>
+  </Component>
+  
+  <Component id="HeaderFooterField" type="field.FieldAspect" category="list" gallery="HeaderFooterField" description="Single control, located in the header or footer of the list">
+    <Param name="Location" type="enum" essential="true" >
+      <Default value="header" />
+      <value>header</value>
+      <value>footer</value>
+    </Param>
+    <Param name="RefreshStrategy" type="enum" Options="none,container change,item selection">
+      <Default value="none" />
+    </Param>
+    <Param name="Phase"><Default value="0"/></Param>
+    <Param name="HeaderFooterField" type="field.Fields" advanced="true" hidden="true"><Default value="%$_Field%"/></Param>
+    <xtml t="action.RunActions">
+      <Action t="object.SetBooleanProperty" Object="%$_Field%" Property="HeaderFooter" Value="true"/>
+      <Action t="object.SetBooleanProperty" Object="%$_Field%" Property="IsGroupOnlyForLayout" Value="false"/>
+      <Action t="object.SetProperty" Object="%$_Field%" Property="CntrAspects">
+      <Value t="data.JustInTimeCalculation">
+        <Content t="uiaspect.HeaderFooter" Identifier="%$HeaderFooterField/ID%" Location="%$Location%" RefreshStrategy="%$RefreshStrategy%"
+          Phase="%$Phase%">
+          <Control t="field.ShowFieldControl" Field="%$HeaderFooterField%" Cntr="%$HeaderFooterCntr%">
+            <Item t="xml.Xml">
+              <headerfooterdata/>
+            </Item>
+          </Control>
+        </Content>
+      </Value>
+      </Action>
+      <Action t="field_aspect.HideInTable"/>
+    </xtml>
+  </Component>
+  
+  <Component id="AutoUpdateMasterItem" type="field.FieldAspect" category="list,textbox" light="false">
+    <xtml t="field_aspect.OnUpdate">
+      <Action t="object.RunMethod" Object="%$_ItemDetailsObject%" Method="RefreshMasterElement" />
+    </xtml>
+  </Component>
+
+  <Component id="Hyperlink" type="field.FieldAspect" category="text" execution="native" gallery="Hyperlink" description="Shown as hyperlink and opens item details as default action">
+      <Param name="Action" type="action.Action" script="true" />
+      <Param name="Css" css="true" Default="#this { color: blue; cursor:pointer; text-decoration: none; } #this:hover { text-decoration: underline;}" />
+    </Component>
+
+  <Component id="PropertiesWidth" type="field.FieldAspect" hidden="true" >
+      <Param name="MinWidth" essential="true"/>
+      <xtml t="object.SetProperty" Object="%$_Field%" Property="PropertiesWidth" Value="%$MinWidth%"/>
+    </Component>
+
+  <Component id="RunningInputFieldData" type="data.Data" execution="native" hidden="true" />
+  
+  <Component id="LimitTextLength" type="field.FieldAspect" execution="native" category="text" gallery="LimitTextLength" decsription="Similar to css3 text-overflow: ellipsis">
+      <Param name="MaxLength" Default="50" />
+      <Param name="CuttingMark" Default="..." />
+      <Param name="FullTextAsTooltip" type="data.Boolean" Default="true" />
+      <Param name="FullTextOnClick" type="data.Boolean" Default="false" />
+    </Component>
+  
+  <Component id="ImageInTextbox" type="field.FieldAspect" gallery="ImageInTextbox" execution="native" description="Defines an image in searchbox or picklist">
+    <Param name="Image"><Default value="%$_Images%/search.png"/></Param>
+    <Param name="CssForImage"><Default value="margin: 0 0 -2px -22px"/></Param>
+  </Component>
+
+  <Component id="MobileScroll" type="field.FieldAspect" description="Inner scroll for mobile. uses iscroll-4" execution="native">
+    <Param name="EnableScroll" type="data.Boolean"><Default value="true"/></Param>
+    <Param name="ScrollParams"><Default value="{zoom:true}" description="cubiq.org/iscroll-4"/></Param>
+    <Param name="Height" type="scroll.Height"><Default t="scroll.DeviceBottom" /></Param>
+    <Param name="Width" type="scroll.Width" />
+    <Param name="OnElement" type="enum" Options="cell,content">
+      <Default value="cell" />
+    </Param>
+  </Component>
+  
+   <Component id="CleanGlobalCss" type="data.Data" execution="native" light="false" Remark="used for tests">
+     <Param name="Css" />
+   </Component>
+   
+   <Component id="AdaptCssForBrowser" type="data.Data" execution="native" light="false" >
+     <Param name="Css" />
+     <Param name="GenerateCssForAllBrowsers" />
+   </Component>
+
+   <Component id="IsCssWellFormed" type="data.Boolean" execution="native" light="false" >
+     <Param name="Css" />
+   </Component>
+
+   <Component id="Animation" type="field.FieldAspect" description="how it becomes visible" execution="native">
+      <Param name="Type" type="animation.Animation" script="true"/>
+      <Param name="OnDone" type="action.Action" script="true"/>
+   </Component>
+
+   <Component id="DynamicSize" type="field.FieldAspect" description="apply height and width using device dimensions" execution="native">
+      <Param name="Height" type="scroll_size.Height" />
+      <Param name="Width" type="scroll_size.Width" />
+   </Component>
+
+</xtml>
+
+  <xtml ns="scroll">
+
+  <Type id="Scroll" />
+  <Type id="Height" />
+  <Type id="Width" />
+  
+  <Component id="Scroll" type="field.FieldAspect" execution="native" category="group">
+    <Param name="Scroll" type="scroll.Scroll"><Default value="scroll.BrowserScrollbar"/></Param>
+    <Param name="Height" type="scroll.Height"><Default t="scroll.DeviceBottom" /></Param>
+    <Param name="Width" type="scroll.Width" />
+    <Param name="PaddingRight" />
+  </Component>
+  
+  <Component id="Scroll2" type="field.FieldAspect" execution="native" category="group" light="false"> 
+    <Param name="Style" type="itemlist_scroll.Style">
+      <Default t="itemlist_scroll.BrowserScroll" />
+    </Param>
+    <Param name="Height" type="scroll_size.Height"><Default t="scroll_size.FixedHeight" /></Param>
+    <Param name="Width" type="scroll_size.Width" />
+  </Component>
+  
+  <Component id="BrowserScrollbar" type="scroll.Scroll" execution="native" description="Native scrollbar"/>
+  
+  <Component id="IScroll" type="scroll.Scroll" description="cubiq.org/iscroll-4 (touch scroll for mobiles)" execution="native">
+    <Param name="ScrollParams"><Default value="{zoom:true}" description="cubiq.org/iscroll-4"/></Param>
+    <Param name="JsLocation"><Default value="lib/iscroll.js"/></Param>
+  </Component>
+  
+  <Component id="NoScroll" type="scroll.Scroll" description="only limits the height/width" execution="native" >
+    <Param name="Css" Default="overflow:hidden;" advanced="true" />
+  </Component>
+  
+  <Component id="TinyScroll" type="scroll.Scroll" description="JQuery Tiny Scrollbar plugin" execution="native">
+    <Param name="Width" />
+    <Param name="Css" advanced="true">
+      <Default value="#this { } #this .viewport { overflow: hidden; position: relative;} #this .overview { list-style: none; position: absolute; left: 0; top: 0; padding: 0; margin: 0; } #this .scrollbar{ background: transparent url(images/tinyscroll/bg-scrollbar-track-y.png) no-repeat 0 0; position: relative; background-position: 0 0; float: right; width: 15px; } #this .track { background: transparent url(images/images/tinyscroll/bg-scrollbar-trackend-y.png) no-repeat 0 100\%; height: 100\%; width:13px; position: relative; padding: 0 1px; } #this .thumb { background: transparent url(images/tinyscroll/bg-scrollbar-thumb-y.png) no-repeat 50\% 100\%; height: 20px; width: 25px; cursor: pointer; overflow: hidden; position: absolute; top: 0; left: -5px; } #this .thumb .end { background: transparent url(images/tinyscroll/bg-scrollbar-thumb-y.png) no-repeat 50\% 0; overflow: hidden; height: 5px; width: 25px; } #this .disable { display: none; }"/>
+      <FieldAspect t="field_dt.CodeMirrorFieldEditor" CompId="scroll.TinyScroll" ParamName="Css" />    
+    </Param>
+    <Param name="JsLocation" advanced="true"><Default value="lib/jquery.tinyscrollbar.min.js"/></Param>
+  </Component>
+
+  <Component id="DeviceBottom" type="scroll.Height" execution="native">
+    <Param name="Delta"><Default value="0"/></Param>
+    <Param name="HtmlClassForDelta" Description="class of control to use its height as a delta"/>
+  </Component>
+  
+  <Component id="FixedHeight" type="scroll.Height" execution="native">
+    <Param name="Height"><Default value="400px"/></Param>
+    <Param name="HeightForNonMobile" />
+  </Component>
+
+  <Component id="NoHeightScroll" type="scroll.Height">
+    <xtml t="action.RunActions" />
+  </Component>
+
+  <Component id="DeviceRight" type="scroll.Width" execution="native">
+    <Param name="Delta"><Default value="0"/></Param>
+  </Component>
+  
+  <Component id="FixedWidth" type="scroll.Width" execution="native">
+    <Param name="Width"><Default value="400px"/></Param>
+    <Param name="WidthForNonMobile" />
+  </Component>
+
+  <Component id="NoWidthScroll" type="scroll.Width">
+    <xtml t="action.RunActions" />
+  </Component>
+  
+  </xtml>
+  
+  <xtml ns="scroll_size">
+    <Type id="Height" />
+    <Type id="Width" />
+    
+    <Component id="FixedHeight" type="scroll_size.Height" execution="native" autoexpand="true">
+      <Param name="Height" Default="400" slider="true" sliderUnit="" />
+      <Param name="ApplyOn" type="enum" Default="height" advanced="true">
+        <value>height</value>
+        <value>min-height</value>
+        <value>max-height</value>
+      </Param>
+    </Component>
+
+    <Component id="DeviceWidth" type="scroll_size.Width" execution="native">
+        <Param name="ReduceWidthOfOtherField" Description="Use field id here" >
+          <FieldAspect t="field_dt.FieldIdParam"/>
+        </Param>
+        <Param name="ReducePixels" Description="E.g. 100 will reduce 100px" advanced="true"  slider="true" sliderUnit="" />
+        <Param name="ApplyOn" type="enum" Default="width" advanced="true">
+          <value>width</value>
+          <value>min-width</value>
+          <value>max-width</value>
+        </Param>
+        <Param name="StretchFromCurrentLocation" type="data.Boolean" Default="true"  advanced="true"/>
+    </Component>
+
+    <Component id="DeviceHeight" type="scroll_size.Height" execution="native">
+        <Param name="ReduceHeightOfOtherField" Description="Use field id here">
+          <FieldAspect t="field_dt.FieldIdParam"/>
+        </Param>
+        <Param name="ReducePixels" Description="E.g. 100 will reduce 100px"  advanced="true" slider="true" sliderUnit="" />
+        <Param name="ApplyOn" type="enum" Default="height" advanced="true">
+          <value>height</value>
+          <value>min-height</value>
+          <value>max-height</value>
+        </Param>
+        <Param name="StretchFromCurrentLocation" type="data.Boolean" Default="true"  advanced="true"/>
+    </Component>
+
+    <Component id="AutoHeight" type="scroll_size.Height">
+      <xtml t="scroll_size.FixedHeight" Height="" />
+    </Component>
+    
+    <Component id="FixedWidth" type="scroll_size.Width" execution="native">
+      <Param name="Width" Default="400" slider="true" sliderUnit="" />
+      <Param name="ApplyOn" type="enum" Default="width" advanced="true">
+        <value>width</value>
+        <value>min-width</value>
+        <value>max-width</value>
+      </Param>
+    </Component>
+    
+  </xtml>
+  <xtml ns="group">
+  
+    <Type id="GroupData" />
+  
+    <Component id="DataFlow" type="group.GroupData">
+      <Param name="FlowData" script="true" />
+      <xtml t="object.Object">
+        <Method name="FieldData" t="xtml.UseParam" Param="FlowData" />
+        <Method name="DataItems" t="data_items.Items" Items="%%" />
+      </xtml>
+    </Component>
+    
+    <Component id="TransientData" type="group.GroupData" >
+      <xtml t="object.Object">
+        <Method name="FieldData" t="xml.ByTag" />
+        <Method name="DataItems" t="data_items.Items" Items="%%" />
+      </xtml>
+    </Component>
+    
+    <Component id="ContainerItems" type="group.GroupData">
+      <xtml t="object.Object">
+        <Method name="FieldData" value="%%" />
+        <Method name="DataItems" value="%$_Cntr/Items%" />
+      </xtml>
+    </Component>
+    
+    <Component id="FilterQueryXml" type="group.GroupData" description="A query used to filter a container">
+      <xtml t="object.Object">
+        <Method name="FieldData" t="xml.ByTag" Tag="cntr_filters" />
+        <Method name="DataItems" t="data_items.Items" Items="%%" />
+      </xtml>
+    </Component>
+    
+  </xtml>
+</xtml>

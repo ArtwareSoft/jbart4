@@ -1,0 +1,788 @@
+<xtml package="true">
+  
+  <xtml ns="dlg" jbart="true">
+
+    <Type id="DialogFeature" Image="%$_Images%/studio/dialog1616.gif">
+      <ComponentAspect t="component_aspect.Image" Image="%$_Images%/studio/dialog1616.gif" />
+    </Type>
+    <Type id="PopupStyle" style="true" />
+    <Type id="DialogLocation" />
+    <Type id="DialogButton" />
+
+    <Component id="OpenDialog" type="action.Action" execution="native" light="false">
+      <Param name="Title" essential="true" />
+      <Param name="Contents" type="ui.Control" script="true" essential="true">
+        <RunningInput t="xtml.RunXtml" Xtml="%$_Xtml%" Field="DialogData"/>
+      </Param>
+      <Param name="Style" type="dialog_style.Style">
+        <Default t="dialog_style.DefaultDialog" />
+      </Param>
+      <Param name="RunOnOK" type="action.Action" script="true" essential="true" />
+      <Param name="Feature" type="dlg.DialogFeature[]" script="true" />
+      <Param name="DialogData" advanced="true">
+        <Default value="%%" />
+      </Param>
+      <Param name="LauncherElement" advanced="true" Default="%$ControlElement%"/>
+      <Param name="NoCancel" type="data.Boolean" />
+      <NativeHelper name="MoreFeatures" t="dlg.Features">
+        <Feature t="dlg.NoCancel" OKLabel1="Close" Condition="%$NoCancel%" />
+      </NativeHelper>
+    </Component>
+
+    <Component id="Features" type="dlg.DialogFeature" light="false">
+      <Param name="Feature" type="dlg.DialogFeature[]" script="true" />
+      <xtml t="xtml.UseParamArray" Param="Feature" />
+    </Component>
+
+    <Component id="ButtonsHorizontal" type="dlg.DialogFeature" execution="native" light="false" >
+      <Param name="Align" type="enum" Options="left,right,auto" advanced="true"><Default value="auto" />
+      </Param>
+    </Component>
+
+    <Component id="NoCancel" type="dlg.DialogFeature" execution="native" light="false">
+      <Param name="OKLabel">
+        <Default value="Close" />
+      </Param>
+      <NativeHelper name="OKButton" t="dlg.OKButton" Text="%$OKLabel%">
+        <Condition t="yesno.NotEmpty" Value="%$OKLabel%" />
+      </NativeHelper>
+    </Component>
+
+    <Component id="RunOnCancel" type="dlg.DialogFeature" hidden="true">
+      <Param name="Action" type="action.Action" script="true" />
+      <xtml t="object.SetMethod" Object="%$_Dialog%" Method="RunOnCancel">
+        <Xtml t="xtml.UseParam" Param="Action" />
+      </xtml>
+    </Component>
+    <Component id="RunBeforeOK" type="dlg.DialogFeature" description="Allows async actions to be run before OK (e.g. async validations)">
+      <Param name="Action" type="action_async.Action" script="true" />
+      <xtml t="object.SetMethod" Object="%$_Dialog%" Method="RunBeforeOK">
+        <Xtml t="xtml.UseParam" Param="Action" />
+      </xtml>
+    </Component>
+
+    <Component id="DialogButtonsStyle" type="dlg.DialogFeature" light="false">
+      <Param name="Style" type="button.Style" />
+      <xtml t="object.SetProperty" Object="%$_Dialog%" Property="ButtonStyle" Value="%$Style%" IsSingleProperty="true">
+        <Condition t="yesno.NotEmpty" Value="%$Style%" />
+      </xtml>
+    </Component>
+
+    <Component id="InScreenCenter" type="dlg.DialogLocation" execution="native" gallery="Location">
+      <Param name="AlwaysInScreenCenter" type="data.Boolean" />
+    </Component>
+
+    <Component id="CenteringLauncher" type="dlg.DialogLocation" execution="native" gallery="Location" />
+    
+    <Component id="NearLauncher" type="dlg.DialogLocation" execution="native" gallery="Location" >
+      <Param name="Location" type="enum"><Default value="below or above launcher" />
+        <value>below launcher</value>
+        <value>below or above launcher</value>
+        <value>below,above or aside of launcher</value>
+      </Param>
+      <Param name="PopupAtLeastWideAsLauncher" type="data.Boolean" ><Default value="true" /></Param>
+      <Param name="UseFixedPosition" type="data.Boolean" advanced="true">
+        <Default value="true" />
+      </Param>
+      <Param name="PopupLeftOfLauncher" type="data.Boolean" advanced="true" />
+      <Param name="DeltaX" Default="0" advanced="true" />
+      <Param name="DeltaY" Default="-1" advanced="true" />
+    </Component>
+
+    <Component id="AboveLauncher" type="dlg.DialogLocation" execution="native" />
+    
+    <Component id="JBartStudioDialog" type="dlg.DialogFeature" light="false">
+      <xtml t="object.SetBooleanProperty" Object="%$_Dialog%" Property="JBStudio" Value="true" />
+    </Component>
+
+    <Component id="DialogButton" type="dlg.DialogFeature" light="false" >
+      <Param name="Button" type="dlg.DialogButton[]" />
+      <xtml t="object.AddToProperty" Object="%$_Dialog%" Property="Buttons" Value="%$Button%" />
+    </Component>
+
+    <Component id="ClearButtons" type="dlg.DialogFeature" light="false" >
+      <xtml t="object.SetProperty" Object="%$_Dialog%" Property="Buttons" />
+    </Component>
+
+    <Component id="DialogClass" type="dlg.DialogFeature">
+      <Param name="CssClass" />
+      <xtml t="object.SetTextProperty" Object="%$_Dialog%" Property="DialogClass" Value="%$CssClass%" />
+    </Component>
+
+    <Component id="ToggleDialog" type="dlg.DialogFeature" execution="native" description="Dialog uniqueness is defined by the launching element">
+    </Component>
+
+    <Component id="DialogFrame" type="dlg.DialogFeature" execution="native" light="false" />
+    <Component id="PopupFrame" type="dlg.DialogFeature" execution="native" light="false">
+      <Param name="Style" type="dlg.PopupStyle">
+        <Default t="dlg.FullBlackShadow" />
+      </Param>
+    </Component>
+
+    <Component id="PopupStyle" type="dlg.DialogFeature">
+      <Param name="Style" type="dlg.PopupStyle">
+        <Default t="dlg.FullBlackShadow" />
+      </Param>
+      <xtml t="object.SetTextProperty" Object="%$_Dialog%" Property="PopupStyle" Value="%$Style%" />
+    </Component>
+
+    <Component id="DialogShadow" type="dlg.DialogFeature" execution="native" light="false">
+    </Component>
+
+    <Component id="ScreenCover" type="dlg.DialogFeature" execution="native">
+      <Param name="Color">
+        <Default value="gray" />
+      </Param>
+      <Param name="Opacity">
+        <Default value="0.8" />
+      </Param>
+      <Param name="MinZIndex"> <Default value="2000" /> </Param>
+    </Component>
+
+    <Component id="CloseWhenClickingOutside" type="dlg.DialogFeature" execution="native">
+      <Param name="IgnoreLaunchingElement" type="data.Boolean" />
+    </Component>    
+    <Component id="HoverPopup" type="dlg.DialogFeature" execution="native" />
+
+    <Component id="OKOnEnter" type="dlg.DialogFeature" execution="native">
+      <Param name="Enabled" type="data.Boolean">
+        <Default value="true" />
+      </Param>
+    </Component>
+
+    <Component id="CloseOnEsc" type="dlg.DialogFeature" execution="native">
+      <Param name="Enabled" type="data.Boolean">
+        <Default value="true" />
+      </Param>
+    </Component>
+
+    <Component id="CloseIconOld" deprecated="true" type="dlg.DialogFeature" execution="native">
+      <Param name="Image" Default="%$_Images%/close.png" />
+      <Param name="UseXCharacter" Default="true" type="data.Boolean" />
+      <Param name="XCharacter" Default="&#215;" />
+      <Param name="Css" css="true">
+        <Default><![CDATA[
+#this {top:7px;right:8px; position: absolute; cursor:pointer; }
+#this.xchar { font:17px arial; color: #555; width:14px; height: 14px; line-height: 15px; text-align: center;}
+#this.xchar:hover { color: #eee; background: rgba(193,53,53,0.8); border-radius: 7px; }
+ ]]></Default>
+      </Param>
+    </Component>
+
+    <Component id="CloseIcon" type="dlg.DialogFeature" execution="native">
+      <Param name="Style" type="dlg.CloseIconStyle">
+        <Default1 t="dlg.DefaultCloseIconStyle" />
+        <Default t="dlg.CloseIconByCharacter" />
+      </Param>
+    </Component>
+
+    <Type id="CloseIconStyle" customPT="dlg.CustomCloseIconStyle" />
+
+    <Component id="DefaultCloseIconStyle" type="dlg.CloseIconStyle">
+      <xtml t="dlg.CustomCloseIconStyle">
+        <Html><![CDATA[<div/>]]></Html>
+        <Css><![CDATA[
+#this { 
+  top:4px;right:5px; position: absolute; cursor:pointer;
+  width:16px; height:16px; background-image: url('%$_Images%/close-dialog.png') 
+}
+#this:hover { background-position: 0 -16px; }]]></Css>
+        <Javascript><![CDATA[function(closeIcon) {
+   var title = jQuery(closeIcon.dialog).find('.aa_dialog_title')[0];
+   if (title) { 
+     title.insertBefore(closeIcon.control,title.firstChild);
+   }
+   closeIcon.onclick = function() { closeIcon.CloseDialog(); }
+}]]></Javascript>
+      </xtml>
+    </Component>
+    
+    <Component id="CloseIconByCharacter" type="dlg.CloseIconStyle">
+      <xtml t="dlg.CustomCloseIconStyle">
+        <Html><![CDATA[<div>&#215;</div>]]></Html>
+        <Css><![CDATA[
+#this {top:7px;right:8px; position: absolute; cursor:pointer; }
+#this { font:17px arial; color: #555; width:14px; height: 14px; line-height: 15px; text-align: center;}
+#this:hover { color: black; }
+.chrome #this:hover { color: #eee; background: rgba(193,53,53,0.8); border-radius: 7px; }
+]]></Css>
+        <Javascript><![CDATA[function(closeIcon) {
+   var title = jQuery(closeIcon.dialog).find('.aa_dialog_title')[0];
+   if (title) { 
+     title.insertBefore(closeIcon.control,title.firstChild);
+   }
+   closeIcon.onclick = function() { closeIcon.CloseDialog(); }
+}]]></Javascript>
+      </xtml>
+    </Component>
+    
+    <Component id="CustomCloseIconStyle" type="dlg.CloseIconStyle" customPT="true">
+      <Param name="Html" codemirror="true" light="false"/>
+      <Param name="Css" codemirror="true" light="false"/>
+      <Param name="Javascript" codemirror="true" light="false"/>
+      <ParamGenerator t="bart_dt.StyleGenerator" />
+      <xtml t="ui.CustomStyle" Html="%$Html%" Css="%$Css%" Javascript="%$Javascript%" />
+    </Component>
+    
+    <Component id="Size" type="dlg.DialogFeature" execution="native">
+      <Param name="Size" description="width,height" />
+      <Param name="MaxSize" description="width,height" />
+    </Component>
+
+    <Component id="Resizer" type="dlg.DialogFeature" execution="native">
+    </Component>
+
+    <Component id="UniquePopup" type="dlg.DialogFeature" execution="native" description="Auto close other popups with the same id">
+      <Param name="Identifier" />
+      <Param name="AutoClose" type="data.Boolean" description="Auto close other popups with the same id" Default="true" />
+      <Param name="KeepPopupLocation" type="data.Boolean" />
+    </Component>
+    
+    <Component id="AlwaysLTR" type="dlg.DialogFeature">
+      <xtml t="object.SetBooleanProperty" Object="%$_Dialog%" Property="AlwaysLTR" Value="true" />
+    </Component>
+
+    <Component id="Title" type="dlg.DialogFeature">
+      <Param name="Title" />
+      <xtml t="object.SetTextProperty" Object="%$_Dialog%" Property="Title">
+        <Value t="text.Translate" Text="%$Title%" />
+      </xtml>
+    </Component>
+
+    <Component id="TopDialog" type="data.Data" execution="native" >
+	  <Param name="ReturnContent" type="data.Boolean"><Default value="true" /></Param>
+    </Component>
+
+    <Component id="OKButton" type="dlg.DialogButton" light="false">
+      <Param name="Text">
+        <Default value="OK" />
+      </Param>
+      <xtml t="dlg.Button" Text="%$Text%" ID="OK">
+        <OnClick t="object.RunMethod" Object="%$_Dialog%" Method="OK" />
+        <Style t="button.JBartButton" />
+      </xtml>
+    </Component>
+
+    <Component id="CancelButton" type="dlg.DialogButton" light="false">
+      <Param name="Text">
+        <Default value="Cancel" />
+      </Param>
+      <xtml t="dlg.Button" Text="%$Text%" ID="Cancel">
+        <OnClick t="object.RunMethod" Object="%$_Dialog%" Method="Cancel" />
+        <Style t="button.JBartButton" />
+      </xtml>
+    </Component>
+
+    <Component id="ApplyButton" type="dlg.DialogButton" light="false">
+      <Param name="Text">
+        <Default value="Apply" />
+      </Param>
+      <xtml t="dlg.Button" Text="%$Text%" ID="Apply">
+        <OnClick t="object.RunMethod" Object="%$_Dialog%" Method="Apply" />
+      </xtml>
+    </Component>
+
+    <Component id="Button" type="dlg.DialogButton">
+      <Param name="Text"/>
+      <Param name="Image"/>
+      <Param name="OnClick" type="action.Action" script="true"/>
+      <Param name="ID"/>
+      <Param name="Style" type="button.Style"/>
+      <xtml t="object.Object" ID="%$ID%">
+        <Method name="Control" t="field.ShowFieldControl">
+          <Field t="field.Button" Title="%$Text%" Image="%$Image%" ID="dlg_button_%$ID%">
+            <Action t="xtml.UseParam" Param="OnClick"/>
+            <Style t="data.FirstSucceeding">
+              <Item value="%$Style%"/>
+              <Item value="%$_Dialog/ButtonStyle%"/>
+              <Item t="button.JBartButton"/>
+            </Style>
+          </Field>
+        </Method>
+      </xtml>
+    </Component>
+
+    <Component id="CloseContainingDialog" type="action.Action" execution="native" deprecated="true" light="false" />
+    
+    <Component id="CloseDialog" type="action.Action" execution="native" deprecated="true" light="false" >
+		  <Param name="CloseType" type="enum">
+		   <Default value="Cancel" />
+		   <value>OK</value>
+		   <value>Cancel</value>
+		  </Param>
+    </Component>
+    <Component id="CloseDialogFrame" type="action.Action" execution="native" hidden="true"/>
+    
+    <Component id="AutomaticFocus" type="dlg.DialogFeature" execution="native" gallery="AutomaticFocus">
+      <Param name="FocusOn" type="enum">
+        <Default value="first input" />
+        <value>no focus</value>
+        <value>first input</value>
+      </Param>
+    </Component>
+
+    <Component id="Location" type="dlg.DialogFeature" gallery="Location" >
+      <Param name="Location" script="true" type="dlg.DialogLocation" />
+      <xtml t="xtml.UseParam" Param="Location" />
+    </Component>
+    
+    <Component id="DragDialog" type="dlg.DialogFeature" execution="native" description="Drags a dialog by an element of class aa_dialog_title">
+    </Component>
+    
+    <Component id="InplaceDialog" type="field.Control" light="false" execution="native">
+      <Param name="Title" essential="true" Default="Dialog Title"/>
+      <Param name="Contents" type="ui.Control" script="true" essential="true" />
+      <Param name="Style" type="dialog_style.Style">
+        <Default t="dialog_style.DefaultDialog" />
+      </Param>
+      <Param name="Feature" type="dlg.DialogFeature[]" script="true" />
+      <NativeHelper name="OpenDialog" t="dlg.OpenDialog" Title="%$Title%" Style="%$Style%">
+        <Contents t="xtml.UseParam" Param="Contents" />
+        <Feature t="xtml.UseParamArray" Param="Feature" />
+      </NativeHelper>
+    </Component>
+    
+    <Component id="HandleEvents" type="dlg.DialogFeature" >
+      <Param name="OnOK" script="true" type="action.Action" />
+      <Param name="OnCancel" script="true" type="action.Action" />
+      <Param name="OnClose" script="true" type="action.Action" />
+      <Param name="OnBeforeClose" script="true" type="action.Action" />
+      <xtml t="action.RunActions">
+        <Action t="object.SetMethod" Object="%$_Dialog%" Method="RunOnCancel">
+          <Xtml t="xtml.UseParam" Param="OnCancel" />
+        </Action>
+        <Action t="object.SetMethod" Object="%$_Dialog%" Method="RunBeforeOK">
+          <Xtml t="xtml.UseParam" Param="OnOK" />
+        </Action>
+        <Action t="object.SetMethod" Object="%$_Dialog%" Method="RunOnClose">
+          <Xtml t="xtml.UseParam" Param="OnClose" />
+        </Action>
+        <Action t="object.SetMethod" Object="%$_Dialog%" Method="RunBeforeClose">
+          <Xtml t="xtml.UseParam" Param="OnBeforeClose" />
+        </Action>
+      </xtml>
+    </Component>
+    
+    <Component id="Buttons" type="dlg.DialogFeature" gallery="DialogButtons" >
+      <Param name="Buttons" type="dlg.DialogButtons" script="true" />
+      <Param name="Style" type="button.Style" />
+      <Param name="Layout" type="group.Style" script="true" >
+        <Default t="group.Horizontal" />
+      </Param>
+      <xtml t="action.RunActions">
+        <Action t="object.SetProperty" Object="%$_Dialog%" Property="ButtonStyle" Value="%$Style%" IsSingleProperty="true">
+          <Condition t="yesno.NotEmpty" Value="%$Style%" />
+        </Action>
+        <Action t="xtml.UseParam" Param="Buttons" />
+        <Action t="object.SetMethod" Object="%$_Dialog%" Method="ButtonsLayout">
+          <Xtml t="xtml.UseParam" Param="Layout" />
+        </Action>
+      </xtml>
+    </Component>
+    
+    <Component id="OkCancel" type="dlg.DialogButtons">
+      <Param name="OkLabel" ><Default value="OK" /></Param>
+      <Param name="CancelLabel" ><Default value="Cancel" /></Param>
+      <Param name="ExtraButton" type="dlg.DialogButton[]" advanced="true"/>
+      <xtml t="dlg.Features" >
+        <Feature t="dlg.ClearButtons" />
+        <Feature t="dlg.DialogButton">
+          <Button t="dlg.OKButton" Text="%$OkLabel%"/>
+          <Button t="dlg.CancelButton" Text="%$CancelLabel%" />
+        </Feature>
+        <Feature t="object.AddToProperty" Object="%$_Dialog%" Property="Buttons" Value="%$ExtraButton%" />
+      </xtml>
+    </Component>
+    
+    <Component id="Ok" type="dlg.DialogButtons">
+      <Param name="OkLabel" ><Default value="OK" /></Param>
+      <xtml t="dlg.Features" >
+        <Feature t="dlg.ClearButtons" />
+        <Feature t="dlg.DialogButton">
+          <Button t="dlg.OKButton" Text="%$OkLabel%"/>
+        </Feature>
+      </xtml>
+    </Component>
+    
+    <Component id="Close" type="dlg.DialogButtons">
+      <Param name="CloseLabel" ><Default value="Close" /></Param>
+      <Param name="ExtraButton" type="dlg.DialogButton[]" advanced="true"/>
+      <xtml t="dlg.Features">
+        <Feature t="dlg.ClearButtons" />
+        <Feature t="dlg.DialogButton">
+          <Button t="dlg.CancelButton" Text="%$CloseLabel%" />
+        </Feature>
+        <Feature t="object.AddToProperty" Object="%$_Dialog%" Property="Buttons" Value="%$ExtraButton%" />
+      </xtml>
+    </Component>
+    
+    <Component id="Custom" type="dlg.DialogButtons">
+      <Param name="Button" type="dlg.DialogButton[]" />
+      <Param name="KeepOriginalButtons" type="data.Boolean" />
+      <xtml t="dlg.Features">
+        <Feature t="dlg.ClearButtons" >
+          <Condition t="yesno.Not" Of="%$KeepOriginalButtons%" />
+        </Feature>
+        <Feature t="object.AddToProperty" Object="%$_Dialog%" Property="Buttons" Value="%$Button%" />
+      </xtml>
+    </Component>
+    
+    <Component id="ZIndex" type="dlg.DialogFeature" >
+      <Param name="ZIndex" Description="e.g. 100" />
+      <xtml t="object.SetTextProperty" Object="%$_Dialog%" Property="ZIndex" Value="%$ZIndex%" />
+    </Component>
+
+    <Component id="Features" type="dlg.DialogFeature" light="false">
+      <Param name="Feature" type="dlg.DialogFeature[]" />
+      <xtml t="xtml.UseParamArray" Param="Feature" />
+    </Component>
+
+  <Component id="Css" type="dlg.DialogFeature" execution="native">
+    <Param name="Css">
+      <Default value="#this {}" />
+      <FieldAspect t="field_dt.CodeMirrorFieldEditor" CompId="dlg.Css" ParamName="Css" />
+    </Param>
+  </Component>
+    
+  <Component id="DisableBodyScroll" type="dlg.DialogFeature" execution="native">
+    <Param name="Enabled" type="data.Boolean"><Default value="true"/></Param>
+  </Component>
+  
+  <Component id="TopZIndexWhenTouching" type="dlg.DialogFeature" execution="native" />
+
+  <Component id="StudioStyleDialogOf" type="dlg.DialogFeature" execution="native" hidden="true">
+    <Param name="Xtml" />
+  </Component>
+
+    <Component id="BlackShadow" type="dlg.PopupStyle" Image="%$_Images%/styles/BlackShadowPopup.png">
+      <Param name="Css">
+        <Default
+          value="font-size:12px; border-radius: 5px; &#xa; -moz-box-shadow: 5px 5px 5px black;&#xa; -webkit-box-shadow: 5px 5px 5px black;&#xa; box-shadow: 5px 5px 5px black;&#xa; background:#EEEEFC; border:none; &#xa; margin-right:20px;​ padding:10px;​" />
+        <FieldAspect t="field_dt.CodeMirrorFieldEditor" CompId="dlg.BlackShadow" ParamName="Css" />
+      </Param>
+      <xtml value="%$Css%" />
+    </Component>
+
+    <Component id="FullBlackShadow" type="dlg.PopupStyle" Image="%$_Images%/styles/FullBlackShadowPopup.png">
+      <Param name="Css">
+        <Default
+          value="font-size:12px; padding:15px; border-radius: 3px; &#xa; -moz-box-shadow: 0 0 5px 5px #888;-webkit-box-shadow: 0 0 5px 5px#888;&#xa;box-shadow: 0 0 5px 5px #888;&#xa; background:#EEEEFC; border:none; &#xa; margin-right:20px;​" />
+        <FieldAspect t="field_dt.CodeMirrorFieldEditor" CompId="dlg.FullBlackShadow" ParamName="Css" />
+      </Param>
+      <xtml value="%$Css%" />
+    </Component>
+
+    <Component id="LightPopup" type="dlg.PopupStyle">
+      <Param name="Css">
+        <Default
+          value="font-size:12px; border: 1px groove lightgrey; background:#F8F9FF; padding: 0;" />
+        <FieldAspect t="field_dt.CodeMirrorFieldEditor" CompId="dlg.LightPopup" ParamName="Css" />
+      </Param>
+      <xtml value="%$Css%" />
+    </Component>
+
+    <Component id="CustomStyle" type="dlg.PopupStyle" light="false">
+      <Param name="Css">
+        <FieldAspect t="field_dt.CodeMirrorFieldEditor" CompId="dlg.CustomStyle" ParamName="Css" />
+      </Param>
+      <xtml value="%$Css%" />
+    </Component>
+  
+    <Component id="ShowFocusUnderline" type="dlg.DialogFeature">
+      <xtml t="object.SetBooleanProperty" Object="%$_Dialog%" Property="ShowFocusUnderline" Value="true" />
+    </Component>
+    
+    <Component id="DontCloseOtherPopupsOnOpen" type="dlg.DialogFeature" light="false">
+      <xtml t="object.SetBooleanProperty" Object="%$_Dialog%" Property="DontCloseOtherPopupsOnOpen" Value="true" />
+    </Component>
+    
+    <Component id="CloseAllDialogs" type="Action.Action" execution="native" />
+    
+    <Component id="CloseDialogByID" type="action.Action" execution="native" description="Closes a dialog or popup with unique identifier" >
+      <Param name="Identifier" />
+    </Component>
+    
+  </xtml>
+
+  <xtml ns="dialog" light="false">
+    <Component id="ClosePopup" type="action.Action" execution="native">
+      <Param name="AllPopups" type="data.Boolean" />
+    </Component>
+    <Component id="TogglePopup" type="action.Action" execution="native">
+      <Param name="Contents" type="ui.Control" />
+      <Param name="OnElement" type="ui.Control">
+        <Default t="ui.ControlToRunOn" />
+      </Param>
+      <Param name="WidthOption" type="enum">
+        <Default value="launcher width" />
+        <value>launcher width</value>
+        <value>by css class</value>
+      </Param>
+      <Param name="Width" />
+      <Param name="Height" />
+      <Param name="PopupData">
+        <Default value="%%" />
+      </Param>
+      <Param name="OnSuccess" type="action.Action" script="true" />
+      <Param name="OnCancel" type="action.Action" script="true" />
+      <Param name="CloseOnEnter" type="data.Boolean">
+        <Default value="true" />
+      </Param>
+      <Param name="CloseOnDoubleClick" type="data.Boolean">
+        <Default value="true" />
+      </Param>
+      <Param name="AutoFocusOn" script="true" />
+      <Param name="PopupCssClass" />
+      <Param name="Picklist" type="data.Boolean" Description="Ugly. To be removed. Picklist behaves differently" />
+      <Param name="XYCorrections" type="data.Data">
+        <Default value="0,7" />
+      </Param>
+      <Param name="AutoCloseOnMouseOut" type="data.Boolean" />
+      <Param name="ReturnFocusTo" />
+      <Param name="OnPopupOpen" type="action.Action" script="true" />
+      <Param name="Style" type="dlg.PopupStyle" />
+      <Param name="ShowCloseButton" type="data.Boolean" />
+      <Param name="CloseImage">
+        <Default value="%$_Images%/close2.png" />
+      </Param>
+    </Component>
+  </xtml>
+
+  <xtml ns="dialog_style" jbart="true">
+   
+  <Type id="Style" customPT="dialog_style.CustomStyle"/>
+
+  <Component id="DefaultDialog" type="dialog_style.Style">
+    <Param name="CssOnTop" advanced="true"/>
+    <xtml t="dialog_style.CustomStyle"
+        Html="&lt;div&gt; &lt;table cellpadding='0' cellspacing='0' &gt;&lt;tbody class='aa_dlg_tbody'&gt;&lt;tr&gt;&lt;td class='aa_dialog_title'/&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style='vertical-align:top'&gt;&lt;div class='aa_dialogcontents'/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td class='aa_dialogbuttons'/&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/div&gt;"      
+        Javascript="" Mode="dialog">
+      <Css><![CDATA[
+#this { position:fixed; left:10px;  top:10px;
+box-shadow:  2px 2px 3px 1px grey;
+min-width:200px;
+%$CssOnTop% 
+}
+#this >table {  background:rgb(166,198,255);  width: 100\%; }
+#this .aa_dlg_tbody { background: white }
+#this .aa_dialog_title {  color:rgb(33,43,56);  background: url(%$_Images%/css/dialog_caption.png);  font-weight:bold;  height:42px;  cursor: move;  text-align: center;  vertical-align:top;  font-family: Arial;  margin-top: 8px; }
+#this .aa_dialog_title_text { padding:8px 30px; }
+#this .aa_dialogcontents { overflow: auto; padding:5px 20px; } 
+#this.aa_inplace_dialog { position: static !important; } 
+.dialog_bottom_outer {  display:none; width:100%; height:6px; float:left; background:url(%$_Images%/css/shadow_bottom.png) no-repeat ; padding:0 0 0 6px; }
+.dialog_bottom_inner { display:none; float:left; height:6px; width:100%; background:url(%$_Images%/css/shadow_bottom.png) no-repeat right;  } 
+.dialog_right_shadow_tr { display:none; background:rgb(166,198,255);  } 
+.dialog_right_shadow_th { display:none; height:100\%; width:6px; background:url(%$_Images%/css/shadow_right.png); } 
+.right2left .dialog_shadow_extra_th { display:none;background:rgb(166,198,255); }      
+]]></Css>
+      <Feature t="dlg.DragDialog" />
+      <Feature t="dlg.InScreenCenter" />
+      <Feature1 t="dlg.DialogClass" CssClass="std" />
+      <Feature t="dlg.CloseIcon" />
+      <Feature t="dlg.ScreenCover" />
+      <Feature t="dlg.ButtonsHorizontal" />
+      <Feature t="dlg.OKOnEnter" />
+      <Feature t="dlg.CloseOnEsc"/>
+      <Feature t="dlg.DialogButton">
+        <Button t="dlg.OKButton" />
+        <Button t="dlg.CancelButton" />
+      </Feature>
+      <Feature t="dlg.AutomaticFocus" FocusOn="first input" />
+      <Feature1 t="dlg.DisableBodyScroll" />
+    </xtml>
+  </Component>
+
+  <Component id="DefaultPopup" type="dialog_style.Style">
+    <xtml t="dialog_style.CustomStyle" Html="&lt;div class='aa_popup aa_dialogcontents' /&gt;" 
+    Javascript="" Mode="popup">
+      <Css><![CDATA[#this { padding:15px;
+-moz-border-radius: 3px; border-radius: 3px; -webkit-border-radius: 3px; 
+-webkit-box-shadow: 0 0 3px 5px rgba(50,50,50,0.5);
+background:#EEEEFC; border:none; 
+margin-right:20px;​ 
+overflow-y: auto; overflow-x: hidden; 
+font-size: 12px;
+}
+.ie #this { border: 1px solid black; }
+]]></Css>
+      <Feature t="dlg.NearLauncher" />
+      <Feature t="dlg.CloseWhenClickingOutside" />
+      <Feature t="dlg.OKOnEnter" />
+      <Feature t="dlg.CloseOnEsc"/>
+    </xtml>
+  </Component>
+
+  <Component id="DefaultPicklist" type="dialog_style.Style">
+    <Param name="Shadow" />
+    <xtml t="dialog_style.CustomStyle" Html="&lt;div class='aa_popup aa_dialogcontents' /&gt;" 
+    Javascript="" Mode="popup">
+      <Css><![CDATA[#this { 
+padding: 0 10px;
+border-radius: 3px;
+box-shadow: 2px 2px 7px 1px rgba(50,50,50,0.5);
+background: whiteSmoke; 
+overflow-y: auto; overflow-x: hidden; 
+font:12px times;
+}
+.ie #this { border: 1px solid black; }
+]]></Css>
+      <Feature t="dlg.NearLauncher" />
+      <Feature t="dlg.CloseWhenClickingOutside" />
+      <Feature t="dlg.OKOnEnter" />
+      <Feature t="dlg.CloseOnEsc"/>
+    </xtml>
+  </Component>
+  
+  <Component id="WhitePopup" type="dialog_style.Style">
+    <xtml t="dialog_style.CustomStyle" Html="&lt;div class='aa_popup aa_dialogcontents' /&gt;" 
+    Css="#this { padding:15px; ​-moz-border-radius: 3px;&#xa; border-radius: 3px; &#xa; -moz-box-shadow: 0 0 5px 5px #888;-webkit-box-shadow: 0 0 5px 5px#888;&#xa;box-shadow: 0 0 5px 5px #888;&#xa; background:white; border:none; &#xa; margin-right:20px;​ overflow-y: auto; overflow-x: hidden; }" 
+    Javascript="" Mode="popup">
+      <Feature t="dlg.NearLauncher" />
+      <Feature t="dlg.CloseWhenClickingOutside" />
+      <Feature t="dlg.OKOnEnter" />
+      <Feature t="dlg.CloseOnEsc"/>
+    </xtml>
+  </Component>
+  
+  <Component id="PicklistPopup" type="dialog_style.Style">
+    <xtml t="dialog_style.CustomStyle" Html="&lt;div class='aa_popup aa_dialogcontents' /&gt;" 
+    Css="#this { font-size: 12px; padding1:15px; background:white; border:1px solid gray; overflow-y: auto; overflow-x: hidden; }" 
+    Javascript="" Mode="popup">
+      <Feature t="dlg.NearLauncher" />
+      <Feature t="dlg.CloseWhenClickingOutside" />
+      <Feature t="dlg.CloseOnEsc"/>
+      <Feature t="dlg.AutomaticFocus" FocusOn="first input"/>
+    </xtml>
+  </Component>
+    
+  <Component id="Picklist" type="dialog_style.Style">
+    <xtml t="dialog_style.CustomStyle" Html="&lt;div class='aa_popup aa_dialogcontents' /&gt;" 
+    Css="#this { font-size: 12px; padding1:15px; background:white; border:1px solid gray; overflow-y: auto; overflow-x: hidden; }" 
+    Javascript="" Mode="popup">
+      <Feature t="dlg.NearLauncher" />
+      <Feature t="dlg.CloseWhenClickingOutside" IgnoreLaunchingElement="true" />
+      <Feature t="dlg.CloseOnEsc"/>
+      <Feature t="dlg.AutomaticFocus" FocusOn="first input"/>
+      <Feature t="dlg.ToggleDialog" />
+    </xtml>
+  </Component>
+    
+  <Component id="Picklist2" type="dialog_style.Style">
+    <xtml t="dialog_style.CustomStyle" Mode="popup" Javascript="">
+    <Html><![CDATA[<div class='aa_popup aa_dialogcontents' />]]></Html>
+    <Css><![CDATA[#this { font-family:Arial, Helvetica; color:#666; background:white; font-size: 11px; 
+padding-top: 2px; padding-right: 2px; padding-bottom: 2px; padding-left: 2px; 
+border: 1px solid gray; 
+box-shadow:  0 40px 60px -30px rgba(120, 135, 145, 0.5); padding1:15px; 
+overflow-y: auto; overflow-x: hidden; }
+]]></Css>
+      <Feature t="dlg.NearLauncher" />
+      <Feature t="dlg.CloseWhenClickingOutside" IgnoreLaunchingElement="true" />
+      <Feature t="dlg.CloseOnEsc"/>
+      <Feature t="dlg.AutomaticFocus" FocusOn="first input"/>
+      <Feature t="dlg.ToggleDialog" />
+    </xtml>
+  </Component>
+    
+  <Component id="ClickableTextPopup" type="dialog_style.Style">
+    <xtml t="dialog_style.CustomStyle" Html="&lt;div class='aa_popup aa_dialogcontents' /&gt;" 
+    Javascript="" Mode="popup">
+      <Css><![CDATA[#this { padding:15px;
+-moz-border-radius: 3px; border-radius: 3px; -webkit-border-radius: 3px; 
+-webkit-box-shadow: 0 0 3px 5px rgba(50,50,50,0.5);
+background:#EEEEFC; border:none; 
+margin-right:20px;​ 
+overflow-y: auto; overflow-x: hidden; 
+font-size: 12px;
+}
+.ie #this { border: 1px solid black; }
+]]></Css>
+      <Feature t="dlg.AboveLauncher" />
+      <Feature t="dlg.CloseWhenClickingOutside" />
+      <Feature t="dlg.OKOnEnter" />
+      <Feature t="dlg.CloseOnEsc"/>
+      <Feature t="dlg.AutomaticFocus" FocusOn="first input"/>
+    </xtml>
+  </Component>
+    
+  <Component id="HoverPopup" type="dialog_style.Style">
+    <xtml t="dialog_style.CustomStyle" Html="&lt;div class='aa_popup aa_dialogcontents' /&gt;" 
+    Css="#this { padding:15px; ​-moz-border-radius: 3px;&#xa; border-radius: 3px; &#xa; -moz-box-shadow: 0 0 2px 2px #888;-webkit-box-shadow: 0 0 2px 2px#888;&#xa;box-shadow: 0 0 2px 2px #888;&#xa; background:#EEEEFC; border:none; &#xa; margin-right:20px;​ overflow-y: auto; overflow-x: hidden; }" 
+    Javascript="" Mode="popup">
+      <Feature t="dlg.NearLauncher" />
+      <Feature t="dlg.HoverPopup" />
+      <Feature t="dlg.DontCloseOtherPopupsOnOpen"/>
+    </xtml>
+  </Component>
+    
+  <Component id="PopupWithBigCloseButton" type="dialog_style.Style">
+    <xtml t="dialog_style.CustomStyle" Html="&lt;div class=&quot;aa_popup aa_dialogcontents&quot;/&gt;" Css="#this { padding:15px; -moz-border-radius: 3px;&#xa; border-radius: 3px; &#xa; -moz-box-shadow: 0 0 5px 5px #888;-webkit-box-shadow: 0 0 5px 5px#888;&#xa;box-shadow: 0 0 5px 5px #888;&#xa; background:#EEEEFC; border:none; &#xa; margin-right:20px; }" Javascript="" Mode="popup">
+      <Feature t="dlg.Location">
+        <Location t="dlg.InScreenCenter" AlwaysInScreenCenter=""/>
+      </Feature>
+      <Feature t="dlg.CloseWhenClickingOutside"/>
+      <Feature t="dlg.OKOnEnter"/>
+      <Feature t="dlg.CloseOnEsc"/>
+      <Feature t="dlg.CloseIconOld" Image="%$_Images%/css/close_big.png" CssStyle="top:-26px;right:-26px"/>
+    </xtml>
+  </Component>​
+    
+  <Component id="DraggablePopup" type="dialog_style.Style">
+    <xtml t="dialog_style.CustomStyle" Mode="popup">
+      <Feature t="dlg.DragDialog"/>
+      <Feature t="dlg.CloseOnEsc"/>
+      <Html>
+<![CDATA[<div class="aa_popup inspect_popup">
+  <div class="aa_dialog_title"/>
+  <div class="aa_dialogcontents"/>
+  <div class="aa_dialogbuttons"/>
+</div>]]>
+      </Html>
+      <Css>
+<![CDATA[#this { padding:15px 15px 5px 15px; -moz-border-radius: 3px;
+ border-radius: 3px; 
+ -moz-box-shadow: 0 0 5px 5px #888;-webkit-box-shadow: 0 0 5px 5px#888;
+box-shadow: 0 0 5px 5px #888;
+ border:none; 
+ margin-right:20px; overflow-y: auto; overflow-x: hidden;
+background:#EEEEFC;
+}
+#this .aa_dialog_title { z-index:0; position:absolute; height:25px; width:100\%; cursor:move; margin-left:-15px; margin-top:-15px; }
+#this .aa_dialogcontents { overflow:auto; }
+
+]]>
+      </Css>
+      <Javascript>
+<![CDATA[]]>
+      </Javascript>
+<![CDATA[]]>
+      <Feature t="dlg.Location">
+        <Location t="dlg.NearLauncher" PopupAtLeastWideAsLauncher="true" Location="below or above launcher"/>
+      </Feature>
+    </xtml>
+    </Component>
+  
+    <Component id="CustomStyle" type="dialog_style.Style" customPT="true">
+      <Param name="Html" codemirror="true" />
+      <Param name="Css" codemirror="true" />
+      <Param name="Javascript" codemirror="true" />
+      <Param name="Feature" type="dlg.DialogFeature[]" script="true" />
+      <Param name="Mode" type="enum" Options="dialog,popup">
+        <Default value="dialog" />
+      </Param>
+      <Param name="DesignTime_Save">
+        <Field t="bart_dt.DialogStyleSave" Type="dialog_style.Style" StylePT="dialog_style.CustomStyle" />
+      </Param>
+      <ParamGenerator t="bart_dt.DialogStyleGenerator" />
+      <xtml t="object.Object">
+        <TextProperty name="Html" value="%$Html%" />
+        <TextProperty name="Css" value="%$Css%" />
+        <TextProperty name="Javascript" value="%$Javascript%" />
+        <TextProperty name="Mode" value="%$Mode%" />
+        <Method name="Features" t="xtml.UseParamArray" Param="Feature" />
+        <Property name="FeatureXtml" t="xtml.XtmlOfParamArray" Param="Feature" />
+      </xtml> 
+    </Component>
+    
+  </xtml>
+</xtml>

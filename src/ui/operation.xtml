@@ -1,0 +1,437 @@
+<xtml ns="operation">
+
+  <Type id="Operations">
+    <ComponentAspect t="component_aspect.Image" Image="%$_Images%/studio/run.gif" />
+    <MoreComponents>
+      <component id="operation.Operations" itemsParam="Operation" />
+    </MoreComponents>
+  </Type>
+  <Type id="Menu"/>
+  <Type id="MenuAspect"/>
+  <Type id="OperationAction" />  
+  <Type id="FieldOperationAction" />
+
+    <Component id="RunJavascript" type="action.Action" execution="native" autoexpand="true" deprecated="true">
+      <Param name="Code" js="true">
+        <Default value="function(data,html_elem,context) {&#xa; &#xa;}"/>
+      </Param>
+    </Component>
+
+    <Component id="RunActionInJavascript" type="action.Action" execution="native" autoexpand="true">
+      <Param name="Code" js="true">
+        <Default value="function run(data,context) {&#xa; &#xa;}"/>
+      </Param>
+    </Component>
+
+    <Component id="ClickOnButton" type="action.Action,uiaction.UsageAction" execution="native">
+      <Param name="Button" essential="true" type="dynamic_enum_multi">
+       <Options t="data.Pipeline">
+         <Item t="bart_dt.AllFieldIDs" FieldPT="control.Button" />
+         <Item value="%Options%" />
+         <Item value="%code%" />
+       </Options>
+     </Param>
+  </Component>
+
+   <Component id="SelectTextInTextBox" type="action.Action,uiaction.UsageAction" execution="native">
+      <Param name="Textbox" essential="true" type="dynamic_enum">
+       <Options t="data.Pipeline">
+         <Item t="bart_dt.AllFieldIDs" FieldPT="fld.Field" />
+         <Item value="%Options%" />
+         <Item value="%code%" />
+       </Options>
+     </Param>
+   </Component> 
+
+  <Component id="SelectFromPicklist" type="action.Action,uiaction.UsageAction" execution="native">
+      <Param name="FieldID" essential="true" type="dynamic_enum_multi">
+       <Options t="data.Pipeline">
+         <Item t="bart_dt.AllFieldIDs" FieldPT="fld.Field" />
+         <Item value="%Options%" />
+         <Item value="%code%" />
+       </Options>
+     </Param>
+     <Param name="OptionCode" essential="true" />
+  </Component>
+
+  <Component id="Link" type="action.Action">
+    <Param name="Link" />
+    <Param name="OpenInANewTab" type="data.Boolean" Default="true">
+      <FieldAspect t="field_aspect.Title" Title="Open in a new tab" />
+    </Param>
+    <xtml t="uiaction.GoToPage" Url="%$Link%">
+      <Type t="data.IfThenElse" If="%$OpenInANewTab%" Then="open in a new tab" Else="navigate current page" />
+    </xtml>    
+  </Component>    
+  
+
+  <Component id="StdOperations" type="operation.Operations"  light="false">
+    <Param name="OpenItemDetails" type="data.Boolean" />
+    <Param name="DoAfterNew" type="action.Action" script="true" />
+    <xtml t="operation.Operations" >
+      <Operation t="operation.NewItem">
+        <Condition t="yesno.Not" Of="%$_Items/ReadOnly%" />
+        <DoAfter t="xtml.UseParam" Param="DoAfterNew" />
+      </Operation>
+      <Operation t="operation.DeleteItem">
+        <Condition t="yesno.Not" Of="%$_Items/ReadOnly%"/>
+      </Operation>      
+      <Operation t="operation.OpenItemDetails" Condition="%$OpenItemDetails%"/>
+    </xtml>
+  </Component>
+
+  <Type id="ChangeValue" />
+  <Component id="ChangeValue" type="operation.ChangeValue">
+    <Param name="Entry">
+      <PreviewContext t="xtml_dt.PreviewContext" >
+        <Input t="field_dt.PreviewFieldData" />
+      </PreviewContext>
+    </Param>
+    <Param name="Value">
+      <PreviewContext t="xtml_dt.PreviewContext" >
+        <Input t="field_dt.PreviewFieldData" />
+      </PreviewContext>
+    </Param>
+    <xtml t="action.WriteValue" To="%$Entry%" Value="%$Value%" />
+  </Component>
+
+  <Component id="WriteValue" type="action.Action" light="false">
+    <Param name="Value" />
+    <Param name="To" />
+    <xtml t="action.WriteValue" To="%$To%" Value="%$Value%" />
+  </Component>
+  
+  <Component id="ChangeItem" type="action.Action" light="false">
+    <Param name="Change" type="operation.ChangeValue[]" script="true" />
+    <Param name="RefreshItem" type="data.Boolean"><Default value="true"/></Param>
+    <xtml t="action.RunActions">
+      <Action t="xtml.UseParamArray" Param="Change" /> 
+      <Action t="uiaction.RefreshItemElements" ItemElements="%$_ElemsOfOperation%" Condition="%$RefreshItem%" />
+    </xtml>
+  </Component>
+
+  <Component id="New" type="action.Action" light="false">
+    <Aspect t="operation.GenerateOperation" ID="new" Target="new" Title="new %$ItemTypeName%" Image="%$_Images%/add1616.png" WritableOnly="true"/>
+    <Param name="ChangeBeforeEdit" type="action.Action" advanced="true" script="true"/>
+    <Param name="ChangeBeforeSave" type="xml.Change" advanced="true" script="true"/>
+    <Param name="DoAfter" type="action.Action" advanced="true" script="true"/>
+    <Param name="ImmediateAdd" type="data.Boolean" advanced="true" description="If checked it first creates the item and then edits it. The Cancel button will delete it"/>
+    <xtml t="object.RunMethod" Object="%$_Cntr%" Method="OpenItemDetails" >
+      <Var name="IsNewItem" value="true" />
+      <Var name="_Items" value="%$_Cntr/Items%" />
+      <Var name="_DataItemsImmediateAdd" value="%$ImmediateAdd%" />
+      <Var name="_SaveActions" t="object.Object">
+        <Method name="BeforeEdit" t="xtml.UseParam" Param="ChangeBeforeEdit" />
+        <Method name="BeforeSave" t="xml.ChangeXml" Xml="%%">
+          <Change t="xtml.UseParam" Param="ChangeBeforeSave" />
+        </Method>
+        <Method name="AfterSave" t="xtml.UseParam" Param="DoAfter" />
+      </Var>
+    </xtml>
+  </Component>
+  
+  <Component id="NewItem" type="operation.Operations" visible="true">
+    <Param1 name="Cntr"><Default value="%$_Cntr%"/></Param1>
+    <Param name="Title"/>
+    <Param name="DoAfter" type="action.Action" script="true"/>
+    <xtml t="operation.Operation" ID="NewItem" Target="new" Icon="%$_Images%/add1616.png" Shortcut="Alt+N" WritableOnly="true">
+      <Title t="text.FirstSucceeding" >
+        <Item value="%$Title%"/>
+        <Item t="text.TranslatePattern" Pattern="New %$_Cntr/Items/ItemTypeName%" />
+      </Title> 
+      <Action t="operation.New">
+        <Var1 name="_Cntr" value="%$Cntr%" />
+        <DoAfter t="xtml.UseParam" Param="DoAfter"/>
+      </Action>
+    </xtml>
+  </Component>
+
+  <Component id="Delete" type="action.Action" light="false">
+    <Aspect t="operation.GenerateOperation" ID="delete" Target="item" Title="delete %$ItemTypeName%" Image="%$_Images%/delete1616.gif" WritableOnly="true"/>
+    <Param name="AskForConfirmation" type="data.Boolean"><Default value="true"/></Param>
+    <Param name="DoAfter" type="action.Action" script="true"/>
+    <Param name="ConfirmationText" script="true"/>
+      <xtml t="dialog.AskForConfirmation" Title="Delete">
+        <Condition t="yesno.NotEmpty" />
+        <Var name="CountItems" value="%=Count($_ElemsOfOperation)%"/>
+        <Question t="text.FirstSucceeding">
+          <Item t="xtml.UseParam" Param="ConfirmationText"/>
+          <Item t="data.IfThenElse" If="%$CountItems% == 1" Then="Are you sure you want to delete?" Else="Are you sure you want to delete %$CountItems% Items?" />
+        </Question>
+        <SkipConfirmation t="yesno.Not" Of="%$AskForConfirmation%" />
+        <RunOnOK t="action.RunActions">
+          <Var name="_ElemParent" value="%$_ElemsOfOperation/..%" />
+          <Var name="Item" t="data.FirstSucceeding">
+            <Item value="%$_ItemsOfOperation%"/>
+            <Item1 value="%%"/>
+          </Var>
+          <Action t="object.RunMethod" Object="%$_Items%" Method="DeleteItem" Input="%$Item%" />  
+          <Action t="xml.Delete" Data="%$Item%" />  
+          <Action t="uiaction.DeleteItemElements" ItemElements="%$_ElemsOfOperation%" />
+          <Action t="xtml.UseParam" Param="DoAfter" />
+          <Action t="uiaction.RefreshAfterDataItemsChanged" RunOn="%$_ElemParent%" />          
+        </RunOnOK>
+      </xtml>
+  </Component>
+
+  <Component id="DeleteItem" type="operation.Operations" visible="false" light="false">
+    <Param name="Cntr"><Default value="%$_Cntr%"/></Param>
+    <Param name="DoAfter" type="action.Action" script="true"/>
+    <Param name="Title"/>
+    <xtml t="operation.Operation" ID="DeleteItem" Icon="%$_Images%/delete1616.gif" Shortcut="Delete" Target="item" WritableOnly="true">
+      <Title t="text.FirstSucceeding">
+        <Var name="Cntr_Items" value="%$Cntr/Items%" />
+        <Item value="%$Title%"/>
+        <Item t="text.TranslatePattern" Pattern="Delete %$Cntr/Items/ItemTypeName%" />
+      </Title> 
+      <Action t="operation.Delete">
+        <Var name="_Cntr" value="%$Cntr%" />
+        <DoAfter t="xtml.UseParam" Param="DoAfter" />
+      </Action>
+    </xtml>
+  </Component>
+
+  <Component id="Save" type="action.Action" light="false">
+    <Aspect t="operation.GenerateOperation" ID="save" Target="items" Image="%$_Images%/studio/save1616.gif" WritableOnly="true"/>
+    <Param name="OnSuccess" type="action.Action" script="true" advanced="true"/>
+    <xtml t="action.IfThenElse">
+      <Condition t="validation.PassingValidations">
+        <TopControl t="uiaspect.ContainerControl" />
+      </Condition>
+      <Var name="Info" t="xml.XmlInfo" Data="%%" />
+      <If t="object.HasMethod" Object="%$Info%" Method="Save" />
+      <Then t="action_async.RunAsync">
+        <Action t="object.RunMethod" Object="%$Info%" Method="Save" />
+        <OnSuccess t="xtml.UseParam" Param="OnSuccess" />
+      </Then>
+      <Else  t="data_items.DoSave" DataItems="%$_Cntr/Items%" Fields="%$_Cntr/Fields%">
+        <OnSuccess t="xtml.UseParam" Param="OnSuccess" />
+      </Else> 
+    </xtml>
+  </Component>
+
+  <Component id="OpenItemDetails" type="operation.Operations">
+    <Param name="Cntr"><Default value="%$_Cntr%"/></Param>
+    <Param name="Title"/>
+    <Param name="TitleForClose"/>
+    <xtml t="operation.Operation" ID="OpenItemDetails" Icon="%$_Images%/edit1616.gif" Target="item">
+      <Title t="operation.TextOfOpen" />
+      <Action t="operation.Open">
+        <Var name="_Cntr" value="%$Cntr%" />
+      </Action>
+    </xtml>
+  </Component>
+
+  <Component id="OpenSecondaryItemDetails" type="action.Action" execution="native" light="false">
+    <Param name="ItemPage" type="ui.SinglePage" script="true" />
+    <Param name="OpenIn" type="uiaspect.OpenIn" script="true">
+      <Default t="uiaspect.DetailsInDialog" />
+    </Param>
+    <Param name="Transactional" type="data.Boolean" />
+    <Param name="ReadOnly" type="data.Boolean" />
+    <Param name="ChangeItemBeforeOpen" type="action.Action" script="true" advanced="true" />
+  </Component>
+
+  <Component id="Cut" type="operation.Operations" execution="native" light="false">
+    <Param name="Title" script="true"><Default value="Cut"/></Param>
+    <Param name="Icon" script="true"/>
+    <Param name="Disabled" type="data.Boolean" script="true"/>
+    <Param name="OperationAspect" type="operation_aspect.Aspect" script="true" />
+    <Param name="Shortcut"><Default value="Ctrl+X"/></Param>
+  </Component>
+  
+  <Component id="Copy" type="operation.Operations" execution="native" light="false">
+    <Param name="Title" script="true"><Default value="Copy"/></Param>
+    <Param name="Icon" script="true"/>
+    <Param name="Disabled" type="data.Boolean" script="true"/>
+    <Param name="OperationAspect" type="operation_aspect.Aspect" script="true" />
+    <Param name="Shortcut"><Default value="Ctrl+C"/></Param>
+  </Component>
+  
+  <Component id="Paste" type="operation.Operations" execution="native">
+    <Param name="CopyPasteAction" type="action.Action" Description="Using var 'Clipboard'"/>
+    <Param name="CutPasteAction" type="action.Action" Description="Using var 'Clipboard'"/>
+    <Param name="Title" script="true"><Default value="Paste"/></Param>
+    <Param name="Icon" script="true"/>
+    <Param name="Disabled" type="data.Boolean" script="true"/>
+    <Param name="Aspect" type="operation_aspect.Aspect" script="true" />
+    <Param name="Shortcut"><Default value="Ctrl+V"/></Param>
+  </Component>
+
+  <Component id="OperationCell" type="ui.Control">
+    <xtml t="ui.ButtonOld" Class="%Id%" Image="%$Img%">
+      <Var name="Img" t="object.RunMethod" Method="Icon" /> 
+      <Text t="object.RunMethod" Method="Title">
+        <Condition t="yesno.IsEmpty" Value="%$Img%"/>
+      </Text>
+      <OnClick t="xtml.RunXtml" Xtml="%Action%" Input="%$_ItemsOfOperation%" >
+        <Var name="_ElemsOfOperation" t="ui.DataFromJavaScript" Expression="jQuery(context.vars.ControlElement[0]).parents('.aa_item')[0]" /> 
+      </OnClick>
+      <Style t="ui.ButtonAsHyperlink"/>
+    </xtml>
+  </Component>
+
+  <Component id="RefreshCurrentItem" type="action.Action" light="false">
+    <xtml t="uiaction.RefreshItemElements" ItemElements="%$_ElemsOfOperation%" />
+  </Component>
+
+  <Component id="ContextMenu" type="Operation.Menu" execution="native">
+    <Param name="MenuAspect" type="operation.MenuAspect[]" script="true"/>
+  </Component>
+
+  <Component id="Presentation" type="operation.MenuAspect" execution="native">
+      <Param name="Style" type="ui.ButtonStyle"><Default t="ui.ButtonAsHyperlink"/></Param>
+  </Component>
+
+  <Component id="IncludeItemOperationsFromParent" type="operation.MenuAspect" execution="native">
+    <Param name="Include" type="data.Boolean"/>
+  </Component>
+
+  <Component id="OperationsByIDs" type="operation.MenuAspect" execution="native">
+      <Param name="OperationIDs" />
+  </Component>
+
+  <Component id="ChangeTab" type="action.Action,uiaction.UsageAction" execution="native">
+    <Param name="TabControl" type="dynamic_enum" description="Put tab control field id here">
+      <FieldAspect1 t="field_dt.FieldIdParam" PTForFields="field.TabControl"/>
+       <Options t="data.Pipeline">
+         <Item t="bart_dt.AllFieldIDs" FieldPT="field.TabControl,control.TabControl" />
+         <Item value="%Options%" />
+         <Item value="%code%" />
+       </Options>
+    </Param>
+    <Param name="MoveTo" type="enum" Options="next tab,previous tab,refresh current tab,first tab,specific tab" />
+    <Param name="TabToMoveTo" />
+    <Param name="Animation" type="animation.Animation" />
+  </Component>
+  
+  <Component id="SaveAndCloseInItemDetails" type="action.Action" light="false">
+    <xtml t="object.RunMethod" Object="%$_ItemDetailsObject%" Method="SaveAndClose" />
+  </Component>
+  
+  <Component id="CancelInItemDetails" type="action.Action" light="false">
+    <xtml t="object.RunMethod" Object="%$_ItemDetailsObject%" Method="Cancel" />
+  </Component>
+  
+  <Component id="RunOperationFromParent" type="action.Action" execution="native" light="false">
+    <Param name="Operation" description="operation id" />
+  </Component>
+  
+  <Component id="RunActions" type="action.Action" decorator="Action" light="false">
+    <Param name="Action" type="action.Action[]" script="true" />
+    <xtml t="xtml.UseParamArray" Param="Action" />
+  </Component>
+  
+  <Component id="ActionWithConfirmation" type="action.Action" decorator="Action" light="false">
+    <Param name="Title" essential="true" />
+    <Param name="Question" essential="true" />
+    <Param name="Action" essential="true" type="action.Action" script="true"/>
+    <xtml t="dialog.AskForConfirmation" Title="%$Title%" Question="%$Question%">
+      <RunOnOK t="xtml.UseParam" Param="Action" />
+    </xtml>
+  </Component>
+  
+  <Component id="RunInOperationContext" type="action.Action" execution="native" light="false">
+    <Param name="Action" type="action.Action" script="true" />
+  </Component>
+
+  <Component id="ExportItemlistTableToExcel" type="action.Action" execution="native" light="false">
+    <Param name="Itemlist" essential="true" type="dynamic_enum_multi">
+     <Options t="data.Pipeline">
+       <Item t="bart_dt.AllFieldIDs" FieldPT="field.ItemList" />
+       <Item value="%Options%" />
+       <Item value="%code%" />
+     </Options>
+   </Param>
+   <Param name="ServerBaseUrl" Default="?op=downloadCsvFile" />
+   <Param name="FileName" Default="content.csv" />
+  </Component>
+  
+  <Component id="GenerateOperation" type="component_aspect.Aspect">
+    <Param name="ID" />
+    <Param name="Title" script="true" paramVars="ItemName"/>
+    <Param name="Image" />
+    <Param name="Target"><Default value="items"/></Param>
+    <Param name="WritableOnly" type="data.Boolean" />
+    <xtml t="action.RunActions">
+      <Action t="object.SetProperty" Object="%$_Component%" Property="Image" Value="%$Image%" />
+      <Action t="object.SetMethod" Object="%$_Component%" Method="GenerateOperation">
+      <Xtml t="data.Pipeline" >
+        <Var name="_Component" value="%$_This%" />
+        <Var name="Title1" t="text.FirstSucceeding">
+          <Item t="xtml.UseParam" Param="Title" />
+          <Item t="xtml_dt.ComponentToLowerCase" Data="%$_Component/Component%" />
+        </Var>
+        <Var name="ID" t="text.FirstSucceeding">
+          <Item value="%$ID%" />
+          <Item t="text.ToIdText" Data="%$Title1%" />
+        </Var>
+        <Item t="xml.Xml" DynamicContent="true" >
+          <Operation t="operation.Operation" ID="%$ID%" Icon="%$_Component/Image%" Target="%$Target%" Title="%$Title1%" WritableOnly="%$WritableOnly%">
+            <Action t="%$_Component/Component%" />
+          </Operation>
+        </Item>
+      </Xtml>
+      </Action>
+    </xtml>
+  </Component>
+    
+  <Component id="GenerateOperationFullXtml" type="component_aspect.Aspect">
+    <Param name="OperationXtml" />
+    <xtml t="object.SetMethod" Object="%$_Component%" Method="GenerateOperation" Xtml="%$OperationXtml%" />
+  </Component>
+  
+  <Component id="ShowInXml" type="action.Action" light="false">
+    <Aspect t="operation.GenerateOperation" ID="xml" Target="item" Title="xml" Image="%$_Images%/studio/xml4.gif"/>
+    <xtml t="action_async.RunAsyncActions">
+      <Action t="data_items.LoadFullItem" Item="%%" />
+      <Action t="xmlui.ShowXmlDialog" Title="Edit as xml" AutoWrite="true"/>
+    </xtml>
+  </Component>
+    
+  <Component id="Search" type="action.Action" execution="native" gallery="FilterPage" light="false">
+    <Param name="MorePagesToRefresh" type="dynamic_enum_multi" advanced="true" Options="%$_AppContext/Pages[Type='multiple']/ID%" />
+  </Component>
+
+  <Component id="SelectAll" type="action.Action" gallery="MultiSelect" light="false">
+      <Aspect t="operation.GenerateOperationFullXtml">
+      <OperationXtml t="xml.Xml" >
+        <Operation t="operation.Operation" ID="SelectAll" Icon="" Target="items" Title="Select All">
+          <Action t="operation.SelectAll" />
+        </Operation>
+      </OperationXtml>
+    </Aspect>
+    <xtml t="object.RunMethod" Object="%$_Cntr%" Method="SelectAll"/>
+  </Component>
+  
+  <Component id="ClearAll" type="action.Action" gallery="MultiSelect" light="false">
+      <Aspect t="operation.GenerateOperationFullXtml">
+      <OperationXtml t="xml.Xml" >
+        <Operation t="operation.Operation" ID="ClearAll" Icon="" Target="items" Title="Clear All">
+          <Action t="operation.ClearAll" />
+        </Operation>
+      </OperationXtml>
+    </Aspect>
+    <xtml t="object.RunMethod" Object="%$_Cntr%" Method="ClearAll"/>
+  </Component>
+  
+    <Component id="ChangeUrl" type="action.Action" light="false">
+      <Param name="Url" />
+      <xtml t="bart_url.ChangeUrl" Url="%$Url%" />
+    </Component>
+
+    <Component id="CloseDialog" type="action.Action" light="false">
+      <xtml t="dlg.CloseDialog" CloseType="%$CloseType%"/>
+      <Param name="CloseType" type="enum">
+        <Default value="Cancel"/>
+        <value>OK</value>
+        <value>Cancel</value>
+      </Param>
+    </Component>
+
+  <Component id="Validate" type="action.Action" description="Validates before execution" execution="native" decorator="WhenValid" deprecated="true">
+    <Param name="Group" description="Put group id here" />
+    <Param name="WhenValid" type="action.Action" script="true" />
+  </Component>
+  
+</xtml>

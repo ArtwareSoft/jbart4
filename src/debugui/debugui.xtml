@@ -1,0 +1,486 @@
+<xtml ns="debugui">
+
+<Component id="ShowDebugUi" type="action.Action">
+  <xtml t="popup.OpenPopup" PopupTitle="jBart logs and traces">
+    <Style t="gstudio.GoogleDrivePopup"/>
+    <Feature t="popup.StudioPopupFeature"/>
+    <Contents t="field.InnerPage" Title="Debug UI">
+      <Field t="control.Layout" Title="">
+        <Field t="control.TabControl" ID="_Accordion" Title="Accordion">
+          <Field t="control.Layout" ID="Logs" Title="Logs">
+            <Layout t="layout.Vertical" Spacing="0"/>
+            <Field t="fld.Field" ID="logs" Title="Logs">
+              <FieldData t="debugui.LogsAsHtml"/>
+              <FieldType t="fld_type.EditableText">
+                <Style t="ui.CustomStyle" base="editable_text.JBartMultiLine">
+                  <Html><![CDATA[<textarea/>]]></Html>
+                  <Css><![CDATA[#this {
+  border: 1px solid #BDC7D8;
+  font: 13px Arial;
+  color: #333;
+  padding: 3px;
+  box-sizing:border-box;
+}
+#this:focus {
+  outline: none;
+}
+]]></Css>
+                  <Javascript><![CDATA[function(textbox) {
+  aa_jbart_textbox(textbox);
+  var height = window.innerHeight || (document.documentElement.clientHeight || document.body.clientHeight);
+  var width = window.innerWidth || (document.documentElement.clientWidth || document.body.clientWidth);
+  
+  textbox.$el.height(height-200);
+  textbox.$el.width(width-280);
+
+}]]></Javascript>
+                </Style>
+              </FieldType>
+            </Field>
+          </Field>
+          <Field t="control.Layout" ID="Traces" Title="Traces">
+            <Layout t="layout.Vertical" Spacing="0"/>
+            <FieldAspect t="field_aspect.Title">
+              <Title t="data.Pipeline">
+                <Item t="data.Pipeline">
+                  <Item t="debugui.Traces"/>
+                  <Aggregator t="data.Count"/>
+                </Item>
+                <Item value="Traces (%%)"/>
+              </Title>
+            </FieldAspect>
+            <FieldAspect t="field_aspect.Hidden">
+              <OnCondition t="field_aspect.CheckConditionForEveryItem" DataForCondition="Item data" WhenHidden="Do not render">
+                <ShowCondition t="yesno.NotEmpty">
+                  <Value t="debugui.Traces"/>
+                </ShowCondition>
+              </OnCondition>
+            </FieldAspect>
+            <Field t="control.Layout" Title="">
+              <FieldAspect t="field_feature.Css">
+                <Css><![CDATA[#this { overflow: auto; } #wrapper { margin-bottom: 20px; }]]></Css>
+              </FieldAspect>
+              <FieldAspect t="field_aspect.DynamicSize">
+                <Height t="scroll_size.DeviceHeight" ReduceHeightOfOtherField="" StretchFromCurrentLocation="true" ReducePixels="100px" ApplyOn="height"/>
+                <Width t="scroll_size.DeviceWidth" ReduceWidthOfOtherField="" StretchFromCurrentLocation="true" ReducePixels="140px" ApplyOn="width"/>
+              </FieldAspect>
+              <Field t="fld.Field" FieldData="%$TraceIndex%" ID="select" Title="Select">
+                <FieldType t="fld_type.Picklist" AllowEmptyValue="" AllowValueNotInOptions="">
+                  <Options t="editable_picklist.DynamicOptions" OptionCode="%counter%" OptionDisplayName="%counter% %id%">
+                    <Options t="debugui.Traces"/>
+                  </Options>
+                  <Style t="editable_picklist.JBartPicklist" Width="537px"/>
+                </FieldType>
+                <FieldAspect t="field_feature.Layout">
+                  <Css><![CDATA[#this { margin-top: 8px; }]]></Css>
+                </FieldAspect>
+                <FieldAspect t="field_aspect.RefreshDependentFields" FieldsIds="debugui_trace_contents" RefreshOn="every click" RefreshScope="screen"/>
+              </Field>
+              <Field t="field.PropertySheet" ID="debugui_trace_contents" Title="Contents" ReadOnlyText="">
+                <Field t="control.Layout" ID="Group" Title="Input">
+                  <Layout t="layout.Vertical" Spacing="0"/>
+                  <FieldAspect t="field_aspect.Variable" VarName="Type">
+                    <Value t="data.RuntimeObjectType"/>
+                  </FieldAspect>
+                  <Field t="control.Label" ID="Label" Title="Label" Text="%$Type%">
+                    <Style t="uitext.PlainText"/>
+                  </Field>
+                  <Field t="fld.Field" ID="text" Title="Text" FieldData="%input%">
+                    <FieldType t="fld_type.EditableText">
+                      <Style t="editable_text.CodeMirror" Readonly="false" Autofocus="false" LineNumbers="false" LineWrapping="false" EnableFullScreen="true" Width="400px" Height="200px" Mode="javascript"/>
+                    </FieldType>
+                    <FieldAspect t="field_aspect.Hidden"/>
+                  </Field>
+                  <Field t="field.CustomControl" ShowTitle="true" Title="Input">
+                    <Control t="debugui.RuntimeObjectControl" Object="%%" Data="%input%"/>
+                  </Field>
+                </Field>
+                <Field t="field.CustomControl" ShowTitle="true" Title="output">
+                  <Control t="debugui.RuntimeObjectControl" Object="%%" Data="%output%"/>
+                </Field>
+                <Field t="field.Field" FieldData="%!stack%" Title="Stack">
+                  <Type t="field_aspect.Picklist">
+                    <Options t="picklist.DynamicOptions">
+                      <Options t="text.Split"/>
+                    </Options>
+                  </Type>
+                </Field>
+                <Field t="field.CustomControl" ShowTitle="true" Title="variables">
+                  <Control t="debugui.ComboMasterDetails" Items="%context%" ItemText="%name%">
+                    <DetailsControl t="debugui.RuntimeObjectControl" Data="%value%"/>
+                  </Control>
+                </Field>
+                <Field t="field.CustomControl" ShowTitle="true" Title="params">
+                  <Control t="debugui.ComboMasterDetails" Items="%params%" ItemText="%name%">
+                    <DetailsControl t="debugui.RuntimeObjectControl" Data="%value%"/>
+                  </Control>
+                </Field>
+                <Style t="group.PropertySheet" VerticalSpacing="8px"/>
+                <FieldAspect1 t="scroll.Scroll">
+                  <Scroll t="scroll.BrowserScrollbar"/>
+                  <Height t="scroll.FixedHeight" Height="400px"/>
+                  <Width t="scroll.FixedWidth" Width="100%"/>
+                </FieldAspect1>
+                <FieldAspect t="field_aspect.FieldData">
+                  <FieldData t="data.Pipeline">
+                    <Item t="debugui.Traces"/>
+                    <Aggregator t="data.Subset" From="%$TraceIndex%" Count="1"/>
+                  </FieldData>
+                </FieldAspect>
+              </Field>
+              <Layout t="layout.Default"/>
+            </Field>
+            <FieldAspect t="field_aspect.Variable" VarName="TraceIndex">
+              <Value t="data.WritableText" DefaultValue="1"/>
+            </FieldAspect>
+          </Field>
+          <Style t="gstudio.StudioStyleTabs"/>
+        </Field>
+        <Layout t="layout.Default"/>
+        <Field t="control.Layout" ID="_Horizontal_Layout" Title="Buttons">
+          <Layout t="layout.HorizontalCss3" Spacing="10px">&#xa;          </Layout>
+          <Field t="control.Button" ID="_Button6" Title="Clear logs and traces">
+            <Style t="btn.JBartGrey"/>
+            <Action t="popup.CloseContainingPopup" ExitMode="">
+              <DoOnExit t="action.RunActions">
+                <Action t="debugui.ClearLogs"/>
+                <Action t="debugui.ClearTraces"/>
+              </DoOnExit>
+            </Action>
+          </Field>
+          <Field t="control.Button" ID="_Button6" Title="Close">
+            <Style t="btn.JBart"/>
+            <Action t="popup.CloseContainingPopup" ExitMode=""/>
+          </Field>
+        </Field>
+      </Field>
+    </Contents>
+  </xtml>
+</Component>
+
+  <Component id="LogsAsHtml" type="data.Data" execution="native">
+    <Param name="StyleForError" Default="color: red;" />
+  </Component>
+
+  <Component id="RuntimeObjectControl" type="ui.Control" execution="native">
+    <Param name="Object" Default="%%" />
+    <NativeHelper name="Css" t="data.Same">
+      <Data><![CDATA[
+.aa_runtime_property { padding-bottom:5px; font-family: arial; }
+.aa_runtime_property_icon {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  background: url('_jbartImages_/studio/studio_icons.png?ver=28_09_14_2') -48px -32px no-repeat;
+  vertical-align: middle;
+}
+.aa_runtime_property_name { 
+  display: inline-block; 
+  line-height: 16px;
+  vertical-align: middle;  
+  padding-right:5px;
+  padding-left:2px;
+}
+.aa_text_object_more {
+  cursor: pointer;
+  line-height: 16px;	
+  padding-left:5px;
+}
+.aa_text_object:hover .aa_text_object_more {
+	font-weight: bold;
+	text-decoration: underline;
+}
+.aa_text_object {
+  display: inline-block; 
+  line-height: 16px;
+  vertical-align: middle;    
+}
+.aa_text_object.long {
+  display: inline-block;
+  vertical-align: middle;  
+  cursor: pointer;
+  line-height: 16px;  
+  font-size: 11px;
+}
+.aa_xml_object {
+  max-height: 150px;
+  overflow-y:auto;
+  padding-right:20px;
+}
+.aa_runtime_property_toggle { 
+  display: inline-block;
+  cursor: pointer;
+
+width: 0px;
+height: 0px;
+vertical-align: top;
+border: 5px solid;
+border-color: transparent transparent transparent #aaa;
+margin: 3px 2px 0 2px;
+
+}
+.aa_runtime_property_toggle.primitive {
+width:10px;
+  background:transparent;
+  border:none;
+  cursor: default;
+}
+.aa_runtime_property>.aa_runtime_property_complex_value { 
+  display:none;
+}
+.aa_runtime_property.expanded>.aa_runtime_property_complex_value { 
+  display: block;
+  margin:5px 0 0 10px;
+}
+.aa_runtime_property.expanded>.aa_runtime_property_toggle {
+  border-color: #aaa transparent transparent transparent;
+  margin: 6px 4px 0 0px;
+}
+        ]]></Data>
+    </NativeHelper>    
+    <NativeHelper name="Multiple" t="control.ShowFieldControl">
+      <Var name="AllItems" Default="%%" />
+      <Field t="field.ItemList">
+        <View t="itemlist_style.JBartTable" MinWidth="100px"/>
+        <FieldAspect t="field_aspect.ItemListContainer">
+          <Items t="itemlist.Items" Items="%%"/>
+        </FieldAspect>
+        <FieldAspect t="itemlist_aspect.LongList" >
+          <MaxTimeToRenderItems t="data.Pipeline">
+            <Item t="xtml_dt_tree.PreviewSettings" />
+            <Item value="%maxTableViewTime%"/>
+          </MaxTimeToRenderItems>
+        </FieldAspect>
+        <Field t="field.XtmlControl" ID="_XtmlControl1" Title="XtmlControl">
+          <Control t="debugui.RuntimeObjectControl" />
+          <FieldAspect t="field_aspect.Title" Title="%=Count($AllItems)% items" />
+        </Field>
+      </Field>
+    </NativeHelper>
+  </Component>
+
+  <Component id="ComboMasterDetails" type="ui.Control">
+    <Param name="Title" />
+    <Param name="Items" />
+    <Param name="ItemText" script="true" Default="%%" />
+    <Param name="DetailsControl" type="ui.Control" script="true" />
+    <Param name="FieldAspect" type="field.FieldAspect[]" script="true" />
+    <xtml t="ui.ItemList">
+      <Items t="data_items.Items" Items="%$Items%" />
+      <Presentation t="uiaspect.PickList" Title="%$Title%" AutoSelectFirst="true" ShowTitle="true">
+        <ItemText t="xtml.UseParam" Param="ItemText" />
+        <FieldAspect t="xtml.UseParamArray" Param="FieldAspect" />
+      </Presentation>
+      <Aspect t="uiaspect.ItemDetails" Transactional="true">
+        <OpenIn t="uiaspect.DetailsInFixedLocation" Location="bottom" />
+      </Aspect>
+      <Aspect t="uiaspect.BottomLocation" />
+      <Field t="field.CustomControl">
+        <Control t="xtml.UseParam" Param="DetailsControl" />
+      </Field>
+    </xtml>
+  </Component>
+
+  <Component id="Traces" execution="native" visibility="internal" />
+
+  <Component id="ClearTraces" execution="native" visibility="internal" />
+  <Component id="ClearLogs" execution="native" visibility="internal" />
+
+  <Component id="RuntimeObjectControlOld" type="ui.Control" execution="xtml">
+      <Param name="Object" Default="%%" />
+      <xtml t="data.Pipeline">
+        <Item value="%$Object%"/>
+        <Aggregator Class="aaeditor_runtime_object_control" t="ui.Switch">
+          <Value t="data.RuntimeObjectType"/>
+          <Case>
+            <IfCondition t="yesno.IsMultipleValue" Value="%$Object%"/>
+            <Then t="ui.ItemList">
+              <Presentation t="uiaspect.Table"/>
+              <Items t="data_items.Items">
+                <Items t="data.Pipeline">
+                  <Item value="%$Object%"/>
+                  <Aggregator t="data.Subset" From="1" Count="4"/>
+                </Items>
+              </Items>
+              <Fields t="field.Fields">
+                <Field t="field.CustomControl" ShowTitle="true">
+                  <Control t="aaeditor.RuntimeObjectControl"/>
+                  <Title t="data.Pipeline">
+                    <Item value="%$Object%"/>
+                    <Aggregator t="data.Count"/>
+                    <Aggregator value="%% items"/>
+                  </Title>
+                </Field>
+              </Fields>
+            </Then>
+          </Case>
+          <Case If="text">
+            <Then t="ui.Text" Text="%%"/>
+          </Case>
+          <Case If="html">
+            <Then t="data.Same"/>
+          </Case>
+          <Case If="xml">&#xa;          </Case>
+          <Case If="struct">
+            <Then t="tree.Tree" AutoExpandFirstLevel="false" ItemImage="%$_Images%/studio/integer.gif" Borderless="true">
+              <RootItems t="data.StructEntryNames"/>
+              <Var name="Input"/>
+              <NextLevel t="data.Struct">
+                <Var name="Val" value="%$Input/{}%"/>
+                <Condition t="yesno.And">
+                  <Item t="yesno.IsEmpty" Value="%StructValue%"/>
+                  <Item t="yesno.ItemsNotEqual" Item1="text">
+                    <Item2 t="data.RuntimeObjectType" Data="%$Val%"/>
+                  </Item>
+                </Condition>
+                <Item Name="StructValue" Value="%$Val%"/>
+              </NextLevel>
+              <ItemControl t="ui.Switch">
+                <Var name="Val" value="%$Input/{}%"/>
+                <Case>
+                  <IfCondition t="yesno.NotEmpty" Value="%StructValue%"/>
+                  <Then t="aaeditor.RuntimeObjectControl" Object="%StructValue%"/>
+                </Case>
+                <Case>
+                  <IfCondition t="yesno.And">
+                    <Item t="yesno.NotEmpty" Value="%$Val%"/>
+                    <Item t="yesno.ItemsEqual" Item1="text">
+                      <Item2 t="data.RuntimeObjectType" Data="%$Val%"/>
+                    </Item>
+                  </IfCondition>
+                  <Then t="ui.Text" Text="%%: %$Val%"/>
+                </Case>
+                <Default t="ui.Text" Text="%%"/>
+              </ItemControl>
+              <ItemControl1 t="ui.List">
+                <Control t="ui.Text" Text="%%: "/>
+                <Control t="aaeditor.RuntimeObjectControl" Object="%$Input/{}%" TODO="prevent endless loop"/>
+                <Layout t="ui.SpanList"/>
+              </ItemControl1>
+            </Then>
+          </Case>
+          <Case If="context">
+            <Then t="tree.Tree" ItemImage="%$_Images%/studio/yesno1616.gif">
+              <RootItems t="data.List">
+                <Item value="__vars"/>
+                <Item value="__params"/>
+              </RootItems>
+              <Var name="Input"/>
+              <ItemControl t="ui.IfThenElse">
+                <If t="text.StartsWith" With="__"/>
+                <Then t="ui.Text">
+                  <Text t="text.RemovePrefix" Prefix="__"/>
+                </Then>
+                <Else t="aaeditor.RuntimeObjectControl"/>
+              </ItemControl>
+              <NextLevel t="data.Switch">
+                <Case If="__vars">
+                  <Then t="data.Pipeline">
+                    <Item t="xtml.PartsOfContext" Context="%$Input%" Part="Variable Names"/>
+                    <Item value="__%%"/>
+                  </Then>
+                </Case>
+                <Case If="__params">
+                  <Then t="data.Pipeline">
+                    <Item t="xtml.PartsOfContext" Context="%$Input%" Part="Param Names"/>
+                    <Item value="__%%"/>
+                  </Then>
+                </Case>
+                <Case>
+                  <IfCondition t="text.StartsWith" With="__"/>
+                  <Then t="xtml.RunXtml" Context="%$Input%">
+                    <Xtml t="data.Pipeline">
+                      <Item t="text.RemovePrefix" Prefix="__"/>
+                      <Item value="\%$%%\%"/>
+                    </Xtml>
+                  </Then>
+                </Case>
+              </NextLevel>
+            </Then>
+          </Case>
+          <Case If="function">
+            <Then t="ui.Text" Text="%%"/>
+          </Case>
+          <Default t="aaeditor.RuntimeObjectSelector"/>
+        </Aggregator>
+      </xtml>
+    </Component>
+
+  <Component id="OpenComponent" type="action.Action" light="false">
+    <xtml t="popup.OpenPopup" PopupTitle="Open Xtml Component">
+      <Style t="gstudio.GoogleDrivePopup" />
+      <Feature t="popup.StudioPopupFeature" />
+      <Contents t="field.InnerPage">
+        <Field t="field.ItemListContainer" ID="_Cntr" Title="components">
+          <Field t="control.Layout" ID="_Cntr_Toolbar" Title="Toolbar">
+            <Layout t="layout.HorizontalCss3" Spacing="8px"/>
+            <FieldAspect t="itemlist_aspect.RefreshOnSelectionChange"/>
+            <Field t="control.Button" ID="Delete__Cntr" Title="Edit Xtml">
+              <Style t="btn.HyperlinkWithImage"/>
+              <Image t="gstudio.StudioSmallImage" PositionInSprite="224,0"/>
+              <FieldAspect t="itemlist_aspect.RefreshOnSelectionChange"/>
+              <Action t="xmlui.ShowXmlDialog" AutoWrite="true" Xml="%%" Title="xml of component %@id%" AutoWriteAllowTagChange=""/>
+            </Field>
+            <Field t="control.Button" ID="g_aaeditor" Title="AAEditor">
+              <Style t="btn.HyperlinkWithImage"/>
+              <Image t="gstudio.StudioSmallImage" PositionInSprite="240,0"/>
+              <FieldAspect t="itemlist_aspect.RefreshOnSelectionChange"/>
+              <Action t="operation.RunActions">
+                <Action t="popup.CloseContainingPopup" ExitMode=""/>
+                <Action t="gstudio_popup.ShowAAEditorFloatingPopup" Xtml="%xtml%"/>
+              </Action>
+            </Field>
+          </Field>
+          <Field t="field.Layout" ID="_Cntr_FilterGroup" Title="Filters">
+            <Layout t="layout.HorizontalCss3" Spacing="10"/>
+            <FieldAspect t="itemlist_aspect.FilterGroup"/>
+            <FieldAspect t="field_feature.Layout">
+              <Css><![CDATA[#this { padding-bottom: 5px; }]]></Css>
+            </FieldAspect>
+            <Field t="fld.Field" Title="Fast find" ID="Filter_fast_find" ReadOnlyText="" FieldData="%!@Filter_fastfind%">
+              <FieldType t="fld_type.EditableText">
+                <Style t="editable_text.JBartTextbox" Width="409px"/>
+              </FieldType>
+              <FieldAspect t="itemlist_aspect.Filter" FieldData="%@id%" ImmediateFilter="true">
+                <FilterType t="itemlist_filter.Text"/>
+              </FieldAspect>
+              <FieldAspect t="field_aspect.DescriptionForEmptyText" Description="Search"/>
+              <FieldAspect t="field_aspect.ClearValueButton"/>
+              <FieldAspect t="field_aspect.ItemListSelectionWithKeyboard"/>
+            </Field>
+          </Field>
+          <Items t="itemlist.Items">
+            <Items t="xtml.AllComponentDefinitions"/>
+          </Items>
+          <Field t="field.ItemList" Title="components" ID="components_table">
+            <View t="itemlist_style.JBartTable" MinWidth="410px"/>
+            <FieldAspect t="itemlist_aspect.ItemSelection"/>
+            <Field t="fld.Field" FieldData="%@id%" ID="id" Title="Component">
+              <FieldType t="fld_type.Text">
+                <Style t="uitext.PlainText"/>
+              </FieldType>
+            </Field>
+            <Field t="fld.Field" FieldData="%@type%" ID="type" Title="Type">
+              <FieldType t="fld_type.Text">
+                <Style t="uitext.PlainText"/>
+              </FieldType>
+            </Field>
+            <FieldAspect t="itemlist_aspect.DragAndDropItems">
+              <CssForDraggedElement><![CDATA[{ opacity: 0.9; }]]></CssForDraggedElement>
+              <CssForDraggedSpace><![CDATA[{ }]]></CssForDraggedSpace>
+            </FieldAspect>
+            <FieldAspect t="field_feature.Css">
+              <Css><![CDATA[#this {          max-height:400px;          overflow:auto;          }        ]]></Css>
+            </FieldAspect>
+            <FieldAspect t="itemlist_aspect.LongList">
+              <Style t="text_as_item.Default"/>
+            </FieldAspect>
+          </Field>
+          <Layout t="layout.Vertical" Spacing="4px">&#xa;        </Layout>
+        </Field>      
+      </Contents>
+    </xtml>
+  </Component>
+
+
+</xtml>

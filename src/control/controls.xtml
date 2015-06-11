@@ -1,0 +1,134 @@
+<xtml package="true">
+  <xtml ns="control">
+
+   <Component id="ShowFieldControl" type="ui.Control" execution="native">
+     <Param name="Item" Default="%%" essential="true" />
+     <Param name="Field" type="field.Fields" essential="true"/>
+   </Component>
+  
+   <Component id="Label" type="field.Fields" execution="native" image="%$_Images%/studio/text.png">
+      <Param name="Title" titleField="true" />
+      <Param name="Text" script="true" />
+      <Param name="Style" type="uitext.Style"><Default t="uitext.PlainText" /></Param>
+      <Param name="FieldAspect" type="field.FieldAspect[]" light="false" script="true" />
+      <Param name="ID" idField="true" />
+   </Component>
+
+    <Component id="Layout" type="field.Fields" execution="native" image="%$_Images%/studio/cube1616.gif">
+      <Param name="Title" titleField="true" />
+      <Param name="Field" type="field.Fields[]" light="false" script="true" essential="true"/>
+      <Param name="FieldAspect" type="field.FieldAspect[]" script="true" light="false"/>
+      <Param name="Layout" type="layout.Style" script="true">
+        <Default t="layout.Default" />
+      </Param>
+      <Param name="SectionStyle" type="section.Style" description="Select a section style to make it a section" />
+      <Param name="ID" idField="true" />
+    </Component>
+  
+    <Component id="Section" type="field.Fields" image="%$_Images%/studio/cube1616.gif">
+      <Param name="ID" advanced="always" idField="true" />
+      <Param name="Title" titleField="true" />
+      <Param name="Field" type="field.Fields[]" light="false" script="true" essential="true"/>
+      <Param name="FieldAspect" type="field.FieldAspect[]" script="true" light="false"/>
+      <Param name="Style" type="section.Style">
+        <Default t="section.Default" />
+      </Param>
+      <Param name="Layout" type="layout.Style" script="true">
+        <Default t="layout.Default" />
+      </Param>
+      <xtml t="control.Layout" SectionStyle="%$Style%" ID="%$ID%" Title="%$Title%">
+        <Layout t="xtml.UseParam" Param="Layout" />
+        <Field t="xtml.UseParamArray" Param="Field" />
+        <FieldAspect t="xtml.UseParamArray" Param="FieldAspect" />
+      </xtml>
+    </Component>
+  
+    <Component id="SeparatingLine" type="field.Fields" description="An horizontal visual line">
+      <Param name="ID" essential="true" advanced="always" />
+      <Param name="Title" essential="true" autoaspects="false" titleField="true" />
+      <Param name="Style" type="line.Style">
+        <Default t="line.Default" />
+      </Param>
+      <Param name="FieldAspect" type="field.FieldAspect[]" light="false" script="true"/>
+      <xtml t="control.CustomControl" ID="%$ID%" Title="%$Title%" Control="%$Style%">
+        <FieldAspect t="xtml.UseParamArray" Param="FieldAspect" />
+      </xtml>
+    </Component>
+    
+    <Type id="ControlTriplet" />
+    
+    <Component id="CustomControl" type="field.Fields" execution="native">
+      <Param name="ID" essential="true" advanced="always" />
+      <Param name="Title" essential="true" autoaspects="false" titleField="true" />
+      <Param name="FieldAspect" type="field.FieldAspect[]" light="false" script="true"/>
+      <Param name="Control" type="control.ControlTriplet">
+        <Default t="ui.CustomStyle">
+        <Html><![CDATA[<div/>]]></Html>
+        <Css><![CDATA[#this {}]]></Css>
+        <Javascript><![CDATA[function render(object) {
+/* Use object.el or object.$el to change the element */
+  }]]></Javascript>
+        </Default>
+      </Param>
+    </Component>
+
+    <Component id="Page" type="field.Fields,ui.Page" image="%$_Images%/studio/star1616.gif">
+      <Param name="Title" />
+      <Param name="Page" type="jbart.MyWidgetPage" script="true"/>
+      <xtml t="xtml.UseParam" Param="Page" />
+    </Component>
+
+    <Component id="ChoosePage" type="jbart.MyWidgetPage">
+      <Param name="PageID" />
+      <xtml t="xtml.RunXtmlByComponentId">
+        <ComponentID t="data.IfThenElse" Then="%$PageID%" Else="sample.%$PageID%">
+          <If t="yesno.Contains" AllText="%$PageID%">
+            <Text value="." />
+          </If>
+        </ComponentID>
+      </xtml>
+    </Component>
+
+    <Component id="ImageGallery" type="field.Fields" execution="native" >
+      <Param name="Title" essential="true" autoaspects="false" titleField="true" />
+      <Param name="Images" type="imagegallery.Images" />
+      <Param name="Style" type="imagegallery.Style">
+        <Default t="imagegallery.Simple" />
+      </Param>
+      <Param name="FieldAspect" type="field.FieldAspect[]" script="true" light="false" />
+      <Param name="ID" essential="true" idField="true" />
+    </Component>
+
+     <Component id="AudioPlayer" type="field.Fields" execution="native" >
+        <Param name="ID" advanced="always" idField="true" />
+        <Param name="Title" titleField="true" />
+        <Param name="AudioUrl" />
+        <Param name="Style" type="audioplayer.Style"><Default t="audioplayer.NativePlayer" /></Param>
+        <Param name="FieldAspect" type="field.FieldAspect[]" script="true" light="false" />    
+     </Component>
+  
+   <Component id="IFrame" type="field.Fields" execution="native">
+      <Param name="Title" titleField="true" />
+      <Param name="Url" />
+      <Param name="Style" type="iframe_style.Style"><Default t="iframe_style.Simple" /></Param>
+      <Param name="FieldAspect" type="field.FieldAspect[]" light="false" script="true" />
+      <Param name="ID" idField="true" />
+   </Component>
+
+<Component id="Hyperlink" type="field.Fields" execution="native" Description="Hyperlink">
+  <Param name="Title" titleField="true"/>
+  <Param name="Link"/>
+  <Param name="Tooltip"/>
+  <Param name="Target" type="enum" Options="_blank,_self,_parent,_top">
+    <Default value="_blank"/>
+  </Param>
+  <Param name="Style" type="hyperlink_style.Style">
+    <Default t="hyperlink_style.Simple"/>
+  </Param>
+  <Param name="FieldAspect" type="field.FieldAspect[]" light="false" script="true"/>
+  <Param name="ID" idField="true"/>
+</Component>
+
+  </xtml>
+
+</xtml>

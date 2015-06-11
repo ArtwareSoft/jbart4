@@ -1,0 +1,626 @@
+<xtml ns="xml">
+
+  <Type id="Change" >
+    <MoreComponents>
+      <component id="xml.PerformChanges" itemsParam="Change" />
+    </MoreComponents>
+  </Type>
+  <Type id="TargetIndex" />
+
+  <Component id="XmlToText" type="data.Data" execution="native">
+    <Param name="Data" Title="Xml" />
+    <Param name="PrettyPrint" type="data.Boolean">
+      <Default value="false" />
+    </Param>
+    <Param name="Escape" type="data.Boolean">
+      <Default value="false" />
+    </Param>
+  </Component>
+
+  <Component id="TextToXml" type="data.Data" execution="native" >
+    <Param name="Data" Title="Text" />
+  </Component>
+
+  <Component id="JSONToXml" type="data.Data" execution="native" >
+    <Param name="JSON" Default="%%"/>
+    <Param name="Tag" Default="Top"/>
+    <Param name="InputFormat" type="enum" Options="Text,Object" Default="Text"/>
+  </Component>
+  <Component id="CSVToXml" type="data.Data" execution="native" >
+    <Param name="CSV" Default="%%"/>
+  </Component>
+
+  <Component id="XPath" type="data.Data" execution="native">
+      <Param name="Data" Title="Xml"/>
+      <Param name="XPath" essential="true"/>
+      <Param name="CreateIfDoesNotExist" type="data.Boolean"/>
+      <Param name="DefaultValue"/>
+      <Param name="From">
+        <Default t="data.Same"/>
+      </Param>
+    </Component>
+
+  <Component id="XPathFromList" type="data.Data" execution="native">
+    <Param name="List" />
+    <Param name="XPath" />
+  </Component>
+
+  <Component id="XPathOfNode" type="data.Data" execution="native">
+    <Param name="Data" Title="Xml" />
+    <Param name="Specific" type="data.Boolean" Defaut="false" />
+    <Param name="StopAtIDAttribute" Default="" />
+    <Param name="TopXml" />
+  </Component>
+
+  <Component id="XPathOfNodeWithTopTags" type="data.Data" execution="native">
+    <Param name="TopXml" />
+    <Param name="TopTags" />
+    <Param name="PrefixByTagToAdd" type="data.Data" script="true" />
+  </Component>
+
+  <Component id="NextSibling" type="data.Data" execution="native" >
+    <Param name="Data" Title="Xml" />
+    <Param name="Filter" type="data.Boolean" script="true" Default="true" />
+  </Component>
+  <Component id="PreviousSibling" type="data.Data" execution="native" >
+    <Param name="Data" Title="Xml" />
+  </Component>
+
+  <Component id="ChangeXml" type="action.Action" execution="native">
+      <Param name="Xml" essential="true">
+        <Default value="%%" />
+      </Param>
+      <Param name="Change" type="xml.Change[]" essential="true"/>
+    </Component>
+
+  <Component id="Delete" type="xml.Change" execution="native">
+    <Param name="Element">
+      <Default value="%%" />
+    </Param>
+  </Component>
+
+  <Component id="Update" type="xml.Change" execution="native">
+    <Param name="NewValue" />
+  </Component>
+
+  <Component id="RemoveAttributes" type="xml.Change" execution="native">
+    <Param name="AttributeNames" />
+  </Component>
+
+  <Component id="AddXmlChildren" type="action.Action" description="append xml elements" execution="native">
+    <Param name="Parent" essential="true" />
+    <Param name="Children" essential="true" />
+    <Param name="CloneChildren" type="data.Boolean">
+      <Default value="false" />
+    </Param>
+    <Param name="AddAsFirst" type="data.Boolean" />
+    <Param name="DoOnAddedChildren" type="action.Action" script="true" />
+  </Component>
+
+  <Component id="RemoveXmlNode" type="action.Action" execution="native">
+    <Param name="Xml" Default="%%" />
+  </Component>
+
+  <Component id="RemoveXmlAttribute" type="action.Action" execution="native">
+    <Param name="Element" Default="%%" />
+    <Param name="AttributeName" />
+  </Component>
+  
+  <Component id="ReplaceXmlChildren" type="action.Action">
+    <Param name="Parent" essential="true" />
+    <Param name="Children" essential="true" />
+    <Param name="CloneChildren" type="data.Boolean">
+      <Default value="false" />
+    </Param>
+    <xtml t="action.RunActions">
+      <Action t="xml.DeleteChildren" ParentElement="%$Parent%" />
+      <Action t="xml.AddXmlChildren" Parent="%$Parent%" Children="%$Children%" CloneChildren="%$CloneChildren%" />
+    </xtml>
+  </Component>
+  
+  <Component id="ReplaceChildren" type="xml.Change" execution="native">
+    <Param name="Children" />
+    <Param name="CloneChildren" type="yeson.YesNo">
+      <Default value="false" />
+    </Param>
+  </Component>
+
+  <Component id="AddChildInPosition" type="xml.Change" execution="native">
+    <Param name="Position" Description="1 is the first index" />
+    <Param name="Child" />
+    <Param name="DoOnNewChild" type="action.Action" />
+    <Param name="IdenticalTags" type="data.Boolean">
+      <Default value="true" />
+    </Param>
+  </Component>
+
+  <Component id="AddSiblings" type="xml.Change,action.Action" execution="native">
+    <Param name="ExistingElement" Default="%%" />
+    <Param name="NewElements" script="true" />
+    <Param name="Position" type="enum" Options="after,before" Default="after" />
+    <Param name="DoOnNewChild" type="action.Action" />
+  </Component>
+
+  <Component id="MultiChange" type="xml.Change" execution="native" deprecated="true">
+      <Param name="Change" type="xml.Change[]" essential="true"/>
+      <Param name="PerformChangesOn" essential="true" description="a list of data items to make change on"/>
+      <Param name="DataForChanges">
+        <Default t="data.Pipeline">
+          <Item value="%$InputForChanges%"/>
+          <Aggregator t="data.First"/>
+        </Default>
+      </Param>
+    </Component>
+
+  <Component id="InnerTextValue" type="data.Data" execution="native" />
+  <Component id="InnerText" type="data.Data" execution="native" />
+  <Component id="IsAttribute" type="data.Boolean" execution="native" />
+  <Component id="IsElement" type="data.Boolean" execution="native" />
+  <Component id="IsCData" type="data.Boolean" execution="native" />
+  <Component id="AreSiblings" type="data.Boolean" execution="native" />
+
+
+  <Component id="IndexOfElement" type="data.Data" execution="native">
+    <Param name="IndexOfFirstElement">
+      <Default value="1" />
+    </Param>
+  </Component>
+
+  <Component id="UpdateInnerText" type="xml.Change" execution="xtml">
+    <Param name="Element">
+      <Default value="%%" />
+    </Param>
+    <Param name="NewValue" script="true" />
+    <xtml t="xml.Update">
+      <Data t="data.Pipeline">
+        <Item value="%$Element%" />
+        <Item t="xml.InnerText" />
+      </Data>
+      <NewValue t="xtml.UseParam" Param="NewValue" />
+    </xtml>
+  </Component>
+  <Component id="RemoveInnerText" type="xml.Change" execution="native" />
+
+<Component id="XmlWithChangedTag" type="data.Data" execution="native">
+  <Param name="Tag" essential="true"/>
+  <Param name="BaseXml" Description="copy attributes and elements from it" essential="true"/>
+</Component>
+
+  <Component id="ElementOfDynamicTag" type="data.Data" execution="native">
+      <Param name="Tag" Default="xml" essential="true"/>
+      <Param name="Change" type="xml.Change[]"/>
+    </Component>
+
+  <Component id="ByTag" type="data.Data" execution="native">
+    <Param name="Tag"><Default value="xml"/></Param>
+    <Param name="Change" type="xml.Change[]" />
+    <Param name="XmlForDocument" />
+  </Component>
+
+  <Component id="DeleteXmlChildren" type="action.Action">
+    <Param name="ParentElement" Default="%%" />
+    <xtml t="xml.DeleteChildren" ParentElement="%$ParentElement%" />
+  </Component>
+
+  <Component id="DeleteChildren" type="xml.Change" execution="native">
+    <Param name="ParentElement" Default="%%" />
+  </Component>
+
+  <Component id="RemoveMiddleElement" type="xml.Change" execution="native">
+    <Param name="Element" essential="true" />
+  </Component>
+  
+  <Component id="DeleteAttributes" type="xml.Change" execution="native">
+    <Param name="ParentElement">
+      <Default value="%%" />
+    </Param>
+    <Param name="Exclude" />
+  </Component>
+
+  <Component id="IsOfTags" type="data.Boolean">
+    <Param name="Tags" />
+    <xtml t="yesno.IsInList">
+      <List t="text.Split" Data="%$Tags%" />
+      <Item t="xml.Tag" />
+    </xtml>
+  </Component>
+
+  <Component id="IsPrimitiveElement" type="data.Boolean">
+    <xtml t="yesno.And">
+      <Item t="yesno.Empty" Data="%*%" />
+      <Item t="yesno.Empty">
+        <Data t="xml.AttributeName">
+          <Data t="xml.Attributes" />
+        </Data>
+      </Item>
+    </xtml>
+  </Component>
+
+  <Component id="ReplaceXmlElement" type="action.Action" execution="native">
+    <Param name="Element" Default="%%" />
+    <Param name="NewElement" essential="true"/>
+    <Param name="Mode" type="enum" Default="keep original tag" Options="keep original tag,replace tag" />
+    <Param name="RunOnNewElement" type="action.Action" script="true"/>
+  </Component>
+
+  <Component id="ReplaceElement" type="xml.Change" execution="native">
+      <Param name="Element">
+        <Default t="data.Same"/>
+      </Param>
+      <Param name="NewElement" essential="true"/>
+      <Param name="Mode" type="enum">
+        <Default value="keep original tag"/>
+        <value>keep original tag</value>
+        <value>replace tag</value>
+      </Param>
+      <Param name="RunOnNewElement" type="action.Action" script="true"/>
+    </Component>
+
+  <Component id="MoveElement" type="xml.Change" execution="native">
+    <Param name="To" type="enum">
+      <Default value="next" />
+      <value>next</value>
+      <value>previous</value>
+      <value>first</value>
+      <value>last</value>
+    </Param>
+    <Param name="Tag" />
+  </Component>
+
+  <Component id="MoveElementAfterIndex" type="xml.Change" execution="native">
+    <Param name="Index" Description="0 to add at the begining" />
+    <Param name="Tag" />
+  </Component>
+
+  <Component id="HasAttribute" type="data.Boolean" execution="native">
+    <Param name="Attribute" />
+  </Component>
+
+  <Component id="HasParent" type="data.Boolean" execution="native">
+    <Param name="Attribute" />
+  </Component>
+
+  <Component id="HasAttributes" type="data.Boolean">
+    <Param name="Element">
+      <Default value="%%" />
+    </Param>
+    <xtml t="yesno.ItemsNotEqual" Item1="0">
+      <Item2 t="data.Pipeline">
+        <Item t="xml.Attributes" Data="%$Element%" />
+        <Aggregator t="data.Count" />
+      </Item2>
+    </xtml>
+  </Component>
+
+  <Component id="HasNoAttributes" type="data.Boolean">
+    <Param name="Element">
+      <Default value="%%" />
+    </Param>
+    <xtml t="yesno.Not">
+      <Of t="xml.HasAttributes" Element="%$Element%" />
+    </xtml>
+  </Component>
+
+  <Component id="FindElementByID" execution="native">
+    <Param name="Id" />
+  </Component>
+
+  <Component id="RegisterModifyOnXml" execution="native" type="action.Action">
+    <Param name="Xml" Default="%%" />
+    <Param name="SingletonId" description="Ensure one registration per id"/>
+    <Param name="Action" type="action.Action" script="true" />
+  </Component>
+
+  <Component id="Clone" type="data.Data" execution="native">
+    <Param name="Xml" Default="%%" />
+  </Component>
+
+  <Component id="CopyAttributes" type="xml.Change" execution="native">
+    <Param name="SourceElement">
+      <Default value="%%" />
+    </Param>
+    <Param name="OverrideExistingAttributes" type="data.Boolean">
+      <Default value="true" />
+    </Param>
+  </Component>
+
+  <Component id="OverrideAttributesAndElements" type="xml.Change" execution="native">
+    <Param name="SourceXml" />
+  </Component>
+
+  <Component id="UpTillMatchesFilter" type="data.Data" execution="native">
+    <Param name="Filter" type="data.Boolean" script="true" />
+  </Component>
+
+  <Component id="PerformChanges" type="xml.Change" execution="native">
+      <Param name="Change" type="xml.Change[]" essential="true"/>
+    </Component>
+
+  <Component id="ChangeNodes" type="xml.Change">
+    <Param name="Nodes" essential="true"/>
+    <Param name="Change" type="xml.Change[]" script="true" essential="true"/>
+    <xtml t="action.RunActionOnItems" Items="%$Nodes%">
+      <Action t="xtml.UseParamArray" Param="Change" />
+    </xtml>
+  </Component>
+
+  <Component id="PerformChangeOnElements" type="xml.Change" execution="native">
+      <Param name="Elements" type="data.Data" essential="true"/>
+      <Param name="Change" type="xml.Change" essential="true"/>
+    </Component>
+
+  <Component id="PerformChangeWithManyInputs" type="xml.Change" execution="native">
+    <Param name="Inputs" />
+    <Param name="Change" type="xml.Change" />
+  </Component>
+
+  <Component id="RunAction" type="xml.Change">
+      <Param name="Action" type="action.Action" script="true" essential="true"/>
+      <xtml t="xtml.UseParam" Param="Action"/>
+    </Component>
+
+  <Component id="IfThenElse" type="xml.Change" execution="native">
+    <Param name="If" type="data.Boolean" script="true" essential="true" />
+    <Param name="Then" type="xml.Change" script="true" essential="true"/>
+    <Param name="Else" type="xml.Change" script="true" essential="true"/>
+  </Component>
+
+  <Component id="Switch" type="xml.Change" execution="native">
+    <Param name="Value">
+      <Default value="%%" />
+    </Param>
+    <Param name="Case" type="inline[]" essential="true" >
+     <Param name="If" essential="true"/>
+     <Param name="IfCondition" type="data.Boolean" script="true" essential="true"/>
+     <Param name="Then" type="xml.Change" essential="true"/>
+    </Param>
+    <Param name="Default" />
+    <xtml t="data.Switch" Value="%$Value%" Case="%$Case%" />
+  </Component>
+
+  <Component id="TextRowToXml" type="data.Data" execution="native">
+    <Param name="Tag" />
+    <Param name="Attributes" />
+    <Param name="Separator">
+      <Default value="&#x9;" />
+    </Param>
+  </Component>
+
+  <Component id="ChildAtPosition" type="data.Data" execution="native">
+    <Param name="Position" />
+  </Component>
+
+  <Component id="CreateIfDoesNotExist" type="xml.Change">
+    <Param name="ElementName" />
+    <Param name="DefaultValue" />
+    <xtml t="xml.AddChildren">
+      <Condition t="yesno.Empty" Data="%{$ElementName}%" />
+      <Children t="data.FirstSucceeding">
+        <Item value="%$DefaultValue%" />
+        <Item t="xml.ElementOfDynamicTag" Tag="%$ElementName%" />
+      </Children>
+    </xtml>
+  </Component>
+
+  <Component id="ToXmlElement" type="data.Data" execution="native" />
+
+  <Component id="XmlQuery" type="data.Data" execution="native">
+    <Param name="Items" />
+    <Param name="Query" />
+  </Component>
+
+  <Component id="CleanEmptyAttributes" type="xml.Change" execution="native">
+    <Param name="Recursive" type="data.Boolean">
+      <Default value="true" />
+    </Param>
+    <Param name="IgnoreAttributes" />
+  </Component>
+
+  <Component id="Siblings" type="data.Data" execution="native">
+    <Param name="Element" Default="%%" />
+    <Param name="OnlyWithSameTag" type="data.Boolean" />
+  </Component>
+
+  <Component id="WritableXmlList" type="data_items.Items">
+    <Param name="ItemList" />
+    <xtml t="xtml.Params">
+      <Param name="ItemList" value="%$ItemList%" />
+      <Param name="Items" value="%$ItemList%" />
+      <Method name="MoveBefore" t="xml.MoveBefore" />
+      <Method name="MoveToEnd" t="xml.MoveToEnd" />
+    </xtml>
+  </Component>
+
+  <Component id="UpToTag" type="data.Data">
+    <Param name="Tag"/>
+    <xtml t="xml.UpTillMatchesFilter">
+      <Filter t="xml.IsOfTag" Tag="%$Tag%"/>
+    </xtml>
+  </Component>
+  
+  <Component id="MoveBefore" type="action.Action" execution="native" light="false" />
+  <Component id="MoveToEnd" type="action.Action" execution="native" light="false" />
+  <Component id="XmlParsingError" type="data.Data" execution="native">
+  	<Param name="XmlAsText" ><Default value="%%" /></Param>
+  </Component>
+
+  <Component id="ItemByID" type="data.Data" execution="native" dtsupport="false">
+    <Param name="List"/>
+    <Param name="ID"/>
+  </Component>
+  
+  <Component id="Filter" type="data.Data" execution="native" >
+    <Param name="Items"/>
+    <Param name="Filter"/>
+  </Component>
+   
+   <Component id="FindXmlByAttribute" type="data.Data" execution="native">
+     <Param name="ParentXml"/>
+     <Param name="Attribute"/>
+     <Param name="Value"/>
+     <Param name="FindAll" type="data.Boolean" />
+   </Component>
+   
+  <Component id="AddToXmlItems" type="action.Action">
+    <Param name="Xml" />
+    <Param name="Items" />
+    <Param name="DoOnAddedXml" type="action.Action" script="true" />
+    <xtml t="action.RunActions">
+      <Var name="NewSubset" t="object.RunMethod" Object="%$Items%" Method="SubsetForNewItem">
+        <Var name="_NewItemTag" t="xml.Tag" Data="%$Xml%" />
+      </Var>
+      <Action t="xml.ReplaceElement" Element="%$NewSubset/Items%" NewElement="%$Xml%" />
+      <Action t="object.RunMethod" Object="%$NewSubset%" Method="Save" />
+      <Action t="xtml.UseParam" Param="DoOnAddedXml" Input="%$NewSubset/Items%" />
+    </xtml>
+  </Component>
+  
+  <Component id="RunMethodOnXml" type="*" execution="native">
+    <Param name="Xml" Default="%%"/>
+    <Param name="Method" />
+  </Component>
+  
+  <Component id="XmlInfo" type="data.Data" execution="native" />
+  <Component id="UpTillHasXmlInfoWithMethod" type="data.Data" execution="native">
+    <Param name="Method" />
+  </Component>
+
+  <Component id="WriteCData" type="action.Action" execution="native" light="false">
+      <Param name="Element" essential="true"/>
+      <Param name="CDataText" essential="true"/>
+    </Component>
+  
+  <Component id="CDataValue" type="data.Data" execution="native">
+      <Param name="Element" essential="true" Default="%%" />
+  </Component>
+
+  <Component id="CData" type="data.Data" execution="native" >
+    <Param name="DynamicContent" type="data.Boolean" />
+  </Component>
+  
+  <Component id="CDataRef" type="data.Data" execution="native" >
+      <Param name="Element" essential="true" Default="%%" />
+  </Component>
+
+    <Component id="AttributeName" type="data.Data" execution="native" />
+    
+      <Component id="AddChildren" type="xml.Change" execution="native">
+        <Param name="Children" essential="true"/>
+        <Param name="CloneChildren" type="data.Boolean">
+          <Default value="false"/>
+        </Param>
+        <Param name="RunOnChildren" type="action.Action" script="true" />
+      </Component>
+      
+    <Component id="Attributes" type="data.Data" execution="native">
+      <Param name="AlsoEmpty" type="data.Boolean"><Default value="true"/></Param>
+    </Component>
+    
+    <Component id="Duplicate" type="xml.Change" execution="native">
+      <Param name="Element" />
+      <Param name="Items" />
+      <Param name="ChangeOnElement" type="xml.Change[]" />
+      <Param name="Separator" />
+      <Param name="SeparatorAround" type="yeson.YesNo">
+        <Default value="false" />
+      </Param>
+      <Param name="ChangeOnFirstElement" type="xml.Change[]" />
+    </Component>
+    
+    <Component id="IsOfTag" type="data.Boolean">
+        <Param name="Tag" essential="true"/>
+        <xtml t="yesno.And">
+          <Item t="xml.IsElement" />
+          <Item t="yesno.ItemsEqual" Item1="%$Tag%">
+            <Item2 t="xml.Tag" />
+          </Item>
+        </xtml>
+      </Component>
+      
+    <Component id="Parent" type="data.Data" execution="native" />
+    
+    <Component id="WriteValue" type="xml.Change" >
+      <Param name="To" essential="true" script="true" />
+      <Param name="Value" essential="true" script="true"/>
+      <xtml t="action.WriteValue">
+        <To t="xtml.UseParam" Param="To" />
+        <Value t="xtml.UseParam" Param="Value" Input="%$InputForChanges%" />
+      </xtml>
+    </Component>
+  
+    <Component id="SetAttribute" type="xml.Change" execution="native">
+        <Param name="AttributeName" essential="true"/>
+        <Param name="Value" essential="true"/>
+        <Param name="RemoveEmptyAttribute" type="data.Boolean">
+          <Default value="false"/>
+        </Param>
+      </Component>
+  
+    <Component id="Tag" type="data.Data" execution="native">
+      <Param name="Data" Title="Xml" />
+      <Param name="RemoveNamespace">
+        <Default value="false" />
+      </Param>
+    </Component>
+  
+    <Component id="WithChanges" type="data.Data" execution="native">
+        <Param name="Xml">
+          <Default value="%%" />
+        </Param>
+        <Param name="Change" type="xml.Change[]" essential="true"/>
+        <Param name="CloneXml" type="data.Boolean">
+          <Default value="true"/>
+        </Param>
+      </Component>
+  
+    <Component id="Wrap" type="data.Aggregator" execution="native">
+      <Param name="HeadTag" />
+      <Param name="Head" />
+    </Component>
+  
+    <Component id="Xml" type="data.Data" execution="native">
+      <Param name="*" type="xml" />
+      <Param name="DynamicContent" type="data.Boolean" Default="false"/>
+      <Param name="EncodeDynamicContent" type="data.Boolean" Default="true" description="set to false when using cdata"/>
+    </Component>
+  
+    <Component id="XmlItems" type="data_items.Items" execution="native">
+      <Param name="Parent" advanced="true">
+        <Default value="%%" />
+      </Param>
+      <Param name="Tag" description="more than one tag can be used with commas" />
+      <Param name="ItemTypeName" advanced="true"/>
+      <Param name="ElementCondition" type="data.Boolean" script="true" advanced="true"/>
+      <Param name="Aspect" type="data_items.Aspect[]" advanced="true" script="true" /> 
+      <Param name="DoOnNewItem" type="xml.Change" advanced="true" script="true" />
+      <Param name="CanPasteItem" type="data.Boolean" script="true" advanced="true" />
+    </Component>
+
+  <Component id="CreateXml" type="data.Data" execution="native">
+    <Param name="Attribute" type="inline[]" essential="true" >
+     <Param name="Name" essential="true"/>
+     <Param name="Value" essential="true"/>
+    </Param>
+    <Param name="Element" type="data.Data[]" />
+    <Param name="Tag" Default="xml"/>
+    <Param name="Change" type="xml.Change[]"/>
+  </Component>
+
+  <Component id="CDataNode" type="data.Data" execution="native">
+    <Param name="Tag" Default="xml" />
+    <Param name="CDataContent" />
+  </Component>
+
+  <Component id="ParseXmlCleanNamespaces" type="data.Data" execution="native">
+    <Param name="XmlAsText" Default="%%" />
+  </Component>
+
+  <Component id="CloneNodeCleanNS" type="data.Data" execution="native">
+    <Param name="Xml" Default="%%" />
+  </Component>
+
+  <Component id="XmlToJson" type="data.Data" execution="native">
+    <Param name="Xml" Default="%%" />
+  </Component>
+
+</xtml>

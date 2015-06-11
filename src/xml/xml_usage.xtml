@@ -1,0 +1,1239 @@
+<xtml ns="xml_usage">
+
+  <Usage t="usage.DataUsage" Of="xml.Wrap">
+    <Result t="data.Pipeline">
+      <Item t="data.List">
+        <Item t="xml.Xml">
+          <Person name="John"/>
+        </Item>
+        <Item t="xml.Xml">
+          <Person name="Bruce"/>
+        </Item>
+      </Item>
+        <Aggregator t="xml.Wrap">
+          <Head t="xml.Xml">
+            <Persons/>
+          </Head>
+        </Aggregator>
+    </Result>
+    <ExpectedResult t="yesno.EqualsTo">
+      <To t="xml.Xml">
+        <Persons>
+          <Person name="John"/>
+          <Person name="Bruce"/>
+        </Persons>
+      </To>
+    </ExpectedResult>
+  </Usage>
+
+  <Usage t="usage.DataUsage" Of="xml.ByTag">
+      <Result t="xml.ByTag">
+        <Change t="xml.SetAttribute" AttributeName="name" Value="&lt;"/>
+      </Result>
+      <ExpectedResult t="yesno.EqualsTo">
+        <To t="xml.Xml">
+          <xml name="&lt;"/>
+        </To>
+      </ExpectedResult>
+    </Usage>
+
+  <Usage t="usage.DataUsage" Of="xml.OverrideAttributesAndElements">
+      <Result t="xml.WithChanges">
+        <Xml t="xml.Xml">
+          <item top="top">
+            <tag a="a" />
+          </item>
+        </Xml>
+        <Change t="xml.OverrideAttributesAndElements">
+          <SourceXml t="xml.Xml">
+            <item top2="top2">
+              <tag b="b" />
+            </item>
+          </SourceXml>
+        </Change>
+      </Result>
+      <ExpectedResult t="yesno.EqualsTo">
+        <To t="xml.Xml">
+          <item top="top" top2="top2">
+            <tag b="b"/>
+          </item>
+        </To>
+      </ExpectedResult>
+    </Usage>
+
+  <Usage t="usage.DataUsage" Of="xml.Xml">
+    <Result t="data.Same">
+      <Var name="Name" value="Richard"/>
+      <Data t="xml.Xml" DynamicContent="true">
+        <Person name="%$Name%"/>
+      </Data>
+    </Result>
+    <ExpectedResult t="yesno.EqualsTo">
+      <To t="xml.Xml">
+        <Person name="Richard"/>
+      </To>
+    </ExpectedResult>
+  </Usage>
+
+  <Usage t="usage.DataUsage" Of="xml.Xml.DynamicContent.EscapePercentage">
+    <Result t="data.Same">
+      <Var name="Name" value="Richard"/>
+      <Data t="xml.Xml" DynamicContent="true">
+        <Person name="\%$Name\%"/>
+      </Data>
+    </Result>
+    <ExpectedResult t="yesno.EqualsTo">
+      <To t="xml.Xml">
+        <Person name="%$Name%"/>
+      </To>
+    </ExpectedResult>
+  </Usage>
+
+  <Usage t="usage.DataUsage" Name="compare xmls">
+    <Data t="xml.Xml">
+      <a>
+        <b attr="val"/>
+      </a>
+    </Data>
+    <Result t="data.Same"/>
+    <ExpectedResult t="yesno.EqualsTo">
+      <To t="xml.Xml">
+        <a>
+          <b attr="val"/>
+        </a>
+      </To>
+    </ExpectedResult>
+  </Usage>
+  <Usage t="usage.DataUsage" Name="simple xpath" Data="a">
+    <Result t="data.Pipeline">
+      <Item t="xml.Xml">
+        <a b="c1"/>
+      </Item>
+      <Item value="%@b%"/>
+      <Item t="xml.XmlToText"/>
+    </Result>
+    <ExpectedResult t="yesno.EqualsTo" To="c1"/>
+  </Usage>
+  <Usage t="usage.DataUsage" Name="xpath twice" Data="a">
+    <Result t="data.Pipeline">
+      <Item t="xml.Xml">
+        <a>
+          <b name="b name"/>
+        </a>
+      </Item>
+      <Item value="%b%"/>
+      <Item value="%@name%"/>
+    </Result>
+    <ExpectedResult t="yesno.EqualsTo" To="b name"/>
+  </Usage>
+  <Usage t="usage.DataUsage" Name="xpath with []">
+    <Data t="xml.Xml">
+      <person id="Homer">
+        <child name="lisa"/>
+        <child name="bart"/>
+        <age>12</age>
+        <school name="bilu"/>
+      </person>
+    </Data>
+    <Result t="data.Pipeline">
+      <Item t="xml.WithChanges"/>
+      <Item value="%child[2]/@name%"/>
+    </Result>
+    <ExpectedResult t="yesno.EqualsTo" To="bart"/>
+  </Usage>
+  <Usage t="usage.DataUsage" Of="xml.Delete">
+    <Data t="data.Pipeline">
+      <Item t="xml.Xml">
+        <a><b attr="val"/></a>
+      </Item>
+    </Data>
+    <Result t="xml.WithChanges">
+      <Change t="xml.Delete" Data="%b%"/>
+    </Result>
+    <ExpectedResult t="yesno.EqualsTo">
+      <To t="xml.Xml">
+        <a/>
+      </To>
+    </ExpectedResult>
+  </Usage>
+  <Usage t="usage.DataUsage" Of="xml.SetAttribute">
+    <Data t="data.Pipeline">
+      <Item t="xml.Xml">
+        <person name="Homer"/>
+      </Item>
+    </Data>
+    <Result t="xml.WithChanges">
+      <Change t="xml.SetAttribute" AttributeName="name" Value="Lisa"/>
+      <Change t="xml.SetAttribute" AttributeName="age" Value="8"/>
+    </Result>
+    <ExpectedResult t="yesno.EqualsTo">
+      <To t="xml.Xml">
+        <person name="Lisa" age="8"/>
+      </To>
+    </ExpectedResult>
+  </Usage>
+  <Usage t="usage.DataUsage" Of="xml.RemoveAttributes">
+    <Data t="data.Pipeline">
+      <Item t="xml.Xml">
+        <person name="Homer" age="40"/>
+      </Item>
+    </Data>
+    <Result t="xml.WithChanges">
+      <Change t="xml.RemoveAttributes" AttributeNames="age" />
+    </Result>
+    <ExpectedResult t="yesno.EqualsTo">
+      <To t="xml.Xml">
+        <person name="Homer" />
+      </To>
+    </ExpectedResult>
+  </Usage>
+  <Usage t="usage.DataUsage" Of="xml.Tag">
+    <Data t="xml.Xml">
+      <person name="John"/>
+    </Data>
+    <Result t="xml.Tag"/>
+    <ExpectedResult t="yesno.EqualsTo" To="person"/>
+  </Usage>
+
+  <Usage t="usage.DataUsage" Of="xml.NextSibling">
+    <Data t="xml.Xml">
+      <Persons>
+        <person name="John"/>
+        <person name="Benson"/>
+      </Persons>
+    </Data>
+    <Result t="xml.NextSibling" Data="%person[@name='John']%"/>
+    <ExpectedResult t="yesno.EqualsTo" Data="%@name%" To="Benson"/>
+  </Usage>
+
+  <Usage t="usage.DataUsage" Of="xml.PreviousSibling">
+    <Data t="xml.Xml">
+      <Persons>
+        <person name="John"/>
+        <person name="Benson"/>
+      </Persons>
+    </Data>
+    <Result t="xml.PreviousSibling" Data="%person[@name='Benson']%"/>
+    <ExpectedResult t="yesno.EqualsTo" Data="%@name%" To="John"/>
+  </Usage>
+
+
+  <Usage t="usage.DataUsage" Of="xml.XPathOfNode">
+    <Data t="xml.Xml">
+      <people>
+        <person id="John">
+          <age>12</age>
+        </person>
+      </people>
+    </Data>
+    <Result t="data.Pipeline">
+      <Item t="xml.WithChanges"/>
+      <Item value="%person[1]/age%"/>
+      <Item t="xml.XPathOfNode" Specific="true" StopAtIDAttribute="id"/>
+    </Result>
+    <ExpectedResult t="yesno.EqualsTo" To="person[@id=&apos;John&apos;]/age"/>
+  </Usage>
+  
+  <Usage t="usage.DataUsage" Of="xml.XPathOfNode.AddNameAndIdToXPath">
+    <Data t="xml.Xml">
+      <people>
+      	<city name="Tel-Aviv">
+	        <person name="John">
+	          <age>12</age>
+	        </person>
+	        <person />
+	    </city>
+      </people>
+    </Data>
+    <Result t="data.Pipeline">
+      <Item t="xml.WithChanges"/>
+      <Item value="%city/person[1]/age%"/>
+      <Item t="xml.XPathOfNode" Specific="true" />
+    </Result>
+    <ExpectedResult t="yesno.EqualsTo" To="city/person[@name=&apos;John&apos;]/age"/>
+  </Usage>
+  
+  <Usage t="usage.DataUsage" Of="xml.XPathOfNodeWithTopTags">
+    <Data t="xml.Xml">
+      <people>
+        <person>
+          <details nickname="johnny"/>
+        </person>
+      </people>
+    </Data>
+    <Result t="xml.XPathOfNodeWithTopTags" Data="%person/details/@nickname%" TopXml="%../../..%" TopTags="person" PrefixByTagToAdd="%%::"/>
+    <ExpectedResult t="yesno.EqualsTo" To="person::details/@nickname"/>
+  </Usage>
+  
+  <Usage t="usage.DataUsage" Name="XPathOfNode - not specific">
+    <Data t="xml.Xml">
+      <people>
+        <person id="John">
+          <age>12</age>
+        </person>
+      </people>
+    </Data>
+    <Result t="data.Pipeline">
+      <Item t="xml.WithChanges"/>
+      <Item value="%person[1]/age%"/>
+      <Item t="xml.XPathOfNode" StopAtIDAttribute="id"/>
+    </Result>
+    <ExpectedResult t="yesno.EqualsTo" To="person/age"/>
+  </Usage>
+  <Usage t="usage.DataUsage" Name="xpath of node - attribute">
+    <Data t="xml.Xml">
+      <people>
+        <person id="John">
+          <age>12</age>
+          <school name="bilu"/>
+        </person>
+      </people>
+    </Data>
+    <Result t="data.Pipeline">
+      <Item t="xml.WithChanges"/>
+      <Item value="%person[1]/school/@name%"/>
+      <Item t="xml.XPathOfNode" Specific="true" StopAtIDAttribute="id"/>
+    </Result>
+    <ExpectedResult t="yesno.EqualsTo" To="person[@id=&apos;John&apos;]/school/@name"/>
+  </Usage>
+  <Usage t="usage.DataUsage" Name="xpath of node - array">
+    <Data t="xml.Xml">
+      <people>
+        <person id="Homer">
+          <child childName="lisa"/>
+          <child childName="bart"/>
+          <age>12</age>
+          <school childName="bilu"/>
+        </person>
+      </people>
+    </Data>
+    <Result t="data.Pipeline">
+      <Item t="xml.WithChanges"/>
+      <Item value="%person[1]/child[2]%"/>
+      <Item t="xml.XPathOfNode" Specific="true" StopAtIDAttribute="id"/>
+    </Result>
+    <ExpectedResult t="yesno.EqualsTo" To="person[@id=&apos;Homer&apos;]/child[2]"/>
+  </Usage>
+  <Usage t="usage.DataUsage" Name="xpath and text concat">
+    <Data t="xml.Xml">
+      <person id="Homer">
+        <child name="lisa"/>
+        <child name="bart"/>
+      </person>
+    </Data>
+    <Result t="data.Pipeline">
+      <Item value="%child/@name%"/>
+        <Aggregator t="text.Concat" Separator=","/>
+    </Result>
+    <ExpectedResult t="yesno.EqualsTo" To="lisa,bart"/>
+  </Usage>
+  <Usage t="usage.DataUsage" Of="xml.Duplicate">
+    <Data t="data.Pipeline">
+      <Item t="xml.Xml">
+        <a>
+          <person name=""/>
+        </a>
+      </Item>
+    </Data>
+    <Result t="xml.WithChanges">
+      <Change t="xml.Duplicate" Element="%person%">
+        <Items t="data.List">
+          <Item value="John"/>
+          <Item value="Marry"/>
+        </Items>
+        <ChangeOnElement t="xml.Update" NewValue="%%">
+          <Data value="%@name%"/>
+        </ChangeOnElement>
+        <Separator t="xml.Xml">
+          <Separator/>
+        </Separator>
+      </Change>
+    </Result>
+    <ExpectedResult t="yesno.EqualsTo">
+      <To t="xml.Xml">
+        <a>
+          <person name="John"/>
+          <Separator/>
+          <person name="Marry"/>
+        </a>
+      </To>
+    </ExpectedResult>
+  </Usage>
+  <Usage t="usage.DataUsage" Name="xml change - update inner html">
+    <Data t="xml.Xml">
+      <a>
+        <b/>
+        <c>val</c>
+      </a>
+    </Data>
+    <Result t="xml.WithChanges">
+      <Change t="xml.Update" NewValue="new value">
+        <Data value="%b%"/>
+      </Change>
+      <Change t="xml.Update" NewValue="new value">
+        <Data value="%c%"/>
+      </Change>
+    </Result>
+    <ExpectedResult t="yesno.EqualsTo">
+      <To t="xml.Xml">
+        <a>
+          <b>new value</b>
+          <c>new value</c>
+        </a>
+      </To>
+    </ExpectedResult>
+  </Usage>
+
+  <Usage t="usage.DataUsage" Of="xml.AddChildren">
+    <Data t="xml.Xml">
+      <a/>
+    </Data>
+    <Result t="xml.WithChanges">
+      <Change t="xml.AddChildren">
+        <Children t="xml.Xml">
+          <b/>
+        </Children>
+      </Change>
+    </Result>
+    <ExpectedResult t="yesno.EqualsTo">
+      <To t="xml.Xml">
+        <a>
+          <b/>
+        </a>
+      </To>
+    </ExpectedResult>
+  </Usage>
+
+  <Usage t="usage.DataUsage" Of="xml.DeleteChildren">
+    <Data t="xml.Xml">
+      <top>
+        <a><b/><c/></a>
+      </top>
+    </Data>
+    <Result t="xml.WithChanges">
+      <Change t="xml.DeleteChildren" ParentElement="%a%"/>
+    </Result>
+    <ExpectedResult t="yesno.EqualsTo">
+      <To t="xml.Xml">
+        <top>
+          <a/>
+        </top>
+      </To>
+    </ExpectedResult>
+  </Usage>
+
+  <Usage t="usage.DataUsage" Of="xml.DeleteAttributes">
+    <Data t="xml.Xml">
+      <top>
+        <a attr1="val1" attr2="val2" attr3="val2">
+          <b/>
+        </a>
+      </top>
+    </Data>
+    <Result t="xml.WithChanges">
+      <Change t="xml.DeleteAttributes" ParentElement="%a%" Exclude="attr2"/>
+    </Result>
+    <ExpectedResult t="yesno.EqualsTo">
+      <To t="xml.Xml">
+        <top>
+          <a attr2="val2">
+            <b/>
+          </a>
+        </top>
+      </To>
+    </ExpectedResult>
+  </Usage>
+
+  <Usage t="usage.DataUsage" Of="xml.IsPrimitiveElement">
+    <Data t="xml.Xml">
+      <top>
+        <a>primitive</a>
+        <b Email="notPrimitive"/>
+        <c t="notPrimitive">
+          <c1 x="y"/>
+        </c>
+        <d Email=""/>
+      </top>
+    </Data>
+    <Result t="text.Text" Text="A: %$A% B: %$B% C: %$C% D: %$D%">
+      <Var name="A" Data="%a%" t="xml.IsPrimitiveElement"/>
+      <Var name="B" Data="%b%" t="xml.IsPrimitiveElement"/>
+      <Var name="C" Data="%c%" t="xml.IsPrimitiveElement"/>
+      <Var name="D" Data="%d%" t="xml.IsPrimitiveElement"/>
+    </Result>
+    <ExpectedResult t="yesno.EqualsTo" To="A: true B:  C:  D: "/>
+  </Usage>
+
+  <Usage t="usage.DataUsage" Name="xml inner text - read">
+    <Data t="xml.Xml">
+      <person>Jim</person>
+    </Data>
+    <Result t="xml.InnerText"/>
+    <ExpectedResult t="yesno.EqualsTo" To="Jim"/>
+  </Usage>
+
+  <Usage t="usage.DataUsage" Name="xml inner text - write">
+    <Data t="xml.Xml">
+      <Persons>
+        <person>John</person>
+        <person></person>
+      </Persons>
+    </Data>
+    <Result t="xml.WithChanges">
+      <Change t="xml.Update" NewValue="Jimmy">
+        <Data t="data.Pipeline">
+          <Item value="%person[1]%"/>
+          <Item t="xml.InnerText"/>
+        </Data>
+      </Change>
+      <Change t="xml.Update" NewValue="Jimmy">
+        <Data t="data.Pipeline">
+          <Item value="%person[2]%"/>
+          <Item t="xml.InnerText"/>
+        </Data>
+      </Change>
+    </Result>
+    <ExpectedResult t="yesno.EqualsTo">
+      <To t="xml.Xml">
+        <Persons>
+          <person>Jimmy</person>
+          <person>Jimmy</person>
+        </Persons>
+      </To>
+    </ExpectedResult>
+  </Usage>
+
+  <Usage t="usage.DataUsage" Of="xml.UpdateInnerText">
+    <Data t="xml.Xml">
+      <person>John</person>
+    </Data>
+    <Result t="xml.WithChanges">
+      <Change t="xml.UpdateInnerText">
+        <NewValue t="xml.Xml">
+          <val>Jimmy</val>
+        </NewValue>
+      </Change>
+    </Result>
+    <ExpectedResult t="yesno.EqualsTo">
+      <To t="xml.Xml">
+        <person>Jimmy</person>
+      </To>
+    </ExpectedResult>
+  </Usage>
+
+  <Usage t="usage.DataUsage" Name="update inner text with text">
+    <Data t="xml.Xml">
+      <person>John</person>
+    </Data>
+    <Result t="xml.WithChanges">
+      <Change t="xml.UpdateInnerText">
+        <NewValue value="Jimmy"/>
+      </Change>
+    </Result>
+    <ExpectedResult t="yesno.EqualsTo">
+      <To t="xml.Xml">
+        <person>Jimmy</person>
+      </To>
+    </ExpectedResult>
+  </Usage>
+
+  <Usage t="usage.DataUsage" Of="xml.ElementOfDynamicTag">
+    <Data t="xml.Xml">
+      <Properties Tag="Person">
+        <Property name="Name" value="John"/>
+        <Property name="Address" value="36 Jefry St."/>
+        <Property name="Gender" value="Male"/>
+      </Properties>
+    </Data>
+    <Result t="xml.ElementOfDynamicTag" Tag="Person">
+      <Change t="xml.MultiChange" DataForChanges="%*%">
+        <Change t="xml.AddChildren">
+          <Children t="xml.ElementOfDynamicTag" Tag="%@name%">
+            <Change t="xml.UpdateInnerText" NewValue="%@value%"/>
+          </Children>
+        </Change>
+      </Change>
+    </Result>
+    <ExpectedResult t="yesno.EqualsTo">
+      <To t="xml.Xml">
+        <Person>
+          <Name>John</Name>
+          <Address>36 Jefry St.</Address>
+          <Gender>Male</Gender>
+        </Person>
+      </To>
+    </ExpectedResult>
+  </Usage>
+
+  <Usage t="usage.DataUsage" Of="xml.XmlWithChangedTag">
+    <Result t="xml.XmlWithChangedTag" Tag="person">
+      <BaseXml t="xml.Xml">
+        <tag name="homer">
+          <hobby>complaining</hobby>
+        </tag>
+      </BaseXml>
+    </Result>
+    <ExpectedResult t="yesno.EqualsTo">
+      <To t="xml.Xml">
+        <person name="homer">
+          <hobby>complaining</hobby>
+        </person>
+      </To>
+    </ExpectedResult>
+  </Usage>
+
+  <Usage t="usage.DataUsage" Of="xml.MultiChange" Name="dynamic set attribute">
+    <Data t="xml.Xml">
+      <Properties Tag="Person">
+        <Property name="Name" value="John"/>
+        <Property name="Address" value="36 Jefry St."/>
+        <Property name="Gender" value="Male"/>
+      </Properties>
+    </Data>
+    <Result t="xml.ElementOfDynamicTag" Tag="Person">
+      <Change t="xml.MultiChange" DataForChanges="%*%">
+        <Change t="xml.SetAttribute" AttributeName="%@name%" Value="%@value%"/>
+      </Change>
+    </Result>
+    <ExpectedResult t="yesno.EqualsTo">
+      <To t="xml.Xml">
+        <Person Name="John" Address="36 Jefry St." Gender="Male"/>
+      </To>
+    </ExpectedResult>
+  </Usage>
+
+  <Usage t="usage.DataUsage" Of="xml.XPath">
+    <Data t="xml.Xml">
+      <person name="Homer"/>
+    </Data>
+    <Result t="xml.XPath" XPath="@name"/>
+    <ExpectedResult t="yesno.EqualsTo" To="Homer"/>
+  </Usage>
+
+  <Usage t="usage.DataUsage" Name="create if does not exist - write value">
+    <Data t="xml.Xml">
+      <person name="Homer"/>
+    </Data>
+    <RunBefore t="action.WriteValue" Value="50">
+      <To t="xml.XPath" XPath="@age" CreateIfDoesNotExist="true"/>
+    </RunBefore>
+    <Result value="%%"/>
+    <ExpectedResult t="yesno.EqualsTo">
+      <To t="xml.Xml">
+        <person name="Homer" age="50"/>
+      </To>
+    </ExpectedResult>
+  </Usage>
+
+  <Usage t="usage.DataUsage" Name="create if does not exist - using !">
+    <Data t="xml.Xml">
+      <person name="Homer"/>
+    </Data>
+    <RunBefore t="action.WriteValue" Value="50" To="%!@age%"/>
+    <Result value="%%"/>
+    <ExpectedResult t="yesno.EqualsTo">
+      <To t="xml.Xml">
+        <person name="Homer" age="50"/>
+      </To>
+    </ExpectedResult>
+  </Usage>
+
+  <Usage t="usage.DataUsage" Name="create if does not exist - using ! for multi level">
+    <Data t="xml.Xml">
+      <people/>
+    </Data>
+    <RunBefore t="action.WriteValue" Value="homer" To="%!person/name%"/>
+    <Result value="%%"/>
+    <ExpectedResult t="yesno.EqualsTo">
+      <To t="xml.Xml">
+        <people>
+          <person>
+            <name>homer</name>
+          </person>
+        </people>
+      </To>
+    </ExpectedResult>
+  </Usage>
+
+  <Usage t="usage.DataUsage" Name="create if does not exist - using ! for multi level 2">
+    <Data t="xml.Xml">
+      <people>
+        <person/>
+      </people>
+    </Data>
+    <RunBefore t="action.WriteValue" Value="homer" To="%!person/name%"/>
+    <Result value="%%"/>
+    <ExpectedResult t="yesno.EqualsTo">
+      <To t="xml.Xml">
+        <people>
+          <person>
+            <name>homer</name>
+          </person>
+        </people>
+      </To>
+    </ExpectedResult>
+  </Usage>
+
+  <Usage t="usage.DataUsage" Name="create if does not exist - only query">
+    <Data t="xml.Xml">
+      <person name="Homer"/>
+    </Data>
+    <Result t="data.Pipeline">
+      <Item t="xml.XPath" XPath="age" CreateIfDoesNotExist="true" DefaultValue="50"/>
+      <Item value="%..%"/>
+    </Result>
+    <ExpectedResult t="yesno.EqualsTo">
+      <To t="xml.Xml">
+        <person name="Homer">
+          <age>50</age>
+        </person>
+      </To>
+    </ExpectedResult>
+  </Usage>
+
+  <Usage t="usage.DataUsage" Of="xml.XPath.DefaultValue">
+    <Data t="xml.Xml">
+      <person name="Homer"/>
+    </Data>
+    <Result t="data.Pipeline" >
+      <Item t="xml.XPath" XPath="@age" CreateIfDoesNotExist="true" DefaultValue="50"/>
+      <Item value="%..%" />
+    </Result>
+    <ExpectedResult t="yesno.EqualsTo">
+      <To t="xml.Xml">
+        <person name="Homer" age="50"/>
+      </To>
+    </ExpectedResult>
+  </Usage>
+
+  <Usage t="usage.DataUsage" Of="xml.XPath.Attribute">
+    <Data t="xml.Xml">
+      <person name="Homer"/>
+    </Data>
+    <Result value="%@name%" />
+    <ExpectedResult t="yesno.EqualsTo" To="Homer" />
+  </Usage>
+
+  <Usage t="usage.DataUsage" Of="xml.AddChildInPosition">
+    <Data t="xml.Xml">
+      <people>
+        <person name="homer"/>
+        <person name="marge"/>
+      </people>
+    </Data>
+    <Result t="xml.WithChanges">
+      <Change t="xml.AddChildInPosition" Position="1">
+        <Child t="xml.Xml">
+          <person name="bart"/>
+        </Child>
+      </Change>
+    </Result>
+    <ExpectedResult t="yesno.EqualsTo">
+      <To t="xml.Xml">
+        <people>
+          <person name="bart"/>
+          <person name="homer"/>
+          <person name="marge"/>
+        </people>
+      </To>
+    </ExpectedResult>
+    <Description value="adds an xml element child in the middle. position is 1 based index"/>
+    <TryItYourself value="add bart before homer and marge"/>
+  </Usage>
+
+  <Usage t="usage.DataUsage" Of="xml.AddSiblings">
+    <Data t="xml.Xml">
+      <people>
+        <person name="homer"/>
+        <person name="marge"/>
+        <person name="lisa"/>
+      </people>
+    </Data>
+    <Result t="xml.WithChanges">
+      <Change t="xml.AddSiblings" ExistingElement="%person[@name='marge']%" Position="after" >
+        <NewElements t="xml.Xml">
+          <person name="bart"/>
+        </NewElements>
+      </Change>
+      <Change t="xml.AddSiblings" ExistingElement="%person[@name='homer']%" Position="before" >
+        <NewElements t="xml.Xml">
+          <person name="adam"/>
+        </NewElements>
+      </Change>
+    </Result>
+    <ExpectedResult t="yesno.EqualsTo">
+      <To t="xml.Xml">
+        <people>
+          <person name="adam"/>
+          <person name="homer"/>
+          <person name="marge"/>
+          <person name="bart"/>
+          <person name="lisa"/>
+        </people>
+      </To>
+    </ExpectedResult>
+  </Usage>
+
+  <Usage t="usage.DataUsage" Of="xml.AddSiblings.multiple">
+    <Data t="xml.Xml">
+      <people>
+        <person name="homer"/>
+        <person name="marge"/>
+        <person name="lisa"/>
+      </people>
+    </Data>
+    <Result t="xml.WithChanges">
+      <Change t="xml.AddSiblings" ExistingElement="%person[@name='marge']%" Position="after" >
+        <NewElements t="data.List">
+          <Item t="xml.Xml">
+            <person name="bart"/>
+          </Item>
+          <Item t="xml.Xml">
+            <person name="snoopy"/>
+          </Item>
+        </NewElements>
+      </Change>
+    </Result>
+    <ExpectedResult t="yesno.EqualsTo">
+      <To t="xml.Xml">
+        <people>
+          <person name="homer"/>
+          <person name="marge"/>
+          <person name="bart"/>
+          <person name="snoopy"/>
+          <person name="lisa"/>
+        </people>
+      </To>
+    </ExpectedResult>
+  </Usage>
+
+  <Usage t="usage.DataUsage" Of="xml.ReplaceElement">
+    <Data t="xml.Xml">
+      <people>
+        <person name="homer" age="50"/>
+        <person name="marge"/>
+      </people>
+    </Data>
+    <Result t="xml.WithChanges">
+      <Change t="xml.ReplaceElement" Element="%person[1]%" Mode="keep original tag">
+        <NewElement t="xml.Xml">
+          <Tag name="new homer" newage="20"/>
+        </NewElement>
+      </Change>
+    </Result>
+    <ExpectedResult t="yesno.EqualsTo">
+      <To t="xml.Xml">
+        <people>
+          <person name="new homer" newage="20"/>
+          <person name="marge"/>
+        </people>
+      </To>
+    </ExpectedResult>
+    <Description value="replaces all the contents of an xml element (not including the tag)"/>
+    <TryItYourself value=""/>
+  </Usage>
+
+  <Usage t="usage.DataUsage" Of="xml.MoveElement">
+    <Data t="xml.Xml">
+      <top>
+        <b c="1"/>
+        <a a="1"/>
+        <a a="2"/>
+        <a a="3"/>
+        <a a="4"/>
+        <a a="5"/>
+        <a a="6"/>
+        <a a="7"/>
+        <a a="8"/>
+        <b c="1"/>
+      </top>
+    </Data>
+    <Result t="xml.WithChanges">
+      <Change t="xml.MultiChange">
+        <Change t="xml.MoveElement" Data="%a[2]%" To="next"/>
+        <Change t="xml.MoveElement" Data="%a[5]%" To="previous"/>
+        <Change t="xml.MoveElement" Data="%a[6]%" To="first"/>
+        <Change t="xml.MoveElement" Data="%a[2]%" To="last"/>
+        <Change t="xml.MoveElementAfterIndex" Data="%a[8]%" Index="0"/>
+        <Change t="xml.MoveElementAfterIndex" Data="%a[1]%" Index="3"/>
+        <Change t="xml.MoveElementAfterIndex" Data="%a[1]%" Index="0"/>
+      </Change>
+    </Result>
+    <ExpectedResult t="yesno.EqualsTo">
+      <To t="xml.Xml">
+        <top>
+          <b c="1"/>
+          <a a="6"/>
+          <a a="3"/>
+          <a a="1"/>
+          <a a="2"/>
+          <a a="5"/>
+          <a a="4"/>
+          <a a="7"/>
+          <a a="8"/>
+          <b c="1"/>
+        </top>
+      </To>
+    </ExpectedResult>
+    <Description value="Move Element in Array: next, previous, first and last"/>
+    <TryItYourself value="Try to move the forth element to the end of the array"/>
+  </Usage>
+
+  <Usage t="usage.DataUsage" Name="Pretty print - with xml encoding">
+    <Data t="xml.Xml">
+      <icecream name="Ben &amp; Jerry"/>
+    </Data>
+    <Result t="xml.XmlToText" PrettyPrint="true"/>
+    <ExpectedResult t="yesno.Contains">
+      <Text value="mp;"/>
+    </ExpectedResult>
+  </Usage>
+
+  <Usage t="usage.DataUsage" Of="xml.WithChanges">
+    <Data t="xml.Xml">
+      <a/>
+    </Data>
+    <Result t="xml.WithChanges">
+      <Change t="xml.AddChildren">
+        <Children t="xml.Xml">
+          <b/>
+        </Children>
+      </Change>
+    </Result>
+    <ExpectedResult t="yesno.EqualsTo">
+      <To t="xml.Xml">
+        <a>
+          <b/>
+        </a>
+      </To>
+    </ExpectedResult>
+  </Usage>
+
+  <Usage t="usage.DataUsage" Of="xml.FindElementByID">
+    <Data t="xml.Xml">
+      <top>
+        <ignore id="a"/>
+        <lookunder>
+          <findme id="a"/>
+        </lookunder>
+        <ignore id="a"/>
+      </top>
+    </Data>
+    <Result t="xml.FindElementByID" Id="a" Data="%lookunder%"/>
+    <ExpectedResult t="yesno.EqualsTo" To="findme">
+      <Data t="xml.Tag"/>
+    </ExpectedResult>
+  </Usage>
+
+  <Usage t="usage.DataUsage" Name="xml element empty if no inner text">
+    <Result t="xml.Xml">
+      <person/>
+    </Result>
+    <ExpectedResult t="yesno.Empty" CheckInnerText="true"/>
+  </Usage>
+
+  <Usage t="usage.DataUsage" Of="xml.HasAttributes">
+    <Data t="xml.Xml">
+      <person/>
+    </Data>
+    <Result t="data.IfThenElse" Then="has" Else="no attrs">
+      <If t="xml.HasAttributes"/>
+    </Result>
+    <ExpectedResult t="yesno.EqualsTo" To="no attrs"/>
+  </Usage>
+
+  <Usage t="usage.DataUsage" Of="xml.CopyAttributes">
+    <Data t="xml.Xml">
+      <person name="Homer" age="30"/>
+    </Data>
+    <Result t="xml.WithChanges">
+      <Xml t="xml.Xml">
+        <person gender="male"/>
+      </Xml>
+      <Change t="xml.CopyAttributes"/>
+    </Result>
+    <ExpectedResult t="yesno.EqualsTo">
+      <To t="xml.Xml">
+        <person gender="male" name="Homer" age="30"/>
+      </To>
+    </ExpectedResult>
+  </Usage>
+
+  <Usage t="usage.DataUsage" Of="xml.UpTillMatchesFilter">
+    <Data t="xml.Xml">
+      <people>
+        <person>
+          <child/>
+        </person>
+      </people>
+    </Data>
+    <Result t="data.Pipeline">
+      <Item value="%person/child%"/>
+      <Item t="xml.UpTillMatchesFilter">
+        <Filter t="xml.IsOfTag" Tag="person"/>
+      </Item>
+    </Result>
+    <ExpectedResult t="xml.IsOfTag" Tag="person"/>
+  </Usage>
+  <Usage t="usage.DataUsage" Of="xml.PerformChanges" Name="dynamic set attribute">
+    <Data t="xml.Xml">
+      <Person name="Homer"/>
+    </Data>
+    <Result t="xml.WithChanges" Xml="%%">
+      <Change t="xml.PerformChanges">
+        <Change t="xml.SetAttribute" AttributeName="age" Value="32"/>
+        <Change t="xml.SetAttribute" AttributeName="status" Value="married"/>
+      </Change>
+    </Result>
+    <ExpectedResult t="yesno.EqualsTo">
+      <To t="xml.Xml">
+        <Person name="Homer" age="32" status="married"/>
+      </To>
+    </ExpectedResult>
+  </Usage>
+
+  <Usage t="usage.DataUsage" Of="xml.TextRowToXml">
+    <Result t="data.Pipeline">
+      <Item t="xml.TextRowToXml" Tag="Person" Attributes="Name,Company" Data="Bill Gates&#x9;Microsoft" Separator="&#x9;"/>
+      <Item t="xml.XmlToText"/>
+    </Result>
+    <ExpectedResult t="yesno.OR">
+      <Item t="yesno.EqualsTo" To="&lt;Person Name=&quot;Bill Gates&quot; Company=&quot;Microsoft&quot;/&gt;"/>
+      <Item t="yesno.EqualsTo" To="&lt;Person Company=&quot;Microsoft&quot; Name=&quot;Bill Gates&quot;/&gt;"/>
+    </ExpectedResult>
+  </Usage>
+
+  <Usage t="usage.DataUsage" Of="xml.CreateIfDoesNotExist">
+    <Data t="xml.Xml">
+      <person/>
+    </Data>
+    <Result t="xml.WithChanges" Xml="%%">
+      <Change t="xml.CreateIfDoesNotExist" ElementName="address"/>
+    </Result>
+    <ExpectedResult t="yesno.EqualsTo">
+      <To t="xml.Xml">
+        <person>
+          <address/>
+        </person>
+      </To>
+    </ExpectedResult>
+  </Usage>
+
+  <Usage t="usage.DataUsage" Of="xml.XmlQuery" Description="fast implementation in js">
+    <Data t="xml.Xml">
+      <people>
+       <person name="Homer" gender="male"/>
+       <person name="Marge" gender="female"/>
+       <person name="Homeriko" gender="male"/>
+       <person name="Homa" gender="female"/>
+       <person name="Bart" gender="male"/>
+       <person name="Homer (FilterOutByXtml)" gender="male"/>
+      </people>
+    </Data>
+    <Result t="data.Pipeline">
+      <Item t="xml.XmlQuery" Items="%person%">
+        <Query t="xml.Xml">
+          <xmlquery>
+            <xmlfilter xpath="@gender" op="=" value="male"/>
+            <xmlfilter xpath="@name" op="contains" value="om"/>
+            <xmlfilter xpath="@name" op="xtml">
+              <xtml t="yesno.Not">
+                <Of t="text.EndsWith" With="(FilterOutByXtml)"/>
+              </xtml>
+            </xmlfilter>
+            <xmlfilter xpath="by xtml" op="=" value="male1">
+              <xpath_by_xtml value="%@gender%1"/> 
+            </xmlfilter>
+          </xmlquery>
+        </Query>
+      </Item>
+      <Aggregator t="text.Concat" ItemText="%@name%" Separator=","/>
+    </Result>
+    <ExpectedResult t="yesno.EqualsTo" To="Homer,Homeriko"/>
+  </Usage>
+  
+  <Usage t="usage.DataUsage" Of="xml.XmlQuery.Number">
+    <Data t="xml.Xml">
+      <people>
+       <person name="Homer" age="50"/>
+       <person name="Marge" age="46"/>
+      </people>
+    </Data>
+    <Result t="data.Pipeline">
+      <Item t="xml.XmlQuery" Items="%person%">
+        <Query t="xml.Xml">
+          <xmlquery>
+            <xmlfilter xpath="@age" op="&gt;" value="48"/>
+          </xmlquery>
+        </Query>
+      </Item>
+      <Aggregator t="text.Concat" ItemText="%@name%" Separator=","/>
+    </Result>
+    <ExpectedResult t="yesno.EqualsTo" To="Homer"/>
+  </Usage>
+
+  <Usage t="usage.DataUsage" Of="xml.XmlQuery.OneOf">
+    <Data t="xml.Xml">
+      <people>
+       <person name="Homer" gender="male"/>
+       <person name="Marge" gender="female"/>
+       <person name="Muki" gender="female,infant"/>
+       <person name="Alien" gender="unknown"/>
+      </people>
+    </Data>
+    <Result t="data.Pipeline">
+      <Item t="xml.XmlQuery" Items="%person%">
+        <Query t="xml.Xml">
+          <xmlquery>
+            <xmlfilter xpath="@gender" op="one of" value="male,female"/>
+          </xmlquery>
+        </Query>
+      </Item>
+      <Aggregator t="text.Concat" ItemText="%@name%" Separator=","/>
+    </Result>
+    <ExpectedResult t="yesno.EqualsTo" To="Homer,Marge,Muki"/>
+  </Usage>
+
+  <Usage t="usage.DataUsage" Of="xml.XmlQuery.OneOf.All">
+    <Data t="xml.Xml">
+      <people>
+       <person name="Homer" gender="male"/>
+       <person name="Marge" gender="female"/>
+       <person name="Muki" gender="female,infant"/>
+       <person name="Alien" gender="unknown"/>
+      </people>
+    </Data>
+    <Result t="data.Pipeline">
+      <Item t="xml.XmlQuery" Items="%person%">
+        <Query t="xml.Xml">
+          <xmlquery>
+            <xmlfilter xpath="@gender" op="one of" value="_all"/>
+          </xmlquery>
+        </Query>
+      </Item>
+      <Aggregator t="text.Concat" ItemText="%@name%" Separator=","/>
+    </Result>
+    <ExpectedResult t="yesno.EqualsTo" To="Homer,Marge,Muki,Alien"/>
+  </Usage>
+
+  <Usage t="usage.DataUsage" Of="xml.XmlQuery.date_between">
+    <Data t="xml.Xml">
+      <people>
+       <person name="Homer" birthdate="3/05/1960"/>
+       <person name="Marge" birthdate="1/07/1965"/>
+      </people>
+    </Data>
+    <Result t="data.Pipeline">
+      <Item t="xml.XmlQuery" Items="%person%">
+        <Query t="xml.Xml">
+          <xmlquery>
+            <xmlfilter xpath="@birthdate" op="date_between" from="5/03/1960" to="6/01/1965"/>
+          </xmlquery>
+        </Query>
+      </Item>
+      <Aggregator t="text.Concat" ItemText="%@name%" Separator=","/>
+    </Result>
+    <ExpectedResult t="yesno.EqualsTo" To="Homer"/>
+  </Usage>
+
+  <Usage t="usage.DataUsage" Of="xml.XmlQuery.date_between.sameday" IsTest="false">
+    <Data t="xml.Xml">
+      <people>
+       <person name="Homer" birthdate="3/05/1960 10:48"/>
+       <person name="Marge" birthdate="1/07/1965"/>
+      </people>
+    </Data>
+    <Result t="data.Pipeline">
+      <Item t="xml.XmlQuery" Items="%person%">
+        <Query t="xml.Xml">
+          <xmlquery>
+            <xmlfilter xpath="@birthdate" op="date_between" from="3/05/1960" to="3/05/1960"/>
+          </xmlquery>
+        </Query>
+      </Item>
+      <Aggregator t="text.Concat" ItemText="%@name%" Separator=","/>
+    </Result>
+    <ExpectedResult t="yesno.EqualsTo" To="Homer"/>
+  </Usage>
+  
+  <Usage t="usage.DataUsage" Of="xml.PerformChangeWithManyInputs" >
+    <Data t="xml.Xml">
+      <Person name="Homer"/>
+    </Data>
+    <Result t="xml.WithChanges" Xml="%%">
+      <Change t="xml.PerformChangeWithManyInputs">
+        <Inputs t="data.List">
+          <Item value="Address1" />
+          <Item value="Address2" />
+        </Inputs>
+        <Change t="xml.AddChildren" >
+          <Children t="xml.Xml" DynamicContent="true">
+            <Address>%%</Address>
+          </Children>
+        </Change>
+      </Change>
+    </Result>
+    <ExpectedResult t="yesno.EqualsTo">
+      <To t="xml.Xml">
+        <Person name="Homer" >
+          <Address>Address1</Address>
+          <Address>Address2</Address>
+        </Person>
+      </To>
+    </ExpectedResult>
+  </Usage>
+  
+  <Usage t="usage.DataUsage" Of="xml.Siblings" >
+    <Data t="xml.Xml">
+    	<people>
+	      <Person name="Homer" />
+	      <Person name="John" />
+	      <City name="Tel-Aviv" />
+      </people>
+    </Data>
+    <Result t="data.Pipeline">
+    	<Item t="xml.Siblings" Data="%Person[1]%" />
+    	<Aggregator t="text.Concat" ItemText="%@name%" Separator="," />
+    </Result>
+    <ExpectedResult t="yesno.EqualsTo" To="John,Tel-Aviv" />
+   </Usage>
+  
+  <Usage t="usage.DataUsage" Of="xml.WritableXmlList">
+    <Data t="xml.Xml">
+      <top>
+        <a id="1"/>
+        <a id="2"/>
+        <a id="3"/>
+        <a id="4"/>
+      </top>
+    </Data>
+    <Result t="data.List">
+      <Var name="Mover" t="xml.WritableXmlList"/>
+      <Var name="Move1" t="xtml.RunXtml" Xtml="%$Mover/MoveBefore%" remark="move 1 before 3">
+        <Data t="data.Struct">
+          <Item Name="Item" Value="%a[1]%"/>
+          <Item Name="BeforeItem" Value="%a[3]%"/>
+        </Data>
+      </Var>
+      <Var name="Move2" t="xtml.RunXtml" Xtml="%$Mover/MoveToEnd%" Data="%a[1]%" remark="move 2 after 4"/>
+      <Item value="%a[1]/@id%,%a[2]/@id%,%a[3]/@id%,%a[4]/@id%"/>
+    </Result>
+    <ExpectedResult t="yesno.EqualsTo" To="1,3,4,2"/>
+  </Usage>
+  
+  <Usage t="usage.DataUsage" Of="xml.Filter">
+    <Var name="Contacts" t="data.List">
+     <Item t="xml.Xml">
+       <person name="homer" gender="male"/>
+     </Item>
+     <Item t="xml.Xml">
+       <person name="marge" gender="female"/>
+     </Item>
+    </Var>
+    <Result t="text.Concat" ItemText="%@name%" Separator=",">
+      <Items value="%$Contacts[@gender='female']%" />
+    </Result>
+    <ExpectedResult t="yesno.EqualsTo" To="marge"/>
+  </Usage>
+  
+</xtml>

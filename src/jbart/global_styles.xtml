@@ -1,0 +1,3057 @@
+<xtml package="true">
+
+<xtml ns="tabs" >
+  <Component id="BlueAccordion" type="tabs.Style">
+  <xtml t="ui.CustomStyle" base="tabs.Accordion">
+    <Html><![CDATA[<div>
+  <div>
+    <div class="aatabs_tab">
+      <div class="aatabs_tab_caption">
+        <div class="aatabs_tab_toggle"/>
+        <div class="aatabs_tab_image"/>
+        <div class="aatabs_tab_text"/>
+      </div>
+      <div class="aatabs_tab_contents" />
+    </div>
+  </div>
+  <div class="aatabs_contents"/>
+</div>]]></Html>
+    <Javascript><![CDATA[function(tabcontrol) {
+ aa_tabcontrolAsAccordion(tabcontrol,{
+  collapseAnimationTime: 100,
+  expandAnimationTime: 100
+ });
+}]]></Javascript>
+    <Css><![CDATA[#this >div>div.aatabs_tab {
+  margin-bottom: 15px;
+}
+#this >div>div.aatabs_tab>.aatabs_tab_caption {
+  cursor: pointer;
+  margin-bottom: 10px;
+  border-bottom: 1px solid #BAE0F8;
+  box-shadow:  0 1px 0px 0px #54B4F0;
+}
+#this >div>div>div>.aatabs_tab_text {
+  font-family: tahoma,arial,helvetica,sans-serif;
+  color:#1B9BEB;
+  font-weight:bold;
+  font-size: 12px;
+  padding-left: 7px;
+  vertical-align: top;
+}
+#this >div>div>.aatabs_tab_caption>div {
+  display: inline-block;
+}
+#this >div>div>div>.aatabs_tab_toggle {
+  background:url('http://lh4.googleusercontent.com/-CclJFMR5YvM/UaSJ016t1SI/AAAAAAAABTE/H_Gj3fvMBXc/w13-h26-no/blue_accordion.png') no-repeat 0 -13px;
+  width: 13px;
+  height: 13px;
+  margin-top: 2px;
+}
+#this >div>div.expanded>div>.aatabs_tab_toggle {
+  background:url('http://lh4.googleusercontent.com/-CclJFMR5YvM/UaSJ016t1SI/AAAAAAAABTE/H_Gj3fvMBXc/w13-h26-no/blue_accordion.png') no-repeat;
+}
+]]></Css>
+  </xtml>
+</Component>
+</xtml>
+
+<xtml ns="editable_text">
+<Component id="WhiteBlue" type="editable_text.Style">
+    <xtml t="ui.CustomCss" base="editable_text.JBartTextbox">
+      <Style t="editable_text.JBartTextbox"/>
+      <Css><![CDATA[#this { background:white; font-size: 13px; width: 150px; height: 16px; padding-top: 3px; 
+  padding-right: 7px; padding-bottom: 3px; padding-left: 7px; 
+  border: 1px solid #D6EDFB; box-shadow:  0 0 0px 1px #35A6ED; }
+#this:focus { 
+  box-shadow:  inset 0 1px 1px 0px rgba(0, 0, 0, 0.075),  0 0 8px 0px rgba(82, 168, 236, 0.6); 
+  border-color: rgba(82, 168, 236, 0.8); outline: 0; 
+  outline: thin dotted 9; }
+#this.placeholder { color:#8B8B8B; }
+#this.aa_error { color:#ec643d; background:white; border: 1px solid #feb2b2; }
+]]></Css>
+    </xtml>
+</Component>
+</xtml>
+
+
+<xtml ns="btn">
+
+
+<Component id="AsyncBlue" type="btn.Style">
+  <Param name="WaitingText" Default="Running..." />
+  <xtml t="ui.CustomStyle">
+    <Css><![CDATA[#this { cursor: pointer; text-transform:capitalize; text-align: center; color:White; 
+  background:#0F52BA; text-transform:capitalize; font-size: 13px; 
+  border-radius: 2px; padding-top: 0px; padding-right: 25px; padding-bottom: 1px; 
+  padding-left: 25px; margin-top: 0px; margin-right: 0px; margin-bottom: 0px; 
+  margin-left: 0px; border: 1px solid #586E9E; 
+  box-shadow:  .03em .03em .05em 0px rgba(0,0,0,0.4); 
+  background-image: -webkit-linear-gradient(-90deg, #5987A8 0\% , #0F52BA 100\% ); 
+  min-width: 56px; vertical-align: middle; line-height: 28px; }
+#this:hover { 
+  background-image: -webkit-linear-gradient(-90deg, #75B2DD 0\% , #0F52BA 100\% ); 
+  }
+#this:active { background:#5987A8; 
+  background-image: -webkit-linear-gradient(90deg, #C04000 0\% , #FF5A36 39\% , white 100\% ); 
+  outline: 0; background-image: none; }
+#this.disabled { cursor: default; background:#5987A8; background-image:none; }
+]]></Css>
+    <Html><![CDATA[<button />]]></Html>
+    <Javascript><![CDATA[function render(button) {
+  aa_button(button,{
+    onStartWaiting: function() {
+      button.$el.text('%$WaitingText%');
+    },
+    onEndWaiting: function() {
+      button.$el.text(button.text)
+    },
+  });
+}]]></Javascript>
+  </xtml>
+</Component>
+
+<Component id="AsyncGray" type="btn.Style">
+  <xtml t="ui.CustomStyle">
+    <Css><![CDATA[#this {
+  cursor: pointer;
+  text-transform: capitalize;
+  text-align: center;
+  color: Black;
+  text-transform: capitalize;
+  font-size: 11px;
+  border-radius: 2px;
+  border: 1px solid #a8a8a8;
+  min-width: 56px;
+  vertical-align: middle;
+  line-height: 13px;
+  font-family: 'Lucida Grande', Tahoma, Verdana, Arial, sans-serif;
+  padding: 5px 8px;
+  margin: 0px 0px 0px 0px;
+  font-weight: bold;
+  background-color: #ebebeb;
+}
+#this:hover {
+  background-image: -webkit-linear-gradient(-90deg, #FFFFFF 0\% , #cacaca 100\% );
+}
+#this:active {
+  background: #cacaca;
+  outline: 0;
+  background-image: none;
+}
+#this.disabled {
+  cursor: default;
+  background: #ffffff;
+  background-image: none;
+}
+]]></Css>
+    <Html><![CDATA[<button />]]></Html>
+    <Javascript><![CDATA[function render(button) {
+  aa_button(button,{
+    onStartWaiting: function() {
+      button.$el.text('%$WaitingText%' || 'running ...');
+    },
+    onEndWaiting: function() {
+      button.$el.text(button.text)
+    },
+  });
+}]]></Javascript>
+  </xtml>
+</Component>
+
+</xtml>
+
+
+<xtml ns="editable_text">
+<Component type="editable_text.Style" id="WixTextbox1">
+  <Param name="Width" Default="266px" slider="true" sliderUnit="px" />
+  <xtml t="ui.CustomStyle">
+    <Css><![CDATA[#this {
+  font-size: 11.5px;
+  width: %$Width%;
+  height: 20px;
+  border-radius: 4px;
+  padding-top: 3px;
+  padding-right: 5px;
+  padding-bottom: 3px;
+  padding-left: 5px;
+  border: 1px solid #BDC7D8;
+}
+#this.placeholder {
+  color:#A1A3A5;
+}
+#this:focus {
+  box-shadow:  inset 0 1px 1px 0px rgba(0, 0, 0, 0.075),  0 0 8px 0px rgba(82, 168, 236, 0.6);
+  border-color: rgba(82, 168, 236, 0.8);
+  outline: 0;
+  outline: thin dotted 9;
+}
+]]></Css>
+    <Html><![CDATA[<input/>]]></Html>
+    <Javascript><![CDATA[function(textbox) {  aa_jbart_textbox(textbox);        }]]></Javascript>
+  </xtml>
+</Component>
+</xtml>
+
+<xtml ns="btn">
+<Component type="btn.Style" id="WixAddButtonBig">
+  <xtml t="ui.CustomStyle">
+    <Css><![CDATA[#this {
+  cursor: pointer;
+  font-family:Arial, Helvetica;
+  text-align: center;
+  color:white;
+  background-color:rgb(42, 167, 234);
+  font-size: 13.5px;
+  height: 30px;
+  border-radius: 8px;
+  padding-right: 15px;
+  padding-left: 15px;
+  border: 1px solid #f0f0f0;
+  text-shadow:  ##2 0px -1px 0px;
+  background-image: url('http://static.wix.com/services/skins/2.76.1/images/wysiwyg/core/themes/editor_web/button/button-gradient.png');
+  line-height: 30px;
+  display:inline-block;
+}
+#this:hover:not(.disabled) {
+  background:none rgb(23, 156, 225);
+  border: 1px solid rgb(35, 122, 167);
+  box-shadow1: rgba(0, 0, 0, 0.2) 0px 2px 3px 0px, ##3 0px 1px 2px 0px inset;
+}
+#this:active {
+  background:#3F90BD;
+}
+#this.disabled {
+  cursor:default;
+  background-color:#ccc;
+}
+]]></Css>
+    <Html><![CDATA[<div />]]></Html>
+    <Javascript><![CDATA[function(button) {
+  button.$el.text(button.text).attr('title',button.tooltip);  
+  button.$el.click(function(e) { button.action(e) });
+}]]></Javascript>
+  </xtml>
+</Component>
+</xtml>
+
+<xtml ns="tabs">
+<Component id="HiddenTabs" type="tabs.Style">
+  <xtml t="ui.CustomStyle" base="tabs.BlueTabs">
+    <Html><![CDATA[<div>
+  <div class="aatabs_contents"/>
+</div>]]></Html>
+    <Css/>
+    <Javascript><![CDATA[function(tabcontrol) {
+ aa_tabcontrol(tabcontrol,{});
+}]]></Javascript>
+  </xtml>
+</Component>
+</xtml>
+
+<xtml ns="editable_text">
+<Component id="WixMultilineEditableText" type="editable_text.Style">
+  <Param name="Width" Default="266px" slider="true" sliderUnit="px" />
+  <Param name="Height" Default="64px" slider="true" sliderUnit="px" />
+  <xtml t="ui.CustomStyle">
+    <Css><![CDATA[#this {
+  font-family:Arial, Helvetica;
+  font-size: 12px;
+  width: %$Width%;
+  height: %$Height%;
+  border-radius: 5px;
+  padding-top: 5px;
+  padding-right: 5px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  border: 1px solid #BBBBBB;
+  background1:#FDFDFD;
+}
+#this.placeholder {
+  color:#A1A3A5;
+}
+#this:focus {
+  box-shadow:  inset 0 1px 1px 0px rgba(0, 0, 0, 0.075),  0 0 8px 0px rgba(82, 168, 236, 0.6);
+  border-color: rgba(82, 168, 236, 0.8);
+  outline: 0;
+  outline: thin dotted 9;
+}
+#this::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+#this::-webkit-scrollbar-track {
+  border-radius: 5px;
+}
+#this::-webkit-scrollbar-thumb {
+  border-radius: 5px;
+  -webkit-box-shadow: inset 0 0 6px #aaa;
+}
+]]></Css>
+    <Html><![CDATA[<textarea/>]]></Html>
+    <Javascript><![CDATA[function(textbox) {
+  aa_jbart_textbox(textbox);
+}]]></Javascript>
+  </xtml>
+</Component>
+</xtml>
+
+<xtml ns="itemlist_style">
+<Component id="Tiles" type="itemlist_style.View">
+  <xtml t="ui.CustomStyle" base="itemlist_style.Simple">
+    <Html><![CDATA[<div>
+  <div class="parent">
+    <div class="aa_item"/>
+  </div>
+  <div class="clean" />
+</div>]]></Html>
+    <Css><![CDATA[#this>*>.aa_item {
+  float:left;
+  margin:0 5px 5px 0;
+}
+#this>.clean {
+  clear:both;
+}
+]]></Css>
+    <Javascript><![CDATA[function(itemlist) {
+  aa_itemlist(itemlist);
+}]]></Javascript>
+  </xtml>
+</Component>
+</xtml>
+
+
+<xtml ns="audioplayer">
+<Component id="WixAudioPlayer1" type="audioplayer.Style">
+      <xtml t="ui.CustomStyle" base="audioplayer.Simple">
+        <Css><![CDATA[#this {
+  height:24px;
+  width:24px;
+}
+#this .no_audio {
+  display:none;
+}
+#this .button {
+  cursor:pointer;
+  background:url('http://jbartlib.appspot.com/images/wix/Discography/play_normal.png');
+  height:24px;
+  width:24px;
+  transition: background 500ms;
+}
+#this .button:not(.playing):hover {
+  background:url('http://jbartlib.appspot.com/images/wix/Discography/play_hover.png');
+}
+#this .button.playing {
+  background:url('http://jbartlib.appspot.com/images/wix/Discography/pause.png');
+}
+]]></Css>
+        <Html><![CDATA[<div>
+  <div class="button" />
+  <div class="no_audio"></div>
+  <audio>
+      Your browser does not support the audio element.
+  </audio>
+</div>]]></Html>
+        <Javascript><![CDATA[function render(audioplayer) {
+  audioplayer.audioUrl = aa_wix_audio_url(audioplayer.audioUrl);
+  aa_audioPlayer(audioplayer);
+}]]></Javascript>
+      </xtml>
+    </Component>
+</xtml>
+
+<xtml ns="editable_color">
+<Component id="WixJsColor" type="editable_color.Style">
+      <xtml t="ui.CustomStyle" base="editable_color.JSColor">
+        <Css><![CDATA[#this {
+  position:relative;
+  width: 50px;
+  height: 25px;
+  margin-left:-3px;
+}
+#this .frame {
+  position:absolute;
+  width: 50px;
+  height: 25px;
+  background-repeat: no-repeat;
+  background-image: url("http://jbartlib.appspot.com/images/wix/general/color-selector-sprite.png");
+  display:inline-block;
+  z-index:2;
+  cursor:pointer;
+}
+#this .show_color {
+  position:absolute;
+  width: 40px;
+  height: 15px;
+  top:5px;
+  left:5px;
+  z-index:1;
+}
+#this input {
+  opacity:0;
+  position:absolute;
+  z-index:1;
+  border:none;
+  width:40px;
+}]]></Css>
+        <Html><![CDATA[<div>
+  <div class="frame" />
+  <div class="show_color" />
+  <input/>
+</div>]]></Html>
+        <Javascript><![CDATA[function render(textbox) {
+  if (textbox.value) {
+    textbox.$el.find("input").val(textbox.value);
+    textbox.$el.find(".show_color").css("background-color",textbox.value);
+  }
+  aa_init_jscolor(textbox,{ 
+    InputElement: textbox.$el.find("input")[0],
+    ClickElement: textbox.$el.find(".frame")[0],    
+    StyleElement: textbox.$el.find(".show_color")[0],
+    PickerClosable: true
+  });
+}
+]]></Javascript>
+      </xtml>
+    </Component>
+</xtml>
+
+<xtml ns="propertysheet">
+<Component id="WixPropertySheet2" type="propertysheet.Style">
+  <xtml t="ui.CustomStyle">
+    <Css><![CDATA[#this>tbody>tr {
+  min-height1:40px;
+}
+#this>tbody>tr>td {
+  vertical-align:middle;
+}
+#this>tbody>tr>.field_title {
+  color:#373737;
+  height1: 40px;
+  padding-right: 20px;
+  font: 12px Arial;
+  font-weight1:bold;
+}
+#this>tbody>tr:not(:last-child)>* {
+  border-bottom1: 1px solid #d4d4d4;
+}
+#this>tbody>tr>td {
+  padding-bottom:10px;
+}
+#this>tbody>.field_for_more_options>.field_contents {
+}
+#this>tbody>tr.aa_indent>td {
+}
+#this>tbody>tr:last-child >.field_contents {
+}
+#this>tbody>tr>td>.field_description {
+  display:none;
+}
+#this>tbody>tr.aa_mandatory>.field_title {
+  font-weight:bold;
+}
+]]></Css>
+    <Html><![CDATA[
+<table cellspacing="0" cellpadding="0">
+  <tr class="field">
+    <td class="field_title"/>
+    <td class="field_contents"/>
+  </tr>
+</table>
+]]></Html>
+    <Javascript><![CDATA[function(group) {
+  aa_propertysheet_old(group,{}); 
+}
+]]></Javascript>
+  </xtml>
+</Component>
+</xtml>
+
+<xtml ns="editable_picklist">
+<Component id="WixFontPicker" type="editable_picklist.Style">
+  <Param name="Width" Default="150px" />
+      <xtml t="ui.CustomStyle">
+        <Css><![CDATA[#this {
+  display: inline-block;
+}
+.aa_picklist_div {
+  position: relative;
+  cursor: arrow;
+  width: %$Width%;
+  height: 14px;
+  border: 1px solid #BDC7D8;
+  font-size: 11px;
+  padding: 6px;
+  white-space: nowrap;
+  overflow: hidden;
+  border-radius:2px;
+  text-overflow:ellipsis;
+}
+.aa_picklist_div>.aa_picklist_text {
+  vertical-align:top;
+  display: inline-block;
+}
+.aa_picklist_div>.aa_picklist_image {
+  display: inline-block;
+  padding-right: 5px;
+}
+.aa_picklist_div>.aa_picklist_drop_image {
+  position: absolute;
+  right: 23px;
+  top: 9px;
+  display: inline-block;
+}
+.aa_picklist_div:hover .aa_picklist_drop_image:before,
+.aa_picklist_div:hover .aa_picklist_drop_image:after,
+.aa_picklist_div.aa_opened_popup .aa_picklist_drop_image:before,
+.aa_picklist_div.aa_opened_popup .aa_picklist_drop_image:after
+{
+  background: #528DD1;
+}
+.aa_picklist_drop_image:before, .aa_picklist_drop_image:after {
+  position: absolute;
+  background: #8EB5E2;
+  width: 3px;
+  height: 8px;
+  border-radius: 2px 2px 0 0;
+  content: "";
+  left: 10px;
+  top: 0;
+  -moz-border-radius: 2px 2px 0 0;
+  -webkit-transform: rotate(-45deg);
+  -moz-transform: rotate(-45deg);
+  -ms-transform: rotate(-45deg);
+  -o-transform: rotate(-45deg);
+  transform: rotate(-45deg);
+  -webkit-transform-origin: 0 100\%;
+  -moz-transform-origin: 0 100\%;
+  -ms-transform-origin: 0 100\%;
+  -o-transform-origin: 0 100\%;
+  transform-origin: 0 100\%;
+}
+.aa_picklist_drop_image:after {
+  left: 8px;
+  -webkit-transform: rotate(45deg);
+  -moz-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  -o-transform: rotate(45deg);
+  transform: rotate(45deg);
+  -webkit-transform-origin: 100\% 100\%;
+  -moz-transform-origin: 100\% 100\%;
+  -ms-transform-origin: 100\% 100\%;
+  -o-transform-origin: 100\% 100\%;
+  transform-origin :100\% 100\%;
+}
+.aa_picklist.aa_error #this .aa_picklist_div {
+  background:#fbebeb;
+  border: 1px solid #feb2b2;
+}
+.aa_picklist_div>.aa_picklist_text.placeholder {
+  font-style: italic;
+  color: #8B8B8B;
+}
+#popup.aa_picklist_popup {
+  padding: 0 0 2px 0;
+  box-shadow: 2px 2px 7px 1px rgba(50,50,50,0.5);
+  overflow-y: auto;
+  overflow-x: hidden;
+  font:12px times;
+  background: white;
+  border: 1px solid gray;
+  min-height:50px;
+  max-height:200px;
+}
+#popup.aa_picklist_popup:focus {
+  outline: none;
+}
+.ie #popup.aa_picklist_popup {
+  border: 1px solid black;
+}
+#popup.aa_picklist_popup.aa_hide_searchbox .aa_picklist_popup_input {
+  display: none;
+}
+#popup.aa_picklist_popup .aa_picklist_popup_input {
+  font-size: 11px;
+  width: 100\%;
+  box-sizing: border-box;
+  height: 22px;
+  padding-top: 3px;
+  padding-right: 3px;
+  padding-bottom: 3px;
+  padding-left: 3px;
+  border-top:none;
+  border-left:none;
+  border-right:none;
+  border-bottom: 1px solid rgba(82, 168, 236, 0.8);
+  outline: none;
+}
+#popup.aa_picklist_popup .aa_picklist_popup_input:focus {
+  outline: 0;
+}
+#popup.aa_picklist_popup .aa_picklist_item {
+  cursor: pointer;
+  width: 100\%;
+  height:20px;
+  line-height:20px;
+  clear: both;
+  vertical-align:center;
+}
+#popup.aa_picklist_popup .aa_picklist_item:focus {
+  outline: none;
+}
+#popup.aa_picklist_popup .aa_picklist_item_image {
+  float:left;
+  padding: 1px 5px 0 3px;
+}
+#popup.aa_picklist_popup .aa_picklist_item_image img {
+  height:14px;
+}
+#popup.aa_picklist_popup .aa_picklist_item.selected {
+  background: #D9E8FB;
+}
+#popup.aa_picklist_popup .aa_picklist_item_text {
+  cursor:pointer;
+  padding-top: 2px;
+  padding-right: 4px;
+  padding-bottom: 2px;
+  padding-left: 4px;
+  white-space: nowrap;
+}
+#popup.aa_picklist_popup .aa_highlight {
+  color: blue;
+}
+#popup.aa_picklist_popup .aa_picklist_no_results {
+  padding: 3px 5px;
+}
+#popup.aa_picklist_popup .aa_picklist_show_all {
+  padding: 5px 5px;
+  cursor: pointer;
+  color: #333;
+}
+]]></Css>
+        <Html><![CDATA[<div>
+  <div class="aa_picklist_div">
+    <div class="aa_picklist_image"/>
+    <div class="aa_picklist_text"/>
+    <div class="aa_picklist_drop_image"/>
+  </div>
+  <div class="aa_picklist_popup">
+    <div>
+      <input class="aa_picklist_popup_input" />
+      <div>
+        <div class="aa_picklist_item">
+          <div class="aa_picklist_item_image" />
+          <div class="aa_picklist_item_text" />
+        </div>
+        <div class="aa_picklist_no_results" />
+        <div class="aa_picklist_show_all" />
+      </div>
+    </div>
+  </div>
+</div>]]></Html>
+        <Javascript><![CDATA[function render(picklist) { 
+  aa_picklist(picklist,{
+    onRenderOption: function(optionEl,option) {
+      $(optionEl).css('font-family',option.code);
+    }
+  });
+}]]></Javascript>
+      </xtml>
+    </Component>
+</xtml>
+
+<xtml ns="tabs">
+</xtml>
+
+<xtml ns="editable_text">
+<Component id="WixTitleNarrow" type="editable_text.Style">
+  <Param name="Width" Default="216px" slider="true" sliderUnit="px" />
+  <xtml t="ui.CustomStyle">
+    <Css><![CDATA[#this {
+  font-size: 11.5px;
+  width: %$Width%;
+  height: 20px;
+  border-radius: 4px;
+  padding-top: 0px;
+  padding-right: 5px;
+  padding-bottom: 0px;
+  padding-left: 5px;
+  margin-top:1px;
+  border: 1px solid #BDC7D8;
+}
+#this.placeholder {
+  color:#A1A3A5;
+}
+#this:focus {
+  box-shadow:  inset 0 1px 1px 0px rgba(0, 0, 0, 0.075),  0 0 8px 0px rgba(82, 168, 236, 0.6);
+  border-color: rgba(82, 168, 236, 0.8);
+  outline: 0;
+  outline: thin dotted 9;
+}
+]]></Css>
+    <Html><![CDATA[<input/>]]></Html>
+    <Javascript><![CDATA[function(textbox) {  aa_jbart_textbox(textbox);        }]]></Javascript>
+  </xtml>
+</Component>
+</xtml>
+
+<xtml ns="propertysheet">
+<Component id="WixColorsPropertySheet" type="propertysheet.Style">
+  <xtml t="ui.CustomStyle">
+    <Css><![CDATA[#this>tbody>tr {
+  min-height1:40px;
+}
+#this>tbody>tr>td {
+  vertical-align:middle;
+}
+#this>tbody>tr>.field_title {
+  color:#373737;
+  height1: 40px;
+  padding-right: 20px;
+  font: 12px Arial;
+  font-weight1:bold;
+}
+#this>tbody>tr:not(:last-child)>* {
+  border-bottom1: 1px solid #d4d4d4;
+}
+#this>tbody>tr>td {
+  padding-bottom:2px;
+}
+#this>tbody>.field_for_more_options>.field_contents {
+}
+#this>tbody>tr.aa_indent>td {
+}
+#this>tbody>tr:last-child >.field_contents {
+}
+#this>tbody>tr>td>.field_description {
+  display:none;
+}
+#this>tbody>tr.aa_mandatory>.field_title {
+  font-weight:bold;
+}
+]]></Css>
+    <Html><![CDATA[
+<table cellspacing="0" cellpadding="0">
+  <tr class="field">
+    <td class="field_title"/>
+    <td class="field_contents"/>
+  </tr>
+</table>
+]]></Html>
+    <Javascript><![CDATA[function(group) {
+  aa_propertysheet_old(group,{}); 
+}
+]]></Javascript>
+  </xtml>
+</Component>
+</xtml>
+
+<xtml ns="editable_color">
+<Component id="WixJsColorWithTransparent" type="editable_color.Style">
+  <xtml t="ui.CustomStyle" base="editable_color.WixJsColor">
+    <Html><![CDATA[<div>
+  <div class="frame" />
+  <div class="show_color" />
+  <input class="value_holder"/>
+  <input class="transparent" type="checkbox">Transparent</input>
+</div>]]></Html>
+    <Css><![CDATA[#this {
+  position:relative;
+  height: 25px;
+  margin-left:-3px;
+}
+#this .frame {
+  position:absolute;
+  width: 50px;
+  height: 25px;
+  background-repeat: no-repeat;
+  background-image: url("http://jbartlib.appspot.com/images/wix/general/color-selector-sprite.png");
+  display:inline-block;
+  z-index:2;
+  cursor:pointer;
+}
+#this .show_color {
+  position:absolute;
+  width: 40px;
+  height: 15px;
+  top:5px;
+  left:5px;
+  z-index:1;
+}
+#this .value_holder {
+  opacity:0;
+  position:absolute;
+  z-index:1;
+  border:none;
+  width:40px;
+}
+#this .transparent {
+  margin-left:60px;
+  margin-top:5px;
+}]]></Css>
+    <Javascript><![CDATA[function render(textbox) {
+//  aa_jbart_textbox(textbox, textbox.$el.find("input")[0]);
+  if (textbox.value) {
+    textbox.$el.find("input").val(textbox.value);
+    textbox.$el.find(".show_color").css("background-color",textbox.value);
+  }
+  aa_init_jscolor_with_transparent_checkbox(textbox,{ 
+    InputElement: textbox.$el.find(".value_holder")[0],
+    ClickElement: textbox.$el.find(".frame")[0],    
+    StyleElement: textbox.$el.find(".show_color")[0],
+    CheckboxElement: textbox.$el.find(".transparent")[0],
+    PickerClosable: true
+  });
+}
+]]></Javascript>
+  </xtml>
+</Component>
+</xtml>
+
+<xtml ns="tabs">
+<Component id="GrayRoundTabs" type="tabs.Style">
+  <xtml t="ui.CustomStyle">
+    <Html><![CDATA[<div>
+  <div class="aatabs_parent">
+    <div class="aatabs_tab">
+      <div class="aatabs_tab_text"/>
+      <div class="tab_cobrowse"/>
+    </div>
+  </div>
+  <div class="aatabs_contents"/>
+</div>]]></Html>
+    <Css><![CDATA[#this>.aatabs_parent {
+  height:31px;
+  border-bottom:1px solid #D0D0D1;
+}
+#this>div>.aatabs_tab {
+  cursor:pointer;
+  float:left;
+  border:1px #CECECE solid;
+  padding:8px 20px;
+  border-top-left-radius:15px;
+  border-top-right-radius:15px;
+  background:#F1EDEA;
+}
+#this>div>.aatabs_tab.aa_selected_tab {
+  background:white;
+}
+#this>div>.aatabs_tab.aa_selected_tab .aatabs_tab_text {
+  color:#000;
+}
+#this >div>div>div.aatabs_tab_text {
+  text-align:center;
+  float:left;
+  color:rgb(102, 102, 102);
+  font:12px arial;
+  border-bottom:0px;
+  display:inline-block;
+  outline:none;
+  text-decoration:none;
+}
+#this >.aatabs_contents {
+  padding-top:20px;
+  padding-right:0px;
+  padding-bottom:15px;
+  padding-left:20px;
+  clear:both;
+  border-left:1px solid #D0D0D1;
+}
+#this>div>div>.tab_cobrowse {
+  float:left;
+  width:16px;
+  height:14px;
+  background:url('//dl.dropboxusercontent.com/u/24056024/lpdemo_debug/person_sprite.png') no-repeat;
+  background-position:0 -45px;
+  margin-left:3px;
+}
+#this >div>div:not(.cobrowse_other)>.tab_cobrowse {
+  display:none;
+}]]></Css>
+    <Javascript><![CDATA[function(tabcontrol) {
+  aa_tabcontrol(tabcontrol,{});
+}]]></Javascript>
+  </xtml>
+</Component>
+</xtml>
+
+<xtml ns="audioplayer">
+<Component id="WixAudioPlayer" type="audioplayer.Style">
+  <Param name="ButtonsType" type="enum" Options="1,2,3,4,5,6,7,8,9,10,11" Default="1" />
+  <xtml t="ui.CustomStyle" ButtonsType="%$ButtonsType%">
+    <Css><![CDATA[#this {
+  width: 24px;
+  height: 24px;
+}
+#this .no_audio {
+  display:none;
+}
+#this .button {
+  cursor:pointer;
+  background:url('%$_Images%/wix/Discography/buttons.png');
+  width: 24px;
+  height: 24px;
+}
+#this .button:not(.playing):hover {
+  opacity: 0.6;
+  opacity1: 1;
+}
+#this .button.playing {
+  background-position-y: 25px;
+}
+]]></Css>
+    <Html><![CDATA[<div>
+  <div class="button" />
+  <div class="no_audio"></div>
+  <audio>
+      Your browser does not support the audio element.
+  </audio>
+</div>]]></Html>
+    <Javascript><![CDATA[function render(audioplayer) {
+  audioplayer.audioUrl = aa_wix_audio_url(audioplayer.audioUrl);
+  var button_index = parseInt(audioplayer.params.ButtonsType)-1;
+  aa_audioPlayer(audioplayer);
+  audioplayer.$el.find(".button").css("background-position-x",button_index*25 + "px");
+}]]></Javascript>
+  </xtml>
+</Component>
+</xtml>
+
+<xtml ns="dragndrophandle">
+<Component id="WixDragAndDrogHandler" type="dragndrophandle.Style">
+      <xtml t="ui.CustomStyle" base="dragndrophandle.Default">
+        <Css><![CDATA[#this {
+  cursor:move;
+  background:url(_jbartImages_/wix/dnd.png);
+  width: 14px;
+  height: 14px;
+  display:block;
+  margin-right:4px;
+}
+]]></Css>
+        <Html><![CDATA[<div title="Drag project up and down to change order"/>]]></Html>
+        <Javascript/>
+      </xtml>
+    </Component>
+</xtml>
+
+<xtml ns="btn">
+<Component id="WixPremiumButton" type="btn.Style">
+  <xtml t="ui.CustomStyle">
+    <Css><![CDATA[.hypelink_text {
+  color:#A41AA4;
+  font-size: 12px;
+  text-decoration: none;
+  display: inline-block;
+}
+#this:hover .hypelink_text {
+  text-decoration:underline;
+}
+.hypelink_img {
+  display: inline-block;
+  padding-right: 4px;
+  padding-bottom: 2px;
+  vertical-align:middle;
+}
+#this {
+  cursor:pointer;
+}
+#this.disabled {
+  cursor: default;
+}
+#this.disabled .hypelink_text {
+  text-decoration:none;
+}
+]]></Css>
+    <Html><![CDATA[<span>
+    <span class="hypelink_img"/>
+    <span class="hypelink_text"/>
+</span>]]></Html>
+    <Javascript><![CDATA[function render(button) {
+  aa_button(button);
+}]]></Javascript>
+  </xtml>
+</Component>
+</xtml>
+
+<xtml ns="image">
+<Component id="BackgroundImageCss" type="image.Style">
+  <xtml t="ui.CustomStyle" base="image.PlainImage">
+    <Html><![CDATA[<div/>]]></Html>
+    <Css/>
+    <Javascript><![CDATA[function(image) {
+  image.$el.css("background-image","url('" + image.image.url + "')").css("background-repeat","no-repeat");
+  if (image.image.height)
+    image.$el.css("height", image.image.height + "px");
+  if (image.image.width)
+    image.$el.css("width", image.image.width + "px");
+}
+]]></Javascript>
+  </xtml>
+</Component>
+</xtml>
+
+<xtml ns="editable_picklist">
+</xtml>
+
+
+
+<xtml ns="section">
+<Component id="LandingPageSection1" type="section.Style">
+  <Param name="Height" Default="460px" slider="true" sliderUnit="px" />
+  <xtml t="ui.CustomStyle" base="section.Default">
+    <Html><![CDATA[<div>
+  <div class="section_body"/>
+</div>]]></Html>
+    <Css><![CDATA[#this {
+  height: %$Height%;
+  position: relative;
+  padding-top: 20px;
+  padding-left: 100px;
+  background:#E1E2E7;
+  min-width: 1800px;
+  border-bottom: 1px solid #b8b8b8;
+  background-image: -webkit-linear-gradient(top, #f2f2f2 0% , #d4d7dd 100% );
+  background-image: -moz-linear-gradient(top, #f2f2f2 0\%, #d4d7dd 100\%);
+  background-image: -o-linear-gradient(top, #f2f2f2 0\%, #d4d7dd 100\%);
+  filter: progid:DXImageTransform.Microsoft.gradient(Gr
+}
+]]></Css>
+    <Javascript><![CDATA[function(section) {  
+  section.addSectionBody('.section_body');
+}]]></Javascript>
+  </xtml>
+</Component>
+</xtml>
+
+<xtml ns="uitext">
+<Component id="Title1" type="uitext.Style">
+  <xtml t="ui.CustomStyle">
+    <Css><![CDATA[#this {
+font: 20px 'lucida sans';
+font-weight: bold;
+color: #536079;
+width: 350px;
+text-shadow: 0px 1px white;
+}]]></Css>
+    <Javascript><![CDATA[function(textObj) { 
+  aa_textLabel(textObj);
+}]]></Javascript>
+  </xtml>
+</Component>
+</xtml>
+
+<xtml ns="properties">
+<Component id="StudioPropertySheet" type="properties.Style">
+  <xtml t="ui.CustomStyle">
+    <Css><![CDATA[#this {
+}
+#this>.aa_property {
+  margin-bottom: 20px;
+}
+#this>.aa_property:last-child {
+  margin-bottom: 0px;
+}
+#this>.aa_property.aa_mandatory>.aa_property_title {
+  font-weight:bold;
+}
+#this>.aa_property>.aa_property_title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-overflow: ellipsis;
+  width: 100px;
+  margin-top: 2px;
+  vertical-align:top;
+color: gray;
+font-family: "lucida grande",tahoma,verdana,arial,sans-serif;
+font-size: 11px;
+}
+#this>.aa_property>div {
+  display: inline-block;
+}
+#this>.aa_property.aa_hiding_title>.aa_property_title {
+  display: none;
+}
+#this>.aa_property.aa_hiding_title>.aa_property_content {
+  display: inline-block;
+}
+.aa_error_message {
+  color:#C24343;
+  padding-top: 3px;
+  display: block;
+}
+#this>.aa_property>.aa_property_content>.aa_property_description {
+  color:#8C8C8C;
+  font-style:italic;
+  font-size: 11px;
+  padding-top: 5px;
+  white-space: normal;
+}
+]]></Css>
+    <Html><![CDATA[<div>
+  <div class="aa_property">
+  	<div class="aa_property_title" />
+  	<div class="aa_property_content" />
+  </div>
+</div>]]></Html>
+    <Javascript><![CDATA[function render(propertySheet) {
+  aa_propertySheet(propertySheet);
+}]]></Javascript>
+  </xtml>
+</Component>
+</xtml>
+
+<xtml ns="uitext">
+<Component id="GreenCornerRibbon" type="uitext.Style" description="Requires a parent with a relative position">
+  <xtml t="ui.CustomStyle" base="uitext.SmallText">
+    <Html><![CDATA[<div class="ribbon">
+  <div class="ribbon_text" />
+</div>]]></Html>
+    <Css><![CDATA[#this.ribbon {
+  width: 85px;
+  height: 88px;
+  overflow: hidden;
+  position: absolute;
+  top: -3px;
+  right: -3px;  
+}
+.ribbon_text {
+  font: bold 15px Sans-Serif;
+  color: #333;
+  text-align: center;
+  text-shadow: rgba(255,255,255,0.5) 0px 1px 0px;
+  -webkit-transform: rotate(45deg);
+  position: relative;
+  padding: 7px 0;
+  left: -5px;
+  top: 15px;
+  width: 120px;
+  background-color: #BFDC7A;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#BFDC7A), to(#8EBF45)); 
+  color: #6a6340;
+  box-shadow: 0px 0px 3px rgba(0,0,0,0.3);  
+}
+
+.ribbon_text:before, .ribbon_text:after {
+  content: "";
+  border-top:   3px solid #6e8900;   
+  border-left:  3px solid transparent;
+  border-right: 3px solid transparent;
+  position:absolute;
+  bottom: -3px;
+}
+
+.ribbon_text:before {
+  left: 0;
+}
+.ribbon_text:after {
+  right: 0;
+}
+]]></Css>
+    <Javascript><![CDATA[function(object) { 
+  object.$el.firstOfClass('ribbon_text').text(object.text);
+}]]></Javascript>
+  </xtml>
+</Component>
+</xtml>
+
+
+<xtml ns="transition">
+
+<Component id="MobileSlide" type="transition.ReplaceTransitionStyle">
+  <Param name="Direction" type="enum" Options="From Right,From Left" Default="From Right" />
+  <Param name="Duration" Default="300" />
+  <Param name="BackgroundColor" Default="white" />
+  <xtml t="ui.CustomStyle" Direction="%$Direction%" Duration="%$Duration%">
+    <Css><![CDATA[#this {
+  position:relative;
+}
+#this .aa_new {
+  position: absolute;
+  top:0;
+  left:0;
+  width:100%;
+}
+#this .aa_original {
+  position: absolute;
+  top:0;
+  left:0;
+}
+#this .aa_new {
+  background:%$BackgroundColor%;
+  min-height:100\%;
+}
+#this.slide_from_right .aa_new {
+  -webkit-animation: #id_slide_from_right %$Duration%ms;
+}
+#this.slide_from_left .aa_new {
+  -webkit-animation: #id_slide_from_left %$Duration%ms;
+}
+@-webkit-keyframes #id_slide_from_right
+{
+  from {
+    -webkit-transform: translateX(100\%);
+  }
+  to {
+    -webkit-transform: translateX();
+  }
+}
+@-webkit-keyframes #id_slide_from_left
+{
+  from {
+    -webkit-transform: translateX(-100\%);
+  }
+  to {
+    -webkit-transform: translateX();
+  }
+}
+]]></Css>
+    <Html><![CDATA[]]></Html>
+    <Javascript><![CDATA[function animate(transition) {
+  aa_mobile_slide_transition({ transition: transition, duration: transition.params.Duration, direction: transition.params.Direction});
+}]]></Javascript>
+  </xtml>
+</Component>
+</xtml>
+
+<xtml ns="visual_container">
+<Component id="MobileSkin" type="visual_container.Style">
+  <xtml t="ui.CustomStyle">
+    <Css><![CDATA[#this {
+  display: inline-block;
+  position: relative;
+  border1: 1px solid #AF9D9D;
+  border-radius: 5px;
+  background-clip: padding-box;
+  background-color1: #232323;
+  background-color: #fdfdfd;
+  box-shadow: 0 0 15px rgba(0,0,0,.28), inset 0 1px 1px rgba(255,255,255,.45), inset 0 0 2px rgba(255,255,255,.2);
+  padding: 13px;
+}
+#this>.section_body {
+  background:white;
+}
+#this>.section_body::-webkit-scrollbar
+ {
+  width: 5px;
+}
+#this>.section_body::-webkit-scrollbar-thumb
+{
+  border-radius: 5px;
+  background: #BBB;
+}
+#this>.section_body::-webkit-scrollbar-track {
+  background: #111;
+}
+]]></Css>
+    <Html><![CDATA[<div>
+  <div class="section_body"/>
+</div>]]></Html>
+    <Javascript><![CDATA[function(section) {
+  aa_visualContainerStyle(section);
+}]]></Javascript>
+  </xtml>
+</Component>
+
+<Component id="SimpleSkin" type="visual_container.Style">
+  <xtml t="ui.CustomStyle">
+    <Css><![CDATA[#this {
+  position: relative;
+  border: 1px solid #ccc;
+  border-radius: 1px;
+}
+#this>.section_body {
+  background:white;
+}
+#this>.section_body::-webkit-scrollbar
+{
+  width: 5px;
+}
+#this>.section_body::-webkit-scrollbar-thumb
+{
+  border-radius: 5px;
+  background: #BBB;
+}
+#this>.section_body::-webkit-scrollbar-track {
+  background: #111;
+}
+]]></Css>
+    <Html><![CDATA[<div>
+  <div class="section_body"/>
+</div>]]></Html>
+    <Javascript><![CDATA[function(section) {
+  aa_visualContainerStyle(section);
+}]]></Javascript>
+  </xtml>
+</Component>
+
+</xtml>
+
+<xtml ns="editable_boolean">
+<Component id="CheckBoxSmallBoldTitles" type="editable_boolean.Style">
+  <xtml t="ui.CustomStyle">
+    <Css><![CDATA[#this>div {
+  display: inline-block;
+  vertical-align: top;
+  padding-top: 2px;
+  padding-left:2px;
+  cursor: default;
+color: #666;
+font-weight: bold;
+font-size: 11px;
+font-family: "lucida grande",tahoma,verdana,arial,sans-serif;  
+
+}
+#this>input {
+  margin-left: 0px;
+}
+]]></Css>
+    <Html><![CDATA[<div class="aa_checkbox_div"><input type="checkbox" class="aa_checkbox_input"><div class="aa_checkbox_text"/></div>]]></Html>
+    <Javascript><![CDATA[function(checkbox) {
+  aa_native_checkbox(checkbox,{
+    InputElement: jQuery(checkbox.control).find('>input')[0],
+    TextElement: jQuery(checkbox.control).find('>div')[0],
+  });
+}]]></Javascript>
+  </xtml>
+</Component>
+</xtml>
+
+<xtml ns="tabs">
+<Component id="LMCTabs" type="tabs.Style">
+  <xtml t="ui.CustomStyle">
+    <Css><![CDATA[#this {
+  position:relative;
+  padding:1px;
+}
+#this >div>div.aatabs_tab {
+  cursor:pointer;
+  position:relative;
+  float:left;
+  min-width:130px;
+  background:#75A4D6;
+  border-left:1px solid #c2c6c9;
+  z-index:1;
+}
+#this >div>div>div.aatabs_tab_text {
+  font-family:'Noto Sans';
+  text-align:center;
+  color:#C1DBEE;
+  font-weight:bold;
+  font-size:14px;
+  padding:15px 0px 15px 0px;
+}
+#this >div>div.aatabs_tab:first-child {
+  border-left:none;
+}
+#this >div>div.aatabs_tab.aa_next_to_selected_tab {
+  border-left:none;
+}
+#this >div>div.aatabs_tab.aa_selected_tab {
+  margin-top:-1px;
+  z-index:2;
+  border-left:none;
+  background:#fff;
+  border:1px solid #CACDCE;
+  border-bottom:none;
+  overflow:hidden;
+  height:49px;
+}
+#this >div>div.aatabs_tab.aa_selected_tab .aatabs_tab_text {
+  padding-bottom:20px;
+  color:#4a5056;
+  display:block;
+}
+#this >.aatabs_contents {
+  z-index:1;
+  position:relative;
+  top:-1px;
+  border:1px solid #CACDCE;
+  background:#fff;
+  clear:both;
+  min-height:400px;
+  padding:20px 20px 20px 20px;
+  width:520px;
+}
+@font-face {
+  font-family:'Noto Sans';
+  font-style:normal;
+  font-weight:400;
+  src:local('Noto Sans'), local('NotoSans'), url(//jb-letmesee.appspot.com/fonts/NotoSans.woff) format('woff');
+}
+@font-face {
+  font-family:'Noto Sans';
+  font-style:normal;
+  font-weight:700;
+  src:local('Noto Sans Bold'), local('NotoSans-Bold'), url(//jb-letmesee.appspot.com/fonts/NotoSans.woff) format('woff');
+}]]></Css>
+    <Html><![CDATA[<div>
+  <div class="aatabs_tabs">
+    <div class="aatabs_tab">
+      <div class="aatabs_tab_text"/>
+    </div>
+  </div>
+  <div class="aatabs_contents"/>
+</div>]]></Html>
+    <Javascript><![CDATA[function(tabcontrol) {
+ aa_tabcontrol(tabcontrol,{});
+}]]></Javascript>
+  </xtml>
+</Component>
+</xtml>
+
+<xtml ns="btn">
+<Component id="LMCButton" type="btn.Style">
+  <Param name="Width" Default="140px" slider="true" sliderUnit="px"/>
+  <Param name="WaitingText"/>
+  <xtml t="ui.CustomStyle">
+    <Css><![CDATA[#this {
+  margin:0;
+  border:none;
+  cursor:pointer;
+  text-align:center;
+  color:#FFFFFF;
+  font-size:14px;
+  min-width:%$Width%;
+  vertical-align:middle;
+  line-height:26px;
+  font-family:arial;
+  padding:5px 14px;
+  background-color:#47BAC1;
+}
+.lmc_manager #this {
+  background-color:#539469;
+}
+#this:hover {
+  background-color:#6CA8AC;
+}
+.lmc_manager #this:hover {
+  background-color:#32794A;
+}
+#this:active {
+  background-color:#487E81;
+  outline:0;
+  background-image:none;
+}
+.lmc_manager #this:active {
+  background-color:#32794A;
+}
+#this.disabled {
+  cursor:default;
+  background: #B6CECF;
+}
+#this.waiting {
+  cursor:default;
+  background:#55878A;
+  outline: none;  
+}]]></Css>
+    <Html><![CDATA[<button />]]></Html>
+    <Javascript><![CDATA[function render(button) {
+  aa_button(button,{
+    onStartWaiting: function() {
+      button.$el.text('%$WaitingText%' || 'running ...');
+//      button.$el.closest('.aa_popup_frame').addClass('dialog_loading');
+    },
+    onEndWaiting: function() {
+//      button.$el.closest('.aa_popup_frame').removeClass('dialog_loading');
+      button.$el.text(button.text)
+    },
+  });
+}
+]]></Javascript>
+  </xtml>
+</Component>
+<Component id="LMCGreyButton" type="btn.Style">
+  <Param name="Width" Default="140px" slider="true" sliderUnit="px"/>
+  <xtml t="ui.CustomStyle">
+    <Css><![CDATA[#this { margin: 0; border: none; cursor: pointer; 
+  text-align: center; color: #FFFFFF; 
+  font-size: 14px; min-width: %$Width%; 
+  vertical-align: middle; line-height: 26px; 
+  font-family: Arial; padding: 5px 14px; 
+  background-color: #bdbdbd; }
+#this:hover { background-color: #ccc; }
+#this:active { background-color: #ddd; outline: 0; 
+  background-image: none; }
+#this.disabled { cursor: default; background: #eee; 
+  border: 1px solid #ccc; color: #999; }
+]]></Css>
+    <Html><![CDATA[<button />]]></Html>
+    <Javascript><![CDATA[function render(button) {
+  aa_button(button,{
+    onStartWaiting: function() {
+      button.$el.text('%$WaitingText%' || 'running ...');
+    },
+    onEndWaiting: function() {
+      button.$el.text(button.text)
+    },
+  });
+}]]></Javascript>
+  </xtml>
+</Component>
+
+</xtml>
+
+<xtml ns="editable_text">
+<Component id="LMCTextbox" type="editable_text.Style">
+  <Param name="Width" Default="369px" slider="true" sliderUnit="px"/>
+  <Param name="HtmlInputType" />
+  <xtml t="ui.CustomStyle">
+    <Css><![CDATA[#this {
+  border:1px solid #C8CCCF;
+  font-size:18px;
+  padding:0 6px;
+  height:36px;
+  width:%$Width%;
+  background:#fff;
+  box-sizing:border-box;
+}
+#this:focus {
+  border-color:rgba(82, 168, 236, 0.8);
+  outline:0;
+  outline:thin dotted 9;
+  box-shadow:inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(82, 168, 236, 0.6);
+}
+#this.placeholder {
+  color:#8B8B8B;
+}
+#this.aa_error {
+  background:#fbebeb;
+  border:1px solid #feb2b2;
+  color:#ec643d !important;
+}]]></Css>
+    <Html><![CDATA[<input type="%$HtmlInputType%"/>]]></Html>
+    <Javascript><![CDATA[function(textbox) {
+  aa_jbart_textbox(textbox);
+}]]></Javascript>
+  </xtml>
+</Component>
+</xtml>
+
+<xtml ns="properties">
+<Component id="LMCPropertySheet" type="properties.Style">
+  <xtml t="ui.CustomStyle">
+    <Css><![CDATA[#this>.aa_property>.aa_property_title {
+width: 150px;
+overflow: hidden;
+text-overflow: ellipsis;
+vertical-align: top;
+margin-top: 8px;
+font: 16px arial;
+color: #8E8E8E;
+}
+#this {} #this>.aa_property {
+  margin-bottom:20px;
+}
+#this>.aa_property:last-child {
+  margin-bottom:0px;
+}
+#this>.aa_property.aa_mandatory>.aa_property_title {
+  font-weight:bold;
+}
+
+#this>.aa_property>div {
+  display:inline-block;
+}
+#this>.aa_property.aa_hiding_title>.aa_property_title {
+  display:none;
+}
+#this>.aa_property.aa_hiding_title>.aa_property_content {
+  display:inline-block;
+}
+.lmc_agent_mobile #this .aa_property_content {
+display: block !important;
+}
+.aa_error_message {
+  display:block;
+  color:#C24343;
+  padding-top:3px;
+}
+#this>.aa_property>.aa_property_content>.aa_property_description {
+  padding-top:5px;
+  color:#8C8C8C;
+  font-style:italic;
+  font-size:11px;
+  white-space:normal;
+}]]></Css>
+    <Html><![CDATA[<div>
+  <div class="aa_property">
+  	<div class="aa_property_title" />
+  	<div class="aa_property_content" />
+  </div>
+</div>]]></Html>
+    <Javascript><![CDATA[function render(propertySheet) {
+  aa_propertySheet(propertySheet);
+}]]></Javascript>
+  </xtml>
+</Component>
+</xtml>
+
+<xtml ns="editable_boolean">
+<Component id="LMCCheckbox" type="editable_boolean.Style">
+  <xtml t="ui.CustomStyle">
+    <Css><![CDATA[#this {
+  cursor:pointer;
+}
+.aa_checkbox_icon {
+  width:16px;
+  height:16px;
+  background:url('_jbartImages_/LetMeSee/lmc_sprite-16.png?v=0608') -16px -16px;
+  padding:0;
+}
+#this.checked .aa_checkbox_icon {
+  background-position:0px -16px;
+}
+#this>div {
+  display:inline-block;
+  vertical-align:top;
+}
+.aa_checkbox_text {
+  padding-left:4px;
+  font:14px arial;
+  max-width:90\%;
+}]]></Css>
+    <Html><![CDATA[<div>
+  <div class="aa_checkbox_icon" />
+  <div class="aa_checkbox_text"/>
+</div>]]></Html>
+    <Javascript><![CDATA[function(checkbox) {
+  aa_div_checkbox(checkbox);
+}
+]]></Javascript>
+  </xtml>
+</Component>
+</xtml>
+
+<xtml ns="btn">
+<Component id="MobilePagesButton" type="btn.Style">
+  <xtml t="ui.CustomStyle" base="btn.JBart">
+    <Html><![CDATA[<div>
+  <div class="bline bline1" />
+  <div class="bline bline2" />
+  <div class="bline bline3" />
+</div>]]></Html>
+    <Css><![CDATA[#this {
+  background:transparent;
+  line-height:38px;
+  font-size:28px;
+  border-radius:3px;
+  border:1px solid #ccc9c3;
+  padding:0 10px;
+  display:block;
+  cursor:pointer;
+  width:50px;
+  height:40px;
+  box-sizing:border-box;
+}
+.bline {
+  border-left:1px solid #BDC3C7;
+  border-right:1px solid #BDC3C7;
+  height:5px;
+  background:#768186;
+  margin-bottom:2px;
+  width:25px;
+}
+.bline1 {
+  margin-top:10px;
+}
+]]></Css>
+    <Javascript><![CDATA[function render(button) {
+  button.$el.click(function(e) { 
+  	aa_buttonRunAction(button,e);
+  });
+}
+]]></Javascript>
+  </xtml>
+</Component>
+</xtml>
+
+<xtml ns="btn">
+<Component id="LMCHyperlink" type="btn.Style">
+  <xtml t="ui.CustomStyle">
+    <Css><![CDATA[#this {
+  display:block;
+  cursor:pointer;
+  font:14px arial;
+  color:#1E64B5;
+  text-decoration:none;
+}
+#this:hover {
+  text-decoration:underline;
+}
+#this.disabled {
+  text-decoration:none;
+  cursor:default;
+}]]></Css>
+    <Html><![CDATA[<span />]]></Html>
+    <Javascript><![CDATA[function render(button) {
+  aa_button(button);
+}]]></Javascript>
+  </xtml>
+</Component>
+</xtml>
+
+<xtml ns="section">
+<Component id="LMCRoomsSection" type="section.Style">
+  <xtml t="ui.CustomStyle" base="section.ExpandCollapseNoUnderline">
+    <Html><![CDATA[<div>
+  <div class="section_header">
+    <span class="section_title"/>
+    <span class="toggle_button"/>
+  </div>
+  <div class="section_body"/>
+</div>]]></Html>
+    <Css><![CDATA[#this {
+  padding-top:3px;
+  padding-bottom:0px;
+}
+#this >.section_header {
+  cursor:pointer;
+  padding-bottom:15px;
+  position:relative;
+}
+#this >div>.section_title {
+  display:inline-block;
+  padding-left:15px;
+  font-size:12px;
+  font-weight:bold;
+  color:#47BAC1;
+  vertical-align:top;
+  padding-top:4px;
+}
+.lmc_manager #this >div>.section_title {
+color: #539469;
+}
+#this >div>.toggle_button:before, #this >div>.toggle_button:after {
+  position:absolute;
+  background:#46b6bc;
+  width:2px;
+  height:8px;
+  border-radius:2px 2px 0 0;
+  content:"";
+  right:13px;
+  top:8px;
+  -webkit-transform:rotate(-45deg);
+  -webkit-transform-origin:0 100\%;
+}
+.lmc_manager #this >div>.toggle_button:before,
+.lmc_manager #this >div>.toggle_button:after {
+background: #539469;
+}
+
+#this >div>.toggle_button:after {
+  right:24px;
+  -webkit-transform:rotate(45deg);
+  -webkit-transform-origin:100\% 100\%;
+}
+#this.collapsed>div>.toggle_button:before {
+  right:18px;
+  -webkit-transform:rotate(45deg);
+}
+#this.collapsed>div>.toggle_button:after {
+  -webkit-transform:rotate(315deg);
+  right:18px;
+}]]></Css>
+    <Javascript><![CDATA[function(section) { 
+   var sectionID = section.field.Id;
+  
+   section.setImageSource('.section_image',section.Image);
+   section.setInnerHTML('.section_title',section.Title); 
+   section.addSectionBody('.section_body');
+   if (window.sessionStorage['lmcsection_'+sectionID] == 'collapsed') {
+      section.$el.addClass('collapsed');
+      section.$el.find('.section_body').hide();
+   }
+
+  section.$el.find('.section_header').click(function() {
+    section.$el.toggleClass('collapsed');
+    if ( section.$el.hasClass('collapsed') )
+     section.$el.find('.section_body').animate({height: 'hide'},400);   
+   else 
+     section.$el.find('.section_body').animate({height: 'show'},400);  
+    
+    window.sessionStorage['lmcsection_'+sectionID] = section.$el.hasClass('collapsed') ? 'collapsed' : '';
+  });
+}]]></Javascript>
+  </xtml>
+</Component>
+</xtml>
+
+<xtml ns="popup">
+<Component id="LMCDialog" type="popup.Style">
+  <Param name="Opacity" type="enum" Options="regular,light,none" />
+  <Param name="AutoFocus" type="data.Boolean" Default="true" />
+  <xtml t="ui.CustomStyle" Opacity="%$Opacity%" AutoFocus="%$AutoFocus%">
+    <Css><![CDATA[#this>.aa_popup_frame {
+  border-top: 6px solid #00BAC1;
+  background-color:#eee;
+  min-width:300px;
+  min-height:150px;
+  font-family: arial;
+}
+#this.no_opacity>.aa_popup_frame {
+  border:2px solid #ccc;
+  border-top: 6px solid #00BAC1;
+  box-shadow: 2px 2px 5px 0px #888;  
+}
+.lmc_manager #this>.aa_popup_frame {
+  border-color: #539469;
+}
+.aa_popup_title {
+  position: absolute;  
+  top:0;
+  left:0;
+  right:30px;
+  cursor:move;
+  color:#000;
+  padding-top:15px;
+  padding-right:30px;
+  padding-bottom:15px;
+  padding-left:30px;
+  font:17px 'noto sans';
+  min-height:12px;
+  z-index:1;
+}
+.aa_popup_close {
+  cursor: pointer;
+  position:absolute;
+  background: url('_jbartImages_/LetMeSee/lmc_sprite-16.png?v=0608') no-repeat -64px -16px;
+  width: 16px;
+  height: 16px;
+  right:8px;
+  top: 8px;
+  z-index:3;
+}
+.aa_popup_close:hover {
+  background-position: -64px -16px;
+}
+
+#this>.aa_popup_frame>.aa_popup_contents {
+  padding-top:60px;
+  padding-right:30px;
+  padding-bottom:25px;
+  padding-left:30px;
+}
+#this>.aa_popup_cover {
+  position:fixed;
+  opacity:0.8;
+  background:#000;
+  left:0;
+  right:0;
+  top:0;
+  bottom:0;
+}
+#this.light_opacity>.aa_popup_cover {
+  opacity:0.5;
+}
+#this.no_opacity>.aa_popup_cover {
+  display: none;
+}
+#this>.aa_popup_frame:focus {
+  outline:none;
+}
+#this>.aa_popup_frame>.aa_popup_loading_cover {
+  display:none;
+}
+#this>.aa_popup_frame.dialog_loading>.aa_popup_loading_cover {
+  position:absolute;
+  top:0; left:0; right:0; bottom:0;
+  background: #333;
+  opacity:0.8;
+  z-index:1;
+  display:block;
+}
+.aa_error_message {
+  display:block;
+  color:#C24343;
+  padding-top:3px;
+}]]></Css>
+    <Html><![CDATA[<div>
+ <div class="aa_popup_cover" />
+ <div class="aa_popup_frame">
+  <div class="aa_popup_title" />      
+  <div class="aa_popup_close" />
+  <div class="aa_popup_contents" />
+  <div class="aa_popup_loading_cover"/>
+ </div>
+</div>]]></Html>
+    <Javascript><![CDATA[function show(popup) {
+    if (popup.params && popup.params.Opacity == 'light') popup.$el.addClass('light_opacity');
+    if (popup.params && popup.params.Opacity == 'none') popup.$el.addClass('no_opacity');
+    var features = [
+        aa_popup_title_dragAndDrop(),
+        aa_popup_feature_closeOnEsc(),
+        aa_popup_feature_closeOnBackButton(),
+    ];
+    if (popup.params.AutoFocus == 'true')
+      features.push(aa_popup_feature_autoFocus());
+    aa_popup(popup,{
+      screenCover: true,
+      features: features
+    });
+}]]></Javascript>
+  </xtml>
+</Component>
+</xtml>
+
+<xtml ns="btn">
+</xtml>
+
+<xtml ns="btn">
+<Component id="Turquoise" type="btn.Style">
+  <xtml t="ui.CustomStyle">
+    <Css><![CDATA[#this {
+  cursor:pointer;
+  text-transform:capitalize;
+  text-align:center;
+  color:white;
+  background:#019DE1;
+  text-transform:capitalize;
+  font-size:16px;
+  margin:0;
+  border-radius:2px;
+  border:1px solid #B0DDF0;
+  box-shadow:.03em .03em .05em 0px rgba(0, 0, 0, 0.4);
+  min-width:60px;
+  vertical-align:middle;
+  line-height:27px;
+  padding:0px 11px 1px 12px;
+}
+#this:hover {
+  background-image:-webkit-linear-gradient(-90deg, #75B2DD 0\%, #0F52BA 100\%);
+}
+#this:active {
+  background:#5987A8;
+  background-image:-webkit-linear-gradient(90deg, #C04000 0\%, #FF5A36 39\%, white 100\%);
+  outline:0;
+  background-image:none;
+}
+#this.disabled {
+  background-image:none;
+  background:#5987A8;
+  cursor:default;
+}]]></Css>
+    <Html><![CDATA[<button />]]></Html>
+    <Javascript><![CDATA[function render(button) {
+  aa_button(button);
+}]]></Javascript>
+  </xtml>
+</Component>
+</xtml>
+
+<xtml ns="properties">
+<Component id="LMCDialogPropertySheet" type="properties.Style">
+  <xtml t="ui.CustomStyle">
+    <Css><![CDATA[#this {
+}
+#this>.aa_property {
+  margin-bottom:20px;
+}
+#this>.aa_property:last-child {
+  margin-bottom:0px;
+}
+
+#this>.aa_property.aa_mandatory>.aa_property_title {
+  font-weight: bold;
+}
+#this>.aa_property>.aa_property_title {
+  margin-bottom:5px;
+  font: 15px arial;
+  color: #999;
+}
+#this>.aa_property>div {
+  display: block;
+}
+#this>.aa_property.aa_hiding_title>.aa_property_title {
+  display: none;
+}
+#this>.aa_property.aa_hiding_title>.aa_property_content {
+  display: block;
+}
+.aa_error_message {
+  display: block;
+  color: #C24343;
+  padding-top:3px;
+}
+#this>.aa_property>.aa_property_content>.aa_property_description {
+  padding-top:5px;
+  color: #8C8C8C;
+  font-style: italic;
+  font-size: 11px;
+  white-space: normal;  
+}
+]]></Css>
+    <Html><![CDATA[<div>
+  <div class="aa_property">
+  	<div class="aa_property_title" />
+  	<div class="aa_property_content" />
+  </div>
+</div>]]></Html>
+    <Javascript><![CDATA[function render(propertySheet) {
+  aa_propertySheet(propertySheet);
+}]]></Javascript>
+  </xtml>
+</Component>
+</xtml>
+
+<xtml ns="editable_picklist">
+<Component id="LMCPicklist" type="editable_picklist.Style">
+  <Param name="Width" Default="285px" slider="true" sliderUnit="px"/>
+  <xtml t="ui.CustomStyle">
+    <Css><![CDATA[#this {
+  display: block;
+}
+.aa_picklist_div {
+  position: relative;
+  cursor: arrow;
+  width: %$Width%;
+  height: 36px;
+  border: 1px solid #BDC7D8;
+  background: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow:ellipsis;
+  box-sizing: border-box;
+font-size: 18px;
+padding: 6px 6px 2px 6px;
+font-family: arial;  
+}
+.aa_picklist_div:focus {
+  border-color: rgba(82, 168, 236, 0.8);
+  outline: 0;
+  outline: thin dotted 9;
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(82, 168, 236, 0.6);
+}
+.aa_picklist_div>.aa_picklist_text {
+  vertical-align:top;
+  display: inline-block;
+}
+.aa_picklist_div>.aa_picklist_image {
+  display: inline-block;
+  padding-right: 5px;
+}
+.aa_picklist_div>.aa_picklist_drop_image {
+  position: absolute;
+  right: 26px;
+  top: 6px;
+  display: inline-block;
+}
+.aa_picklist_div:hover .aa_picklist_drop_image:before,
+.aa_picklist_div:hover .aa_picklist_drop_image:after,
+.aa_picklist_div.aa_opened_popup .aa_picklist_drop_image:before,
+.aa_picklist_div.aa_opened_popup .aa_picklist_drop_image:after
+{
+  background: #528DD1;
+}
+.aa_picklist_drop_image:before, .aa_picklist_drop_image:after {
+  position: absolute;
+  background: #999;
+  width: 3px;
+  height: 8px;
+  border-radius: 2px 2px 0 0;
+  content: "";
+  left: 10px;
+  top: 6px;
+  -moz-border-radius: 2px 2px 0 0;
+  -webkit-transform: rotate(-45deg);
+  -moz-transform: rotate(-45deg);
+  -ms-transform: rotate(-45deg);
+  -o-transform: rotate(-45deg);
+  transform: rotate(-45deg);
+  -webkit-transform-origin: 0 100\%;
+  -moz-transform-origin: 0 100\%;
+  -ms-transform-origin: 0 100\%;
+  -o-transform-origin: 0 100\%;
+  transform-origin: 0 100\%;
+}
+.aa_picklist_drop_image:after {
+  left: 8px;
+  -webkit-transform: rotate(45deg);
+  -moz-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  -o-transform: rotate(45deg);
+  transform: rotate(45deg);
+  -webkit-transform-origin: 100\% 100\%;
+  -moz-transform-origin: 100\% 100\%;
+  -ms-transform-origin: 100\% 100\%;
+  -o-transform-origin: 100\% 100\%;
+  transform-origin :100\% 100\%;
+}
+
+#this.aa_error .aa_picklist_div {
+  background:#fbebeb;
+  border: 1px solid #feb2b2;
+}
+.aa_picklist_div>.aa_picklist_text.placeholder {
+  font-style: italic;
+  color: #8B8B8B;
+}
+#popup.aa_picklist_popup {
+  padding: 0 0 2px 0;
+  box-shadow: 2px 2px 7px 1px rgba(50,50,50,0.5);
+  overflow-y: auto;
+  overflow-x: hidden;
+  font:12px times;
+  background: white;
+  border: 1px solid gray;
+  min-height:50px;
+  max-height:300px;
+}
+#popup.aa_picklist_popup:focus {
+  outline: none;
+}
+.ie #popup.aa_picklist_popup {
+  border: 1px solid black;
+}
+#popup.aa_picklist_popup.aa_hide_searchbox .aa_picklist_popup_input {
+  display: none;
+}
+#popup.aa_picklist_popup .aa_picklist_popup_input {
+  width: 100\%;
+  box-sizing: border-box;
+  height: 30px;
+  font: 16px arial;
+  padding-top: 3px;
+  padding-right: 3px;
+  padding-bottom: 3px;
+  padding-left: 3px;
+  border-top:none;
+  border-left:none;
+  border-right:none;
+  border-bottom: 1px solid rgba(82, 168, 236, 0.8);
+  outline: none;
+}
+#popup.aa_picklist_popup .aa_picklist_popup_input:focus {
+  outline: 0;
+}
+#popup.aa_picklist_popup .aa_picklist_item {
+  cursor: pointer;
+  width: 100\%;
+  height: 30px;
+  clear: both;
+}
+#popup.aa_picklist_popup .aa_picklist_item:focus {
+  outline: none;
+}
+#popup.aa_picklist_popup .aa_picklist_item_image {
+  float:left;
+  padding: 1px 5px 0 3px;
+}
+#popup.aa_picklist_popup .aa_picklist_item_image img {
+  height:14px;
+}
+#popup.aa_picklist_popup .aa_picklist_item.selected {
+  background: #D9E8FB;
+}
+#popup.aa_picklist_popup .aa_picklist_item_text {
+  cursor:pointer;
+  padding-top: 2px;
+  padding-right: 4px;
+  padding-bottom: 2px;
+  padding-left: 4px;
+  white-space: nowrap;
+  font:16px arial;
+}
+#popup.aa_picklist_popup .aa_highlight {
+  color: blue;
+}
+#popup.aa_picklist_popup .aa_picklist_no_results {
+  padding: 3px 5px;
+}
+#popup.aa_picklist_popup .aa_picklist_show_all {
+  padding: 5px 5px;
+  cursor: pointer;
+  color: #333;
+}
+]]></Css>
+    <Html><![CDATA[<div>
+  <div class="aa_picklist_div">
+    <div class="aa_picklist_image"/>
+    <div class="aa_picklist_text"/>
+    <div class="aa_picklist_drop_image"/>
+  </div>
+  <div class="aa_picklist_popup">
+    <div>
+      <input class="aa_picklist_popup_input" />
+      <div>
+        <div class="aa_picklist_item">
+          <div class="aa_picklist_item_image" />
+          <div class="aa_picklist_item_text" />
+        </div>
+        <div class="aa_picklist_no_results" />
+        <div class="aa_picklist_show_all" />
+      </div>
+    </div>
+  </div>
+</div>]]></Html>
+    <Javascript><![CDATA[function render(picklist) { 
+  aa_picklist(picklist);
+}]]></Javascript>
+  </xtml>
+</Component>
+</xtml>
+
+<xtml ns="loading_style">
+</xtml>
+
+<xtml ns="tabs">
+<Component id="LMCDialogTabs" type="tabs.Style">
+  <Param name="HeightMargin" Default="300"/>
+  <Param name="MinHeight" Default="300"/>
+  <Param name="MaxHeight" Default="650"/>
+  <xtml t="ui.CustomStyle" HeightMargin="%$HeightMargin%">
+    <Css><![CDATA[#this>.aatabs_parent {
+  height:36px;
+  border-bottom:1px solid #CCD7DD;
+}
+#this>div>.aatabs_tab {
+  cursor:pointer;
+  float:left;
+  padding:8px 20px;
+  margin-right:10px;
+}
+#this>div>.aatabs_tab.aa_selected_tab {
+  border-bottom:3px solid #47BAC1;
+}
+.lmc_manager #this>div>.aatabs_tab.aa_selected_tab {
+  border-color:#539469;
+}
+#this >div>div>div.aatabs_tab_text {
+  text-align:center;
+  float:left;
+  color:#999;
+  font:bold 13px'noto sans';
+  display:block;
+  text-decoration:none;
+}
+#this>div>.aatabs_tab.aa_selected_tab .aatabs_tab_text {
+  color:#4a5056;
+}
+#this >.aatabs_contents {
+  padding-top:10px;
+  padding-right:20px;
+  padding-bottom:15px;
+  padding-left:25px;
+  clear:both;
+  min-height:%$MinHeight%;
+  overflow:auto;
+}
+#this >.aatabs_contents::-webkit-scrollbar {
+  width:10px;
+}
+#this >.aatabs_contents::-webkit-scrollbar-thumb {
+  background:#76D3D7;
+}
+#this >.aatabs_contents::-webkit-scrollbar-track {
+  background:transparent;
+}
+.lmc_manager #this >.aatabs_contents::-webkit-scrollbar-thumb {
+  background:#A1C1AB;
+}]]></Css>
+    <Html><![CDATA[<div>
+  <div class="aatabs_parent">
+    <div class="aatabs_tab">
+      <div class="aatabs_tab_text"/>
+      <div class="tab_cobrowse"/>
+    </div>
+  </div>
+  <div class="aatabs_contents"/>
+</div>]]></Html>
+    <Javascript><![CDATA[function(tabcontrol) {
+  var height = aa_screen_size(false).height - parseInt(tabcontrol.params.HeightMargin);
+  var maxHeight = parseInt(tabcontrol.params.MaxHeight);
+  if (maxHeight && height > maxHeight) height = maxHeight;
+  tabcontrol.$el.firstOfClass('aatabs_contents').height(height);
+
+  aa_tabcontrol(tabcontrol,{});
+}]]></Javascript>
+  </xtml>
+</Component>
+</xtml>
+
+<xtml ns="editable_text">
+<Component id="LMCTextboxInTable" type="editable_text.Style">
+  <xtml t="ui.CustomStyle">
+    <Css><![CDATA[#this {
+  font-size:14px;
+  padding:0 6px;
+  height:30px;
+  box-sizing:border-box;
+  width:100\%;
+  border:1px solid transparent;
+  background:transparent;
+}
+#this:hover {
+  background:rgba(255,255,255,0.8);
+}
+#this:focus {
+  background:#fff;
+  border:1px solid #C8CCCF;
+}
+#this:focus {
+  border-color:rgba(82, 168, 236, 0.8);
+  outline:0;
+  outline:thin dotted 9;
+  box-shadow:inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(82, 168, 236, 0.6);
+}
+#this.placeholder {
+  color:#8B8B8B;
+}
+#this.aa_error {
+  background:#fbebeb;
+  border:1px solid #feb2b2;
+  color:#ec643d;
+}]]></Css>
+    <Html><![CDATA[<input/>]]></Html>
+    <Javascript><![CDATA[function(textbox) {
+  aa_jbart_textbox(textbox);
+}]]></Javascript>
+  </xtml>
+</Component>
+</xtml>
+
+<xtml ns="multiple_picklist">
+<Component id="LMCClientMultiPicklist" type="multiple_picklist.Style">
+  <xtml t="ui.CustomStyle">
+    <Css><![CDATA[.aa_mpicklist_div { width: 100\%; border: 1px solid transparent;
+}
+.aa_mpicklist_div:hover,
+.aa_mpicklist_div:focus 
+{
+border-color:#BDC7D8;
+}
+#this.active .aa_mpicklist_div { border-color: #5897fb; }      
+.aa_mpicklist_item { 
+  float:left;
+  height: 13px;
+  border: 1px solid #aaa; 
+  padding:2px 3px 4px 3px;
+  background-color: #E4E4E4; 
+  border-radius: 3px;
+  box-shadow: 0 0 2px white inset, 0 1px 0 rgba(0, 0, 0, 0.05);
+  margin: 3px 3px 3px 3px;
+  background-image: -webkit-gradient(linear, 0\% 0\%, 0\% 100\%, color-stop(20\%, #F4F4F4), color-stop(50\%, #F0F0F0), color-stop(52\%, #E8E8E8), color-stop(100\%, #EEE));
+}
+.aa_mpicklist_item_text { display: inline-block; color: #333; line-height: 13px; font: 13px arial; }
+
+.aa_mpicklist_item_del {
+background: url('_jbartImages_/jbart_icons.png') -65px -4px no-repeat; 
+ display: inline-block; 
+width: 13px; height: 13px; vertical-align: top; cursor: pointer; 
+margin-top: 2px;
+}
+.aa_mpicklist_search { border:none; padding-left:5px;  height: 24px; margin-top:2px; float:left; box-sizing: border-box;
+  background: transparent;
+}
+
+#popup.aa_mpicklist_popup {
+  padding: 0 0 2px 0;
+  box-shadow: 2px 2px 7px 1px rgba(50,50,50,0.5);
+  overflow-y: auto;
+  overflow-x: hidden;
+  font:12px times;
+  background: white;
+  border: 1px solid gray;
+  min-height:50px;
+  max-height:200px;
+}
+#popup.aa_mpicklist_popup:focus {
+  outline: none;
+}
+.ie #popup.aa_mpicklist_popup {
+  border: 1px solid black;
+}
+#popup.aa_mpicklist_popup.aa_hide_searchbox .aa_picklist_popup_input {
+  display: none;
+}
+#popup.aa_mpicklist_popup .aa_picklist_popup_input {
+  font-size: 11px;
+  width: 100\%;
+  box-sizing: border-box;
+  height: 22px;
+  padding-top: 3px;
+  padding-right: 3px;
+  padding-bottom: 3px;
+  padding-left: 3px;
+  border-top:none;
+  border-left:none;
+  border-right:none;
+  border-bottom: 1px solid rgba(82, 168, 236, 0.8);
+  outline: none;
+}
+#popup.aa_mpicklist_popup .aa_picklist_popup_input:focus {
+  outline: 0;
+}
+#popup.aa_mpicklist_popup .aa_picklist_item {
+  cursor: pointer;
+  width: 100\%;
+  height:18px;
+  clear: both;
+}
+#popup.aa_mpicklist_popup .aa_picklist_item:focus {
+  outline: none;
+}
+#popup.aa_mpicklist_popup .aa_picklist_item_image {
+  float:left;
+  padding: 1px 5px 0 3px;
+}
+#popup.aa_mpicklist_popup .aa_picklist_item_image img {
+  height:14px;
+}
+#popup.aa_mpicklist_popup .aa_picklist_item.selected {
+  background: #D9E8FB;
+}
+#popup.aa_mpicklist_popup .aa_picklist_item_text {
+  cursor:pointer;
+  padding-top: 2px;
+  padding-right: 4px;
+  padding-bottom: 2px;
+  padding-left: 4px;
+  white-space: nowrap;
+}
+#popup.aa_mpicklist_popup .aa_highlight {
+  color: blue;
+}
+#popup.aa_mpicklist_popup .aa_picklist_no_results {
+  padding: 3px 5px;
+}
+#popup.aa_mpicklist_popup .aa_picklist_show_all {
+  padding: 5px 5px;
+  cursor: pointer;
+  color: #333;
+}
+#this.aa_focus .aa_mpicklist_div { 
+border-color: rgba(82, 168, 236, 0.8);
+outline: 0;
+outline: thin dotted 9;
+box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(82, 168, 236, 0.6);
+}
+.aa_mpicklist_search:focus {
+ box-shadow: none;
+ outline:none;
+ border:none; 
+}        
+]]></Css>
+    <Html><![CDATA[<div>
+  <div class="aa_mpicklist_div">
+    <div class="aa_mpicklist_items">
+      <div class="aa_mpicklist_item">
+        <div class="aa_mpicklist_item_del" />
+        <div class="aa_mpicklist_item_text" />
+      </div>
+    </div>
+    <div class="aa_mpicklist_input_div">
+      <input class="aa_mpicklist_search" />
+    </div>
+    <div style="clear:both" />
+  </div>
+  <div class="aa_mpicklist_popup">
+    <div>
+      <div class="aa_picklist_item">
+        <div class="aa_picklist_item_image" />
+        <div class="aa_picklist_item_text" />
+      </div>
+      <div class="aa_picklist_no_results" />
+      <div class="aa_picklist_show_all" />
+    </div>
+  </div>
+</div>]]></Html>
+    <Javascript><![CDATA[function render(mpicklist) { 
+  aa_multi_picklist(mpicklist);
+}]]></Javascript>
+  </xtml>
+</Component>
+</xtml>
+
+<xtml ns="multiple_picklist">
+<Component id="LMCMultipicklistInDialog" type="multiple_picklist.Style">
+  <xtml t="ui.CustomStyle">
+    <Css><![CDATA[.aa_mpicklist_div { 
+width: 288px; border: 1px solid #BDC7D8; background: #fff;
+min-height:33px;
+}
+#this.active .aa_mpicklist_div { border-color: #5897fb; }      
+.aa_mpicklist_item { 
+  float:left;
+  height: 13px;
+  border: 1px solid #aaa; 
+  padding:2px 3px 4px 3px;
+  background-color: #E4E4E4; 
+  border-radius: 3px;
+  box-shadow: 0 0 2px white inset, 0 1px 0 rgba(0, 0, 0, 0.05);
+  margin: 3px 3px 3px 3px;
+  background-image: -webkit-gradient(linear, 0\% 0\%, 0\% 100\%, color-stop(20\%, #F4F4F4), color-stop(50\%, #F0F0F0), color-stop(52\%, #E8E8E8), color-stop(100\%, #EEE));
+}
+.aa_mpicklist_item_text { display: inline-block; color: #333; line-height: 13px; font: 13px arial; }
+
+.aa_mpicklist_item_del {
+background: url('_jbartImages_/jbart_icons.png') -65px -4px no-repeat; 
+ display: inline-block; 
+width: 13px; height: 13px; vertical-align: top; cursor: pointer; 
+margin-top: 2px;
+}
+.aa_mpicklist_search { border:none; padding-left:5px;  height: 24px; margin-top:2px; float:left; box-sizing: border-box;
+background:transparent;
+}
+
+#popup.aa_mpicklist_popup {
+  padding: 0 0 2px 0;
+  box-shadow: 2px 2px 7px 1px rgba(50,50,50,0.5);
+  overflow-y: auto;
+  overflow-x: hidden;
+  font:12px times;
+  background: white;
+  border: 1px solid gray;
+  min-height:50px;
+  max-height:200px;
+}
+#popup.aa_mpicklist_popup:focus {
+  outline: none;
+}
+.ie #popup.aa_mpicklist_popup {
+  border: 1px solid black;
+}
+#popup.aa_mpicklist_popup.aa_hide_searchbox .aa_picklist_popup_input {
+  display: none;
+}
+#popup.aa_mpicklist_popup .aa_picklist_popup_input {
+  font-size: 11px;
+  width: 100\%;
+  box-sizing: border-box;
+  height: 22px;
+  padding-top: 3px;
+  padding-right: 3px;
+  padding-bottom: 3px;
+  padding-left: 3px;
+  border-top:none;
+  border-left:none;
+  border-right:none;
+  border-bottom: 1px solid rgba(82, 168, 236, 0.8);
+  outline: none;
+}
+#popup.aa_mpicklist_popup .aa_picklist_popup_input:focus {
+  outline: 0;
+}
+#popup.aa_mpicklist_popup .aa_picklist_item {
+  cursor: pointer;
+  width: 100\%;
+  height:18px;
+  clear: both;
+}
+#popup.aa_mpicklist_popup .aa_picklist_item:focus {
+  outline: none;
+}
+#popup.aa_mpicklist_popup .aa_picklist_item_image {
+  float:left;
+  padding: 1px 5px 0 3px;
+}
+#popup.aa_mpicklist_popup .aa_picklist_item_image img {
+  height:14px;
+}
+#popup.aa_mpicklist_popup .aa_picklist_item.selected {
+  background: #D9E8FB;
+}
+#popup.aa_mpicklist_popup .aa_picklist_item_text {
+  cursor:pointer;
+  padding-top: 2px;
+  padding-right: 4px;
+  padding-bottom: 2px;
+  padding-left: 4px;
+  white-space: nowrap;
+}
+#popup.aa_mpicklist_popup .aa_highlight {
+  color: blue;
+}
+#popup.aa_mpicklist_popup .aa_picklist_no_results {
+  padding: 3px 5px;
+}
+#popup.aa_mpicklist_popup .aa_picklist_show_all {
+  padding: 5px 5px;
+  cursor: pointer;
+  color: #333;
+}
+#this.aa_focus .aa_mpicklist_div { 
+border-color: rgba(82, 168, 236, 0.8);
+outline: 0;
+outline: thin dotted 9;
+box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(82, 168, 236, 0.6);
+}
+.aa_mpicklist_search:focus {
+ box-shadow: none;
+ outline:none;
+ border:none; 
+}        
+]]></Css>
+    <Html><![CDATA[<div>
+  <div class="aa_mpicklist_div">
+    <div class="aa_mpicklist_items">
+      <div class="aa_mpicklist_item">
+        <div class="aa_mpicklist_item_del" />
+        <div class="aa_mpicklist_item_text" />
+      </div>
+    </div>
+    <div class="aa_mpicklist_input_div">
+      <input class="aa_mpicklist_search" />
+    </div>
+    <div style="clear:both" />
+  </div>
+  <div class="aa_mpicklist_popup">
+    <div>
+      <div class="aa_picklist_item">
+        <div class="aa_picklist_item_image" />
+        <div class="aa_picklist_item_text" />
+      </div>
+      <div class="aa_picklist_no_results" />
+      <div class="aa_picklist_show_all" />
+    </div>
+  </div>
+</div>]]></Html>
+    <Javascript><![CDATA[function render(mpicklist) { 
+  aa_multi_picklist(mpicklist);
+}]]></Javascript>
+  </xtml>
+</Component>
+</xtml>
+
+<xtml ns="layout">
+<Component id="DialogButtonsRightAlign" type="layout.Style">
+  <xtml t="ui.CustomStyle" base="layout.DialogButtonsRightAlign">
+    <Html><![CDATA[<div>
+  <div class="field"/>
+  <p style="clear:both" />
+</div>]]></Html>
+    <Css><![CDATA[#this >.field {
+  float:right;
+  margin-left:12px;
+}
+#this>.field:last-of-type {
+  margin-left:0px;
+}]]></Css>
+    <Javascript><![CDATA[function(layout) {
+  aa_layout(layout);
+}]]></Javascript>
+  </xtml>
+</Component>
+</xtml>
+
+<xtml ns="editable_text">
+<Component id="LMCClickableTextInTable" type="editable_text.Style">
+  <xtml t="ui.CustomStyle" base="editable_text.ClickableText">
+    <Html><![CDATA[<div>
+  <div class="clickable_text" />
+  <input/>
+</div>]]></Html>
+    <Css><![CDATA[#this>div {
+  font:14px arial;
+  min-height:16px;
+  cursor:pointer;
+}
+#this>input {
+  color:#666666;
+  font:14px arial;
+  height:16px;
+  border:1px solid #bfbfbf;
+  box-sizing:border-box;
+  padding:10px;
+}
+#this>input:focus {
+  box-shadow:inset 0 1px 1px 0px rgba(0, 0, 0, 0.075), inset 0 0 0px 0px rgba(82, 168, 236, 0.6);
+  border-color:rgba(82, 168, 236, 0.8);
+  outline:0;
+  outline:thin dotted 9;
+}]]></Css>
+    <Javascript><![CDATA[function(textbox) {
+  var $inp = textbox.$el.find('input');
+  aa_jbart_clickable_text(textbox,{
+    TextElement: textbox.$el.find('div'),
+    InputElement: $inp
+  });
+  
+  $inp[0].jbOnBeforeShow = function() {
+    var $td = $inp.closest('td');
+    var width = $td.width();
+    $inp.width(width);
+    $td.css('width',width+'px');    
+  }
+}]]></Javascript>
+  </xtml>
+</Component>
+</xtml>
+
+<xtml ns="text_as_item">
+<Component id="MobileMoreItems" type="text_as_item.Style">
+  <xtml t="ui.CustomStyle">
+    <Css><![CDATA[#this {
+  cursor:pointer;
+  color:#f2f2f2;
+  background-color:#0a0a0a;
+  padding:15px;
+  font-size:14px;
+}
+#this:not(.in_table) {
+  clear:both;
+}
+#this.in_table {
+  padding:3px;
+}]]></Css>
+    <Html><![CDATA[<div/>]]></Html>
+    <Javascript><![CDATA[function (showMoreObject) {
+        aa_text_as_item(showMoreObject);
+}]]></Javascript>
+  </xtml>
+</Component>
+</xtml>
+
+<xtml ns="tabs">
+<Component id="LMCMobileAccordion" type="tabs.Style">
+  <xtml t="ui.CustomStyle">
+    <Css><![CDATA[#this >div>div.aatabs_tab>.aatabs_tab_caption {
+  cursor:pointer;
+  line-height:35px;
+}
+#this >div>div>div>.aatabs_tab_text {
+  color:#47BAC1;
+  font:bold 14px arial;
+  vertical-align:middle;
+}
+#this >div>div>.aatabs_tab_caption>div {
+  display:inline-block;
+  vertical-align:middle;
+}
+#this >div>div>div>.aatabs_tab_toggle {
+  height:0px;
+  width:0px;
+  border:4px solid;
+  border-color:transparent transparent transparent #47BAC1;
+  margin:0 6px 0 10px;
+}
+#this >div>div.expanded>div>.aatabs_tab_toggle {
+  border-color:#47BAC1 transparent transparent transparent;
+  margin:3px 9px 0 7px;
+}]]></Css>
+    <Html><![CDATA[<div>
+  <div>
+    <div class="aatabs_tab">
+      <div class="aatabs_tab_caption">
+        <div class="aatabs_tab_toggle"/>
+        <div class="aatabs_tab_text"/>
+      </div>
+      <div class="aatabs_tab_contents" />
+    </div>
+  </div>
+  <div class="aatabs_contents"/>
+</div>]]></Html>
+    <Javascript><![CDATA[function(tabcontrol) {
+ aa_tabcontrolAsAccordion(tabcontrol,{
+  collapseAnimationTime: 100,
+  expandAnimationTime: 100,
+  autoExpandAll: false
+ });
+}]]></Javascript>
+  </xtml>
+</Component>
+</xtml>
+
+
+
+<xtml ns="popup">
+<Component id="CascadingMenu" type="popup.Style">
+  <xtml t="ui.CustomStyle">
+    <Css><![CDATA[#this>.aa_popup_frame {
+  background:#fff;
+  min-width:280px;
+  min-height:30px;
+  box-shadow:2px 2px 3px #d5d5d5;
+  padding:3px 0;
+  border:1px solid rgb(213, 213, 213);
+}
+#this>.aa_popup_frame>.aa_popup_contents {} #this>.aa_popup_frame:focus {
+  outline:none;
+}
+.aa_popup_remove_top_border {
+  display:none;
+}]]></Css>
+    <Html><![CDATA[<div>
+ <div class="aa_popup_frame">
+  <div class="aa_popup_contents" />
+  <div class="aa_popup_remove_top_border" /> 
+</div>
+ </div>]]></Html>
+    <Javascript><![CDATA[function show(popup) {
+    aa_popup(popup,{
+      screenCover: true,
+      features: [
+        aa_popup_feature_closeOnEsc()
+      ],
+      defaultLocation: aa_popupNearLauncherLocation(),
+      closeWhenClickingOutside: true
+    });
+    $(popup.frameElement).find('.aa_popup_remove_top_border').width( $(popup.launchingElement).outerWidth()-2 );
+}]]></Javascript>
+  </xtml>
+</Component>
+</xtml>
+
+<xtml ns="btn">
+<Component id="MenuItemNoImage" type="btn.Style">
+  <xtml t="ui.CustomStyle" base="gstudio.StudioMenuItem">
+    <Html><![CDATA[<div>
+    <div class="hypelink_text"/>
+</div>]]></Html>
+    <Css><![CDATA[#this {
+  transition:all 0.1s ease-in-out;
+  -webkit-transition:all 0.1s ease-in-out;
+  cursor:default;
+  -webkit-user-select:none;
+  -moz-user-select:none;
+}
+.hypelink_text {
+  white-space:absolute;
+  padding-top:6px;
+  padding-right:30px;
+  padding-bottom:6px;
+  padding-left:10px;
+  font:13px arial;
+}
+#this:hover {
+  background:#eee;
+}
+#this.disabled {
+  cursor:default;
+  text-decoration:none;
+  color:#888;
+}
+#this:hover.disabled {
+  background:transparent;
+}
+#this>div {
+  display:inline-block;
+}]]></Css>
+    <Javascript><![CDATA[function render(button) {
+  aa_button(button,{keepImageElement: true, allowHtmlInButtonText: true });
+
+  aa_bind(button,'beforeAction',function() {
+    aa_close_containing_popup(button.el);
+  });  
+}]]></Javascript>
+  </xtml>
+</Component>
+</xtml>
+
+<xtml ns="itemtree">
+<Component id="XmlTree" type="itemtree.Style">
+  <xtml t="ui.CustomStyle">
+    <Css><![CDATA[#this {
+  cursor:default;
+  outline:none;
+}
+.aa_tree_node_subnodes {
+  padding-left:10px;
+}
+.aa_tree_node_image {
+  width:8px;
+  height:16px;
+  padding-right:8px;
+  display:inline-block;
+  vertical-align:bottom;
+}
+.aa_tree_node_expandbox {
+  display:inline-block;
+  vertical-align:top;
+  margin-top:4px;
+  margin-right:1px;
+  width:9px;
+  height:9px;
+  position:relative;
+  cursor:pointer;
+}
+.collapsed>div>div>.line_tb {
+  display:block;
+}
+.frame {
+  background:#F8FFF9;
+  border-radius:3px;
+  border:1px solid #91B193;
+  position:absolute;
+  top:0px;
+  left:0px;
+  right:0px;
+  bottom:0px;
+}
+.line_lr {
+  position:absolute;
+  background:#91B193;
+  top:4px;
+  left:2px;
+  width:5px;
+  height:1px;
+}
+.line_tb {
+  position:absolute;
+  background:#91B193;
+  left:4px;
+  top:2px;
+  height:5px;
+  width:1px;
+  display:none;
+}
+.aa_tree_node.collapsed>.aa_tree_node_line>.aa_tree_node_expandbox {
+  border-color:#aaa transparent transparent transparent;
+}
+.aa_tree_node_text {
+  display:inline-block;
+  border:1px solid transparent;
+  padding:0 1px;
+  color:#728c75;
+  font-size:12px;
+  font-family:Times;
+  vertical-align:middle;
+  height:15px;
+}
+.aa_tree_node_line {
+  padding-bottom:3px;
+  white-space:nowrap;
+}
+.aa_tree_node.collapsed>.aa_tree_node_subnodes {
+  display:none;
+}
+.aa_tree_node.leaf>.aa_tree_node_line>.aa_tree_node_expandbox>div {
+  display:none;
+}
+.aa_tree_node_line.selected>.aa_tree_node_text {
+  background:#D9E8FB;
+}
+.show_more_button {
+    padding-left:14px;
+    cursor:pointer;
+    font:11px arial;
+    margin-top:3px;
+    color: rgb(57,125,123);
+}
+]]></Css>
+    <Html><![CDATA[
+<div class="aa_tree_all">
+  <div class="aa_tree_node">
+    <div class="aa_tree_node_line">
+      <div class="aa_tree_node_expandbox">
+         <div class="frame" />
+         <div class="line_lr" />
+         <div class="line_tb" />
+      </div>
+      <div class="aa_tree_node_image" />
+      <div class="aa_tree_node_text" />
+    </div>
+    <div class="aa_tree_node_subnodes">
+      <div class="aa_tree_node" />
+    </div>
+  </div>
+</div>]]></Html>
+    <Javascript><![CDATA[function render(tree) {
+  aa_item_tree(tree);
+}]]></Javascript>
+  </xtml>
+</Component>
+</xtml>
+
+<xtml ns="section">
+<Component id="MobileSimple" type="section.Style">
+  <xtml t="ui.CustomStyle">
+    <Css><![CDATA[#this >.section_title {
+  font-family:arial, helvetica, sans-serif;
+  font-size:13px;
+  color1:#3764A0;
+  padding:7px;
+  margin-bottom:5px;
+  background:#f8f8f8;
+  background1:-webkit-gradient(linear, left top, left bottom, color-stop(9\%, #000000), color-stop(50\%, #0f0f0f), color-stop(95\%, #000000));
+  color:#000;
+  font-weight:bold;
+  border-top:1px solid #ccc;
+  border-bottom:1px solid #ccc;
+}
+#this >.section_body {
+  padding1:0 6px;
+}]]></Css>
+    <Html><![CDATA[<div>
+  <div class="section_title"/>
+  <div class="section_body"/>
+</div>]]>
+    </Html>
+    <Javascript><![CDATA[function(section) {  
+  section.setInnerHTML('.section_title',section.Title);  
+  section.addSectionBody('.section_body');
+}]]>
+    </Javascript>
+  </xtml>
+</Component>
+</xtml>
+
+<xtml ns="editable_boolean">
+<Component id="CheckboxNoText" type="editable_boolean.Style">
+  <xtml t="ui.CustomStyle" base="editable_boolean.Checkbox">
+    <Html><![CDATA[<div class="aa_checkbox_div"><input type="checkbox" class="aa_checkbox_input"><div class="aa_checkbox_text"/></div>]]></Html>
+    <Css><![CDATA[#this>div {
+  display:inline-block;
+  vertical-align:top;
+  padding-top:2px;
+  padding-left:2px;
+  cursor:default;
+  font:14px arial;
+}
+#this>input {
+  margin-left:0px;
+}
+.aa_checkbox_text { display: none; }]]></Css>
+    <Javascript><![CDATA[function(checkbox) {
+  aa_native_checkbox(checkbox,{
+    InputElement: jQuery(checkbox.control).find('>input')[0],
+    TextElement: jQuery(checkbox.control).find('>div')[0],
+  });
+}]]></Javascript>
+  </xtml>
+</Component>
+</xtml>
+
+<Type id="SaveStylePlaceholder"/>
+
+<xtml ns="properties">
+<Component id="TitlesAboveFieldsVertical" type="properties.Style">
+  <xtml t="ui.CustomStyle">
+    <Css><![CDATA[#this>.aa_property {
+}
+
+#this>.aa_property>.aa_property_title {
+  padding-bottom:3px;
+  color: #666;
+  font-weight: bold;
+  font-size: 11px;
+  font-family: "lucida grande",tahoma,verdana,arial,sans-serif;
+}
+#this>.aa_property>.aa_property_content {
+  vertical-align: top;
+  padding-bottom: 8px;
+}
+#this {
+}
+]]></Css>
+    <Html><![CDATA[
+<div>
+  <div class="aa_property">
+    <div class="aa_property_title" />
+    <div class="aa_property_content" />
+  </div>
+  <div style="clear: both;"/>
+</div>
+]]>
+    </Html>
+    <Javascript><![CDATA[function render(propertySheet) {
+  aa_propertySheet(propertySheet);
+}]]></Javascript>
+  </xtml>
+</Component>
+
+
+</xtml>
+
+
+</xtml>

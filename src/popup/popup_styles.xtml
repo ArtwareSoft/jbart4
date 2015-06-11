@@ -1,0 +1,496 @@
+<xtml package="true">
+
+<xtml ns="popup">
+
+  <Component id="Default" type="popup.Style">
+    <xtml t="ui.CustomStyle">
+      <Html><![CDATA[<div>
+ <div class="aa_popup_cover" />
+ <div class="aa_popup_frame">
+  <div class="aa_popup_title" />      
+  <div class="aa_popup_close" />
+  <div class="aa_popup_contents" />
+ </div>
+</div>]]></Html>
+      <Css><![CDATA[
+#this>.aa_popup_frame {
+  background-color:#FFFFFF;
+  box-shadow: 0px 1px 4px 2px rgba(0,0,0,0.4);
+  min-width:100px;
+  min-height:150px;
+  border-radius:2px;
+}
+.aa_popup_title {
+  cursor: move;
+  text-align:center;
+  background-color:#4A617A;
+  font: 14px Arial;
+  padding-top: 7px;
+  padding-bottom: 7px;
+  border-bottom: 1px solid #A4B0BC;
+  color: white;
+  min-height: 12px;
+}
+.aa_popup_close {
+  cursor: pointer;
+  position:absolute;
+  background: url('_jbartImages_/jbart_icons.png') no-repeat -40px 0;
+  width: 20px;
+  height: 20px;
+  right:4px;
+  top: 4px;
+}
+.aa_popup_close:hover {
+  background-position:-40px -20px;
+}
+#this>.aa_popup_frame>.aa_popup_contents {
+  padding:10px;
+}
+#this>.aa_popup_cover {
+  background: #929497;
+  opacity:0.8;
+  position:fixed;
+  left:0;
+  right:0;
+  top:0;
+  bottom:0;
+}
+#this>.aa_popup_frame:focus { outline: none; }
+]]></Css>
+    <Javascript><![CDATA[function show(popup) {
+    aa_popup(popup,{
+      screenCover: true,
+      features: [
+        aa_popup_title_dragAndDrop(),
+        aa_popup_feature_closeOnEsc(),
+        aa_popup_feature_autoFocus()        
+      ]
+    });
+}]]></Javascript>
+    </xtml>
+  </Component>
+  
+  <Component id="ToolbarPopup" type="popup.Style">
+    <xtml t="ui.CustomStyle">
+      <Html><![CDATA[<div>
+ <div class="aa_popup_frame">
+  <div class="aa_popup_close" />  
+  <div class="aa_popup_contents" />
+ </div>
+</div>]]></Html>
+      <Css><![CDATA[
+#this>.aa_popup_frame {
+  background-color:#FFFFFF;
+  min-width:150px;  
+  min-height:50px;
+  background: #E6E7E8;
+  border-bottom:1px solid black;
+}
+#this>.aa_popup_frame>.aa_popup_contents {
+  padding:5px;
+}
+#this>.aa_popup_frame:focus { outline: none; }
+]]></Css>
+    <Javascript><![CDATA[function show(popup) {
+    aa_popup(popup,{
+      features: [
+        aa_popup_feature_closeOnEsc()
+      ],
+      defaultLocation: aa_popupNearLauncherLocation(),
+      closeWhenClickingOutside: true
+    });
+}]]></Javascript>
+    </xtml>
+  </Component>
+
+  <Component id="InfoHoverPopup" type="popup.Style">
+    <xtml t="ui.CustomStyle">
+      <Html><![CDATA[<div>
+ <div class="aa_popup_frame">
+  <div class="aa_popup_contents" />
+ </div>
+</div>]]></Html>
+      <Css><![CDATA[
+#this>.aa_popup_frame {
+  position:relative;
+  min-width:150px;
+  min-height:50px;
+box-shadow: 0 0 2px 2px #888;
+background-color: #EEEEFC;
+border: none;  
+border-radius: 3px;
+}
+#this>.aa_popup_frame>.aa_popup_contents {
+  padding-top: 10px;
+  padding-right: 40px;
+  padding-bottom: 10px;
+  padding-left: 10px;
+}
+#this>.aa_popup_frame:focus {
+  outline: none;
+}
+]]></Css>
+		<Javascript><![CDATA[function show(popup) {
+		aa_popup(popup,{
+      features: [
+        aa_popup_feature_closeOnEsc(),
+        aa_popup_feature_hoverPopup()
+      ],
+      defaultLocation: aa_popupNearLauncherLocation(),
+      closeWhenClickingOutside: true
+    });
+}]]></Javascript>
+    </xtml>
+  </Component>
+
+  <Component id="PicklistPopup" type="popup.Style">
+    <xtml t="ui.CustomStyle">
+      <Html><![CDATA[<div>
+ <div class="aa_popup_frame">
+  <div class="aa_popup_contents" />
+ </div>
+</div>]]></Html>
+      <Css><![CDATA[
+#this>.aa_popup_frame { 
+padding: 0;
+box-shadow: 2px 2px 7px 1px rgba(50,50,50,0.5);
+overflow-y: auto; overflow-x: hidden; 
+font:12px times;
+background: white;
+border: 1px solid gray;
+}
+#this>.aa_popup_frame:focus { outline: none; }
+
+.ie #this>.aa_popup_frame { border: 1px solid black; }        
+
+]]></Css>
+    <Javascript><![CDATA[function show(popup) {
+    aa_popup(popup,{
+      features: [
+        aa_popup_feature_closeOnEsc(),
+        aa_popup_feature_autoFocus()
+      ],
+      defaultLocation: aa_popupNearLauncherLocation({ minWidthOfLaunchingElement: true }),
+      closeWhenClickingOutside: true
+    });
+}]]></Javascript>
+    </xtml>
+  </Component>
+
+<Component id="NotificationPopup" type="popup.Style">  <xtml t="ui.CustomStyle">    <Html><![CDATA[<div>
+ <div class="aa_popup_frame">
+  <div class="aa_popup_close" />
+  <div class="aa_popup_contents" />
+  <div class="aa_popup_translucent" />
+ </div>
+</div>]]></Html>    <Css><![CDATA[
+#this>.aa_popup_frame {
+  padding:7px 30px 7px 10px;
+  box-shadow:2px 2px 3px 1px rgba(50, 50, 50, 0.5);
+  overflow-y:auto;
+  overflow-x:hidden;
+  font:12px times;
+  background:transparent;
+  width:350px;
+  box-sizing: border-box;
+}
+#this>.aa_popup_frame:focus {
+  outline:none;
+}
+#this>.aa_popup_frame>.aa_popup_translucent {
+  position: absolute;
+  top:0;left:0;right:0;bottom:0;
+  background: #000;
+  opacity: 0.8;
+  z-index:1;
+}
+#this>.aa_popup_frame>.aa_popup_contents {
+  z-index:2;
+  position:relative;
+}
+.aa_popup_close {
+  display:none;
+  cursor:pointer;
+  position:absolute;
+  background:url('_jbartImages_/jbart_icons.png') no-repeat -40px 0;
+  width:20px;
+  height:20px;
+  right:2px;
+  top:2px;
+}
+.aa_popup_close:hover {
+  background-position:-60px -20px;
+}
+.aa_popup_frame:hover .aa_popup_close {
+  display: block;
+}
+]]></Css>    <Javascript><![CDATA[function show(popup) {
+    aa_popup(popup,{
+      features: [
+        aa_popup_feature_autoClose({ closeTimeout: 8000 })
+      ],
+      defaultLocation: aa_popupStackingNotificationLocation({ marginTop: 1, marginBottom: 3, marginRight: 5}),
+      closeWhenClickingOutside: false
+    });
+}]]></Javascript>  </xtml></Component>
+
+</xtml>
+
+<xtml ns="popup_confirmation">
+
+<Component id="LightPopupConfirmation" type="popup_confirmation.Style">
+  <xtml t="ui.CustomStyle">
+    <Html><![CDATA[<div>
+ <div class="aa_popup_frame">
+  <div class="aa_popup_title" />      
+  <div class="aa_popup_contents">
+    <div class="aa_popup_buttons">
+      <button class="aa_popup_no aa_popup_button" />
+      <button class="aa_popup_yes aa_popup_button" />
+    </div>
+  </div>
+  <div class="aa_popup_arrow" />
+ </div>
+</div>]]></Html>
+    <Css><![CDATA[
+#this>.aa_popup_frame {
+  background-color:#FFFFFF;
+  box-shadow:0px 0px 6px 1px rgba(0, 0, 0, 0.4);
+  min-width:50px;
+  min-height:50px;
+  font:12px arial;
+  padding:7px;
+  position:realtive;
+}
+.aa_popup_title {
+  font:14px 'Noto sans',arial;
+  text-align:center;
+  padding:3px 0px 12px 0;
+}
+.aa_popup_button {
+  font:13px 'Noto sans',arial;
+  padding:4px 15px 6px 15px;
+  border-radius:4px;
+  cursor:pointer;
+}
+.aa_popup_button:focus {
+  outline:none;
+}
+.aa_popup_yes {
+  border:none;
+  background:#1E64B5;
+  color:#fff;
+}
+.aa_popup_yes:hover {
+  background:#3266A3;
+}
+.aa_popup_yes:active {
+  background:#2A5586;
+}
+.aa_popup_no {
+  border:none;
+  background:transparent;
+  color:#313131;
+}
+.aa_popup_no:hover {
+  color:#414141;
+  text-decoration:underline;
+}
+.aa_popup_arrow {
+  position:absolute;
+  bottom:-25px;
+  left:50\%;
+  margin-left:-30px;
+  width:50px;
+  height:25px;
+  overflow:hidden;
+}
+.aa_popup_arrow:after {
+  content:"";
+  position:absolute;
+  width:20px;
+  height:20px;
+  background:#fff;
+  -webkit-transform:rotate(45deg);
+  top:-16px;
+  left:15px;
+  box-shadow:0px 0px 6px 1px rgba(0, 0, 0, 0.4);
+}]]></Css>
+    <Javascript><![CDATA[function show(confirmationPopup) { 
+  aa_confirmation_popup(confirmationPopup,{
+    closeWhenClickingOutside: true,
+    location: aa_popupNearLauncherLocation({location: 'above center', topMargin: 10 }), 
+    features: [
+    ]
+  });
+}]]></Javascript>
+  </xtml>
+</Component>
+
+    <Component id="GoogleDriveConfirmation" type="popup_confirmation.Style">
+      <xtml t="ui.CustomStyle">
+        <Html><![CDATA[<div>
+ <div class="aa_popup_cover" />
+ <div class="aa_popup_frame">
+  <div class="aa_popup_title" />      
+  <div class="aa_popup_close" />
+  <div class="aa_popup_contents">
+    <div class="aa_popup_question" />
+    <div class="aa_popup_buttons">
+      <button class="aa_popup_yes aa_popup_button" />
+      <button class="aa_popup_no aa_popup_button" />
+      <div style="clear:both" />
+    </div>
+  </div>
+ </div>
+</div>]]></Html>
+        <Css><![CDATA[
+#this>.aa_popup_frame {
+  background-color:#FFFFFF;
+  box-shadow:  0px 1px 4px 2px rgba(0,0,0,0.4);
+  min-width:300px;
+  min-height:150px;
+  font: 12px arial;
+}
+.aa_popup_title {
+  cursor: move;
+  color:#000;
+  padding-top: 25px;
+  padding-right: 30px;
+  padding-bottom: 20px;
+  padding-left: 30px;
+  font: 16px Arial;
+  min-height: 12px;
+}
+.aa_popup_close {
+  cursor: pointer;
+  position:absolute;
+  background:url('_jbartImages_/jbart_icons.png') no-repeat -60px 0;
+  width: 20px;
+  height: 20px;
+  right:10px;
+  top: 10px;
+}
+.aa_popup_close:hover {
+  background-position:-60px -20px;
+}
+#this>.aa_popup_frame>.aa_popup_contents {
+  padding-top: 0;
+  padding-right: 30px;
+  padding-bottom: 25px;
+  padding-left: 30px;
+}
+#this>.aa_popup_cover {
+  position:fixed;
+  opacity:0.8;
+  background:#fff;
+  left:0;
+  right:0;
+  top:0;
+  bottom:0;
+}
+#this>.aa_popup_frame:focus {
+  outline: none;
+}
+
+.aa_popup_buttons {
+  margin-top:20px;
+}
+
+.aa_popup_button {
+  cursor: pointer;
+  text-transform:capitalize;
+  text-align: center;  
+  font: bold 11px arial;
+  margin: 0;
+  border-radius: 2px;
+  padding-top: 0px;
+  padding-right: 25px;
+  padding-bottom: 1px;
+  padding-left: 25px;
+  min-width: 56px;
+  vertical-align: middle;
+  line-height: 28px;
+
+  margin:0 10px 0 0;
+}
+.aa_popup_no {
+  cursor: pointer;
+  text-transform:capitalize;
+  text-align: center;
+  border-radius: 2px;
+  padding-top: 0px;
+  padding-right: 14px;
+  padding-bottom: 1px;
+  padding-left: 14px;
+  vertical-align: middle;
+  line-height: 28px;
+
+  background-color: #357ae8;
+  background-image: -webkit-linear-gradient(top,#4d90fe,#357ae8);
+  box-shadow: 0 1px 1px rgba(0,0,0,0.1);
+  border: 1px solid #2f5bb7;
+  color: #fff;  
+}
+.aa_popup_no:hover {
+  background-image: -webkit-linear-gradient(-90deg, #75B2DD 0\% , #0F52BA 100\% );
+}
+.aa_popup_no:active {
+  background:#5987A8;
+  background-image: -webkit-linear-gradient(90deg, #C04000 0\% , #FF5A36 39\% , white 100\% );
+  outline: 0;
+  background-image: none;
+}
+
+.aa_popup_yes {
+  color: black;
+  background: #EBF1ED;
+  text-transform: capitalize;
+  border: 1px solid rgb(178, 184, 196);
+  box-shadow: .03em .03em .05em 0px rgba(0,0,0,0.4);
+  background-image: -webkit-linear-gradient(-90deg, #EBF1ED 0\% , #DADAE0 100\% );
+}
+.aa_popup_yes:hover {
+  background-image: -webkit-linear-gradient(-90deg, #DADAE0 0\% , #EBF1ED 100\% );
+}
+.aa_popup_yes:active {
+  outline: 0;
+  background-image: none;
+  background: #dbdbe1;
+}
+
+.aa_popup_question { 
+  font: 14px arial;
+}
+]]></Css>
+      <Javascript><![CDATA[function show(confirmationPopup) { 
+  aa_confirmation_popup(confirmationPopup,{
+    features: [aa_popup_title_dragAndDrop()]
+  });
+}]]></Javascript>
+      </xtml>
+    </Component>
+
+</xtml>
+
+<xtml ns="popup_resizer">
+  <Type id="Style" />
+
+  <Component id="DefaultResizer" type="popup_resizer.Style">
+    <xtml t="ui.CustomStyle">
+      <Html><![CDATA[<div class="aa_popup_resizer"/>]]></Html>
+      <Css><![CDATA[#this {
+  position:absolute;bottom:0;right:0;
+  background: url('_jbartImages_/resizer.gif') no-repeat;
+  width: 16px; height: 16px;  
+  cursor: se-resize;
+}]]></Css>
+      <Javascript><![CDATA[function add(resizer) {
+  aa_popup_resizer(resizer);       
+}]]></Javascript>
+    </xtml>
+  </Component>
+
+</xtml>
+
+</xtml>

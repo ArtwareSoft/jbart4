@@ -6,7 +6,8 @@ Visual Studio for widget development
 npm start
 ```
 
-Open this link in Chrome: [studio]http://localhost:8087/studio/gstudio.html "jBart Studio")
+Open the studio with Chrome: 
+[http://localhost:8087/studio/gstudio.html](http://localhost:8087/studio/gstudio.html)
 
 ### Getting Started Tutorial
 http://jb-letmesee.appspot.com/LetMeSee/p80kd9kkn6.html?roomid=94fn83

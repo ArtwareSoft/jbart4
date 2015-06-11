@@ -1,6 +1,6 @@
 {
 	"config" : { 
-		"port" : "80",
+		"port" : "8087",
 		"widgets_base_dir": "widgets/"
 	},
 	"scripts": {

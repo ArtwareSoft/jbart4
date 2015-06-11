@@ -8,7 +8,7 @@ npm start
 
 Open this link in Chrome:
 ```shell
-http://localhost/studio/gstudio.html
+http://localhost:8087/studio/gstudio.html
 ```
 
 ### Getting Started Tutorial

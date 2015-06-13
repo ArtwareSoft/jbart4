@@ -47,7 +47,7 @@
 
   <Component id="XPathOfNode" type="data.Data" execution="native">
     <Param name="Data" Title="Xml" />
-    <Param name="Specific" type="data.Boolean" Defaut="false" />
+    <Param name="Specific" type="data.Boolean" />
     <Param name="StopAtIDAttribute" Default="" />
     <Param name="TopXml" />
   </Component>

@@ -11999,42 +11999,6 @@ function aa_setImage(elem,imageObject,settings)
 	}
 }
 
-// aa_create_static_image_object converts an old image object to the new imageObject
-function aa_create_static_image_object(imageObject)
-{
-	if (!imageObject) return null;
-	if (typeof(imageObject) == 'string') return { url: imageObject};
-	if (imageObject && imageObject.css3Image) return imageObject;
-	
-	var width = imageObject.width, height = imageObject.height;
-	if (imageObject.Size) {
-		var sizeArr = aa_split(imageObject.Size,',',false);
-		width = sizeArr[0] ? parseInt(sizeArr[0]) : null;
-		height = sizeArr[1] ? parseInt(sizeArr[1]) : null;
-	}
-
-	return {
-		url: imageObject.StaticUrl,
-		width: width,
-		height: height,
-		inSprite: imageObject.inSprite,
-		x: imageObject.x,
-		y: imageObject.y,
-		keepImageProportions: imageObject.KeepImageProportions,
-		fillImage: imageObject.FillImage,
-		zoomAndOffet: imageObject.ZoomAndOffet,
-		offsetY: imageObject.OffsetY,
-		offsetX: imageObject.OffsetX,
-		zoom: imageObject.Zoom,
-		centerImage: imageObject.CenterImage,
-		baseImageObject: imageObject,
-		marginTop: imageObject.MarginTop,
-		marginLeft: imageObject.MarginLeft,
-		boxWidth: imageObject.boxWidth,
-		boxHeight: imageObject.boxHeight
-	};
-}
-
 /**  menu.js **/
 
 aa_gcs("menu",{

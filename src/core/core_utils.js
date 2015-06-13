@@ -44,7 +44,7 @@ aa_extend(ajaxart,{
 			   type: "GET",
 			   url: xtml_name,
 			   success: function (xtml_content) {
-			   		xtml_content = xtml_content.replace(/\r/g,'\r\n');	// otherwise newlines are not shown, most relevant for CDATA content with newlines
+			   		xtml_content = xtml_content.replace(/\r([^\n])/g,'\r\n$1');	// adding \n when having only \r, otherwise newlines are not shown, most relevant for CDATA content
 			  		var xtml = aa_parsexml(xtml_content, xtml_name);
 			  		ajaxart.load_xtml_content(xtml_name,xtml);
 			  		ajaxart.object_finished_loading();

@@ -1,0 +1,304 @@
+<jbart_project _type="jbart_project" id="Fast_Find" name="Fast Find" modifiedDate="31/01/2011 10:37" dateCreated="16/01/2011 15:28" vid="29" type="widget" image="" description="" _wusers="">
+  <bart_dev>
+    <db>
+      <bart_unit>
+        <bart_unit id="sample" _type="bart_unit" ns="sample">
+          <Component id="App" type="bart.Application">
+            <xtml t="bart.Application">
+              <MainPage1 t="sample.main"/>
+              <Resources t="bart_resource.Resources">
+                <Resource t="jbart_resource.Data" ResourceID="Countries" ValueType="xml">
+                  <Value t="xml.Xml">
+                    <countries image="http://flags.redpixart.com/img/%@name_lowercase%_preview.gif">
+                      <country code="AF" iso="4" name="Afghanistan"/>
+                      <country code="AL" iso="8" name="Albania"/>
+                      <country code="DZ" iso="12" name="Algeria"/>
+                      <country code="AD" iso="20" name="Andorra"/>
+                      <country code="AO" iso="24" name="Angola"/>
+                      <country code="AG" iso="28" name="Antigua And Barbuda"/>
+                      <country code="AR" iso="32" name="Argentina"/>
+                      <country code="AM" iso="51" name="Armenia"/>
+                      <country code="AU" iso="36" name="Australia"/>
+                      <country code="AT" iso="40" name="Austria"/>
+                      <country code="AZ" iso="31" name="Azerbaijan"/>
+                      <country code="BS" iso="44" name="Bahamas"/>
+                      <country code="BH" iso="48" name="Bahrain"/>
+                      <country code="BD" iso="50" name="Bangladesh"/>
+                      <country code="BB" iso="52" name="Barbados"/>
+                      <country code="BY" iso="112" name="Belarus"/>
+                      <country code="BE" iso="56" name="Belgium"/>
+                      <country code="BZ" iso="84" name="Belize"/>
+                      <country code="BJ" iso="204" name="Benin"/>
+                      <country code="BO" iso="68" name="Bolivia"/>
+                      <country code="BA" iso="70" name="Bosnia And Herzegovina"/>
+                      <country code="BW" iso="72" name="Botswana"/>
+                      <country code="BR" iso="76" name="Brazil"/>
+                      <country code="BG" iso="100" name="Bulgaria"/>
+                      <country code="BF" iso="854" name="Burkina Faso"/>
+                      <country code="BI" iso="108" name="Burundi"/>
+                      <country code="KH" iso="116" name="Cambodia"/>
+                      <country code="CM" iso="120" name="Cameroon"/>
+                      <country code="CA" iso="124" name="Canada"/>
+                      <country code="CV" iso="132" name="Cape Verde"/>
+                      <country code="CF" iso="140" name="Central African Republic"/>
+                      <country code="TD" iso="148" name="Chad"/>
+                      <country code="CL" iso="152" name="Chile"/>
+                      <country code="CN" iso="156" name="China"/>
+                      <country code="CO" iso="170" name="Colombia"/>
+                      <country code="KM" iso="174" name="Comoros"/>
+                      <country code="CR" iso="188" name="Costa Rica"/>
+                      <country code="HR" iso="191" name="Croatia"/>
+                      <country code="CU" iso="192" name="Cuba"/>
+                      <country code="CY" iso="196" name="Cyprus"/>
+                      <country code="CZ" iso="203" name="Czech Republic"/>
+                      <country code="DK" iso="208" name="Denmark"/>
+                      <country code="DJ" iso="262" name="Djibouti"/>
+                      <country code="DM" iso="212" name="Dominica"/>
+                      <country code="DO" iso="214" name="Dominican Republic"/>
+                      <country code="EC" iso="218" name="Ecuador"/>
+                      <country code="EG" iso="818" name="Egypt"/>
+                      <country code="SV" iso="222" name="El Salvador"/>
+                      <country code="GQ" iso="226" name="Equatorial Guinea"/>
+                      <country code="ER" iso="232" name="Eritrea"/>
+                      <country code="EE" iso="233" name="Estonia"/>
+                      <country code="ET" iso="210" name="Ethiopia"/>
+                      <country code="FJ" iso="242" name="Fiji"/>
+                      <country code="FI" iso="246" name="Finland"/>
+                      <country code="FR" iso="250" name="France"/>
+                      <country code="GA" iso="266" name="Gabon"/>
+                      <country code="GM" iso="270" name="Gambia"/>
+                      <country code="GE" iso="268" name="Georgia"/>
+                      <country code="DE" iso="276" name="Germany"/>
+                      <country code="GH" iso="288" name="Ghana"/>
+                      <country code="GR" iso="300" name="Greece"/>
+                      <country code="GD" iso="308" name="Grenada"/>
+                      <country code="GT" iso="320" name="Guatemala"/>
+                      <country code="GN" iso="324" name="Guinea"/>
+                      <country code="GY" iso="328" name="Guyana"/>
+                      <country code="HT" iso="332" name="Haiti"/>
+                      <country code="HN" iso="340" name="Honduras"/>
+                      <country code="HK" iso="344" name="Hong Kong"/>
+                      <country code="HU" iso="348" name="Hungary"/>
+                      <country code="IS" iso="352" name="Iceland"/>
+                      <country code="IN" iso="356" name="India"/>
+                      <country code="ID" iso="360" name="Indonesia"/>
+                      <country code="IR" iso="364" name="Iran"/>
+                      <country code="IQ" iso="368" name="Iraq"/>
+                      <country code="IE" iso="372" name="Ireland"/>
+                      <country code="IL" iso="376" name="Israel"/>
+                      <country code="IT" iso="380" name="Italy"/>
+                      <country code="JM" iso="388" name="Jamaica"/>
+                      <country code="JP" iso="392" name="Japan"/>
+                      <country code="JO" iso="400" name="Jordan"/>
+                      <country code="KZ" iso="398" name="Kazakhstan"/>
+                      <country code="KE" iso="404" name="Kenya"/>
+                      <country code="KI" iso="296" name="Kiribati"/>
+                      <country code="KW" iso="414" name="Kuwait"/>
+                      <country code="KG" iso="417" name="Kyrgyzstan"/>
+                      <country code="LA" iso="418" name="Laos"/>
+                      <country code="LV" iso="428" name="Latvia"/>
+                      <country code="LB" iso="422" name="Lebanon"/>
+                      <country code="LS" iso="426" name="Lesotho"/>
+                      <country code="LR" iso="430" name="Liberia"/>
+                      <country code="LI" iso="438" name="Liechtenstein"/>
+                      <country code="LT" iso="440" name="Lithuania"/>
+                      <country code="LU" iso="442" name="Luxembourg"/>
+                      <country code="MO" iso="446" name="Macau"/>
+                      <country code="MG" iso="450" name="Madagascar"/>
+                      <country code="MW" iso="454" name="Malawi"/>
+                      <country code="MY" iso="458" name="Malaysia"/>
+                      <country code="MV" iso="462" name="Maldives"/>
+                      <country code="ML" iso="466" name="Mali"/>
+                      <country code="MT" iso="470" name="Malta"/>
+                      <country code="MR" iso="478" name="Mauritania"/>
+                      <country code="MU" iso="480" name="Mauritius"/>
+                      <country code="MX" iso="484" name="Mexico"/>
+                      <country code="MC" iso="492" name="Monaco"/>
+                      <country code="MN" iso="496" name="Mongolia"/>
+                      <country code="MA" iso="504" name="Morocco"/>
+                      <country code="MZ" iso="508" name="Mozambique"/>
+                      <country code="NA" iso="516" name="Namibia"/>
+                      <country code="NR" iso="520" name="Nauru"/>
+                      <country code="NP" iso="524" name="Nepal"/>
+                      <country code="NL" iso="528" name="Netherlands"/>
+                      <country code="NZ" iso="554" name="New Zealand"/>
+                      <country code="NI" iso="558" name="Nicaragua"/>
+                      <country code="NE" iso="562" name="Niger"/>
+                      <country code="NG" iso="566" name="Nigeria"/>
+                      <country code="NO" iso="578" name="Norway"/>
+                      <country code="OM" iso="512" name="Oman"/>
+                      <country code="PK" iso="586" name="Pakistan"/>
+                      <country code="PW" iso="585" name="Palau"/>
+                      <country code="PA" iso="591" name="Panama"/>
+                      <country code="PG" iso="598" name="Papua New Guinea"/>
+                      <country code="PY" iso="600" name="Paraguay"/>
+                      <country code="PE" iso="604" name="Peru"/>
+                      <country code="PH" iso="608" name="Philippines"/>
+                      <country code="PL" iso="616" name="Poland"/>
+                      <country code="PT" iso="620" name="Portugal"/>
+                      <country code="PR" iso="630" name="Puerto Rico"/>
+                      <country code="QA" iso="634" name="Qatar"/>
+                      <country code="RO" iso="642" name="Romania"/>
+                      <country code="RU" iso="643" name="Russia"/>
+                      <country code="RW" iso="646" name="Rwanda"/>
+                      <country code="WS" iso="882" name="Samoa"/>
+                      <country code="SM" iso="674" name="San Marino"/>
+                      <country code="SA" iso="682" name="Saudi Arabia"/>
+                      <country code="SN" iso="686" name="Senegal"/>
+                      <country code="SC" iso="690" name="Seychelles"/>
+                      <country code="SL" iso="694" name="Sierra Leone"/>
+                      <country code="SG" iso="702" name="Singapore"/>
+                      <country code="SK" iso="703" name="Slovakia"/>
+                      <country code="SI" iso="705" name="Slovenia"/>
+                      <country code="SO" iso="706" name="Somalia"/>
+                      <country code="ZA" iso="710" name="South Africa"/>
+                      <country code="ES" iso="724" name="Spain"/>
+                      <country code="LK" iso="144" name="Sri Lanka"/>
+                      <country code="SD" iso="736" name="Sudan"/>
+                      <country code="SR" iso="740" name="Suriname"/>
+                      <country code="SZ" iso="748" name="Swaziland"/>
+                      <country code="SE" iso="752" name="Sweden"/>
+                      <country code="CH" iso="756" name="Switzerland"/>
+                      <country code="SY" iso="760" name="Syria"/>
+                      <country code="TJ" iso="762" name="Tajikistan"/>
+                      <country code="TZ" iso="834" name="Tanzania"/>
+                      <country code="TH" iso="764" name="Thailand"/>
+                      <country code="TG" iso="768" name="Togo"/>
+                      <country code="TO" iso="776" name="Tonga"/>
+                      <country code="TT" iso="780" name="Trinidad And Tobago"/>
+                      <country code="TN" iso="788" name="Tunisia"/>
+                      <country code="TR" iso="792" name="Turkey"/>
+                      <country code="TM" iso="795" name="Turkmenistan"/>
+                      <country code="TV" iso="798" name="Tuvalu"/>
+                      <country code="UG" iso="800" name="Uganda"/>
+                      <country code="UA" iso="804" name="Ukraine"/>
+                      <country code="AE" iso="784" name="United Arab Emirates"/>
+                      <country code="GB" iso="826" name="United Kingdom"/>
+                      <country code="US" iso="840" name="United States of America"/>
+                      <country code="UY" iso="858" name="Uruguay"/>
+                      <country code="UZ" iso="860" name="Uzbekistan"/>
+                      <country code="VU" iso="548" name="Vanuatu"/>
+                      <country code="VE" iso="862" name="Venezuela"/>
+                      <country code="VN" iso="704" name="Vietnam"/>
+                      <country code="YE" iso="887" name="Yemen"/>
+                      <country code="ZR" iso="180" name="Zaire"/>
+                      <country code="ZM" iso="894" name="Zambia"/>
+                      <country code="ZW" iso="716" name="Zimbabwe"/>
+                    </countries>
+                  </Value>
+                </Resource>
+              </Resources>
+              
+              <ApplicationFeature t="bart.Css">
+                <Css><![CDATA[#this { font: 12px Arial; }
+#this *:focus { outline:none; }
+p { margin: 0} 
+]]></Css>
+              </ApplicationFeature>
+            </xtml>
+          </Component>
+          <Component id="main" type="jbart.MyWidgetPage">
+            <xtml t="field.Layout" ID="main" ContentType="" Title="main">
+              <FieldAspect t="field_aspect.FieldData" FieldData="%$Countries%"/>
+              <Layout t="layout.Default"/>
+              <Field t="field.ItemListContainer" ID="countries_Top" Title="countries">
+                <Items t="itemlist.XmlItems" ParentXml="%%" Tag="*"/>
+                <Field t="field.Layout" ID="Filters" Title="Filters">
+                  <Layout t="layout.HorizontalHtmlTable" Spacing="0"/>
+                  <FieldAspect t="itemlist_aspect.FilterGroup"/>
+                  <FieldAspect t="field_feature.Css">
+                    <Css><![CDATA[#this { padding-bottom: 8px; } #wrapper {}]]></Css>
+                  </FieldAspect>
+                  <Field t="fld.Field" Title="Filter By Name" ID="search" ReadOnlyText="">
+                    <FieldAspect t="field_aspect.DescriptionForEmptyText" Description="Search"/>
+                    <FieldAspect t="itemlist_aspect.Filter" FieldData="%!@name%">
+                      <FilterType t="itemlist_filter.Text"/>
+                    </FieldAspect>
+                    <FieldAspect t="field_aspect.ClearValueButton"/>
+                    <FieldType t="fld_type.EditableText">
+                      <Style t="editable_text.JBartTextbox"/>
+                    </FieldType>
+                    <FieldAspect t="field_feature.Css">
+                      <Css><![CDATA[#this { width: 193px; }]]></Css>
+                    </FieldAspect>
+                    <FieldAspect t="field_aspect.ItemListSelectionWithKeyboard"/>
+                  </Field>
+                </Field>
+                <Field t="field.ItemList" Title="countries" ID="countries_List">
+                  <View t="itemlist_style.CustomStyle">
+                    <Html><![CDATA[<div><div class="aa_item"/></div>]]></Html>
+                    <Css><![CDATA[#this { width: 850px; }
+#this>.aa_item { float1:left; width: 200px; }
+]]></Css>
+                    <Javascript><![CDATA[function(itemlist) {
+aa_itemlist(itemlist);
+}]]></Javascript>
+                  </View>
+                  <FieldAspect t="itemlist_aspect.ItemSelection"/>
+                  <FieldAspect t="itemlist_aspect.ShowTextWhenNoItems" Text="No countries match your search"/>
+                  <FieldAspect t="itemlist_aspect.LongList" MaxTimeToRenderItems="40" TextForShowMore="show more countries...">
+                    <Style t="ui.CustomStyle">
+                      <Html><![CDATA[<div/>]]></Html>
+                      <Css><![CDATA[#this { 
+  width:190px;
+  cursor: pointer; color:#333; padding-top: 10px; padding-left: 10px; clear: both; }
+]]></Css>
+                      <Javascript><![CDATA[function (showMoreObject) {
+      showMoreObject.control.innerHTML = showMoreObject.text;
+      showMoreObject.control.onclick = function() { showMoreObject.showMore() };
+}]]></Javascript>
+                    </Style>
+                  </FieldAspect>
+                  <Field t="field.Layout" ID="Horizontal" Title="Horizontal">
+                    <Layout t="layout.HorizontalHtmlTable" Spacing="9px"/>
+                    <Field t="fld.Field" ID="image" Title="image">
+                      <FieldType t="fld_type.Image">
+                        <Image t="image.Image" Url="%%" KeepImageProportions="true" Width="16px" Height=""/>
+                        <Style t="image.PlainImage"/>
+                      </FieldType>
+                      <FieldData t="data.Pipeline">
+                        <Item value="%@name%"/>
+                        <Item t="text.ToLowerCase"/>
+                        <Item t="text.Replace" Find=" " ReplaceWith="_"/>
+                        <Item value="http://flags.redpixart.com/img/%%_preview.gif"/>
+                      </FieldData>
+                      <FieldAspect t="field_feature.Css">
+                        <Css><![CDATA[#this { padding-top: 2px; padding-left: 9px; }
+#wrapper { }
+]]></Css>
+                      </FieldAspect>
+                    </Field>
+                    <Field t="fld.Field" FieldData="%!@name%" ID="name" Title="name">
+                      <FieldType t="fld_type.Text">
+                        <Style t="uitext.PlainText"/>
+                      </FieldType>
+                      <FieldAspect t="field_aspect.HighlightSubTextOnFilter">
+                        <HighlightCss><![CDATA[#this { color: blue; } ]]></HighlightCss>
+                      </FieldAspect>
+                    </Field>
+                    <FieldAspect t="field_feature.Css">
+                      <Css><![CDATA[#this { padding-top: 3px; padding-bottom: 3px; }
+#wrapper { }
+]]></Css>
+                    </FieldAspect>
+                  </Field>
+                </Field>
+                <Layout t="layout.Default"/>
+              </Field>
+            </xtml>
+          </Component>
+          <UIPref/>
+        </bart_unit>
+      </bart_unit>
+    </db>
+  </bart_dev>
+  <url url="?studio_style_tabs_tab=Css?pagedt_path=main/countries/countries"/>
+  <Tests>
+    <Test Name="highlight" t="bart_usage.JBartUsage" RunInAllTests="true">
+      <ExpectedResult t="usage.ContainsText" OneOf="" LookIn="">
+        <Text value="aa_highlight"/>
+      </ExpectedResult>
+      <RunOnControl t="uiaction.SetText" RunOn=".fld_search" StayInControl="" DoNotFireEvents="" Mode="ReplaceAll" Text="alg"/>
+    </Test>
+  </Tests>
+</jbart_project>

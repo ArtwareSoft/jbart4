@@ -1,0 +1,47 @@
+<file _type="jbart_project" id="DynamicTabs" name="DynamicTabs" modifiedDate="31/01/2011 10:37" dateCreated="16/01/2011 15:28" vid="10" type="prototype" image="" description="">
+  <xtml ns="sample">
+    <Component id="Widget" type="jbart.Widget">
+      <xtml t="jbart.Widget">
+        <MainPage t="sample.main"/>
+        <DataResource t="jbart_resource.Data" ResourceID="Data" ValueType="xml">
+          <Value t="xml.Xml">
+            <xml>
+              <Item title="dynamic1" text="text1"/>
+              <Item title="dynamic2" text="text2"/>
+            </xml>
+          </Value>
+        </DataResource>
+      </xtml>
+    </Component>
+    <Component id="main" type="jbart.MyWidgetPage">
+      <xtml t="control.Layout" ID="main" ContentType="" Title="main">
+        <FieldAspect t="field_aspect.FieldData" FieldData="%$Data%"/>
+        <Field t="control.TabControl" ID="_Tab_Control" Title="Tab Control">
+          <Style t="tabs.BlueTabs"/>
+          <Field t="field.DynamicFields" ID="DynamicFields" Title="DynamicFields" FieldItems="%Item%">
+            <Field t="control.Layout" Title="">
+              <Layout t="layout.Default"/>
+              <FieldAspect t="field_aspect.FieldData" FieldData="%$_FieldItem%"/>
+              <FieldAspect t="field_aspect.Title" Title="%$_FieldItem/@title%"/>
+              <Field t="control.Label" ID="Text" Title="Text" Text="%@text%">
+                <Style t="uitext.PlainText"/>
+              </Field>
+            </Field>
+          </Field>
+          <Field t="control.Layout" ID="Static" Title="Static">
+            <Layout t="layout.Vertical" Spacing="0"/>
+          </Field>
+        </Field>
+      </xtml>
+    </Component>
+  </xtml>
+  <Tests>
+    <Test Name="FieldItem" t="async.JBartWidgetUsage" RunInAllTests="true" WaitForAsyncActionsToEnd="false">
+      <ExpectedResult t="usage.ContainsText" OneOf="" LookIn="">
+        <Text value="dynamic1"/>
+        <Text value="Static"/>
+        <Text value="text1"/>
+      </ExpectedResult>
+    </Test>
+  </Tests>
+</file>

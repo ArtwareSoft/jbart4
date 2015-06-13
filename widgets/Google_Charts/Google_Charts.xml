@@ -1,0 +1,134 @@
+<jbart_project _type="jbart_project" id="Google_Charts" name="Google Charts" modifiedDate="31/01/2011 10:37" dateCreated="16/01/2011 15:28" vid="32" type="widget" image="" description="" _wusers="">
+  <bart_dev>
+    <db>
+      <bart_unit>
+        <bart_unit id="sample" _type="bart_unit">
+          <Component id="App" type="bart.Application">
+            <xtml t="bart.Application">
+              <Resources t="bart_resource.Resources">
+                <Resource t="jbart_resource.Data" ResourceID="Stats" ValueType="xml">
+                  <Value t="xml.Xml">
+                    <stats>
+                      <continent name="Africa" population="1022234000"/>
+                      <continent name="Antarctica" population="1000"/>
+                      <continent name="Asia" population="4164252000"/>
+                      <continent name="Europe" population="738199000"/>
+                      <continent name="North America" population="542056000"/>
+                      <continent name="Oceania" population="29127000"/>
+                      <continent name="South America" population="392555000"/>
+                    </stats>
+                  </Value>
+                </Resource>
+                <Resource t="jbart_resource.Data" ResourceID="Distribution" ValueType="xml">
+                  <Value t="xml.Xml">
+                    <xml>
+                      <item name="JOHN" value="1.6"/>
+                      <item name="MICHAEL" value="1.6"/>
+                      <item name="MARIA" value="1.3"/>
+                      <item name="ROBERT" value="1.2"/>
+                      <item name="PATRICIA" value="0.8"/>
+                      <item name="RICHARD" value="0.8"/>
+                      <item name="WILLIAM" value="0.8"/>
+                      <item name="JAMES" value="0.8"/>
+                      <item name="MARY" value="0.7"/>
+                      <item name="JOSEF" value="0.7"/>
+                    </xml>
+                  </Value>
+                </Resource>
+              </Resources>
+              
+              <ApplicationFeature t="bart.Css">
+                <Css><![CDATA[#this { font: 12px Arial; }
+#this *:focus { outline:none; }
+p { margin: 0} 
+]]></Css>
+              </ApplicationFeature>
+            </xtml>
+          </Component>
+          <Component id="main" type="jbart.MyWidgetPage">
+            <xtml t="bart.SinglePage" ID="main" ContentType="">
+              <DefaultResource t="bart.Resource" Name="Data"/>
+              <Presentation t="uiaspect.Group">
+                <Style t="group.CustomStyle">
+                  <Html><![CDATA[<div>
+  <div class="field"/>
+</div>]]></Html>
+                  <Css><![CDATA[#this >.field { margin-bottom: 20px; }
+]]></Css>
+                  <Javascript><![CDATA[function(group) { 
+  group.addFields('.field',function(field) 
+     { 
+      field.setControl('.field'); 
+      }
+  );
+;}]]></Javascript>
+                </Style>
+              </Presentation>
+              <Operations t="operation.Operations"/>
+              <Field t="field.ItemListContainer" ID="Stats" Title="Stats">
+                <Layout t="layout.Vertical" Spacing=""/>
+                <Items t="itemlist.Items" Items="%$Stats/*%"/>
+                <Field t="chart2.Chart" Title="Pie Chart" ID="PieChart" ID__Manual="" ChartItems="%$Stats/*%" ChartTitle="Continents By Population">
+                  <Chart t="googlechart.GooglePieChart">
+                    <ConfigurationOptions><![CDATA[{
+  is3D: true,
+  chartArea:{left:0,top:30,width:"30\%" }
+}]]></ConfigurationOptions>
+                  </Chart>
+                  <Field t="field.Field" FieldData="%!@name%" ID="name" Title="Name" ReadOnlyText="">
+                    <Type t="field_aspect.Text"/>
+                  </Field>
+                  <Field t="field.Field" FieldData="%!@population%" ID="population" Title="Population" ReadOnlyText="">
+                    <Type t="field_aspect.Number"/>
+                  </Field>
+                  <FieldAspect t="field_feature.Css">
+                    <Css><![CDATA[#this { }
+#wrapper { padding-bottom: 20px; }
+]]></Css>
+                  </FieldAspect>
+                </Field>
+                <Field t="field.ItemList" Title="Table" ID="Table" ID__Manual="">
+                  <View t="itemlist_style.JBartTable"/>
+                  <Field t="field.Text" ID="Continent" Title="Continent" Text="%@name%">
+                    <Style t="uitext.PlainText"/>
+                  </Field>
+                  <Field t="field.Field" FieldData="%!@population%" ID="population" Title="Population" ReadOnlyText="true">
+                    <Type t="field_aspect.Number">
+                      <Format t="text.NumberFormat" SymbolAtRight="" MinusInParenthesis="" NoCommaSeparator="" Cents=""/>
+                    </Type>
+                  </Field>
+                </Field>
+              </Field>
+              <Field t="field.Layout" ID="Distributions" Title="Distributions">
+                <Layout t="layout.Vertical" Spacing="0"/>
+                <SectionStyle t="section.JBartClean"/>
+                <Field t="chart2.Chart" Title="chart" ID="Chart" ID__Manual="" ChartItems="%$Distribution/item%">
+                  <Chart t="googlechart.GoogleColumnChart">
+                    <ConfigurationOptions><![CDATA[{
+  title: 'Distrubutions',
+  chartArea:{
+    left:20,top:0,
+    width:350,
+    height:100
+  }
+}]]></ConfigurationOptions>
+                  </Chart>
+                  <Field t="field.Field" FieldData="%!@name%" ID="name" Title="Name" ReadOnlyText="">
+                    <Type t="field_aspect.Text"/>
+                  </Field>
+                  <Field t="field.Field" FieldData="%!@value%" ID="value" Title="Value" ReadOnlyText="">
+                    <Type t="field_aspect.Number">
+                      <Format t="text.NumberFormat" SymbolAtRight="" MinusInParenthesis="" NoCommaSeparator="" Cents=""/>
+                    </Type>
+                  </Field>
+                </Field>
+              </Field>
+            </xtml>
+          </Component>
+          <UIPref/>
+        </bart_unit>
+      </bart_unit>
+    </db>
+  </bart_dev>
+  <url url="?pagedt_path=main/chart?studio_style_tabs_tab=ConfigurationOptions"/>
+</jbart_project>

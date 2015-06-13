@@ -1,0 +1,116 @@
+<file _type="jbart_project" id="Popups" name="Popups" modifiedDate="31/01/2011 10:37" dateCreated="16/01/2011 15:28" vid="33" type="widget" image="" description="" _wusers="">
+  <xtml ns="sample">
+    <Component id="Widget" type="jbart.Widget">
+      <xtml t="jbart.Widget">
+        <MainPage t="sample.main"/>
+        <DataResource t="jbart_resource.Data" ResourceID="Data" ValueType="xml">
+          <Value><![CDATA[<xml/>]]></Value>
+        </DataResource>
+      </xtml>
+    </Component>
+    <Component id="main" type="jbart.MyWidgetPage">
+      <xtml t="control.Layout" ID="main" ContentType="" Title="main">
+        <FieldAspect t="field_aspect.FieldData" FieldData="%$Data%"/>
+        <Field t="control.Button" ID="Open_Popup" Title="Open Popup">
+          <Style t="btn.JBart"/>
+          <Action t="popup.OpenPopup" PopupTitle="Popup Title">
+            <Contents t="field.InnerPage">
+              <Layout t="layout.Default"/>
+              <Field t="field.Image" HideTitle="true" ID="Image" Title="Image">
+                <Image t="image.Image" Width="609px" Height="416px" Url="http://weinterrupt.com/wp-content/uploads/mouse.jpg">
+                  <ImageProportions t="image.KeepProportions" FillImage="true" CenterImage=""/>
+                </Image>
+                <Style t="image.PlainImage"/>
+              </Field>
+              <Field t="control.Button" ID="Open_inner_popup" Title="Open inner popup">
+                <Style t="btn.Bootstrap">
+                  <Size t="bootstrap_btn.Small"/>
+                  <Type t="bootstrap_btn.Success"/>
+                </Style>
+                <Action t="popup.OpenPopup" PopupTitle="Inner popup">
+                  <Style t="popup.Default"/>
+                  <Contents t="field.InnerPage">
+                    <Layout t="layout.Default"/>
+                    <Field t="control.Label" ID="Inner_popup" Title="Inner popup" Text="Contents of inner popup">
+                      <Style t="uitext.PlainText"/>
+                    </Field>
+                  </Contents>
+                </Action>
+                <FieldAspect t="field_feature.Css">
+                  <Css><![CDATA[#this { float:right; margin-top: 10px; margin-bottom: 9px; }
+#wrapper { }
+]]></Css>
+                </FieldAspect>
+              </Field>
+            </Contents>
+            <Style t="popup.Default">
+                  </Style>
+          </Action>
+        </Field>
+        <Field t="control.Button" ID="Open_Popup2" Title="Popup With Validations" HideTitle="true">
+          <Style t="btn.JBart"/>
+          <Action t="popup.OpenPopup" PopupTitle="Popup With Validations">
+            <Contents t="field.InnerPage">
+              <Layout t="layout.Vertical" Spacing="5px"/>
+              <Field t="control.Label" ID="Please_put_your_name_here" Title="Please put your name here:">
+                <Style t="ui.CustomCss" base="uitext.PlainText">
+                  <Style t="uitext.PlainText"/>
+                  <Css><![CDATA[#this { font-size: 13px; }
+]]></Css>
+                </Style>
+              </Field>
+              <Field t="fld.Field" FieldData="%!@textbox%" ID="textbox" Title="name">
+                <FieldType t="fld_type.EditableText">
+                  <Style t="editable_text.JBartTextbox"/>
+                </FieldType>
+                <FieldAspect t="field_aspect.Mandatory"/>
+              </Field>
+              <Field t="control.Button" ID="OK" Title="OK">
+                <Style t="btn.JBart"/>
+                <Action t="popup.CloseContainingPopup" ExitMode="OK">
+                  <DoOnExit t="action.WriteValue" To="%$Data/!@pop2closed%" Value="true"/>
+                </Action>
+                <FieldAspect t="field_feature.Css">
+                  <Css><![CDATA[#this { margin-top: 18px; }
+#wrapper { }
+]]></Css>
+                </FieldAspect>
+              </Field>
+            </Contents>
+            <Style t="popup.Default">
+                  </Style>
+          </Action>
+        </Field>
+        <Layout t="layout.Vertical" Spacing="20px"/>
+        <Field t="gstudio_insert.MockupToInsertFieldInStudio" singleTitle="" multipleTitle="" fields=""/>
+      </xtml>
+    </Component>
+    <Component id="Palettes" type="data.Data">
+      <xtml t="xml.Xml">
+        <palette>
+          <colors name="custom"/>
+          <fonts/>
+        </palette>
+      </xtml>
+    </Component>
+  </xtml>
+  <Tests>
+    <Test Name="popup contents" t="bart_usage.JBartUsage" RunInAllTests="true">
+      <ExpectedResult t="usage.ContainsText" OneOf="" LookIn="current popup">
+        <Text value="http://weinterrupt.com/wp-content/uploads/mouse.jpg"/>
+        <Text value="Open inner popup"/>
+      </ExpectedResult>
+      <RunOnControl t="operation.ClickOnButton" Button="Open_Popup"/>
+    </Test>
+    <Test Name="validations" t="bart_usage.JBartUsage" RunInAllTests="true">
+      <ExpectedResult t="usage.CustomCondition" Condition="%$Data/@pop2closed% != 'true'">
+      </ExpectedResult>
+      <RunOnControl t="action.RunActions">
+        <Action t="operation.ClickOnButton" Button="Open_Popup2"/>
+        <Action t="popup.RunOnPopup">
+          <Action t="operation.ClickOnButton" Button="OK"/>
+        </Action>
+      </RunOnControl>
+    </Test>
+  </Tests>
+</file>

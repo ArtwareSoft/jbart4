@@ -1,0 +1,89 @@
+<file _type="jbart_project" id="DynamicFields" name="Dynamic Fields" modifiedDate="20/06/2012 12:13:42" dateCreated="20/06/2012 12:04:57" createdBy="shai" vid="22" description_for_customize="" description="">
+  <xtml ns="sample">
+    <Component id="Widget" type="jbart.Widget">
+      <xtml t="jbart.Widget">
+        <MainPage t="sample.main"/>
+        <DataResource t="bart_resource.Xml" ResourceID="Data" Mode="single" Storage="in memory">
+          <Xml t="xml.Xml">
+            <data Name="John" Gender="Male" Age="32">
+              <item Name="Homer" Age="48" Gender="male"/>
+              <item Name="Marge" Age="42" Gender="female"/>
+            </data>
+          </Xml>
+        </DataResource>
+        <DataResource t="bart_resource.Xml" Mode="single" Storage="in memory" ResourceID="Metadata">
+          <Xml t="xml.Xml">
+            <metadata>
+              <field name="Name"/>
+              <field name="Age"/>
+              <field name="Gender"/>
+            </metadata>
+          </Xml>
+        </DataResource>
+      </xtml>
+    </Component>
+    <Component id="main" type="jbart.MyWidgetPage">
+      <xtml t="control.Layout" ID="main" ContentType="" Title="">
+        <Field t="control.PropertySheet" ID="Fields1" Title="Fields">
+          <Style t="properties.Default" PropertiesWidth="100px"/>
+          <Field t="field.DynamicFields" Title="Dynamic Fields" ID="Fields" FieldItems="%$Metadata/field%">
+            <Field t="fld.Field" ID="Name" Title="%@name%" FieldData="%!@{$_FieldItem/@name}%">
+              <FieldType t="fld_type.EditableText">
+                <Style t="editable_text.JBartTextbox"/>
+              </FieldType>
+            </Field>
+          </Field>
+        </Field>
+        <Field t="field.ItemListContainer" ID="table_cntr" Title="table">
+          <Items t="itemlist.XmlItems" ParentXml="%%" Tag="item"/>
+          <Field t="field.Layout" ID="table_cntr_Toolbar" Title="Toolbar">
+            <Layout t="layout.HorizontalHtmlTable" Spacing="5px"/>
+            <FieldAspect t="itemlist_aspect.RefreshOnSelectionChange"/>
+            <Field t="control.Button" ID="table_cntr_Add" Title="Add item">
+              <Style t="btn.HyperlinkWithImage"/>
+              <Image t="image.Image" Url="_jbartImages_/add1616.gif"/>
+              <Action t="itemlist_action.AddItemToItemList">
+                <Data t="xml.ByTag" Tag="item"/>
+              </Action>
+            </Field>
+            <Field t="control.Button" ID="table_cntr_Delete" Title="Delete item">
+              <Style t="btn.HyperlinkWithImage"/>
+              <Image t="image.Image" Url="_jbartImages_/delete1616.gif"/>
+              <Action t="itemlist_action.DeleteSelectedItem"/>
+            </Field>
+          </Field>
+          <Field t="field.ItemList" Title="table" ID="table_table">
+            <View t="itemlist_style.JBartTable"/>
+            <FieldAspect t="itemlist_aspect.ItemSelection"/>
+            <FieldAspect t="itemlist_aspect.TableColumnDragAndDrop"/>
+            <FieldAspect t="itemlist_aspect.DragAndDropItems"/>
+            <FieldAspect t="itemlist_aspect.ShowTextWhenNoItems"/>
+            <FieldAspect t="itemlist_aspect.UpdateOnAddOrDeleteItem"/>
+            <Field t="field.DynamicFields" Title="Dynamic Fields" ID="Fields" FieldItems="%$Metadata/field%">
+              <Field t="fld.Field" ID="Name" Title="%@name%" FieldData="%!@{$_FieldItem/@name}%">
+                <FieldType t="fld_type.EditableText">
+                  <Style t="editable_text.JBartTextbox"/>
+                </FieldType>
+              </Field>
+            </Field>
+          </Field>
+          <Layout t="layout.Default"/>
+        </Field>
+        <Layout t="layout.Vertical" Spacing="35px"/>
+        <FieldAspect t="field_aspect.FieldData" FieldData="%$Data%"/>
+      </xtml>
+    </Component>
+  </xtml>
+  <Tests>
+    <Test Name="has data" t="bart_usage.JBartUsage" RunInAllTests="true">
+      <ExpectedResult t="usage.ContainsText" OneOf="" LookIn="">
+        <Text value="John"/>
+      </ExpectedResult>
+    </Test>
+    <Test Name="in table" t="async.JBartWidgetUsage" RunInAllTests="true" WaitForAsyncActionsToEnd="false">
+      <ExpectedResult t="usage.ContainsText" OneOf="" LookIn="">
+        <Text value="Marge"/>
+      </ExpectedResult>
+    </Test>
+  </Tests>
+</file>

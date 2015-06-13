@@ -1,4 +1,14 @@
-<file _type="jbart_project" name="Let Me See" id="apps/LetMeSee" vid="153" plugins="cobrowse,letmesee" cross_domain="true" feed="" jbartapp="true">  <xtml ns="sample">    <Component id="Widget" type="jbart.Widget">      <xtml t="jbart.Widget">        <MainPage t="sample.main"/>        <ApplicationFeature t="lmc.LetMeSee">          <ImplementingChannel t="lmc.LMCChannel"/>        </ApplicationFeature>        <ApplicationFeature t="lmc.VisitorStatistics"/>        <ApplicationFeature t="appfeature.Css">          <Css><![CDATA[#this {
+<file _type="jbart_project" name="Let Me See" id="LetMeSee" vid="153" plugins="cobrowse,letmesee" cross_domain="true" feed="" jbartapp="true">
+  <xtml ns="sample">
+    <Component id="Widget" type="jbart.Widget">
+      <xtml t="jbart.Widget">
+        <MainPage t="sample.main"/>
+        <ApplicationFeature t="lmc.LetMeSee">
+          <ImplementingChannel t="lmc.LMCChannel"/>
+        </ApplicationFeature>
+        <ApplicationFeature t="lmc.VisitorStatistics"/>
+        <ApplicationFeature t="appfeature.Css">
+          <Css><![CDATA[#this {
   font:12px Arial;
 }
 #this *:focus {
@@ -24,9 +34,22 @@ p {
   -webkit-box-shadow: none !important;
   box-shadow: none !important;
 }
-]]></Css>        </ApplicationFeature>        <DataResource t="jbart_resource.Data" ResourceID="CoBrowseSide" ValueType="text" AutoSaveSampleData="">          <Value><![CDATA[agent]]></Value>        </DataResource>        <ApplicationFeature t="cobrowse.CoBrowseScrollPosition"/>        <DataResource t="jbart_resource.Data" ResourceID="Styles" ValueType="xml" AutoSaveSampleData="true">          <Value t="xml.Xml">            <xml _cobrowseResource="Styles">              <style id="1" name="Style1">                <styleProps>                  <general mainImageHeight="200" paragraphTextMaxLength="" textForBack="" marginForImageInItem="40" mobileViewInDesktop="false"/>                  <css id="all"><![CDATA[#this {
+]]></Css>
+        </ApplicationFeature>
+        <DataResource t="jbart_resource.Data" ResourceID="CoBrowseSide" ValueType="text" AutoSaveSampleData="">
+          <Value><![CDATA[agent]]></Value>
+        </DataResource>
+        <ApplicationFeature t="cobrowse.CoBrowseScrollPosition"/>
+        <DataResource t="jbart_resource.Data" ResourceID="Styles" ValueType="xml" AutoSaveSampleData="true">
+          <Value t="xml.Xml">
+            <xml _cobrowseResource="Styles">
+              <style id="1" name="Style1">
+                <styleProps>
+                  <general mainImageHeight="200" paragraphTextMaxLength="" textForBack="" marginForImageInItem="40" mobileViewInDesktop="false"/>
+                  <css id="all"><![CDATA[#this {
   background:#eee;
-}]]></css>                  <css id="item"><![CDATA[#this.after_item {
+}]]></css>
+                  <css id="item"><![CDATA[#this.after_item {
   border-top:1px solid #919191;
 }
 .right_to_left #this .item_text {
@@ -112,7 +135,8 @@ p {
 }
 #this.paragraph_in_main_menu.no_border {
   border:none;
-}]]></css>                  <css id="heading"><![CDATA[#this {
+}]]></css>
+                  <css id="heading"><![CDATA[#this {
   padding:10px 0;
   background:#2E3641;
   color:#fff;
@@ -124,7 +148,8 @@ p {
 .heading_text {
   width:100%;
   text-align:center;
-}]]></css>                  <css id="paragraph"><![CDATA[.lmc_main_menu>*:first-child #this.paragraph_image {
+}]]></css>
+                  <css id="paragraph"><![CDATA[.lmc_main_menu>*:first-child #this.paragraph_image {
   border-bottom:0px solid #000000;
 }
 #this.paragraph_outer {
@@ -234,7 +259,8 @@ img.aa_image.loading_image {
   padding:6px 0px;
   font-size:18px;
   font-weight:bold;
-}]]></css>                  <css id="item contents"><![CDATA[#this {
+}]]></css>
+                  <css id="item contents"><![CDATA[#this {
   background-color:#fff;
 }
 .item_contents {
@@ -244,7 +270,8 @@ img.aa_image.loading_image {
 #this.item_contents div,
 #this.item_contents span {
   background:transparent !important;
-}]]></css>                  <css id="specification"><![CDATA[#this {
+}]]></css>
+                  <css id="specification"><![CDATA[#this {
   padding:5px;
 }
 #this table {
@@ -255,7 +282,8 @@ img.aa_image.loading_image {
 }
 .spec_value {} table {
   width:100%;
-}]]></css>                  <css id="details topbar"><![CDATA[#this {
+}]]></css>
+                  <css id="details topbar"><![CDATA[#this {
   height:46px;
   background:#eee;
   opacity:0.9;
@@ -369,9 +397,11 @@ img.aa_image.loading_image {
 }
 .nocss3 #this .disabled.topbar_prev_button {
   border-color:transparent transparent #ddd transparent;
-}]]></css>                  <css id="desktop body"><![CDATA[#this {
+}]]></css>
+                  <css id="desktop body"><![CDATA[#this {
   background:#354052 !important;
-}]]></css>                  <css id="desktop"><![CDATA[.desktop_top_title {
+}]]></css>
+                  <css id="desktop"><![CDATA[.desktop_top_title {
   position:absolute;
   top:0;
   height:55px;
@@ -579,7 +609,8 @@ img.aa_image.loading_image {
 }
 .right_to_left #this .lmc_desktop_main_details .fld_items_cntr {
     margin-right:10px;
-}]]></css>                  <css id="desktop mobile look"><![CDATA[#this {
+}]]></css>
+                  <css id="desktop mobile look"><![CDATA[#this {
   background-color:#354052;
 }
 .mobile_frame {
@@ -588,7 +619,8 @@ img.aa_image.loading_image {
   background-color:rgb(114, 147, 166);
   padding:15px;
   margin:10px 0;
-}]]></css>                  <css id="replies"><![CDATA[#this {
+}]]></css>
+                  <css id="replies"><![CDATA[#this {
   margin:10px;
 }
 .reply_button {
@@ -669,7 +701,8 @@ img.aa_image.loading_image {
 .right_to_left #this .lmc_reply_time {
   left:4px;
   text-align:left;
-}]]></css>                  <css id="print"><![CDATA[body {
+}]]></css>
+                  <css id="print"><![CDATA[body {
   padding:10px;
   margin:10px;
 }
@@ -682,17 +715,184 @@ img.aa_image.loading_image {
   padding:3px;
   border:1px solid black;
   border-collapse:collapse;
-}]]></css>                </styleProps>              </style>            </xml>          </Value>        </DataResource>        <ApplicationFeature t="cobrowse.CoBrowseJoinNotification">          <AgentLog t="cobrowse.AgentLog" Message="Joined the room (%device% , %browser%)"/>        </ApplicationFeature>        <DataResource t="jbart_resource.Data" ResourceID="Room" ValueType="xml" AutoSaveSampleData="">          <Value t="xml.Xml">            <room createdByTemplate="https://storage.googleapis.com/letmesee1/1gfk837tc4/rooms/ekn0kj.xml" agent="Agent1" agentEmail="" createdByAgent="Agent1" customerName="Customer 116" createdDate="1396420306766" modifiedDate="1396451846510" id="63bl9k" url="http://jb-letmesee.appspot.com/LetMeSee/4pv11pglut.html?roomid=63bl9k" tinyUrl="http://tinyurl.com/pbvo9f9" phone="0526401769" eMail="" agentPhone="" sendSmsToAgent="" sendEmailToAgent="" smsTitle="sellx2" actual="972526401769">              <items>                <item type="heading" name="Matembezi - Tanzania safari" id="1"/>                <item name="15 &amp; 16 July - Tarangire Balloon Camp" id="722" Image="http://www.safarinow.com/db/id/1163210/gt322093.jpg" imageWidth="288" imageHeight="191" replies=""/>                <item type="heading" name="Azarzar family to Tanzania " id="312"/>                <item type="heading" name="Your trip" id="321"/>                <item name="14 July - Kia lodge" id="758" Image="http://moivaro.com/wp-content/uploads/2014/01/klein-KIA-15.jpg" imageWidth="1500" imageHeight="996" replies="">                  <paragraph type="text" text="Hi man,&#xa;Are you looking for a nice car?&#xa;&#xa;You can find it easily enough here..." image="" id="903"/>                  <paragraph type="rich text" text="" image="" id="904">                    <html><![CDATA[Hi man (rich text)<div class=""><br class=""></div><div class="">How you doing? any chance of you giving me a lift?</div>]]></html>                  </paragraph>                  <paragraph type="image" text="" image="http://moivaro.com/wp-content/uploads/2014/01/klein-KIA-3.jpg" html="" id="901" imageWidth="1500" imageHeight="1004"/>                  <paragraph type="image" text="" image="http://moivaro.com/wp-content/uploads/2014/01/klein-KIA-12.jpg" html="" id="797" imageWidth="1500" imageHeight="998"/>                  <paragraph type="image" text="" image="//storage.googleapis.com/letmesee1/4pv11pglut/files/5116d52b4949407ab80147137cbf1c26_home_pic3.jpg" id="902" imageWidth="243" imageHeight="244"/>                </item>                <item name="17 July - Kisima Ngeda" id="151" Image="http://www.anasasafari.com/wp-content/gallery/kisima-ngeda/thumbs/thumbs_img_2551.jpg" imageWidth="150" imageHeight="150"/>                <item name="18 July - Exploreans Ngorongoro " id="145" Image="http://ngorongorolodge.exploreans.com/var/ezwebin_site/storage/images/home/exploreans/exploreans-hotels-and-resorts/tanzania/exploreans-ngorongoro-lodge/menu-hotel/photogallery/16/73969-1-eng-GB/16_photogallerybig.jpg" imageWidth="800" imageHeight="535" replies="">                  <paragraph type="text" text="In Conan Doyle's early rough plot outlines, Sherlock Holmes' sidekick was named &quot;Ormond Sacker&quot;[2][3] before Conan Doyle finally settled on &quot;John Watson&quot;.&#xa;In the words of William L. De Andrea,&#xa;&quot;Watson also serves the important function of catalyst for Holmes' mental processes... From the writer's point of view, Doyle knew the importance of having someone to whom the detective can make enigmatic remarks, a consciousness that's privy to facts in the case without being in on the conclusions drawn from them until the proper time. Any character who performs these functions in a mystery story has come to be known as a 'Watson'.&quot;&#xa;In 1929, English crime writer and critic Ronald Knox stated as one of his rules for fledgling writers of detective fiction that,&#xa;&quot;The stupid friend of the detective, the Watson, must not conceal from the reader any thoughts which pass through his mind; his intelligence must be slightly, but very slightly, below that of the average reader.&quot;" image="" id="1" zoomByClick="">                    <html><![CDATA[<div style="font:16px arial">In Conan Doyle's early rough plot outlines, Sherlock Holmes' sidekick was named "Ormond Sacker"[2][3] before Conan Doyle finally settled on "John Watson".
+}]]></css>
+                </styleProps>
+              </style>
+            </xml>
+          </Value>
+        </DataResource>
+        <ApplicationFeature t="cobrowse.CoBrowseJoinNotification">
+          <AgentLog t="cobrowse.AgentLog" Message="Joined the room (%device% , %browser%)"/>
+        </ApplicationFeature>
+        <DataResource t="jbart_resource.Data" ResourceID="Room" ValueType="xml" AutoSaveSampleData="">
+          <Value t="xml.Xml">
+            <room createdByTemplate="https://storage.googleapis.com/letmesee1/1gfk837tc4/rooms/ekn0kj.xml" agent="Agent1" agentEmail="" createdByAgent="Agent1" customerName="Customer 116" createdDate="1396420306766" modifiedDate="1396451846510" id="63bl9k" url="http://jb-letmesee.appspot.com/LetMeSee/4pv11pglut.html?roomid=63bl9k" tinyUrl="http://tinyurl.com/pbvo9f9" phone="0526401769" eMail="" agentPhone="" sendSmsToAgent="" sendEmailToAgent="" smsTitle="sellx2" actual="972526401769">
+              <items>
+                <item type="heading" name="Matembezi - Tanzania safari" id="1"/>
+                <item name="15 &amp; 16 July - Tarangire Balloon Camp" id="722" Image="http://www.safarinow.com/db/id/1163210/gt322093.jpg" imageWidth="288" imageHeight="191" replies=""/>
+                <item type="heading" name="Azarzar family to Tanzania " id="312"/>
+                <item type="heading" name="Your trip" id="321"/>
+                <item name="14 July - Kia lodge" id="758" Image="http://moivaro.com/wp-content/uploads/2014/01/klein-KIA-15.jpg" imageWidth="1500" imageHeight="996" replies="">
+                  <paragraph type="text" text="Hi man,&#xa;Are you looking for a nice car?&#xa;&#xa;You can find it easily enough here..." image="" id="903"/>
+                  <paragraph type="rich text" text="" image="" id="904">
+                    <html><![CDATA[Hi man (rich text)<div class=""><br class=""></div><div class="">How you doing? any chance of you giving me a lift?</div>]]></html>
+                  </paragraph>
+                  <paragraph type="image" text="" image="http://moivaro.com/wp-content/uploads/2014/01/klein-KIA-3.jpg" html="" id="901" imageWidth="1500" imageHeight="1004"/>
+                  <paragraph type="image" text="" image="http://moivaro.com/wp-content/uploads/2014/01/klein-KIA-12.jpg" html="" id="797" imageWidth="1500" imageHeight="998"/>
+                  <paragraph type="image" text="" image="//storage.googleapis.com/letmesee1/4pv11pglut/files/5116d52b4949407ab80147137cbf1c26_home_pic3.jpg" id="902" imageWidth="243" imageHeight="244"/>
+                </item>
+                <item name="17 July - Kisima Ngeda" id="151" Image="http://www.anasasafari.com/wp-content/gallery/kisima-ngeda/thumbs/thumbs_img_2551.jpg" imageWidth="150" imageHeight="150"/>
+                <item name="18 July - Exploreans Ngorongoro " id="145" Image="http://ngorongorolodge.exploreans.com/var/ezwebin_site/storage/images/home/exploreans/exploreans-hotels-and-resorts/tanzania/exploreans-ngorongoro-lodge/menu-hotel/photogallery/16/73969-1-eng-GB/16_photogallerybig.jpg" imageWidth="800" imageHeight="535" replies="">
+                  <paragraph type="text" text="In Conan Doyle's early rough plot outlines, Sherlock Holmes' sidekick was named &quot;Ormond Sacker&quot;[2][3] before Conan Doyle finally settled on &quot;John Watson&quot;.&#xa;In the words of William L. De Andrea,&#xa;&quot;Watson also serves the important function of catalyst for Holmes' mental processes... From the writer's point of view, Doyle knew the importance of having someone to whom the detective can make enigmatic remarks, a consciousness that's privy to facts in the case without being in on the conclusions drawn from them until the proper time. Any character who performs these functions in a mystery story has come to be known as a 'Watson'.&quot;&#xa;In 1929, English crime writer and critic Ronald Knox stated as one of his rules for fledgling writers of detective fiction that,&#xa;&quot;The stupid friend of the detective, the Watson, must not conceal from the reader any thoughts which pass through his mind; his intelligence must be slightly, but very slightly, below that of the average reader.&quot;" image="" id="1" zoomByClick="">
+                    <html><![CDATA[<div style="font:16px arial">In Conan Doyle's early rough plot outlines, Sherlock Holmes' sidekick was named "Ormond Sacker"[2][3] before Conan Doyle finally settled on "John Watson".
 In the words of William L. De Andrea,
 "Watson also serves the important function of catalyst for Holmes' mental processes... From the writer's point of view, Doyle knew the importance of having someone to whom the detective can make enigmatic remarks, a consciousness that's privy to facts in the case without being in on the conclusions drawn from them until the proper time. Any character who performs these functions in a mystery story has come to be known as a 'Watson'."
 In 1929, English crime writer and critic Ronald Knox stated as one of his rules for fledgling writers of detective fiction that,
-"The stupid friend of the detective, the Watson, must not conceal from the reader any thoughts which pass through his mind; his intelligence must be slightly, but very slightly, below that of the average reader."</div>]]></html>                  </paragraph>                  <paragraph type="html" text="" image="" id="2" zoomByClick="">                    <html><![CDATA[I want to say something to you...<div><br></div><div>How are you doing?</div><div><br></div>]]></html>                  </paragraph>                </item>                <item name="item title here" id="w838" Image="" imageWidth="" imageHeight=""/>              </items>              <style>                <general mainImageHeight="200" marginForImageInItem="40" mobileViewInDesktop="false" rtl="false"/>              </style>              <sms text="Hi Customer 116,&#xa;Here are your LetMeSee items:&#xa;http://tinyurl.com/pbvo9f9"/>            </room>          </Value>        </DataResource>        <ApplicationFeature t="cobrowse.CoBrowseSendRecieveCurrentSize"/>        <ApplicationFeature t="appfeature.DeployedHtmlLoader">          <LoaderHtml t="app_loader.Circle"/>          <Loader t="app_loader.Circle"/>        </ApplicationFeature>        <ApplicationFeature t="appfeature.SendEmailOnRuntimeError"/>        <DataResource t="jbart_resource.Data" ResourceID="RoomVisitorStats" ValueType="xml" AutoSaveSampleData="">          <Value t="xml.Xml">            <xml _created="12/01/2014 14:31" _lastModified="12/01/2014 14:34" _type="cobrowse_visitor_stats" createdDate="1389529906645" id="1389529907792_65" instance="0B0Iu_SoHeTmkSEc3QWJTTm9aMlE" vid="force" visitorJoinCount="1" visitorTimeMin="2" lastEventTime="1389530078173">              <item id="main page" timeSec="5" name="" value=""/>              <item id="5" timeSec="3" name="" value=""/>              <item id="6" timeSec="6" name="" value=""/>              <item id="13" timeSec="12" name="" value=""/>              <item id="17" timeSec="2" name="" value=""/>              <item id="7" timeSec="1" name="" value=""/>            </xml>          </Value>        </DataResource>        <DataResource t="jbart_resource.Data" ResourceID="Temp" ValueType="xml" AutoSaveSampleData="">          <Value t="xml.Xml">            <xml/>          </Value>        </DataResource>        <ApplicationFeature t="lmc.LMCDescriptionOfUIState"/>        <ApplicationFeature t="appfeature.Responsive"/>        <DataResource t="jbart_resource.Data" ResourceID="UIState" ValueType="xml" AutoSaveSampleData="">          <Value t="xml.Xml">            <xml/>          </Value>        </DataResource>        <ApplicationFeature t="lmc.NotifyAgentWhenVisitorJoins"/>        <DataResource t="jbart_resource.Data" ResourceID="Project" ValueType="xml" AutoSaveSampleData="">          <Value t="xml.Xml">            <xml deploy_WidgetBaseUrl="//dl.dropboxusercontent.com/u/24056024/jbartlib/apps" _version="dev" id="sh0mlhm5pt" key="4msa9do9cl" replies="true" newsFeed="true" name="studio"/>          </Value>        </DataResource>        <DataResource t="jbart_resource.Data" ResourceID="SampleData" ValueType="xml" AutoSaveSampleData="">          <Value t="xml.Xml">            <room _type="cobrowse_room" isTemplate="true" name="Template">              <items/>              <style>                <general mainImageHeight="200" marginForImageInItem="40" mobileViewInDesktop="true" rtl=""/>              </style>            </room>          </Value>        </DataResource>        <DataResource t="jbart_resource.Data" ResourceID="RoomAgentInfo" ValueType="xml" AutoSaveSampleData="">          <Value t="xml.Xml">            <agentinfo id="8i1vcp" text="" customerStatus="" modifiedDate="1394367871735">              <props Reservation="100" Trip="טיול נחמד"/>              <history>                <item field="customer status" value="mik" agent="Agent1" time="1394367361620"/>                <item field="customer status" value="yaniv" agent="Agent1" time="1394367673102"/>                <item field="customer status" agent="Agent1" time="1394367677536"/>                <item field="Reservation" value="100" agent="Agent1" time="1394367798143"/>                <item field="Trip" value="טיול נחמד" agent="Agent1" time="1394367873793"/>              </history>            </agentinfo>          </Value>        </DataResource>        <DataResource t="jbart_resource.Data" ResourceID="RoomHeaders" ValueType="xml" AutoSaveSampleData="">          <Value t="xml.Xml">            <headers/>          </Value>        </DataResource>        <DataResource t="jbart_resource.Data" ResourceID="FullRooms" ValueType="xml" AutoSaveSampleData="">          <Value t="xml.Xml">            <rooms/>          </Value>        </DataResource>        <DataResource t="jbart_resource.Data" ResourceID="ProjectSettings" ValueType="xml" AutoSaveSampleData="">          <Value t="xml.Xml">            <xml/>          </Value>        </DataResource>        <ApplicationFeature t="lmc.LMCSyncPreviewWithEditor"/>        <ApplicationFeature t="lmc.LMCUIUpdates"/>        <DataResource t="jbart_resource.Data" ResourceID="User" ValueType="xml" AutoSaveSampleData="">          <Value t="xml.Xml">            <xml name="Agent1"/>          </Value>        </DataResource>        <DataResource t="jbart_resource.Data" ResourceID="EmbedConfig" ValueType="xml" AutoSaveSampleData="">          <Value t="xml.Xml">            <xml type="room_feed" project="sh0mlhm5pt" room="58hqh5" key="4msa9do9cl"/>          </Value>        </DataResource>        <DataResource t="jbart_resource.Data" ResourceID="SiteSettings" ValueType="xml" AutoSaveSampleData="">          <Value t="xml.Xml">            <xml/>          </Value>        </DataResource>        <DataResource t="jbart_resource.Data" ResourceID="CatalogIndex" ValueType="xml" AutoSaveSampleData="">          <Value t="xml.Xml">            <xml/>          </Value>        </DataResource>      </xtml>    </Component>    <Component id="main" type="jbart.MyWidgetPage">      <xtml t="control.Layout" ID="main" Title="main">        <Layout t="ui.CustomCss" base="layout.Default">          <Style t="layout.Default"/>          <Css><![CDATA[#this {
+"The stupid friend of the detective, the Watson, must not conceal from the reader any thoughts which pass through his mind; his intelligence must be slightly, but very slightly, below that of the average reader."</div>]]></html>
+                  </paragraph>
+                  <paragraph type="html" text="" image="" id="2" zoomByClick="">
+                    <html><![CDATA[I want to say something to you...<div><br></div><div>How are you doing?</div><div><br></div>]]></html>
+                  </paragraph>
+                </item>
+                <item name="item title here" id="w838" Image="" imageWidth="" imageHeight=""/>
+              </items>
+              <style>
+                <general mainImageHeight="200" marginForImageInItem="40" mobileViewInDesktop="false" rtl="false"/>
+              </style>
+              <sms text="Hi Customer 116,&#xa;Here are your LetMeSee items:&#xa;http://tinyurl.com/pbvo9f9"/>
+            </room>
+          </Value>
+        </DataResource>
+        <ApplicationFeature t="cobrowse.CoBrowseSendRecieveCurrentSize"/>
+        <ApplicationFeature t="appfeature.DeployedHtmlLoader">
+          <LoaderHtml t="app_loader.Circle"/>
+          <Loader t="app_loader.Circle"/>
+        </ApplicationFeature>
+        <ApplicationFeature t="appfeature.SendEmailOnRuntimeError"/>
+        <DataResource t="jbart_resource.Data" ResourceID="RoomVisitorStats" ValueType="xml" AutoSaveSampleData="">
+          <Value t="xml.Xml">
+            <xml _created="12/01/2014 14:31" _lastModified="12/01/2014 14:34" _type="cobrowse_visitor_stats" createdDate="1389529906645" id="1389529907792_65" instance="0B0Iu_SoHeTmkSEc3QWJTTm9aMlE" vid="force" visitorJoinCount="1" visitorTimeMin="2" lastEventTime="1389530078173">
+              <item id="main page" timeSec="5" name="" value=""/>
+              <item id="5" timeSec="3" name="" value=""/>
+              <item id="6" timeSec="6" name="" value=""/>
+              <item id="13" timeSec="12" name="" value=""/>
+              <item id="17" timeSec="2" name="" value=""/>
+              <item id="7" timeSec="1" name="" value=""/>
+            </xml>
+          </Value>
+        </DataResource>
+        <DataResource t="jbart_resource.Data" ResourceID="Temp" ValueType="xml" AutoSaveSampleData="">
+          <Value t="xml.Xml">
+            <xml/>
+          </Value>
+        </DataResource>
+        <ApplicationFeature t="lmc.LMCDescriptionOfUIState"/>
+        <ApplicationFeature t="appfeature.Responsive"/>
+        <DataResource t="jbart_resource.Data" ResourceID="UIState" ValueType="xml" AutoSaveSampleData="">
+          <Value t="xml.Xml">
+            <xml/>
+          </Value>
+        </DataResource>
+        <ApplicationFeature t="lmc.NotifyAgentWhenVisitorJoins"/>
+        <DataResource t="jbart_resource.Data" ResourceID="Project" ValueType="xml" AutoSaveSampleData="">
+          <Value t="xml.Xml">
+            <xml deploy_WidgetBaseUrl="//dl.dropboxusercontent.com/u/24056024/jbartlib/apps" _version="dev" id="sh0mlhm5pt" key="4msa9do9cl" replies="true" newsFeed="true" name="studio"/>
+          </Value>
+        </DataResource>
+        <DataResource t="jbart_resource.Data" ResourceID="SampleData" ValueType="xml" AutoSaveSampleData="">
+          <Value t="xml.Xml">
+            <room _type="cobrowse_room" isTemplate="true" name="Template">
+              <items/>
+              <style>
+                <general mainImageHeight="200" marginForImageInItem="40" mobileViewInDesktop="true" rtl=""/>
+              </style>
+            </room>
+          </Value>
+        </DataResource>
+        <DataResource t="jbart_resource.Data" ResourceID="RoomAgentInfo" ValueType="xml" AutoSaveSampleData="">
+          <Value t="xml.Xml">
+            <agentinfo id="8i1vcp" text="" customerStatus="" modifiedDate="1394367871735">
+              <props Reservation="100" Trip="טיול נחמד"/>
+              <history>
+                <item field="customer status" value="mik" agent="Agent1" time="1394367361620"/>
+                <item field="customer status" value="yaniv" agent="Agent1" time="1394367673102"/>
+                <item field="customer status" agent="Agent1" time="1394367677536"/>
+                <item field="Reservation" value="100" agent="Agent1" time="1394367798143"/>
+                <item field="Trip" value="טיול נחמד" agent="Agent1" time="1394367873793"/>
+              </history>
+            </agentinfo>
+          </Value>
+        </DataResource>
+        <DataResource t="jbart_resource.Data" ResourceID="RoomHeaders" ValueType="xml" AutoSaveSampleData="">
+          <Value t="xml.Xml">
+            <headers/>
+          </Value>
+        </DataResource>
+        <DataResource t="jbart_resource.Data" ResourceID="FullRooms" ValueType="xml" AutoSaveSampleData="">
+          <Value t="xml.Xml">
+            <rooms/>
+          </Value>
+        </DataResource>
+        <DataResource t="jbart_resource.Data" ResourceID="ProjectSettings" ValueType="xml" AutoSaveSampleData="">
+          <Value t="xml.Xml">
+            <xml/>
+          </Value>
+        </DataResource>
+        <ApplicationFeature t="lmc.LMCSyncPreviewWithEditor"/>
+        <ApplicationFeature t="lmc.LMCUIUpdates"/>
+        <DataResource t="jbart_resource.Data" ResourceID="User" ValueType="xml" AutoSaveSampleData="">
+          <Value t="xml.Xml">
+            <xml name="Agent1"/>
+          </Value>
+        </DataResource>
+        <DataResource t="jbart_resource.Data" ResourceID="EmbedConfig" ValueType="xml" AutoSaveSampleData="">
+          <Value t="xml.Xml">
+            <xml type="room_feed" project="sh0mlhm5pt" room="58hqh5" key="4msa9do9cl"/>
+          </Value>
+        </DataResource>
+        <DataResource t="jbart_resource.Data" ResourceID="SiteSettings" ValueType="xml" AutoSaveSampleData="">
+          <Value t="xml.Xml">
+            <xml/>
+          </Value>
+        </DataResource>
+        <DataResource t="jbart_resource.Data" ResourceID="CatalogIndex" ValueType="xml" AutoSaveSampleData="">
+          <Value t="xml.Xml">
+            <xml/>
+          </Value>
+        </DataResource>
+      </xtml>
+    </Component>
+    <Component id="main" type="jbart.MyWidgetPage">
+      <xtml t="control.Layout" ID="main" Title="main">
+        <Layout t="ui.CustomCss" base="layout.Default">
+          <Style t="layout.Default"/>
+          <Css><![CDATA[#this {
   position:absolute;
 left: 0;
 right: 0;
 top: 0;
 bottom: 0;  
-}]]></Css>        </Layout>        <FieldAspect t="field_aspect.PagePreviewSize" TightPreview="true" ShowSettings="true">          <Size t="preview_device.AppleIPhone4IPhone3"/>          <Style t="visual_container.MobileSkin"/>        </FieldAspect>        <Field t="control.Page" ID="_Link_to_page" Title="mobile or desktop">          <Page t="data.FirstSucceeding">            <Item t="sample.Mobile">              <Condition t="yesno.InStudio"/>            </Item>            <Item t="data.IfThenElse">              <If t="mobile.IsMobilePhone"/>              <Then t="sample.Mobile"/>              <Else t="lmc.VisitorDesktop"/>            </Item>          </Page>        </Field>        <FieldAspect t="async.AsyncActionBeforeLoad" LoadingText="" TextForError="The room in unavailable, please contact your agent." ShowLoadingTextInStudio="false">          <LoadingStyle t="ui.CustomStyle" base="loading_style.Default">            <Html><![CDATA[<div>
+}]]></Css>
+        </Layout>
+        <FieldAspect t="field_aspect.PagePreviewSize" TightPreview="true" ShowSettings="true">
+          <Size t="preview_device.AppleIPhone4IPhone3"/>
+          <Style t="visual_container.MobileSkin"/>
+        </FieldAspect>
+        <Field t="control.Page" ID="_Link_to_page" Title="mobile or desktop">
+          <Page t="data.FirstSucceeding">
+            <Item t="sample.Mobile">
+              <Condition t="yesno.InStudio"/>
+            </Item>
+            <Item t="data.IfThenElse">
+              <If t="mobile.IsMobilePhone"/>
+              <Then t="sample.Mobile"/>
+              <Else t="lmc.VisitorDesktop"/>
+            </Item>
+          </Page>
+        </Field>
+        <FieldAspect t="async.AsyncActionBeforeLoad" LoadingText="" TextForError="The room in unavailable, please contact your agent." ShowLoadingTextInStudio="false">
+          <LoadingStyle t="ui.CustomStyle" base="loading_style.Default">
+            <Html><![CDATA[<div>
 <div id="ajaxart_loading_inner" class="visitor">
     <div id="lmc_vloading_image"></div>
     <div id="lmc_vloading_text"></div>
@@ -700,13 +900,55 @@ bottom: 0;
     <div id="lmc_vloading_error"></div>
     <div id="lmc_vloading_footer_text"></div>
   </div>
-</div>]]></Html>            <Css><![CDATA[]]></Css>            <Javascript><![CDATA[function(elem) { 
+</div>]]></Html>
+            <Css><![CDATA[]]></Css>
+            <Javascript><![CDATA[function(elem) { 
   if (ajaxart.jbart_studio)
     aa_load_js_css('//jb-letmesee.appspot.com/letmesee_loading.css?v='+new Date().getTime(),'css');
   if (window.jbSlowNetwork)
     elem.$el.find('#lmc_vloading_error').text('Slow Network...').show();
-}]]></Javascript>          </LoadingStyle>          <Action t="async.RunAsyncActions" StopOnError="true">            <Action t="lmc.InitLetMeSee" FromEmbed="" ShowErrorsWithoutRejecting="true"/>          </Action>        </FieldAspect>        <FieldAspect t="field_feature.CssClass" AddClassTo="content" ConditionForClass="%$Settings/styleProps/@rtl%" ClassName="right_to_left"/>      </xtml>    </Component>    <Component id="Mobile" type="jbart.MyWidgetPage">      <xtml t="control.Layout" ID="Mobile" Title="Mobile">        <FieldAspect t="field_aspect.FieldData" FieldData="%$Data%"/>        <Layout t="ui.CustomCss" base="layout.Default">          <Style t="layout.Default"/>          <Css><![CDATA[#this {
-}]]></Css>        </Layout>        <Field t="lmc.MobileView" DoNotShowDetails="false"/>        <Field t="control.Page" ID="_Link_to_page2" Title="notification">          <Page t="lmc.LetMeSeeVisitorMobileNotification"/>        </Field>        <FieldAspect t="field_aspect.PagePreviewSize" ShowSettings="">          <Size t="preview_device.SamsungGalaxyS3S4"/>          <Style t="visual_container.MobileSkin"/>        </FieldAspect>        <Field t="control.Page" ID="_Link_to_page4" Title="viral item">          <Page t="lmc.LetMeSeeViralItem"/>        </Field>        <FieldAspect t="field_feature.CssClass" AddClassTo="content" ConditionForClass="%$Room/style/general/@lmcClass% != ''" ClassName="lmc_%$Room/style/general/@lmcClass%"/>      </xtml>    </Component>    <Component id="CloseLMCToolbar" type="action.Action">      <xtml t="action.RunActions">        <Action t="action.WriteValue" Value="">          <To t="data.SessionStorage" Key="LMCToolbar"/>        </Action>        <Action t="field.RefreshField" FireOnUpdate="" FieldID="LMCToolbar" Scope="screen"/>      </xtml>    </Component>    <Component id="LargeEditableText" type="editable_text.Style">      <xtml t="ui.CustomStyle">        <Css><![CDATA[#this {
+}]]></Javascript>
+          </LoadingStyle>
+          <Action t="async.RunAsyncActions" StopOnError="true">
+            <Action t="lmc.InitLetMeSee" FromEmbed="" ShowErrorsWithoutRejecting="true"/>
+          </Action>
+        </FieldAspect>
+        <FieldAspect t="field_feature.CssClass" AddClassTo="content" ConditionForClass="%$Settings/styleProps/@rtl%" ClassName="right_to_left"/>
+      </xtml>
+    </Component>
+    <Component id="Mobile" type="jbart.MyWidgetPage">
+      <xtml t="control.Layout" ID="Mobile" Title="Mobile">
+        <FieldAspect t="field_aspect.FieldData" FieldData="%$Data%"/>
+        <Layout t="ui.CustomCss" base="layout.Default">
+          <Style t="layout.Default"/>
+          <Css><![CDATA[#this {
+}]]></Css>
+        </Layout>
+        <Field t="lmc.MobileView" DoNotShowDetails="false"/>
+        <Field t="control.Page" ID="_Link_to_page2" Title="notification">
+          <Page t="lmc.LetMeSeeVisitorMobileNotification"/>
+        </Field>
+        <FieldAspect t="field_aspect.PagePreviewSize" ShowSettings="">
+          <Size t="preview_device.SamsungGalaxyS3S4"/>
+          <Style t="visual_container.MobileSkin"/>
+        </FieldAspect>
+        <Field t="control.Page" ID="_Link_to_page4" Title="viral item">
+          <Page t="lmc.LetMeSeeViralItem"/>
+        </Field>
+        <FieldAspect t="field_feature.CssClass" AddClassTo="content" ConditionForClass="%$Room/style/general/@lmcClass% != ''" ClassName="lmc_%$Room/style/general/@lmcClass%"/>
+      </xtml>
+    </Component>
+    <Component id="CloseLMCToolbar" type="action.Action">
+      <xtml t="action.RunActions">
+        <Action t="action.WriteValue" Value="">
+          <To t="data.SessionStorage" Key="LMCToolbar"/>
+        </Action>
+        <Action t="field.RefreshField" FireOnUpdate="" FieldID="LMCToolbar" Scope="screen"/>
+      </xtml>
+    </Component>
+    <Component id="LargeEditableText" type="editable_text.Style">
+      <xtml t="ui.CustomStyle">
+        <Css><![CDATA[#this {
   border: 1px solid #BDC7D8;
   font-size: 22px;
   padding: 0 6px;
@@ -731,15 +973,136 @@ bottom: 0;
   border: 1px solid #feb2b2;
   color: #ec643d;
 }
-]]></Css>        <Html><![CDATA[<input/>]]></Html>        <Javascript><![CDATA[function(textbox) {
+]]></Css>
+        <Html><![CDATA[<input/>]]></Html>
+        <Javascript><![CDATA[function(textbox) {
   aa_jbart_textbox(textbox);
-}]]></Javascript>      </xtml>    </Component>    <Component id="RefreshPreviewFromSettings" type="action.Action">      <xtml t="lmc.RefreshLMCPreview" ChangedXml="%%"/>    </Component>    <Component id="Admin" type="jbart.MyWidgetPage" compress="false">      <xtml t="control.Layout" ID="Admin" Title="Admin">        <Layout t="layout.Default"/>        <Field t="control.Page" ID="_Link_to_page3" Title="Agent page">          <Page t="control.ChoosePage">            <PageID t="data.IfThenElse" If="%$IsMobile%" Else="lmc.AgentDesktop" Then="lmc.AgentMobilePhone">              <ForCompress t="lmc.AgentDesktop"/>              <ForCompress t="lmc.AgentMobilePhone"/>            </PageID>          </Page>        </Field>        <FieldAspect t="async.AsyncActionBeforeLoad" LoadingText="Initializing..." TextForError="The room in unavailable, please change the url and try again." ShowLoadingTextInStudio="false">          <LoadingStyle t="lmc.LMCLoadingStyle" IsManager=""/>          <Action t="async.RunAsyncActions" StopOnError="true">            <Action t="lmc.InitLetMeSee"/>            <ProgressStyle t="async_ui.ChangeCursorForProgress"/>          </Action>        </FieldAspect>        <FieldAspect t="field_aspect.PagePreviewSize">          <Style t="visual_container.MobileSkin"/>          <Size t="preview_device.CustomSize" Width="1293" Height="800" IsDesktop=""/>        </FieldAspect>        <FieldAspect t="field_aspect.Variable" VarName="IsMobile">          <Value t="yesno.OR">            <Item t="mobile.IsMobilePhone"/>            <Item t="text.ItemsEqual" Item2="true">              <Item1 t="ui.UrlParameter" Param="mobileLook"/>            </Item>          </Value>        </FieldAspect>        <FieldAspect t="field_feature.HandleEvent">          <Event t="field_feature.Load"/>          <Action t="action.RunActions">            <Action t="lmc.LMCAutoRefreshAfterHours"/>            <Action t="lmc.LMCNotificationOnLogEntry"/>          </Action>        </FieldAspect>      </xtml>    </Component>    <Component id="Embed" type="jbart.MyWidgetPage" compress="false">      <xtml t="control.Layout" ID="Embed" Title="Embed">        <Layout t="layout.Default"/>        <Field t="control.Page" ID="_Link_to_page1" Title="Link to page">          <Page t="lmc.Embed"/>        </Field>        <FieldAspect t="async.AsyncActionBeforeLoad" ShowLoadingTextInStudio="false">          <LoadingStyle t="ui.CustomStyle" base="lmc.LMCLoadingStyle">            <Html><![CDATA[<div>
+}]]></Javascript>
+      </xtml>
+    </Component>
+    <Component id="RefreshPreviewFromSettings" type="action.Action">
+      <xtml t="lmc.RefreshLMCPreview" ChangedXml="%%"/>
+    </Component>
+    <Component id="Admin" type="jbart.MyWidgetPage" compress="false">
+      <xtml t="control.Layout" ID="Admin" Title="Admin">
+        <Layout t="layout.Default"/>
+        <Field t="control.Page" ID="_Link_to_page3" Title="Agent page">
+          <Page t="control.ChoosePage">
+            <PageID t="data.IfThenElse" If="%$IsMobile%" Else="lmc.AgentDesktop" Then="lmc.AgentMobilePhone">
+              <ForCompress t="lmc.AgentDesktop"/>
+              <ForCompress t="lmc.AgentMobilePhone"/>
+            </PageID>
+          </Page>
+        </Field>
+        <FieldAspect t="async.AsyncActionBeforeLoad" LoadingText="Initializing..." TextForError="The room in unavailable, please change the url and try again." ShowLoadingTextInStudio="false">
+          <LoadingStyle t="lmc.LMCLoadingStyle" IsManager=""/>
+          <Action t="async.RunAsyncActions" StopOnError="true">
+            <Action t="lmc.InitLetMeSee"/>
+            <ProgressStyle t="async_ui.ChangeCursorForProgress"/>
+          </Action>
+        </FieldAspect>
+        <FieldAspect t="field_aspect.PagePreviewSize">
+          <Style t="visual_container.MobileSkin"/>
+          <Size t="preview_device.CustomSize" Width="1293" Height="800" IsDesktop=""/>
+        </FieldAspect>
+        <FieldAspect t="field_aspect.Variable" VarName="IsMobile">
+          <Value t="yesno.OR">
+            <Item t="mobile.IsMobilePhone"/>
+            <Item t="text.ItemsEqual" Item2="true">
+              <Item1 t="ui.UrlParameter" Param="mobileLook"/>
+            </Item>
+          </Value>
+        </FieldAspect>
+        <FieldAspect t="field_feature.HandleEvent">
+          <Event t="field_feature.Load"/>
+          <Action t="action.RunActions">
+            <Action t="lmc.LMCAutoRefreshAfterHours"/>
+            <Action t="lmc.LMCNotificationOnLogEntry"/>
+          </Action>
+        </FieldAspect>
+      </xtml>
+    </Component>
+    <Component id="Embed" type="jbart.MyWidgetPage" compress="false">
+      <xtml t="control.Layout" ID="Embed" Title="Embed">
+        <Layout t="layout.Default"/>
+        <Field t="control.Page" ID="_Link_to_page1" Title="Link to page">
+          <Page t="lmc.Embed"/>
+        </Field>
+        <FieldAspect t="async.AsyncActionBeforeLoad" ShowLoadingTextInStudio="false">
+          <LoadingStyle t="ui.CustomStyle" base="lmc.LMCLoadingStyle">
+            <Html><![CDATA[<div>
 <img src="//jbartlib.appspot.com/images/studio/loading.gif" />
-</div>]]></Html>            <Css><![CDATA[]]></Css>            <Javascript><![CDATA[function render(loadingObject) {
+</div>]]></Html>
+            <Css><![CDATA[]]></Css>
+            <Javascript><![CDATA[function render(loadingObject) {
   loadingObject.$el.find('#activity').text(loadingObject.text);
-}]]></Javascript>          </LoadingStyle>          <Action t="lmc.InitLetMeSee" FromEmbed="true" ShowErrorsWithoutRejecting=""/>        </FieldAspect>        <FieldAspect t="field_aspect.PagePreviewSize">          <Style t="visual_container.MobileSkin"/>          <Size t="preview_device.CustomSize" IsDesktop="" Width="1039" Height="450"/>        </FieldAspect>        <FieldAspect t="field_feature.CssClass" AddClassTo="content" ClassName="lmc_manager">          <ConditionForClass t="yesno.And">            <Item t="bart_url.UrlAttributeEquals" Attribute="manager" To="true"/>          </ConditionForClass>        </FieldAspect>      </xtml>    </Component>    <Component id="GetOrCreate" type="jbart.MyWidgetPage">      <xtml t="control.Layout" ID="GetOrCreate" Title="GetOrCreate">        <Layout t="layout.Default"/>        <FieldAspect t="async.AsyncActionBeforeLoad" ShowLoadingTextInStudio="">          <LoadingStyle t="loading_style.Default" Height="100px"/>          <Action t="lmc.IntegrationInitGetOrCreate"/>        </FieldAspect>        <Field t="control.Layout" ID="_Vertical_Layout" Title="Room found">          <Layout t="layout.Vertical" Spacing="0"/>          <FieldAspect t="field_feature.Hidden" DataForCondition="Item data" WhenHidden="Do not render" ShowCondition="%$EmbedConfig/@found%"/>          <Field t="control.Layout" ID="_Vertical_Layout4" Title="load">            <Layout t="layout.Vertical" Spacing=""/>            <FieldAspect t="async.AsyncActionBeforeLoad" ShowLoadingTextInStudio="">              <LoadingStyle t="loading_style.Default" Height="100px"/>              <Action t="lmc.SetCurrentRoom" LoadOnly="true" RoomID="%$EmbedConfig/@roomid%"/>            </FieldAspect>            <Field t="control.Layout" ID="_Group" Title="Horizontal">              <Field t="control.TabControl" ID="_Tab_Control" Title="Tab Control">                <Style t="tabs.LMCDialogTabs" HeightMargin="95" MaxHeight="0" MinHeight="200"/>                <Field t="control.Layout" ID="_Group1" Title="Room">                  <Field t="control.Page" ID="_Link_to_page6" Title="Room">                    <Page t="lmc.TabOfRoom" ReadOnly="false"/>                  </Field>                  <Layout t="layout.Default"/>                </Field>                <Field t="control.Layout" ID="_Group2" Title="Activity">                  <Field t="control.Page" ID="_Link_to_page6" Title="Activity">                    <Page t="lmc.RoomActivity"/>                  </Field>                  <Layout t="layout.Default"/>                </Field>                <Field t="control.Layout" ID="_Group3" Title="Invite">                  <Field t="control.Page" ID="_Link_to_page6" Title="Activity">                    <Page t="lmc.TabOfInvite"/>                  </Field>                  <Layout t="layout.Default"/>                </Field>                <FieldAspect t="field_feature.Css">                  <Css><![CDATA[#this { width: 550px; }
+}]]></Javascript>
+          </LoadingStyle>
+          <Action t="lmc.InitLetMeSee" FromEmbed="true" ShowErrorsWithoutRejecting=""/>
+        </FieldAspect>
+        <FieldAspect t="field_aspect.PagePreviewSize">
+          <Style t="visual_container.MobileSkin"/>
+          <Size t="preview_device.CustomSize" IsDesktop="" Width="1039" Height="450"/>
+        </FieldAspect>
+        <FieldAspect t="field_feature.CssClass" AddClassTo="content" ClassName="lmc_manager">
+          <ConditionForClass t="yesno.And">
+            <Item t="bart_url.UrlAttributeEquals" Attribute="manager" To="true"/>
+          </ConditionForClass>
+        </FieldAspect>
+      </xtml>
+    </Component>
+    <Component id="GetOrCreate" type="jbart.MyWidgetPage">
+      <xtml t="control.Layout" ID="GetOrCreate" Title="GetOrCreate">
+        <Layout t="layout.Default"/>
+        <FieldAspect t="async.AsyncActionBeforeLoad" ShowLoadingTextInStudio="">
+          <LoadingStyle t="loading_style.Default" Height="100px"/>
+          <Action t="lmc.IntegrationInitGetOrCreate"/>
+        </FieldAspect>
+        <Field t="control.Layout" ID="_Vertical_Layout" Title="Room found">
+          <Layout t="layout.Vertical" Spacing="0"/>
+          <FieldAspect t="field_feature.Hidden" DataForCondition="Item data" WhenHidden="Do not render" ShowCondition="%$EmbedConfig/@found%"/>
+          <Field t="control.Layout" ID="_Vertical_Layout4" Title="load">
+            <Layout t="layout.Vertical" Spacing=""/>
+            <FieldAspect t="async.AsyncActionBeforeLoad" ShowLoadingTextInStudio="">
+              <LoadingStyle t="loading_style.Default" Height="100px"/>
+              <Action t="lmc.SetCurrentRoom" LoadOnly="true" RoomID="%$EmbedConfig/@roomid%"/>
+            </FieldAspect>
+            <Field t="control.Layout" ID="_Group" Title="Horizontal">
+              <Field t="control.TabControl" ID="_Tab_Control" Title="Tab Control">
+                <Style t="tabs.LMCDialogTabs" HeightMargin="95" MaxHeight="0" MinHeight="200"/>
+                <Field t="control.Layout" ID="_Group1" Title="Room">
+                  <Field t="control.Page" ID="_Link_to_page6" Title="Room">
+                    <Page t="lmc.TabOfRoom" ReadOnly="false"/>
+                  </Field>
+                  <Layout t="layout.Default"/>
+                </Field>
+                <Field t="control.Layout" ID="_Group2" Title="Activity">
+                  <Field t="control.Page" ID="_Link_to_page6" Title="Activity">
+                    <Page t="lmc.RoomActivity"/>
+                  </Field>
+                  <Layout t="layout.Default"/>
+                </Field>
+                <Field t="control.Layout" ID="_Group3" Title="Invite">
+                  <Field t="control.Page" ID="_Link_to_page6" Title="Activity">
+                    <Page t="lmc.TabOfInvite"/>
+                  </Field>
+                  <Layout t="layout.Default"/>
+                </Field>
+                <FieldAspect t="field_feature.Css">
+                  <Css><![CDATA[#this { width: 550px; }
 #wrapper { }
-]]></Css>                </FieldAspect>                <FieldAspect t="fld_aspect.TabControlProperties" RefreshTabsOnSelect="true" KeepHiddenTabInTheDOM="false"/>              </Field>              <Layout t="layout.Horizontal" Spacing="77"/>              <Field t="control.Layout" ID="Content_Preview" Title="Content Preview">                <Layout t="ui.CustomCss" base="layout.Default">                  <Style t="layout.Default"/>                  <Css><![CDATA[#this {}]]></Css>                </Layout>                <FieldAspect t="field_feature.Css">                  <Css><![CDATA[#this>.aa_visual_container {
+]]></Css>
+                </FieldAspect>
+                <FieldAspect t="fld_aspect.TabControlProperties" RefreshTabsOnSelect="true" KeepHiddenTabInTheDOM="false"/>
+              </Field>
+              <Layout t="layout.Horizontal" Spacing="77"/>
+              <Field t="control.Layout" ID="Content_Preview" Title="Content Preview">
+                <Layout t="ui.CustomCss" base="layout.Default">
+                  <Style t="layout.Default"/>
+                  <Css><![CDATA[#this {}]]></Css>
+                </Layout>
+                <FieldAspect t="field_feature.Css">
+                  <Css><![CDATA[#this>.aa_visual_container {
   top:0;
   bottom:0;
   position:absolute !important;
@@ -758,15 +1121,170 @@ bottom: 0;
 }
 #this>.aa_visual_container::-webkit-scrollbar-track {
   background:transparent;
-}]]></Css>                </FieldAspect>                <FieldAspect t="field_aspect.VisualContainer" ID="cobrowse_main_cntr" HeightByCss="true" DoNotPutWidthInElement="">                  <Style t="ui.CustomCss" base="visual_container.SimpleSkin">                    <Style t="visual_container.SimpleSkin"/>                    <Css><![CDATA[#this {}]]></Css>                  </Style>                  <Width t="img.FixedWidth" Width="450"/>                </FieldAspect>                <Field t="control.Page" ID="_Link_to_page1" Title="Mobile">                  <Page t="sample.Mobile"/>                </Field>              </Field>            </Field>            <Field t="control.Button" ID="_Button1" Title="Open in LetMeSee" HideTitle="true">              <Style t="btn.LMCHyperlink"/>              <FieldAspect t="field_feature.Css">                <Css><![CDATA[#this {
+}]]></Css>
+                </FieldAspect>
+                <FieldAspect t="field_aspect.VisualContainer" ID="cobrowse_main_cntr" HeightByCss="true" DoNotPutWidthInElement="">
+                  <Style t="ui.CustomCss" base="visual_container.SimpleSkin">
+                    <Style t="visual_container.SimpleSkin"/>
+                    <Css><![CDATA[#this {}]]></Css>
+                  </Style>
+                  <Width t="img.FixedWidth" Width="450"/>
+                </FieldAspect>
+                <Field t="control.Page" ID="_Link_to_page1" Title="Mobile">
+                  <Page t="sample.Mobile"/>
+                </Field>
+              </Field>
+            </Field>
+            <Field t="control.Button" ID="_Button1" Title="Open in LetMeSee" HideTitle="true">
+              <Style t="btn.LMCHyperlink"/>
+              <FieldAspect t="field_feature.Css">
+                <Css><![CDATA[#this {
   margin:10px 0;
 }
-#wrapper {}]]></Css>              </FieldAspect>              <Action t="operation.Link" OpenInANewTab="true">                <Link t="data.Pipeline">                  <Item value="https://jb-letmesee.appspot.com/SalesForce?state=%$StateEncoded%"/>                  <Var name="StateEncoded" t="text.UrlEncoding" Data="?site=%$EmbedConfig/@site%?roomid=%$EmbedConfig/@roomid%"/>                </Link>              </Action>            </Field>          </Field>        </Field>        <Field t="control.Layout" ID="_Vertical_Layout1" Title="Room not found">          <Layout t="layout.Vertical" Spacing="0"/>          <FieldAspect t="field_feature.Hidden" DataForCondition="Item data" WhenHidden="Do not render" ShowCondition="%$EmbedConfig/@found% != 'true'"/>          <Field t="control.TabControl" ID="create_room_tabs" Title="Tab Control">            <Style t="tabs.HiddenTabs"/>            <Field t="control.Layout" ID="_Vertical_Layout2" Title="Create button">              <Layout t="layout.Vertical" Spacing="0"/>              <Field t="control.Button" ID="_Button" Title="Create customer room" HideTitle="true">                <Action t="action.RunActions">                  <Action t="xml.ReplaceXmlElement" Element="%$Temp/!NewRoom/room%">                    <NewElement t="xml.Xml" DynamicContent="true">                      <xml id="%$EmbedConfig/@roomid%" customerName="%$EmbedConfig/@name%" phone="%$EmbedConfig/@phone%" customerCompany="%$EmbedConfig/@company%"/>                    </NewElement>                  </Action>                  <Action t="operation.ChangeTab" TabControl="create_room_tabs" MoveTo="next tab"/>                </Action>                <Style t="btn.LMCButton" Width="140px"/>              </Field>              <Field t="fld.Field" ID="debug" Title="Debug">                <FieldType t="fld_type.EditableText">                  <Style t="editable_text.JBartMultiLine" Width="550px" Height="84px"/>                </FieldType>                <FieldData t="data.Pipeline">                  <Item t="xml.XmlToText" Data="%$EmbedConfig%" PrettyPrint="true"/>                </FieldData>                <FieldAspect t="field_feature.Layout" dragProperty="#this margin">                  <Css><![CDATA[#this { margin-top: 8px; margin-left: 0; }
+#wrapper {}]]></Css>
+              </FieldAspect>
+              <Action t="operation.Link" OpenInANewTab="true">
+                <Link t="data.Pipeline">
+                  <Item value="https://jb-letmesee.appspot.com/SalesForce?state=%$StateEncoded%"/>
+                  <Var name="StateEncoded" t="text.UrlEncoding" Data="?site=%$EmbedConfig/@site%?roomid=%$EmbedConfig/@roomid%"/>
+                </Link>
+              </Action>
+            </Field>
+          </Field>
+        </Field>
+        <Field t="control.Layout" ID="_Vertical_Layout1" Title="Room not found">
+          <Layout t="layout.Vertical" Spacing="0"/>
+          <FieldAspect t="field_feature.Hidden" DataForCondition="Item data" WhenHidden="Do not render" ShowCondition="%$EmbedConfig/@found% != 'true'"/>
+          <Field t="control.TabControl" ID="create_room_tabs" Title="Tab Control">
+            <Style t="tabs.HiddenTabs"/>
+            <Field t="control.Layout" ID="_Vertical_Layout2" Title="Create button">
+              <Layout t="layout.Vertical" Spacing="0"/>
+              <Field t="control.Button" ID="_Button" Title="Create customer room" HideTitle="true">
+                <Action t="action.RunActions">
+                  <Action t="xml.ReplaceXmlElement" Element="%$Temp/!NewRoom/room%">
+                    <NewElement t="xml.Xml" DynamicContent="true">
+                      <xml id="%$EmbedConfig/@roomid%" customerName="%$EmbedConfig/@name%" phone="%$EmbedConfig/@phone%" customerCompany="%$EmbedConfig/@company%"/>
+                    </NewElement>
+                  </Action>
+                  <Action t="operation.ChangeTab" TabControl="create_room_tabs" MoveTo="next tab"/>
+                </Action>
+                <Style t="btn.LMCButton" Width="140px"/>
+              </Field>
+              <Field t="fld.Field" ID="debug" Title="Debug">
+                <FieldType t="fld_type.EditableText">
+                  <Style t="editable_text.JBartMultiLine" Width="550px" Height="84px"/>
+                </FieldType>
+                <FieldData t="data.Pipeline">
+                  <Item t="xml.XmlToText" Data="%$EmbedConfig%" PrettyPrint="true"/>
+                </FieldData>
+                <FieldAspect t="field_feature.Layout" dragProperty="#this margin">
+                  <Css><![CDATA[#this { margin-top: 8px; margin-left: 0; }
 #wrapper { }
-]]></Css>                </FieldAspect>                <FieldAspect t="field_feature.Hidden" DataForCondition="Item data" WhenHidden="Do not render" ShowCondition="false"/>              </Field>              <Field t="fld.Field" ID="debug1" Title="Debug1">                <FieldType t="fld_type.EditableText">                  <Style t="editable_text.JBartMultiLine" Width="550px" Height="84px"/>                </FieldType>                <FieldData t="data.Pipeline">                  <Item t="xml.XmlToText" Data="%$SiteSettings%" PrettyPrint="true"/>                </FieldData>                <FieldAspect t="field_feature.Layout" dragProperty="#this margin">                  <Css><![CDATA[#this { margin-top: 8px; margin-left: 0; }
+]]></Css>
+                </FieldAspect>
+                <FieldAspect t="field_feature.Hidden" DataForCondition="Item data" WhenHidden="Do not render" ShowCondition="false"/>
+              </Field>
+              <Field t="fld.Field" ID="debug1" Title="Debug1">
+                <FieldType t="fld_type.EditableText">
+                  <Style t="editable_text.JBartMultiLine" Width="550px" Height="84px"/>
+                </FieldType>
+                <FieldData t="data.Pipeline">
+                  <Item t="xml.XmlToText" Data="%$SiteSettings%" PrettyPrint="true"/>
+                </FieldData>
+                <FieldAspect t="field_feature.Layout" dragProperty="#this margin">
+                  <Css><![CDATA[#this { margin-top: 8px; margin-left: 0; }
 #wrapper { }
-]]></Css>                </FieldAspect>                <FieldAspect t="field_feature.Hidden" DataForCondition="Item data" WhenHidden="Do not render"/>              </Field>              <Field t="fld.Field" ID="debug2" Title="Debug11">                <FieldType t="fld_type.EditableText">                  <Style t="editable_text.JBartMultiLine" Width="550px" Height="84px"/>                </FieldType>                <FieldData t="data.Pipeline">                  <Item t="xml.XmlToText" Data="%$ProjectSettings%" PrettyPrint="true"/>                </FieldData>                <FieldAspect t="field_feature.Layout" dragProperty="#this margin">                  <Css><![CDATA[#this { margin-top: 8px; margin-left: 0; }
+]]></Css>
+                </FieldAspect>
+                <FieldAspect t="field_feature.Hidden" DataForCondition="Item data" WhenHidden="Do not render"/>
+              </Field>
+              <Field t="fld.Field" ID="debug2" Title="Debug11">
+                <FieldType t="fld_type.EditableText">
+                  <Style t="editable_text.JBartMultiLine" Width="550px" Height="84px"/>
+                </FieldType>
+                <FieldData t="data.Pipeline">
+                  <Item t="xml.XmlToText" Data="%$ProjectSettings%" PrettyPrint="true"/>
+                </FieldData>
+                <FieldAspect t="field_feature.Layout" dragProperty="#this margin">
+                  <Css><![CDATA[#this { margin-top: 8px; margin-left: 0; }
 #wrapper { }
-]]></Css>                </FieldAspect>                <FieldAspect t="field_feature.Hidden" DataForCondition="Item data" WhenHidden="Do not render"/>              </Field>            </Field>            <Field t="control.Layout" ID="_Vertical_Layout3" Title="Wizard">              <Layout t="layout.Vertical" Spacing="0"/>              <Field t="control.Page" ID="_Link_to_page5" Title="Link to page">                <Page t="lmc.CreateNewRoomWizard" IsMobile="">                  <DoAfterCreate t="action.RunActions">                    <Action t="action.WriteValue" To="%$EmbedConfig/@found%" Value="true"/>                    <Action t="field.RefreshField" FireOnUpdate="" FieldID="GetOrCreate" Scope="screen"/>                  </DoAfterCreate>                </Page>              </Field>              <FieldAspect t="field_feature.Css">                <Css><![CDATA[#this { width: 500px; }
+]]></Css>
+                </FieldAspect>
+                <FieldAspect t="field_feature.Hidden" DataForCondition="Item data" WhenHidden="Do not render"/>
+              </Field>
+            </Field>
+            <Field t="control.Layout" ID="_Vertical_Layout3" Title="Wizard">
+              <Layout t="layout.Vertical" Spacing="0"/>
+              <Field t="control.Page" ID="_Link_to_page5" Title="Link to page">
+                <Page t="lmc.CreateNewRoomWizard" IsMobile="">
+                  <DoAfterCreate t="action.RunActions">
+                    <Action t="action.WriteValue" To="%$EmbedConfig/@found%" Value="true"/>
+                    <Action t="field.RefreshField" FireOnUpdate="" FieldID="GetOrCreate" Scope="screen"/>
+                  </DoAfterCreate>
+                </Page>
+              </Field>
+              <FieldAspect t="field_feature.Css">
+                <Css><![CDATA[#this { width: 500px; }
 #wrapper { }
-]]></Css>              </FieldAspect>            </Field>          </Field>        </Field>      </xtml>    </Component>  </xtml>  <compress black_list="datefilter.DateFilterControl,field.TextFilterControlidentifier"/>  <embed with_data="true" as="save file" dir="C:\Dropbox\Public\jbartlib\apps\LetMeSee\dev\" editor="true" editorExtraComponents="gstudio_googledrive.CreateNewLMCInstance,gstudio_googledrive.GoogleDriveAppHomePage"/>  <EnhanceGStudio t="action.RunActions">    <Action t="object.SetProperty" Object="%$_JBartStudio%" Property="MorePages" Value="lmc.VisitorDesktop,lmc.AgentMobilePhone"/>    <Action t="object.SetMethod" Object="%$_JBartStudio%" Method="RefreshPreviewFromSettings">      <Xtml t="lmc.RefreshLMCPreview" ChangedXml="%%"/>    </Action>    <Action t="object.SetProperty" Object="%$_JBartStudio%" Property="CoBrowse_MoreMenuItems">      <Value t="field.Fields">        <Field t="control.Button" Title="Refresh and keep ui state">          <Style t="gstudio.StudioMenuItem"/>          <Action t="cobrowse.RunActionAndKeepUIState">            <Action t="action.RunActions">              <Action t="xml.AddXmlChildren" Parent="%$Room/!items%">                <Children t="xml.Xml">                  <item name="try me"/>                </Children>              </Action>              <Action t="field.RefreshField" FieldID="items_cntr" Scope="screen"/>            </Action>          </Action>        </Field>        <Field t="control.Button" Title="Simulate agent notification">          <Style t="gstudio.StudioMenuItem"/>          <Action t="lmc.LMCShowAgentNotification">            <Data t="data.Pipeline">              <Item value="%$Room/items/item%"/>              <Item t="object.Object" Text="%@name%">                <Property name="Event" t="object.Object" command="itemShown">                  <SingleProperty name="args" t="object.Object">                    <TextProperty name="itemid" value="%@id%"/>                  </SingleProperty>                </Property>              </Item>              <Aggregator t="data.RandomPick"/>            </Data>          </Action>        </Field>        <Field t="control.Button" Title="Simulate Restart Dialog">          <Style t="gstudio.StudioMenuItem"/>          <Action t="object.RunMethod" Object="%$_AppContext%" Method="OpenRestartPopup"/>        </Field>      </Value>    </Action>    <Action t="object.SetProperty" Object="%$_JBartStudio%" Property="SampleSettingFiles">      <Value t="data.List">        <Item t="instance_editor.SampleSettings" Name="Motorhome" File="lmc_motorhome.xml"/>        <Item t="instance_editor.SampleSettings" Name="Matembezi" File="lmc_matembezi.xml"/>        <Item t="instance_editor.SampleSettings" Name="MLA" File="lmc_mla.xml"/>        <Item t="instance_editor.SampleSettings" Name="Sample Data" File="lmc_sample_data.xml"/>      </Value>    </Action>  </EnhanceGStudio></file>
+]]></Css>
+              </FieldAspect>
+            </Field>
+          </Field>
+        </Field>
+      </xtml>
+    </Component>
+  </xtml>
+  <compress black_list="datefilter.DateFilterControl,field.TextFilterControlidentifier"/>
+  <embed with_data="true" as="save file" dir="C:\Dropbox\Public\jbartlib\apps\LetMeSee\dev\" editor="true" editorExtraComponents="gstudio_googledrive.CreateNewLMCInstance,gstudio_googledrive.GoogleDriveAppHomePage"/>
+  <EnhanceGStudio t="action.RunActions">
+    <Action t="object.SetProperty" Object="%$_JBartStudio%" Property="MorePages" Value="lmc.VisitorDesktop,lmc.AgentMobilePhone"/>
+    <Action t="object.SetMethod" Object="%$_JBartStudio%" Method="RefreshPreviewFromSettings">
+      <Xtml t="lmc.RefreshLMCPreview" ChangedXml="%%"/>
+    </Action>
+    <Action t="object.SetProperty" Object="%$_JBartStudio%" Property="CoBrowse_MoreMenuItems">
+      <Value t="field.Fields">
+        <Field t="control.Button" Title="Refresh and keep ui state">
+          <Style t="gstudio.StudioMenuItem"/>
+          <Action t="cobrowse.RunActionAndKeepUIState">
+            <Action t="action.RunActions">
+              <Action t="xml.AddXmlChildren" Parent="%$Room/!items%">
+                <Children t="xml.Xml">
+                  <item name="try me"/>
+                </Children>
+              </Action>
+              <Action t="field.RefreshField" FieldID="items_cntr" Scope="screen"/>
+            </Action>
+          </Action>
+        </Field>
+        <Field t="control.Button" Title="Simulate agent notification">
+          <Style t="gstudio.StudioMenuItem"/>
+          <Action t="lmc.LMCShowAgentNotification">
+            <Data t="data.Pipeline">
+              <Item value="%$Room/items/item%"/>
+              <Item t="object.Object" Text="%@name%">
+                <Property name="Event" t="object.Object" command="itemShown">
+                  <SingleProperty name="args" t="object.Object">
+                    <TextProperty name="itemid" value="%@id%"/>
+                  </SingleProperty>
+                </Property>
+              </Item>
+              <Aggregator t="data.RandomPick"/>
+            </Data>
+          </Action>
+        </Field>
+        <Field t="control.Button" Title="Simulate Restart Dialog">
+          <Style t="gstudio.StudioMenuItem"/>
+          <Action t="object.RunMethod" Object="%$_AppContext%" Method="OpenRestartPopup"/>
+        </Field>
+      </Value>
+    </Action>
+    <Action t="object.SetProperty" Object="%$_JBartStudio%" Property="SampleSettingFiles">
+      <Value t="data.List">
+        <Item t="instance_editor.SampleSettings" Name="Motorhome" File="lmc_motorhome.xml"/>
+        <Item t="instance_editor.SampleSettings" Name="Matembezi" File="lmc_matembezi.xml"/>
+        <Item t="instance_editor.SampleSettings" Name="MLA" File="lmc_mla.xml"/>
+        <Item t="instance_editor.SampleSettings" Name="Sample Data" File="lmc_sample_data.xml"/>
+      </Value>
+    </Action>
+  </EnhanceGStudio>
+</file>

@@ -1,0 +1,83 @@
+<xtml ns="lmc">
+
+<Component id="RoomItemChart" type="jbart.MyWidgetPage">
+  <xtml t="chart2.Chart" Title="chart" ID="Chart" ID__Manual="">
+    <Chart t="ui.CustomStyle" base="googlechart.GoogleColumnChart">
+      <Html><![CDATA[<div/>]]></Html>
+      <Css><![CDATA[#this { min-height: 180px;}]]></Css>
+      <Javascript><![CDATA[
+function(chart) {
+  function drawChart() {
+  
+    var arr = chart.DataMatrix(true);
+    arr[0].push({role:'style'});
+    for(var i=1;i<arr.length;i++) {
+     arr[i].push(arr[i][0] == 'main page' ? '#A9B1C2' : '#3366CC');
+    }
+
+    var data = google.visualization.arrayToDataTable(arr);    
+      
+    var gchart = new google.visualization.ColumnChart(chart.control);
+    var options = {
+  title: 'Distrubutions',
+   backgroundColor: 'transparent',
+  chartArea:{
+    left:40,top:10,
+    width:400,
+    height:100     
+  }
+};
+    options.title = chart.Title;
+    gchart.draw(data, options );
+  }
+
+  function loadGoogleCharts() {
+    aa_loadJsFile({
+     url :'https://www.google.com/jsapi',
+     variableToFind: 'google',
+     success: function() {
+        aa_loadJsFile({
+          isLoaded: function() { return google.visualization.ColumnChart != null; },
+          loadFunction: function() {
+            google.load("visualization", "1", {callback:'' , packages:["corechart"]});
+          },
+          success: function() {
+            aa_addOnAttach(chart.control,function() {
+              drawChart();
+            });
+          }
+        });
+     }
+    });
+  }
+  loadGoogleCharts();
+}]]></Javascript>
+    </Chart>
+    <Field t="field.Field" ID="name" Title="Name" ReadOnlyText="">
+      <Type t="field_aspect.Text"/>
+      <FieldData t="data.Pipeline">
+        <Item t="text.FirstSucceeding">
+          <Item value="%$Room/items/item[#{@id}]/@name%"/>
+          <Item value="%@id%"/>
+        </Item>
+        <Item t="lmc.ReplaceVariableFields"/>
+      </FieldData>
+    </Field>
+    <Field t="field.Field" FieldData="%!@timeSec%" ID="value" Title="Time in seconds" ReadOnlyText="">
+      <Type t="field_aspect.Number">
+        <Format t="text.NumberFormat" SymbolAtRight="" MinusInParenthesis="" NoCommaSeparator="" Cents=""/>
+      </Type>
+    </Field>
+    <ChartItems t="data.Pipeline">
+      <Item value="%$RoomVisitorStats/item%"/>
+      <Aggregator t="data.Sort" SortBy="%@timeSec%" Type="number" Order="Descending"/>
+    </ChartItems>
+    <FieldAspect t="field_aspect.Hidden">
+      <OnCondition t="field_aspect.CheckConditionForEveryItem" DataForCondition="Item data" WhenHidden="Do not render">
+        <ShowCondition t="yesno.NotEmpty" Value="%$RoomVisitorStats/item%"/>
+      </OnCondition>
+    </FieldAspect>
+  </xtml>
+</Component>
+
+</xtml>

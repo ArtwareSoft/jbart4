@@ -1,0 +1,26 @@
+<xtml ns="lmc_undo" plugin="letmesee" altc="true">
+
+	<Component id="LMCCleanUndoList" type="action.Action" execution="native" description="Called when changing rooms" />
+	<Component id="LMCUndo" type="action.Action" execution="native" description="Undos the last content action and tries to highlight the right place" />
+	<Component id="LMCRedo" type="action.Action" execution="native" description="Redo the last content action and tries to highlight the right place" />
+	<Component id="LMCUndoAvailable" type="data.Boolean" execution="native" />
+	<Component id="LMCRedoAvailable" type="data.Boolean" execution="native" />
+
+  <Component id="LMCXmlItemsWithUndo" type="itemlist.Items" autoexpand="true" execution="native" description="Handles undo for add/delete/reorder of items and paragraphs">
+    <Param name="ParentXml" Default="%%" />
+    <Param name="Tag" Default="*" />
+    <NativeHelper name="XmlItems" t="itemlist.XmlItems" ParentXml="%$ParentXml%" Tag="%$Tag%" />
+  </Component>
+
+  <Component id="LMCEditableFieldWithUndo" type="field.FieldAspect" execution="native" description="Handles undo for changing text">
+  </Component>
+
+  <Component id="LMCPrepareForEditParagraphPopup" type="action.Action" execution="native">
+  	<Param name="Paragraph" /> 
+  </Component>
+  
+  <Component id="LMCAfterClosingParagraphPopup" type="action.Action" execution="native" description="Handles undo for changing paragraph contents">
+  	<Param name="Paragraph" /> 
+  </Component>
+
+</xtml>

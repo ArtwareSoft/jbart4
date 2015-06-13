@@ -1,0 +1,26 @@
+<xtml ns="lmc_client">
+
+	<Component id="LMCInitClient" type="action.Action" execution="native" />
+
+	<Component id="CreateLMCSite" type="action.Action" execution="native">
+		<Param name="SiteName" />
+		<Param name="Industry" />
+	</Component>
+
+	<Component id="CreateDemoProject" type="action.Action">
+		<Param name="ProjectName" />
+		<Param name="Industry" />
+		<xtml t="lmc_client.CreateProjectFromClient" ClientID="demo" ProjectName="%$ProjectName%">
+			<DoOnNewProject t="operation.Link" OpenInANewTab="false" Link="https://jb-letmesee.appspot.com/letmesee.html?project=%@id%" />
+		</xtml>
+	</Component>
+
+	<Component id="CreateProjectFromClient" type="action.Action" execution="native">
+		<Param name="ClientID" />
+		<Param name="ClientSettings" />
+		<Param name="ProjectName" />
+		<Param name="AllowedUsers" />
+		<Param name="DoOnNewProject" type="action.Action" script="true" />
+	</Component>
+	 
+</xtml>

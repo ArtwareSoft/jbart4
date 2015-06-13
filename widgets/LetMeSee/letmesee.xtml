@@ -1,0 +1,964 @@
+<xtml ns="lmc" plugin="letmesee" altc="true">
+
+  <Component id="LMCNotificationOnLogEntry" type="action.Action" execution="native">
+    <NativeHelper name="Show" t="lmc.LMCShowAgentNotification" />
+  </Component>
+
+  <Component id="LMCSyncPreviewWithEditor" type="jbart.ApplicationFeature" execution="native" />
+
+<Component id="LMCAutoRefreshAfterHours" type="action.Action" execution="native">
+  <NativeHelper name="ShowRefreshDialog" t="popup.OpenPopup" PopupTitle="Let Me See">
+    <Style t="popup.LMCDialog"/>
+    <Contents t="field.InnerPage">
+      <Layout t="layout.Default"/>
+      <Field t="control.Layout" ID="_Group883" Title="Refresh">
+        <Field t="control.Label" ID="_Label" Title="Label" Text="It is highly recommended to refresh your page after a few hours of work.">
+          <Style t="ui.CustomCss" base="uitext.PlainText">
+            <Style t="uitext.PlainText"/>
+            <Css><![CDATA[#this { font-size: 14px; padding-bottom: 33px; }]]></Css>
+          </Style>
+        </Field>
+        <Field t="control.Layout" ID="_Horizontal_Layout" Title="Horizontal Layout">
+          <Layout t="layout.DialogButtonsRightAlign"/>
+          <Field t="control.Button" ID="OK" Title="Refresh" HideTitle="true">
+            <Style t="btn.LMCButton" Width="130px" WaitingText="Creating..."/>
+            <Action t="uiaction.ReloadPage"/>
+          </Field>
+          <Field t="control.Button" ID="Cancel_Button" Title="Not now" HideTitle="true">
+            <Style t="btn.LMCGreyButton" Width="112px"/>
+            <Action t="popup.CloseContainingPopup" ExitMode=""/>
+          </Field>
+        </Field>
+        <Layout t="layout.Default"/>
+      </Field>
+    </Contents>
+  </NativeHelper>
+</Component>
+
+  <Component id="LMCUIUpdates" type="jbart.ApplicationFeature" execution="native">
+    <NativeHelper name="GotoItemInDesktop" t="lmc.GotoItemInDesktop" />
+  </Component>
+
+<Component id="LMCShowAgentNotification" type="action.Action">
+  <xtml t="action.RunActions" Condition="%Command% != 'agentInvitation'">
+    <Action t="popup.OpenPopup">
+      <Style t="popup.NotificationPopup"/>
+      <Contents t="field.InnerPage">
+        <Layout t="layout.Vertical" Spacing="6px"/>
+        <Field t="control.Label" ID="_Label" Title="Customer Activity:">
+          <Style t="ui.CustomCss" base="uitext.PlainText">
+            <Style t="uitext.PlainText"/>
+            <Css><![CDATA[#this { color: #989898; font-size: 11px; 
+  font-family: 'noto sans'; }
+]]></Css>
+          </Style>
+        </Field>
+        <Field t="control.Layout" ID="_Group" Title="Group">
+          <Field t="field.Image" ID="_Image4" Title="Type">
+            <Image t="image.ImageInSprite" Url="_jbartImages_/LetMeSee/lmc_sprite-25.png?v=1108" Size="25,25">
+              <PositionInSprite t="data.Pipeline">
+                <Item t="text.FirstSucceeding">
+                  <Item value="25,0" Condition="%Event/type% == 'view'"/>
+                  <Item value="50,0" Condition="%Event/type% == 'join'"/>
+                  <Item value="0,0" Condition="%Event/type% == 'jumped'"/>
+                </Item>
+              </PositionInSprite>
+            </Image>
+            <Style t="image.PlainImage"/>
+            <FieldAspect t="field_feature.Css">
+              <Css><![CDATA[#this {
+          width: 32px;
+          height:20px;
+          overflow:hidden;
+        }
+        #wrapper {
+          width: 32px;
+          vertical-align:center;
+        }
+        ]]></Css>
+            </FieldAspect>
+          </Field>
+          <Layout t="layout.Horizontal" VerticalLayoutForMobileWidth="false" Spacing="0"/>
+          <Field t="control.Button" ID="_Button881" Title="Text" HideTitle="true" ButtonText="%Text%">
+            <Style t="ui.CustomCss" base="btn.Hyperlink">
+              <Style t="btn.Hyperlink"/>
+              <Css><![CDATA[#this { cursor: pointer; text-decoration: none; 
+  vertical-align: middle;   
+color: #adadad; font: 13px 'noto sans';  
+  }
+#this:hover { text-decoration: underline; }
+]]></Css>
+            </Style>
+            <Action t="lmc.GotoLogEventLocation" Event="%Event%"/>
+          </Field>
+          <FieldAspect t="field_feature.Css">
+            <Css><![CDATA[#this { width: 250px; }
+#wrapper { }
+]]></Css>
+          </FieldAspect>
+        </Field>
+      </Contents>
+    </Action>
+  </xtml>
+</Component>
+
+  <Component id="LMCCalcVisitorIDColors" type="field.FieldAspect" execution="native" />
+
+  <Component id="LMCVisitorNotification" type="field.FieldAspect" execution="native">
+    <Param name="ChangeLocationText" script="true"/>
+    <Param name="UpdateRoomText" script="true"/>
+    <NativeHelper name="ShowNotification" t="notification_box.ShowNotification" Status="info" NotificationBox="%$_Field/ID%" Duration="4000">
+      <Text t="text.FirstSucceeding">
+        <Item t="xtml.UseParam" Param="ChangeLocationText" Condition="%$NotifyType% == 'change location'" />
+        <Item t="xtml.UseParam" Param="UpdateRoomText" Condition="%$NotifyType% == 'update room'" />
+      </Text>
+    </NativeHelper>
+  </Component>
+
+  <Component id="LMCSendShownItemChanged" type="action.Action" context="FieldComponent=field.ItemList" execution="native">
+    <Param name="ItemID" />
+  </Component>
+
+  <Component id="LMCItemslist" type="field.FieldAspect" context="FieldComponent=field.ItemList" execution="native">
+    <Param name="Style" type="cobrowse_style.MarkShownItemStyle">
+      <Default t="cobrowse_style.DefaultMarkShownItem" />
+    </Param>
+    <Param name="ActionToShowItem" type="action.Action" script="true" Description="In order to see the other participant screen">
+      <Default t="itemlist_action.ClickOnItem" />
+    </Param>
+    <Param name="ActionToShowNoItem" type="action.Action" script="true" Description="In order to see the other participant screen">
+      <Default t="itemlist_action.CloseDetailsReplacingAll" />
+    </Param>
+  </Component>
+
+  <Component id="LMCDescriptionOfUIState" type="jbart.ApplicationFeature" execution="native" />
+
+  <Component id="AddUniqueID" type="xml.Change" execution="native" />
+
+  <Component id="SaveCurrentRoomAsTemplate" type="action.Action" execution="native">
+    <Param name="DoOnNewTemplate" type="action.Action" script="true" />
+  </Component>
+
+  <Component id="LMCImageHeight" type="data.Data" execution="native">
+    <Param name="Width" />
+  </Component>
+
+  <Component id="LMCAdjustImageInBox" type="data.Data" execution="native">
+    <Param name="Item" Default="%%" />
+    <NativeHelper name="Default" t="data.FirstSucceeding">
+      <Item t="img.Center" Condition="%$Item/@fit% == 'Center'"/>
+      <Item t="img.Fill"/>
+    </NativeHelper>
+    <NativeHelper name="Fill" t="img.Fill"/> 
+  </Component>
+
+  <Component id="VisitorStatistics" type="jbart.ApplicationFeature" execution="native" />
+
+  <Component id="NotifyAgentWhenVisitorJoins" type="jbart.ApplicationFeature" execution="native">
+    <NativeHelper name="NotifyAgent" t="lmc.DoNotifyAgentWhenVisitorJoins" />
+    <NativeHelper name="VisitorOpensDeletedRoom" t="http.HttpCall" Url="http://jbartdb.appspot.com/bart.php?op=mail" Condition="%@agentEmail% != ''">
+      <Var name="CustomerName" value="&lt;span class=&quot;customer_name&quot;&gt;%@customerName%&lt;/span&gt;" />
+      <Var name="Body" t="lmc.LMCEmailTemplateForAgent" Content="The customer %$CustomerName% has tried to open a link to a deleted room." />
+      <Aspect t="http.PostForm" UseStoredCookies="false" UseStoredHiddenInputs="false">
+        <PostData t="http.PostData" Name="body" Value="%$Body%"/>
+        <PostData t="http.PostData" Name="subject" Value="The customer %@customerName% has tried to open a deleted room"/>
+        <PostData t="http.PostData" Name="to" Value="%@agentEmail%"/>
+        <PostData t="http.PostData" Name="fromEmail" Value="noreply@artwaresoft.com"/>
+        <PostData t="http.PostData" Name="fromName" Value="Let Me See"/>
+      </Aspect>
+    </NativeHelper>
+    <NativeHelper name="VisitorRestoresFromArchive" t="http.HttpCall" Url="http://jbartdb.appspot.com/bart.php?op=mail" Condition="%@agentEmail% != ''">
+      <Var name="AgentUrl" value="https://jb-letmesee.appspot.com/letmesee.html?project=%$Project/@id%#?roomid=%@id%" />
+      <Var name="CustomerName" value="&lt;span class=&quot;customer_name&quot;&gt;%@customerName%&lt;/span&gt;" />
+      <Var name="Body" t="lmc.LMCEmailTemplateForAgent" Content="Let Me See - The customer %$CustomerName% has opened an archived room, which was automatically restored." RoomLink="%$AgentUrl%" />
+      <Aspect t="http.PostForm" UseStoredCookies="false" UseStoredHiddenInputs="false">
+        <PostData t="http.PostData" Name="body" Value="%$Body%"/>
+        <PostData t="http.PostData" Name="subject" Value="The customer %@customerName% has opened an archived room"/>
+        <PostData t="http.PostData" Name="to" Value="%@agentEmail%"/>
+        <PostData t="http.PostData" Name="fromEmail" Value="noreply@artwaresoft.com"/>
+        <PostData t="http.PostData" Name="fromName" Value="Let Me See"/>
+      </Aspect>
+    </NativeHelper>
+  </Component>
+
+  <Component id="DoNotifyAgentWhenVisitorJoins" type="action.Action">
+    <xtml name="NotifyAgent" t="action.RunActions">
+      <Var name="AgentUrl" value="https://jb-letmesee.appspot.com/letmesee.html?project=%$Project/@id%#?roomid=%$Room/@id%" />
+      <Action1 t="lmc.LMCSendSMS" To="%$Room/@agentPhone%">
+        <Condition t="yesno.And">
+          <Item value="%$Room/@sendSmsToAgent%" />
+          <Item t="yesno.NotEmpty" Value="%$Room/@agentPhone%" />
+        </Condition>
+        <Content t="data.Pipeline">
+            <Item value="The customer %$Room/@customerName% has joined LetMeSee. See the room here {url}" />
+            <Item t="text.Replace" Find="{url}" ReplaceWith="%$AgentUrl%" /> 
+        </Content>
+        <From t="text.FirstSucceeding">
+          <Item value="%$Room/@sms_title%"/>
+          <Item value="LetMeSee"/>
+        </From>
+      </Action1>
+      <Action t="action.RunActions">
+        <Condition t="yesno.And">
+          <Item value="%$Room/@sendEmailToAgent%" />
+          <Item t="yesno.NotEmpty" Value="%$Room/@agentEmail%" />
+        </Condition>
+        <Action t="http.HttpCall" Url="http://jbartdb.appspot.com/bart.php?op=mail">
+          <Var name="BrowserTitle" t="data.BrowserTitle"/>
+          <Var name="CustomerName" value="&lt;span class=&quot;customer_name&quot;&gt;%$Room/@customerName%&lt;/span&gt;" />
+          <Var name="Body" t="lmc.LMCEmailTemplateForAgent" Caption="Let Me See -&#8206; %$BrowserTitle%" Content="The customer %$CustomerName% has joined the room." RoomLink="%$AgentUrl%" />
+          <Aspect t="http.PostForm" UseStoredCookies="false" UseStoredHiddenInputs="false">
+            <PostData t="http.PostData" Name="body" Value="%$Body%"/>
+            <PostData t="http.PostData" Name="subject" Value="The customer %$Room/@customerName% has joined the room"/>
+            <PostData t="http.PostData" Name="to" Value="%$Room/@agentEmail%"/>
+            <PostData t="http.PostData" Name="fromEmail" Value="noreply@artwaresoft.com"/>
+            <PostData t="http.PostData" Name="fromName" Value="Let Me See"/>
+          </Aspect>
+        </Action>
+        <Action t="lmc.LogEmailSentToAgent" RoomXml="%$Room%" />
+      </Action>
+    </xtml>
+  </Component>
+
+  <Component id="LogEmailSentToAgent" type="action.Action" execution="native" />
+  
+  <Component id="SaveVisitorHtmlForInstance" type="action.Action" execution="native" />
+
+  <Component id="FixParagraphImageDimensions" type="action.Action" execution="native" />
+
+  <Component id="LMCGotoItem" type="action.Action">
+    <Param name="ID" />
+    <xtml t="async.RunOnNextTimer" Milliseconds="1">
+      <Action t="itemlist_action.DetailsReplacingAllGotoItem">
+        <Item t="data.FirstSucceeding">
+          <Item value="%$Room/items/item[#{$ID}]%"/>
+        </Item>
+      </Action>
+    </xtml>    
+  </Component>
+
+  <Component id="ShowForParagraphType" type="field.FieldAspect">
+    <Param name="Type" />
+    <xtml t="field_aspect.Hidden">
+      <OnCondition t="field_aspect.CheckConditionForEveryItem" DataForCondition="Item data" WhenHidden="Do not render" ShowCondition="%@type% == %$Type%"/>
+    </xtml>
+  </Component>
+
+<Component id="MainItems" type="data.Data">
+  <xtml value="%$Room/items/*%"/>
+</Component>
+
+    <Component id="ShowParagraphOnRefreshPreview" type="action.Action" execution="native">
+      <Param name="ChangedXml" />
+    </Component>
+
+<Component id="RefreshLMCPreview" type="action.Action">  <Param name="ChangedXml"/>  <Param name="DelayInMiliseconds" Default="600"/>  <xtml t="action.RunDelayedAction" ID="RefreshLMCPreview" Milliseconds="%$DelayInMiliseconds%">    <Action t="action.RunActions">      <Var name="CurrentUIState" t="xml.WithChanges" Xml="%$UIState%"/>      <Action t="field.RefreshField" FieldID="Mobile"/>      <Action t="cobrowse.GoToUIState" NewUIState="%$CurrentUIState%"/>      <Action t="lmc.ShowParagraphOnRefreshPreview" ChangedXml="%$ChangedXml%"/>    </Action>  </xtml></Component>
+
+  <Component id="HtmlCleansing" type="data.Data" execution="native" description="html to lmc itemlist">
+    <Param name="Html"/>
+    <Param name="Options" MultiEnum=""/>
+    <NativeHelper name="CleanHtml" t="parser.CleanHtml"/>
+  </Component>
+
+<Component id="AddBodyCssFromSettings" type="action.Action" execution="native">
+  <Param name="CssID" Default="desktop body" />
+  <NativeHelper name="Css" t="data.FirstSucceeding">
+    <Item value="%$Room/style/css[#{$CssID}]%" />
+    <Item value="%$Styles/style[#1]/styleProps/css[#{$CssID}]%" />
+  </NativeHelper>
+</Component>
+
+<Component id="AddAllCssFromSettings" type="action.Action" execution="native">
+  <Param name="CssID" Default="all" />
+  <NativeHelper name="Css" t="data.FirstSucceeding">
+    <Item value="%$Room/style/css[#{$CssID}]%" />
+    <Item value="%$Styles/style[#1]/styleProps/css[#{$CssID}]%" />
+  </NativeHelper>
+</Component>
+
+<Component id="CssFromSettings" type="field.FieldAspect" execution="native">
+  <Param name="CssID" type="dynamic_enum" Options="%$Styles/style[#1]/styleProps/css/@id%"/>
+  <Param name="DesignTimeOnly">
+    <Field t="control.Button" Title="Edit Style...">
+      <FieldAspect t="field_aspect.HideTitle" />
+      <Style t="btn.ImageOnlyButton" />
+      <FieldAspect t="field_feature.Css">
+        <Css><![CDATA[#this { margin: -28px 0 0 248px !important;}]]></Css>
+      </FieldAspect>
+      <Image t="img.Image" Url="%$_Images%/studio/designer.png" />
+      <Action t="jbart_app.OpenJBartAppFloatingCssEditor" CssID="%$Xtml/@CssID%" />
+    </Field>
+  </Param>
+  <NativeHelper name="CssAspect" t="field_feature.Css">
+    <Css t="data.FirstSucceeding">
+      <Item value="%$Room/style/css[#{$CssID}]%" />
+      <Item value="%$Styles/style[#1]/styleProps/css[#{$CssID}]%" />
+    </Css>
+  </NativeHelper>
+</Component>
+
+    <Component id="CometToolbarButton" type="btn.Style">
+      <xtml t="ui.CustomStyle">
+        <Css><![CDATA[#this {}]]></Css>
+        <Html><![CDATA[<div class="hypelink_img toolbar_button"/>]]></Html>
+        <Javascript><![CDATA[function render(button) {
+  aa_button(button,{
+    imageElement: button.el,
+    textElement: null
+  });
+  button.$el.attr('title',button.text);
+}
+]]></Javascript>
+      </xtml>
+    </Component>
+
+    <Component id="SaveLMCProject" type="action.Action" execution="native" />
+    <Component id="DriveID" type="data.Data" execution="native" />
+
+    <Component id="LMCPreviewShowVisitorSize" type="field.FieldAspect" execution="native">
+      <Param name="ButtonCss" css="true" />
+    </Component>
+
+    <Component id="ConvertMotorHome" type="action.Action" execution="native">
+      <Param name="ProjectID" />
+      <Param name="Key" />
+      <Param name="Room" />
+    </Component>
+
+    <Component id="ConvertMotorHomeVisitorHtml" type="action.Action" execution="native">
+      <Param name="ProjectID" />
+      <Param name="Key" />
+    </Component>
+
+    <Component id="BatchTestGetFile" type="action.Action" execution="native">
+      <Param name="Project" />
+      <Param name="Path" />
+      <Param name="Tries" />
+      <Param name="WaitTime" />
+    </Component>
+
+    <Component id="ConvertToSmallerRoom" type="action.Action" execution="native">
+    </Component>
+
+  <Component id="EnsureRoomUrl" type="action.Action" execution="native">
+    <Param name="RoomXml" Default="%$Room%" />
+  </Component>
+
+  <Component id="LoadProjectSettings" type="action.Action" execution="native" />
+  <Component id="SaveProjectSettings" type="action.Action" execution="native" />
+
+  <Component id="MinHeightForViralItem" type="field.FieldAspect" execution="native">
+    <Param name="BottomPadding" />
+  </Component>
+
+  <Component id="TestSavingRoom" type="action.Action" execution="native">
+    <Param name="SaveCount" />
+    <Param name="RoomSize" />
+  </Component>
+
+<Component id="LMCSlideTransition" type="transition.ReplaceTransitionStyle">
+  <Param name="Direction" type="enum" Options="From Right,From Left" Default="From Right"/>
+  <Param name="Duration" Default="300"/>
+  <Param name="BackgroundColor" Default="white"/>
+  <xtml t="ui.CustomStyle" Direction="%$Direction%" Duration="%$Duration%">
+    <Css><![CDATA[#this {
+  position:relative;
+}
+#this .aa_new {
+  position:absolute;
+  top:0;
+  left:0;
+  width:100\%;
+}
+#this .aa_original {
+  position:absolute;
+  top:0;
+  left:0;
+}
+#this .aa_new {
+  background:%$BackgroundColor%;
+  min-height:100\%;
+}
+#this.slide_from_right .aa_new {
+  -webkit-animation:#id_slide_from_right %$Duration%ms;
+}
+#this.slide_from_left .aa_new {
+  -webkit-animation:#id_slide_from_left %$Duration%ms;
+}
+@-webkit-keyframes #id_slide_from_right {
+  from {
+    -webkit-transform:translateX(100\%);
+  }
+  to {
+    -webkit-transform:translateX();
+  }
+}
+@-webkit-keyframes #id_slide_from_left {
+  from {
+    -webkit-transform:translateX(-100\%);
+  }
+  to {
+    -webkit-transform:translateX();
+  }
+}]]></Css>
+    <Html><![CDATA[]]></Html>
+    <Javascript><![CDATA[function animate(transition) {
+  aa_lmc_slide_transition(transition,{ transition: transition, duration: transition.params.Duration, direction: transition.params.Direction});
+}]]></Javascript>
+  </xtml>
+</Component>
+
+<Component id="DeleteHeadingWithItems" type="action.Action" execution="native">
+  <Param name="Item" type="itemlist_item.ItemIdentifier" >
+    <Default t="itemlist_item.ItemInContext" />
+  </Param>
+</Component>
+
+  <Component id="GotoLogEventLocation" type="action.Action" execution="native">
+    <Param name="Event" />
+  </Component>
+
+  <Component id="AddInvitationToVisitorLog" type="action.Action" execution="native">
+    <Param name="InvitationType" type="enum" Options="sms,email" Default="sms" />
+    <Param name="PhoneNumber" />
+    <Param name="Email" />
+    <Param name="Body" />
+  </Component>
+
+  <Component id="SendEmail" type="action.Action">
+    <Param name="Email" type="email.Email" />
+    <xtml t="email.SendEmail" Email="%$Email%" />
+  </Component>
+
+  <Component id="LMCEmailTemplateForAgent" type="data.Data">
+    <Param name="Content" />
+    <Param name="RoomLink" />
+    <Param name="Caption" Default="Let Me See" />
+    <xtml t="ui.InlineCssIntoElements">
+      <Css><![CDATA[
+.mail { font-family:arial; width: 100%; max-width: 515px; border:1px solid #676F7C; } 
+.header { background: #354052; height: 50px; }
+.header_text { color:white; font-size:16px; padding: 14px 0px 0 20px; } 
+.header_image { 
+background: url('https://jbartlib.appspot.com/images/LetMeSee/32x32.png');
+width: 32px;
+height: 32px;
+margin-right: 8px;
+margin-top: 8px;
+float: right;
+}
+.customer_name { font-weight:bold; } 
+.content { padding: 20px; } 
+.separator { clear:both; }  
+.summary { color:#676869; margin-top:25px; } 
+.counter { background: #37A9DF; padding:4px 6px; color:white; display:inline-block; font-weight:bold; margin:0 3px;} 
+.line { border-bottom:2px dotted #D9D9DA; margin-top:10px;} 
+.signature { margin:20px; font-size:12px; color:#6A6B6C;} 
+.text { margin-top:10px; } 
+.link { color: rgb(90, 132, 134); }
+.room_button { 
+  display: block; 
+  text-align: center;  color: rgb(255,255,255);  font-style: normal;  font-variant: normal; font-weight: normal;  
+  font-size: 14px;  line-height: 26px;  font-family: arial;  width: 100px;  vertical-align: middle;  padding: 5px 14px;  
+  background-color: rgb(71,186,193);  text-decoration: none;  margin-top: 20px;}
+]]></Css>
+      <Var name="Top" t="text.Text">
+        <Text><![CDATA[<div class="mail"><div class="header"><div class="header_image"></div><div class="header_text">%$Caption%</div></div><div class="content">]]></Text>
+      </Var>
+      <Var name="RoomButton" t="text.Text">
+        <Text><![CDATA[<a href="%$RoomLink%" class="room_button">See the room</a>]]></Text>
+      </Var>
+      <Var name="Bottom" t="text.Text">
+        <Text><![CDATA[</div> 
+<div class="line"></div> 
+<div class="signature">Thank you for using "Let Me See", it is brought to you by 
+  <a class="link" href="http://www.artwaresoft.com/#?page=lmc">Artwaresoft LTD</a>.
+  <br/>
+If you have any comments or suggestions please contact us: 
+<a class="link" href="mailto:support@artwaresoft.com?subject=LetMeSee">support@artwaresoft.com</a></div>
+ </div> </div>]]></Text>
+      </Var>
+      <Html t="data.Pipeline">
+        <Aggregator t="text.Concat"/>
+        <Item t="data.List">
+          <Item value="%$Top%" />
+          <Item value="%$Content%" />
+          <Item value="&lt;br&gt;" />
+          <Item value="%$RoomButton%" Condition="%$RoomLink% != ''"/>
+          <Item value="%$Bottom%" />
+        </Item>
+      </Html>
+    </xtml>
+  </Component>
+
+<Component id="LMCLoadingStyle" type="loading_style.Style">
+  <Param name="IsManager" type="data.Boolean" />
+  <xtml t="ui.CustomStyle" base="app_loader.Circle">
+    <Html><![CDATA[<div>
+  <div id="activity" />
+  <div id="lmc_image" />
+<div id="circleG">
+<div id="circleG_1" class="circleG">
+</div>
+<div id="circleG_2" class="circleG">
+</div>
+<div id="circleG_3" class="circleG">
+</div>
+</div>
+</div>]]></Html>
+    <Css><![CDATA[#activity {
+  font:20px'noto sans';
+  color:#494f55;
+  height:50px;
+  position:absolute;
+  left:0;
+  right:0;
+  text-align:center;
+  top: 40\%; margin-top: 60px;  
+}
+#lmc_image {
+  width:128px;
+  height:128px;
+  background:url('//jbartlib.appspot.com/images/LetMeSee/128x128.png') no-repeat;
+  position:absolute;
+  left:50\%;
+  margin-left: -64px;
+  top: 40\%; margin-top: -100px;  
+}
+.lmc_manager #lmc_image {
+  background:url('//jbartlib.appspot.com/images/LetMeSee/M128x128.png') no-repeat;
+}
+#circleG {
+  height:30px;
+  position:absolute;
+  left:50\%;
+  margin-left:-80px;
+  top: 40\%; margin-top: 120px;
+}
+.jbart_loading {
+  position:relative;
+}
+.jbart_loading,
+head,
+body {
+  height:100\%;
+}
+.circleG {
+  background-color:#C4C4C4;
+  float:left;
+  height:32px;
+  margin-left:17px;
+  width:32px;
+  -moz-animation-name:bounce_circleG;
+  -moz-animation-duration:1.2s;
+  -moz-animation-iteration-count:infinite;
+  -moz-animation-direction:linear;
+  -moz-border-radius:21px;
+  -webkit-animation-name:bounce_circleG;
+  -webkit-animation-duration:1.2s;
+  -webkit-animation-iteration-count:infinite;
+  -webkit-animation-direction:linear;
+  -webkit-border-radius:21px;
+  -ms-animation-name:bounce_circleG;
+  -ms-animation-duration:1.2s;
+  -ms-animation-iteration-count:infinite;
+  -ms-animation-direction:linear;
+  -ms-border-radius:21px;
+  -o-animation-name:bounce_circleG;
+  -o-animation-duration:1.2s;
+  -o-animation-iteration-count:infinite;
+  -o-animation-direction:linear;
+  -o-border-radius:21px;
+  animation-name:bounce_circleG;
+  animation-duration:1.2s;
+  animation-iteration-count:infinite;
+  animation-direction:linear;
+  border-radius:21px;
+}
+#circleG_1 {
+  -moz-animation-delay:0.24s;
+  -webkit-animation-delay:0.24s;
+  -ms-animation-delay:0.24000000000000005s;
+  -o-animation-delay:0.24000000000000005s;
+  animation-delay:0.24000000000000005s;
+}
+#circleG_2 {
+  -moz-animation-delay:0.56s;
+  -webkit-animation-delay:0.56s;
+  -ms-animation-delay:0.56s;
+  -o-animation-delay:0.56s;
+  animation-delay:0.56s;
+}
+#circleG_3 {
+  -moz-animation-delay:0.72s;
+  -webkit-animation-delay:0.72s;
+  -ms-animation-delay:0.72s;
+  -o-animation-delay:0.72s;
+  animation-delay:0.72s;
+}
+@-moz-keyframes bounce_circleG {
+  0\% {} 50\% {
+    background-color:#6B6B6B
+  }
+  100\% {}
+}
+@-webkit-keyframes bounce_circleG {
+  0\% {} 50\% {
+    background-color:#6B6B6B
+  }
+  100\% {}
+}
+@-ms-keyframes bounce_circleG {
+  0\% {} 50\% {
+    background-color:#6B6B6B
+  }
+  100\% {}
+}
+@-o-keyframes bounce_circleG {
+  0\% {} 50\% {
+    background-color:#6B6B6B
+  }
+  100\% {}
+}
+@keyframes bounce_circleG {
+  0\% {} 50\% {
+    background-color:#6B6B6B
+  }
+  100\% {}
+}]]></Css>
+    <Javascript><![CDATA[function render(loadingObject) {
+  if ('%$IsManager%' == 'true') loadingObject.$el.addClass('lmc_manager');
+  loadingObject.$el.find('#activity').text(loadingObject.text);
+}]]></Javascript>
+  </xtml>
+</Component>
+
+<Component id="LMCMobileTitle" type="uitext.Style">
+  <xtml t="ui.CustomStyle">
+    <Css><![CDATA[#this { color: #333; background-color1: #5dcfd4; 
+  margin: 5px 5px 7px 5px; 
+  font: 16px 'noto sans'; 
+  border-bottom:1px solid #47BAC1;
+  }
+]]></Css>
+    <Javascript><![CDATA[function(textObj) { 
+  textObj.$el.html(textObj.text);
+}]]></Javascript>
+  </xtml>
+</Component>
+
+<Component id="ChangeLMCPage" type="action.Action">
+  <Param name="Page" />
+  <xtml t="action.RunActions">
+    <Action t="ui.SetUrlHashValue" Attribute="lmcpage" Value="%$Page%" />
+    <Action t="field.RefreshField" FieldID="Room_Details,LMC_Content_Preview,agent_mobile_phone,expand_collapse_buttons" />
+  </xtml>
+</Component>
+
+<Component id="ChangeLMCRoomPage" type="action.Action">
+  <Param name="Page" />
+  <xtml t="action.RunActions">
+    <Action t="ui.SetUrlHashValue" Attribute="room_page" Value="%$Page%" />
+    <Action t="field.RefreshField" FieldID="agent_mobile_phone" />
+  </xtml>
+</Component>
+
+<Component id="LMCPageEqualsTo" type="data.Boolean">
+  <Param name="Page" />
+  <xtml t="yesno.ItemsEqual" Item1="%$Page%">
+    <Item2 t="ui.UrlHashValue" Attribute="lmcpage" />
+  </xtml>
+</Component>
+
+<Component id="LMCRoomPageEqualsTo" type="data.Boolean">
+  <Param name="Page" />
+  <xtml t="yesno.ItemsEqual" Item1="%$Page%">
+    <Item2 t="ui.UrlHashValue" Attribute="room_page" />
+  </xtml>
+</Component>
+
+<Component id="LetMeSeeVisitorMobileNotification" type="jbart.MyWidgetPage">
+  <xtml t="notification_box.NotificationBox" ID="lmc_visitor_notify" Title="Visitor mobile notification">
+    <Style t="ui.CustomStyle" base="notification_box.Default">
+      <Html><![CDATA[<div>
+  <div class="lmc_img" />
+  <div class="notify_text" />
+</div>]]></Html>
+      <Css><![CDATA[#this {
+  display:none;
+  left:0;
+  right:0;
+  z-index:100;
+  background-color:#efe6f2;
+  opacity:0.95;
+  border-top:3px solid #47BAC1;
+  height:65px;
+}
+.notify_text {
+  position:absolute;
+  left:50px;
+  top:12px;
+  right:0;
+  text-align:center;
+  font-weight:bold;
+  font-size:16px;
+  color:#333;
+}
+#this.shown {
+  display:inline-block;
+}
+#this.aanotif_status_error {
+  background:pink;
+}
+.lmc_img {
+  position:absolute;
+  background:url('_jbartImages_/LetMeSee/40x40.png');
+  width:40px;
+  height:40px;
+  top:12px;
+  left:13px;
+}
+]]></Css>
+      <Javascript><![CDATA[function(notificationBox) {
+  aa_notification_box(notificationBox,{});
+  aa_positionFixed(notificationBox.el,{
+    bottom: 0,
+    object: notificationBox
+  });
+}
+
+
+
+function aa_notification_box(notificationBox,settings) {
+  var jBox = notificationBox.$el;
+  notificationBox.bind('notification',function(evt) {
+     notificationBox.setStatusClass( evt.status );
+     jBox.find('.notify_text').html(evt.text);
+     jBox.addClass('shown');
+     if (evt.status == 'clear') jBox.removeClass('shown');
+
+     aa_positionFixed(notificationBox.el,{
+        bottom: 0,
+        object: notificationBox
+     });
+     var height = jBox.height();
+     jBox.css('bottom','-'+height+'px')
+    
+     jBox.css('opacity',1).animate({ bottom: '0'},1000);
+     
+     setTimeout(function() {
+       jBox.animate({bottom: '-'+height+'px'},1000, function() { jBox.removeClass('shown');}); 
+     },4000);
+  });          
+
+}]]></Javascript>
+    </Style>
+    <FieldAspect t="lmc.LMCVisitorNotification" ChangeLocationText="The agent has changed your location" UpdateRoomText="The agent has updated the room"/>
+  </xtml>
+</Component>
+
+<Component id="FormatEventDuration" type="data.Data" execution="native">
+  <Param name="DurationInMillis" />
+</Component>
+
+<Component id="LetMeSeeViralItem" type="jbart.MyWidgetPage">
+  <xtml t="control.Hyperlink" ID="_Hyperlink" Title="Let me see" Target="_blank" Link="javaScript:void(0);">
+    <Style t="ui.CustomStyle" base="hyperlink_style.Simple">
+      <Html><![CDATA[<a>
+  <div class="lmc_img" />
+  <div class="lmc_text">Let Me See</div>
+  <div class="text" />
+</a>]]></Html>
+      <Css><![CDATA[#this {
+  border-top:3px solid #47BAC1;
+  background-color:#354052;
+  height:65px;
+  display:block;
+  text-decoration:none;
+  color:#fff;
+  cursor:default;
+  position:relative;
+}
+.lmc_img {
+  position:absolute;
+  background:url('_jbartImages_/LetMeSee/40x40.png');
+  width:40px;
+  height:40px;
+  top:12px;
+  left:13px;
+}
+.lmc_text {
+  position:absolute;
+  top:10px;
+  left:65px;
+  font:16px'Noto Sans';
+}
+.text {
+  position:absolute;
+  top:36px;
+  left:65px;
+  right:10px;
+  font:13px'Noto Sans';
+}
+.viral_bright #this {
+  background-color:#eff5fc;
+  color:#000;
+  border-top:2px solid #47BAC1;
+}
+.lmc_dark #this {
+   background-color:#232628
+}]]></Css>
+      <Javascript><![CDATA[function render(link) { 
+  link.$el.firstOfClass('text').html(link.title);
+  link.$el.attr('href',link.link).attr('title',link.tooltip).attr('target',link.target);
+}]]></Javascript>
+    </Style>
+    <FieldAspect t="field_aspect.Title" Title="The new way of customer engagement"/>
+    <FieldAspect t="cobrowse.CoBrowseVisitorSideOnly"/>
+    <FieldAspect t="field_feature.CssClass" AddClassTo="content" ClassName="lmc_viral_item"/>
+    <FieldAspect t="field_feature.HandleEvent">
+      <Event t="field_feature.Click"/>
+      <Action t="lmc.ClickOnViralItem"/>
+    </FieldAspect>
+  </xtml>
+</Component>
+
+    <Component id="LMCMobileButton" type="btn.Style">
+      <xtml t="ui.CustomStyle">
+        <Css><![CDATA[#this.selected { 
+  border-bottom: 3px solid #47BAC1; 
+ }
+#this { cursor: pointer; margin: 0 5px; }
+#this:active { opacity: 0.8; }
+]]></Css>
+        <Html><![CDATA[<div/>]]></Html>
+        <Javascript><![CDATA[function render(button) {
+    aa_setImage(button.el,button.image,{ removeIfNoImage: false });
+    button.$el.click(function(e) { button.action(e) });
+  button.$el.attr("title",button.tooltip);
+}]]></Javascript>
+      </xtml>
+    </Component>
+
+<Component id="LetMeSeeLicenses" type="data.Data">
+  <xtml t="xml.Xml">
+    <xml>
+      <license title="jQuery" text="Copyright © 2012 jQuery Foundation and other contributors" licenseText="jquery.org/license" licenseLink="http://jquery.org/license"/>
+      <license title="nicEdit" text="NicEdit is a Brian Kirchoff Production © 2007-2008.&lt;br&gt; Graphics by Web-Kreation and famfamfam" licenseText="MIT License" licenseLink="http://nicedit.com/license.php"/>
+      <license title="wicked-good-xpath" text="A pure JavaScript XPath library" licenseText="MIT License" licenseLink="http://opensource.org/licenses/mit-license.php"/>
+      <license title="JSON-js" text="Douglas Crockford 2010-11-18" licenseText="Free to copy, modify, or redistribute" licenseLink="https://github.com/douglascrockford/JSON-js/blob/master/json2.js"/>
+      <license title="jqm-mobile-bookmark-bubble" text="Bookmark Bubble to suggest clink webpage to home screen (Support jQuery Mobile)" licenseText="Apache License" licenseLink="https://github.com/okamototk/jqm-mobile-bookmark-bubble/blob/master/COPYING"/>
+      <license title="Code Mirror" text="In-browser code editing made bearable" licenseText="MIT-style license" licenseLink="http://codemirror.net/2/LICENSE"/>
+    </xml>
+  </xtml>
+</Component>
+
+<Component id="WaitForSendingJumpAcknowledge" type="action.Action" execution="native">
+  <Param name="ItemName" />
+</Component>
+
+<Component id="ClickOnViralItem" type="action.Action" execution="native" />
+
+<Component id="ExternalTemplates" type="data.Data">
+  <xtml t="data.List">
+    <Item value="%$ProjectSettings/templates/template%" />
+    <Item t="data.Pipeline">
+      <Item value="%$SiteSettings/templates/template%" />
+      <Item t="yesno.PassesFilter">
+        <Filter t="yesno.OR">
+          <Item t="data.IsInCommaSeparatedList" Item="%$Project/@id%" List="%@projects%" />
+          <Item t="data.IsInCommaSeparatedList" Item="*" List="%@projects%" />
+        </Filter>
+      </Item>
+    </Item>
+  </xtml>
+</Component>
+
+    <Component id="TrackUserAction" type="action.Action" execution="native">
+      <Param name="Type" />
+      <Param name="Text" />
+      <Param name="MoreInfo" />
+      <Param name="RoomName" />
+    </Component>
+
+  <Component id="RemoveItemFromCurrentRoom" type="action.Action" execution="native">
+    <Param name="ItemInTemplate" />
+    <Param name="RoomXml" Default="%$Room%" />
+  </Component>
+
+  <Component id="CanMoveHeadingUpOrDown" type="data.Boolean" execution="native">
+    <Param name="Heading" Default="%%" />
+    <Param name="Direction" type="enum" Options="up,down" Default="down" />
+  </Component>
+
+  <Component id="MoveHeadingUpOrDown" type="action.Action" execution="native">
+    <Param name="Heading" Default="%%" />
+    <Param name="Direction" type="enum" Options="up,down" Default="down" />
+  </Component>
+
+  <Component id="MoveItemUpOrDownInHeading" type="action.Action" execution="native">
+    <Param name="Item" Default="%%" />
+    <Param name="Direction" type="enum" Options="up,down" Default="down" />
+  </Component>
+
+  <Component id="CanMoveItemUpOrDownInHeading" type="data.Boolean" execution="native">
+    <Param name="Item" Default="%%" />
+    <Param name="Direction" type="enum" Options="up,down" Default="down" />
+  </Component>
+
+  <Component id="AddItemsToCurrentRoom" type="action.Action" execution="native">
+    <Param name="Items" />
+    <Param name="RoomXml" Default="%$Room%" />
+    <Param name="WizardTemplateItems" />
+  </Component>
+
+<Component id="IsLastInHeading" type="data.Boolean">
+  <xtml t="yesno.And">
+    <Var name="NextItem" t="xml.NextSibling"/>
+    <Item t="yesno.OR">
+      <Item value="%$NextItem/@type% == 'heading'"/>
+      <Item t="yesno.IsEmpty" Value="%$NextItem%"/>
+    </Item>
+    <Item t="yesno.NotEmpty" Value="%../item[@type='heading']%"/>
+  </xtml>
+</Component>
+
+  <Component id="ItemsInHeading" type="data.Data" execution="native">
+    <Param name="Heading" Default="%%" />
+  </Component>
+
+  <Component id="CallMeButtonClicked" type="action.Action" execution="native">
+    <NativeHelper name="SendAgentNotification" t="http.HttpCall" Url="http://jbartdb.appspot.com/bart.php?op=mail" Condition="%$Room/@agentEmail% != ''">
+      <Var name="AgentUrl" value="https://jb-letmesee.appspot.com/letmesee.html?project=%$Project/@id%#?roomid=%$Room/@id%" />
+      <Var name="CustomerName" value="%$Room/@customerName%" />
+      <Var name="ItemName" t="lmc.ReplaceVariableFields" RoomXml="%$Room%" Data="%$Room/items/item[#{$UIState/@itemShown}]/@name%" />
+      <Var name="Body" t="lmc.LMCEmailTemplateForAgent" Content="The customer %$CustomerName% has clicked on call me button" RoomLink="%$AgentUrl%" />
+      <Aspect t="http.PostForm" UseStoredCookies="false" UseStoredHiddenInputs="false">
+        <PostData t="http.PostData" Name="body" Value="%$Body%"/>
+        <PostData t="http.PostData" Name="subject" Value="The customer %$CustomerName% has clicked on call me button"/>
+        <PostData t="http.PostData" Name="to" Value="%$Room/@agentEmail%"/>
+        <PostData t="http.PostData" Name="fromEmail" Value="noreply@artwaresoft.com"/>
+        <PostData t="http.PostData" Name="fromName" Value="Let Me See"/>
+      </Aspect>
+    </NativeHelper>
+  </Component>
+
+  <Component id="LMCPrintCurrentItem" type="action.Action" execution="native">
+    <Param name="Css" />
+    <Param name="HTmlTemplate" />
+    <NativeHelper name="SendAgentNotification" t="http.HttpCall" Url="http://jbartdb.appspot.com/bart.php?op=mail" Condition="%$Room/@agentEmail% != ''">
+      <Var name="AgentUrl" value="https://jb-letmesee.appspot.com/letmesee.html?project=%$Project/@id%#?roomid=%$Room/@id%" />
+      <Var name="CustomerName" value="%$Room/@customerName%" />
+      <Var name="ItemName" t="lmc.ReplaceVariableFields" RoomXml="%$Room%" Data="%$Room/items/item[#{$UIState/@itemShown}]/@name%" />
+      <Var name="Body" t="lmc.LMCEmailTemplateForAgent" Content="The customer %$CustomerName% has printed %$ItemName%" RoomLink="%$AgentUrl%" />
+      <Aspect t="http.PostForm" UseStoredCookies="false" UseStoredHiddenInputs="false">
+        <PostData t="http.PostData" Name="body" Value="%$Body%"/>
+        <PostData t="http.PostData" Name="subject" Value="The customer %$CustomerName% has printed an item"/>
+        <PostData t="http.PostData" Name="to" Value="%$Room/@agentEmail%"/>
+        <PostData t="http.PostData" Name="fromEmail" Value="noreply@artwaresoft.com"/>
+        <PostData t="http.PostData" Name="fromName" Value="Let Me See"/>
+      </Aspect>
+    </NativeHelper>
+  </Component>
+  
+</xtml>

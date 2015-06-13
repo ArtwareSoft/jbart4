@@ -1,0 +1,283 @@
+<xtml package="true">
+<xtml ns="lmc" plugin="letmesee" altc="true">
+
+  <Component id="LetMeSee" type="jbart.ApplicationFeature" execution="native">
+    <Param name="ImplementingChannel" type="cobrowse.CoBrowseChannel" />    
+  </Component>
+
+  <Component id="IntegrationInitGetOrCreate" type="action.Action" execution="native">
+  </Component>
+  
+  <Component id="InitLetMeSee" type="action.Action" execution="native">
+    <Param name="FromEmbed" type="data.Boolean" />
+    <Param name="ShowErrorsWithoutRejecting" type="data.Boolean" />
+  </Component>
+
+  <Component id="LMCChannel" type="cobrowse.CoBrowseChannel" execution="native">
+    <Param name="SessionID" description="If empty, creates a new one">
+      <Default t="ui.UrlParameter" Param="roomid"/>
+    </Param>
+    <NativeHelper name="Init" t="action.RunActions">
+      <Action t="object.SetMethod" Object="%$_AppContext%" Method="NotifyUser">
+        <Xtml t="notification_box.ShowNotification" NotificationBox="LMC_Desktop_Notification" Text="%Text%" Duration="%$Duration%" Status="%Status%" />
+      </Action>
+      <Action t="object.SetMethod" Object="%$_AppContext%" Method="CustomerBrowserTitle">
+        <Xtml t="text.FirstSucceeding">
+          <Item value="%$SiteSettings/@Customer_Browser_Title%" Condition="%$ProjectSettings/@overrideSiteSettings% != 'true'"/>
+          <Item value="%$ProjectSettings/@Customer_Browser_Title%" />
+          <Item value="%$Project/@name%" />
+          <Item value="%$ProjectSettings/@name%" />
+        </Xtml>
+      </Action>
+      <Action t="object.SetMethod" Object="%$_AppContext%" Method="VisitorHtmlContent">
+        <Xtml t="data.Pipeline">
+          <Var name="HeadElements" t="object.RunMethod" Object="%$_AppContext%" Method="DeployHeadElements" />
+          <Var name="Server" value="//jbartwix1.appspot.com" />
+          <Var name="WidgetBaseUrl" t="text.FirstSucceeding">
+            <Item value="%$Project/@deploy_WidgetBaseUrl%" />
+            <Item value="//jbartlib.storage.googleapis.com/apps" />        
+          </Var>
+          <Var name="BrowserTitle" t="text.FirstSucceeding">
+            <Item value="%$SiteSettings/@Customer_Browser_Title%" Condition="%$ProjectSettings/@overrideSiteSettings% != 'true'"/>
+            <Item value="%$ProjectSettings/@Customer_Browser_Title%" />
+            <Item value="%$Project/@name%" />
+            <Item value="%$ProjectSettings/@name%" />
+          </Var>
+          <Var name="WidgetVersion" t="text.FirstSucceeding">
+            <Item value="%$Project/@_version%" />
+            <Item value="%$ProjectSettings/@lmcVersion%" />
+          </Var>
+          <Var name="HomeScreenIcon" t="text.FirstSucceeding">
+            <Item value="%$SiteSettings/@appleTouchIcon%" Condition="%$ProjectSettings/@overrideSiteSettings% != 'true'"/>
+            <Item value="%$ProjectSettings/@appleTouchIcon%" />
+            <Item value="//jbartlib.appspot.com/images/LetMeSee/128x128.png" />
+          </Var>
+          <Item t="xml.CData" DynamicContent="true" >
+       <![CDATA[
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>%$BrowserTitle%</title>
+  <link rel="icon" href="//jbartlib.appspot.com/images/LetMeSee/favicon.png" />
+  <link rel="apple-touch-icon-precomposed" href="%$HomeScreenIcon%"/>
+  <script>window.jbStartLoadingTime = new Date().getTime(); window.jbWidgetJSUrl = '%$WidgetBaseUrl%/LetMeSee/%$WidgetVersion%/jbart_LetMeSee_src.js';</script>
+  <link rel="stylesheet" type="text/css" href="//jb-letmesee.appspot.com/letmesee_loading.css?v=10" />
+</head>
+<body style="margin:0;-webkit-text-size-adjust:none;">
+  <div id="placeholder"></div>
+  <div id="ajaxart_loading" class="visitor">
+    <div id="lmc_vloading_progress"></div>
+    <div id="lmc_vloading_image"></div>
+    <div id="lmc_vloading_text"></div>
+    <div id="lmc_vloading_error"></div>
+    <div id="lmc_vloading_footer_text"></div>
+  </div>
+  <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+  <script type="text/javascript">
+    window.jbPreloadLogs = window.jbPreloadLogs || [];
+
+    window.jbLMCVersion = '%$WidgetVersion%';
+    window.jbLMCDriveID = '%$Project/@driveid%';
+    window.jbStartLMC = function() {
+      jBartWidgets.LetMeSee.show(document.getElementById('placeholder'),{ 
+        page: 'main', 
+        jbartdb_server: '%$Server%',
+        data: {
+          Project: '<project id="%$Project/@id%" />',
+          Room: '<room />',
+          RoomHeaders: '<rooms />',
+          FullRooms: '<rooms />',
+          Temp: '<xml/>',
+          CoBrowseSide: 'visitor',
+          EmbedConfig: '<xml/>'          
+        }
+      } );
+      $('#ajaxart_loading').remove();
+    }
+  </script>
+  <script type="text/javascript" src="//jb-letmesee.appspot.com/lmc_loadVisitorAndCheckErrors.js?v=2"></script>
+</body> 
+</html>]]>
+          </Item>
+        </Xtml>
+      </Action>
+    </NativeHelper>
+  </Component>
+
+  <Component id="LoadRoomHeaders" type="action.Action" execution="native" />
+
+  <Component id="LoadRoomArchiveHeaders" type="action.Action" execution="native">
+    <Param name="DoWithHeaders" type="action.Action" />
+  </Component>
+
+  <Component id="DeleteLMCRoom" type="action.Action" execution="native">
+    <Param name="Room" />
+  </Component>
+
+  <Component id="LMCMoveRoomToArchive" type="action.Action" execution="native">
+    <Param name="Room" />
+  </Component>
+
+  <Component id="LMCRestoreRoomFromArchive" type="action.Action" execution="native">
+    <Param name="RoomID" />
+  </Component>
+
+  <Component id="LMCRecreateArchiveHeaders" type="action.Action" execution="native" />
+
+  <Component id="SetCurrentRoom" type="action.Action" execution="native">
+    <Param name="RoomID" />
+    <Param name="PageToShow" />
+    <Param name="LoadOnly" type="data.Boolean" />
+  </Component>
+
+  <Component id="LoadRoomForManager" type="action.Action" execution="native">
+    <Param name="RoomID" />
+    <Param name="Project" />
+    <Param name="Key" />
+  </Component>
+
+  <Component id="CreateRoom" type="action.Action" execution="native">
+    <Param name="RoomXml" />
+    <Param name="AllocateNewID" type="data.Boolean" Default="true" />
+    <Param name="WaitForTinyUrl" type="data.Boolean" />
+  </Component>
+
+  <Component id="EnsureRoomInFullRooms" type="action.Action" execution="native">
+    <Param name="RoomID" />
+    <Param name="ProjectID" Default="%$Project/@id%" />
+    <Param name="ExternalLink" Default="" />
+    <NativeHelper name="ExternalTemplates" t="lmc.ExternalTemplates" />
+  </Component>
+
+  <Component id="EnsureCustomerActivityLog" type="action.Action" execution="native">
+    <Param name="RoomID" />
+    <Param name="ProjectID" Default="%$Project/@id%" />
+  </Component>
+
+  <Component id="AddRoomReply" type="action.Action" execution="native">
+    <Param name="Item" />
+    <Param name="UserName" />
+    <Param name="ReplyText" />
+    <NativeHelper name="SendEmailToAgent" t="lmc.SendEmail">
+      <Email t="email.Email" FromName="Let Me See" FromEmail="noreply@artwaresoft.com" To="%$Room/@agentEmail%" Subject="Let Me See - reply from %$Room/@customerName%">
+        <Var name="NL" value="&lt;br&gt;" />
+        <Var name="DriveID" t="lmc.DriveID" />
+        <Var name="AgentUrl" value="https://jb-letmesee.appspot.com/letmesee.html?id=%$DriveID%#?roomid=%$Room/@id%" />
+        <Body t="lmc.LMCEmailTemplateForAgent" Content="The customer %$Room/@customerName% has added a reply:%$NL%%%%$NL%" RoomLink="%$AgentUrl%" />
+      </Email>
+    </NativeHelper>
+  </Component>
+
+  <Component id="LoadVisitorStats" type="action.Action" execution="native" />
+  
+  <Component id="RoomItemReplies" type="action.Action" execution="native">
+    <Param name="Item" />
+  </Component>
+
+  <Component id="CustomerActivityLogItems" type="itemlist.Items" execution="native">
+    <Param name="RoodID" />
+  </Component>
+
+<Component id="LMCRoomsInHeaders" type="data.Data" execution="native">
+  <Param name="ProjectOrGroup" />
+  <Param name="AlsoArchies" type="data.Boolean" />
+</Component>
+
+<Component id="LMCRoomHeader" type="data.Data">
+  <Param name="RoomID"/>
+  <xtml t="data.FirstSucceeding">
+    <Item value="%$RoomHeaders/*[#{$RoomID}]%"/>
+    <Item value="%$AllRoomHeaders/*/*/*[#{$RoomID}]%"/>
+  </xtml>
+</Component>
+
+<Component id="RefreshCustomerActivity" type="action.Action" execution="native">
+  <Param name="ForceListening" type="data.Boolean" />
+  <NativeHelper name="OnUpdate" t="field.RefreshField" FieldID="cobrowse_logs,lmc_cobrowsing" />
+</Component>
+
+<Component id="RefreshLMCHeaders" type="action.Action" execution="native">
+  <Param name="FieldToRefreshOnUpdate" />
+  <Param name="UpdateMessgae" Default="Room list updated" />
+  <NativeHelper name="ManagerRefresh" t="lmca.LoadAndSyncAllRoomHeaders" AlsoRefresh="true">
+  </NativeHelper>
+  <NativeHelper name="OnUpdate" t="action.RunActions">
+    <Action t="field.RefreshField" FieldID="%$FieldToRefreshOnUpdate%" />
+    <Action t="notification_box.ShowNotification" NotificationBox="LMC_Desktop_Notification" Text="%$UpdateMessgae%" Status="info" />
+  </NativeHelper>
+</Component>
+
+<Component id="LMCSendSMS" type="action.Action" execution="native">
+  <Param name="From" />
+  <Param name="To" />
+  <Param name="Content" />
+  <Param name="NoUnicodeChars" type="data.Boolean" script="true" />
+  <Param name="AddInvitationToVisitorLog" type="data.Boolean" Default="true"/>
+  <NativeHelper name="AddInvitation" t="lmc.AddInvitationToVisitorLog" InvitationType="sms" PhoneNumber="%$To%" Body="%$Content%" />
+</Component>
+
+<Component id="BatchCreateRooms" type="action.Action" execution="native">
+  <Param name="Rooms" />
+  <Param name="RoomCustomerName" script="true" />
+  <Param name="RoomCustomerCompany" script="true" />
+  <Param name="RoomCustomerPhone" script="true"/>
+  <Param name="Template" />
+  <Param name="SmsTitle" />
+  <Param name="SmsText" />
+  <Param name="AgentEmail" />
+  <NativeHelper name="SendSMS" t="lmc.LMCSendSMS" To="%@phone%">
+    <Content t="text.Replace" Text="%sms/@text%" Find="{URL}" ReplaceWith="%@tinyUrl%" />
+    <NoUnicodeChars t="data.IfThenElse" If="%$ProjectSettings/@overrideSiteSettings%" Then="%$ProjectSettings/@noSmsUnicode%" Else="%$SiteSettings/@noSmsUnicode%"/>
+    <From t="text.FirstSucceeding">
+      <Item value="%@smsTitle%"/>
+      <Item value="Let Me See"/>
+    </From>
+  </NativeHelper>
+  <NativeHelper name="UpdateRoomXml" t="action.RunActions">
+    <Var name="AgentEmailCalc" t="text.FirstSucceeding">
+      <Item value="%$Temp/createRooms/@agentEmail%"/>
+      <Item value="%$User/@workEmail%"/>
+      <Item value="%$User/@email%"/>
+    </Var>
+    <Action t="action.WriteValue" To="%!@createdByTemplate%" Value="%$Template%" />
+    <Action t="action.WriteValue" To="%!@customerName%">
+      <Value t="xtml.UseParam" Param="RoomCustomerName" Input="%$RoomInfo%" />
+    </Action>
+    <Action t="action.WriteValue" To="%!@phone%">
+      <Value t="xtml.UseParam" Param="RoomCustomerPhone" Input="%$RoomInfo%" />
+    </Action>
+    <Action t="action.WriteValue" To="%!@customerCompany%">
+      <Value t="xtml.UseParam" Param="RoomCustomerCompany" Input="%$RoomInfo%" />
+    </Action>
+    <Action t="action.WriteValue" To="%!@smsTitle%" Value="%$SmsTitle%" />
+    <Action t="action.WriteValue" To="%!@agent%" Value="%$User/@name%" />
+    <Action t="action.WriteValue" To="%!@agentEmail%" Value="%$AgentEmailCalc%" />
+    <Action t="action.WriteValue" To="%!@agentID%" Value="%$User/@email%" />
+    <Action t="action.WriteValue" To="%!@agentPhone%" Value="%$User/@phoneNumber%" />
+    <Action t="action.WriteValue" To="%!sms/@text%">
+      <Value t="data.Pipeline">
+        <Var name="RoomXml" Default="%%" />
+        <Item value="%$SmsText%" />
+        <Item t="lmc.ReplaceVariableFields" RoomXml="%$RoomXml%" />        
+      </Value>
+    </Action>
+  </NativeHelper>
+</Component>
+
+  <Component id="NewGeneratedID" type="async_data.Data" execution="native">
+    <Param name="Length" Default="5" />
+  </Component>
+
+</xtml>
+
+  <xtml ns="lmca">
+
+    <Component id="LoadAndSyncAllRoomHeaders" type="action.Action" execution="native">
+      <Param name="Projects" Default="%$Projects/project%" />
+      <Param name="AlsoArchives" type="data.Boolean" />
+      <Param name="AlsoRefresh" type="data.Boolean" />
+    </Component>
+    
+  </xtml>
+</xtml>

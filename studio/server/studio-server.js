@@ -3,9 +3,9 @@ GLOBAL.http = require('http');
 GLOBAL.https = require('https');
 GLOBAL.child = require('child_process');
 GLOBAL.url = require('url');
-GLOBAL.zlib = require("zlib");
-GLOBAL.pathNS = require("path");
-// require('nodejs_http.js');
+GLOBAL.zlib = require('zlib');
+GLOBAL.pathNS = require('path');
+require('./nodejs_http.js');
 GLOBAL.ns_url = require('url');
 GLOBAL.ns_querystring = require('querystring');
 GLOBAL.$ = GLOBAL.jQuery = require('jquery-deferred');
@@ -17,20 +17,11 @@ var port = process.env.npm_package_config_port;
 var widgets_base_dir = process.env.npm_package_config_widgets_base_dir;
 var client;
 
-_script_suffix = '.bat';
-_sl = '\\';
-_server = 'localhost';
-_os = 'windows'
-jbart_base_dir = 'c:\\jbart\\';
+_os = /^win/.test(process.platform) ? 'windows' : '';
 http_dir = '';
 tmp_dir = 'c:\\temp';
 log_level = 3;
 log_file = 'c:\\temp\\log\\log.dat';
-R_cmd = 'R';
-_clientToolPath = 's:\\';
-script_cmd = 'jbart_server.bat ';
-ftp_base_dir = 's:/ftp/'; // do not use back slash
-finished_requests_url = 'http://localhost/drive/s:/ftp/requests.txt';
 
 // Http server
 function serve(req, res) {
@@ -44,6 +35,8 @@ function serve(req, res) {
     var op = getURLParam(req,'op');
 
     res.setHeader("Access-Control-Allow-Origin", "*");
+    if (req.url.indexOf('/LetMeSee/') == 0)
+      return LetMeSeeProxy(req,res);
 
     if (op && op_get_handlers[op] && req.method == 'GET') {
       return op_get_handlers[op](req,res,path,user_machine);
@@ -67,7 +60,7 @@ function serve(req, res) {
       log(user_machine,'main loop exception: ' + st,1,'');
     }
 }
-http.createServer(serve).listen(port, _server); 
+http.createServer(serve).listen(port); 
 
 console.log('Running jbart studio server on port ' + port + '...');
 console.log('Visit http://localhost' + ((port == 80) ? '' : ':' + port) + '/studio/gstudio.html to open studio');
@@ -564,3 +557,42 @@ if (client) {
 process.on('uncaughtException', function(err) {
  console.log(err);
 });
+
+
+function LetMeSeeProxy(req,res) {
+  var body = '';
+  if (req.method == 'POST') {
+    req.on('data', function (data) {
+      body += '' + data;
+    });
+    req.on('end', function () {
+      activate(body);  
+    });
+  }
+  if (req.method == 'GET')
+    activate();
+
+
+  function activate(post_data) {
+    try {
+      var urlObj = ns_url.parse(req.url,true);
+      var options = {
+          url: 'https://jb-letmesee.appspot.com' + urlObj.path,
+          method: req.method,
+          data: post_data
+      };
+      
+      var promise = aa_httpCall(options,false);
+      $.when(promise).then(function(result) {
+        if (result.responseHeaders && result.responseHeaders['x-goog-generation'])
+          res.setHeader('x-goog-generation',result.responseHeaders['x-goog-generation']);
+
+        res.end(result.content || result.toString());
+      },function(result) {
+        res.end(result.content || result.toString());
+      });
+    } catch(e) {
+      res.end(e.stack);
+    }
+  }
+}

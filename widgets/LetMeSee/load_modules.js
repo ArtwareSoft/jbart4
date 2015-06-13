@@ -1,0 +1,11 @@
+document.write('<script type="text/javascript" src="../widgets/letmesee/letmesee.js"></script>');
+document.write('<script type="text/javascript" src="../widgets/letmesee/lmc_channel.js"></script>');
+document.write('<script type="text/javascript" src="../widgets/letmesee/lmc_api.js"></script>');
+document.write('<script type="text/javascript" src="../widgets/letmesee/lmc_headers.js"></script>');
+document.write('<script type="text/javascript" src="../widgets/letmesee/lmc_convert.js"></script>');
+document.write('<script type="text/javascript" src="../widgets/letmesee/lmc_undo.js"></script>');
+document.write('<script type="text/javascript" src="../widgets/letmesee/lmc_file.js"></script>');
+document.write('<script type="text/javascript" src="../widgets/letmesee/lmc_manager.js"></script>');
+document.write('<script type="text/javascript" src="../widgets/letmesee/lmc_bubble.js"></script>');
+document.write('<script type="text/javascript" src="../widgets/letmesee/lmc_client.js"></script>');
+document.write('<script type="text/javascript" src="../widgets/letmesee/lmc_log.js"></script>');

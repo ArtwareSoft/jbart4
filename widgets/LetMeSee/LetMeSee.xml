@@ -1,0 +1,772 @@
+<file _type="jbart_project" name="Let Me See" id="apps/LetMeSee" vid="153" plugins="cobrowse,letmesee" cross_domain="true" feed="" jbartapp="true">  <xtml ns="sample">    <Component id="Widget" type="jbart.Widget">      <xtml t="jbart.Widget">        <MainPage t="sample.main"/>        <ApplicationFeature t="lmc.LetMeSee">          <ImplementingChannel t="lmc.LMCChannel"/>        </ApplicationFeature>        <ApplicationFeature t="lmc.VisitorStatistics"/>        <ApplicationFeature t="appfeature.Css">          <Css><![CDATA[#this {
+  font:12px Arial;
+}
+#this *:focus {
+  outline:none;
+}
+p {
+  margin:0
+}
+@font-face {
+  font-family:'Noto Sans';
+  font-style:normal;
+  font-weight:400;
+  src:local('Noto Sans'), local('NotoSans'), url(/fonts/NotoSans.woff) format('woff');
+}
+@font-face {
+  font-family:'Noto Sans';
+  font-style:normal;
+  font-weight:700;
+  src:local('Noto Sans Bold'), local('NotoSans-Bold'), url(/fonts/NotoSansBold.woff) format('woff');
+}
+.cm-s-solarized.CodeMirror {
+  -moz-box-shadow: none !important;
+  -webkit-box-shadow: none !important;
+  box-shadow: none !important;
+}
+]]></Css>        </ApplicationFeature>        <DataResource t="jbart_resource.Data" ResourceID="CoBrowseSide" ValueType="text" AutoSaveSampleData="">          <Value><![CDATA[agent]]></Value>        </DataResource>        <ApplicationFeature t="cobrowse.CoBrowseScrollPosition"/>        <DataResource t="jbart_resource.Data" ResourceID="Styles" ValueType="xml" AutoSaveSampleData="true">          <Value t="xml.Xml">            <xml _cobrowseResource="Styles">              <style id="1" name="Style1">                <styleProps>                  <general mainImageHeight="200" paragraphTextMaxLength="" textForBack="" marginForImageInItem="40" mobileViewInDesktop="false"/>                  <css id="all"><![CDATA[#this {
+  background:#eee;
+}]]></css>                  <css id="item"><![CDATA[#this.after_item {
+  border-top:1px solid #919191;
+}
+.right_to_left #this .item_text {
+  text-align:right;
+  direction:rtl;
+  padding-right:40px;
+}
+.item_text {
+  min-height:18px;
+  text-align:left;
+  color1:#2E3641;
+  font-weight:bold;
+  font-size:16px;
+  padding:13px 37px 13px 7px
+}
+#this:hover .item_text {
+  text-decoration:underline;
+}
+.item_image {
+  background:#fff;
+}
+.aa_lmc_selectedItem #this {
+  background:#BDE0E9;
+}
+.item_arrow {
+  position:absolute;
+  top:0;
+  right:20px;
+  margin-top:-32px;
+  width:5px;
+  height:20px;
+}
+.item_arrow:after, .item_arrow:before {
+  content:"";
+  height:12px;
+  width:4px;
+  border-radius:3px;
+  background:#777;
+  position:absolute;
+  left:0;
+  top:0;
+}
+.item_arrow:after {
+  -webkit-transform:rotate(45deg);
+  top:6px;
+}
+.item_arrow:before {
+  -webkit-transform:rotate(-45deg);
+}
+.nocss3 #this .item_arrow {
+  width:0px;
+  height:0px;
+  border-style:solid;
+  border-width:9px 0 9px 10px;
+  border-color:transparent transparent transparent #777777;
+}
+.nocss3 #this .item_arrow:after, .nocss3 #this .item_arrow:before {
+  display:none;
+}
+.paragraph_outer {
+  background-color:transparent !important;
+  margin:0 !important;
+  padding:0 !important;
+}
+.paragraph_text,
+.paragraph_html {
+  padding:15px 15px;
+}
+.paragraph_property_sheet {
+  padding:5px;
+}
+.paragraph_inner {
+  padding:0;
+}
+#this.after_item .paragraph_inner {
+  padding:10px 0;
+}
+.paragraph_youtube {
+  margin:0 5px;
+}
+.aa_active_in_transition #this {
+  background:#ccc;
+}
+#this.paragraph_in_main_menu.no_border {
+  border:none;
+}]]></css>                  <css id="heading"><![CDATA[#this {
+  padding:10px 0;
+  background:#2E3641;
+  color:#fff;
+  text-align:left;
+  font-size:24px;
+  border-bottom:1px solid #92969B;
+  margin:0;
+}
+.heading_text {
+  width:100%;
+  text-align:center;
+}]]></css>                  <css id="paragraph"><![CDATA[.lmc_main_menu>*:first-child #this.paragraph_image {
+  border-bottom:0px solid #000000;
+}
+#this.paragraph_outer {
+  margin:10px;
+  padding:10px;
+  border-radius:2px;
+}
+.paragraph_inner {
+  width:100%;
+  position:relative;
+  padding-top:15px;
+}
+.paragraph_counter {
+  position:absolute;
+  top:0;
+  right:0;
+  height:40px;
+  color:#888;
+  font-size:10px;
+}
+.paragraph_text {
+  font:16px arial;
+}
+.paragraph_html {
+  color:#000;
+  font:16px arial;
+}
+.paragraph_image_text {
+  font:bold 14px arial;
+}
+img.aa_image.loading_image {
+  background:#EFEFEF;
+}
+.paragraph_property_sheet table {
+  width:100%;
+  color:#404040;
+  border:1px #ccc solid;
+  border-collapse:collapse;
+  border-spacing:0px;
+  border:1px solid #CCC;
+}
+.paragraph_property_sheet table>tbody>tr>td {
+  border-bottom:1px solid #ccc;
+  border-top:0px;
+  border-left:1px solid #ccc;
+  border-right:0px;
+  padding:5px;
+  color:#404040;
+  border-collapse:collapse;
+  border-spacing:0px;
+}
+.paragraph_property_sheet .paragraph_property_section {
+  font-weight:bold;
+  background-color:#d9d9d9;
+}
+#this.welcome_text .paragraph_text {} .right_to_left #this .paragraph_inner {
+  direction:rtl;
+}
+.next_item_button {
+  color:#2626F0;
+  cursor:pointer;
+  font:14px arial;
+}
+.next_item_button:hover {
+  text-decoration:underline;
+}
+.paragraph_grid table {
+  border:1px #ccc solid;
+  border-collapse:collapse;
+  border:1px solid #CCC;
+}
+.paragraph_grid td {
+  font-size:12px;
+  padding:4px 10px;
+  max-width:120px;
+  vertical-align:top;
+  border-bottom:1px solid #ccc;
+  border-left:1px solid #ccc;
+  color:#404040;
+}
+.paragraph_grid.highlight_first_row tr:first-child td {
+  font-weight:bold;
+}
+.paragraph_grid.highlight_first_column td:first-child {
+  font-weight:bold;
+}
+.paragraph_in_main_menu #this.paragraph_grid {
+  padding:0 0px;
+}
+.paragraph_grid_text {
+  font-weight:bold;
+  margin-bottom:5px;
+}
+#this.paragraph_call_me_button {
+  text-align:center;
+}
+.callme_success {
+  width:95%;
+  padding:12px 0px;
+  font-size:18px;
+  font-weight:bold;
+  color:#000;
+}
+.callme_button {
+  cursor:pointer;
+  width:95%;
+  padding:6px 0px;
+  font-size:18px;
+  font-weight:bold;
+}]]></css>                  <css id="item contents"><![CDATA[#this {
+  background-color:#fff;
+}
+.item_contents {
+  padding-top:46px;
+}
+#this.item_contents  p,
+#this.item_contents div,
+#this.item_contents span {
+  background:transparent !important;
+}]]></css>                  <css id="specification"><![CDATA[#this {
+  padding:5px;
+}
+#this table {
+  width:100%;
+}
+.spec_name {
+  font-weight:bold;
+}
+.spec_value {} table {
+  width:100%;
+}]]></css>                  <css id="details topbar"><![CDATA[#this {
+  height:46px;
+  background:#eee;
+  opacity:0.9;
+  border-bottom:1px solid #ccc;
+}
+.topbar_button {
+  top:15px;
+  width:25px;
+  height:20px;
+}
+.topbar_next_button {
+  right:40px;
+}
+.topbar_prev_button {
+  right:10px;
+}
+.topbar_back_button {
+  left:0px;
+  width:50px;
+  top:0px;
+  height:45px;
+}
+.topbar_back_button .dropdown {
+  position:absolute;
+  top:15px;
+  left:15px;
+}
+.dropdown:before, .dropdown:after {
+  border-radius:3px;
+  width:4px;
+  background:#777;
+  height:17px;
+}
+.disabled .dropdown:before, .disabled .dropdown:after {
+  background:#ddd;
+}
+.topbar_next_button .dropdown:before, .topbar_next_button .dropdown:after {
+  left:15px;
+  -webkit-transform:rotate(45deg);
+}
+.topbar_next_button .dropdown:after {
+  left:6px;
+  -webkit-transform:rotate(-45deg);
+}
+.topbar_prev_button .dropdown:before, .topbar_prev_button .dropdown:after {
+  left:15px;
+  -webkit-transform:rotate(-45deg);
+}
+.topbar_prev_button .dropdown:after {
+  left:6px;
+  -webkit-transform:rotate(45deg);
+}
+.topbar_back_button .dropdown:before, .topbar_back_button .dropdown:after {
+  height:12px;
+  top:0px;
+  left:5px;
+  border-radius:3px;
+  width:4px;
+  background:#777;
+  -webkit-transform:rotate(45deg);
+}
+#this .aa_active_in_transition.topbar_back_button .dropdown:before, #this .aa_active_in_transition.topbar_back_button .dropdown:after {
+  background:#aaa;
+}
+.topbar_back_button .dropdown:after {
+  top:6px;
+  -webkit-transform:rotate(-45deg);
+}
+.item_title {
+  top:14px;
+  left:50px;
+  right:70px;
+  font-size:14px;
+  font-weight:bold;
+  color:#06060a;
+}
+.right_to_left #this .item_title {
+  direction:rtl;
+}
+.long_item_title {
+  font-size:12px;
+}
+.nocss3 #this .dropdown:before, .nocss3 #this .dropdown:after {
+  display:none;
+}
+.nocss3 #this .topbar_back_button {
+  top:12px;
+  left:15px;
+  width:0px;
+  height:0px;
+  border-style:solid;
+  border-width:9px 10px 9px 0;
+  border-color:transparent #777777 transparent transparent;
+}
+.nocss3 #this .topbar_next_button {
+  width:0px;
+  height:0px;
+  border-style:solid;
+  border-width:13px 9px 0 9px;
+  border-color:#777777 transparent transparent transparent;
+}
+.nocss3 #this .disabled.topbar_next_button {
+  border-color:#ddd transparent transparent transparent;
+}
+.nocss3 #this .topbar_prev_button {
+  width:0px;
+  height:0px;
+  border-style:solid;
+  border-width:0 9px 13px 9px;
+  border-color:transparent transparent #777777 transparent;
+}
+.nocss3 #this .disabled.topbar_prev_button {
+  border-color:transparent transparent #ddd transparent;
+}]]></css>                  <css id="desktop body"><![CDATA[#this {
+  background:#354052 !important;
+}]]></css>                  <css id="desktop"><![CDATA[.desktop_top_title {
+  position:absolute;
+  top:0;
+  height:55px;
+  background-color:#F5F5F5;
+  border-bottom:1px solid #D0D2D3;
+  width:902px;
+  left:50%;
+  margin-left:-450px;
+}
+.desktop_top_title_text {
+  font:20px arial;
+  padding:15px 20px 0 20px;
+}
+.desktop_body {
+  position:absolute;
+  left:50%;
+  margin-left:-450px;
+  width:900px;
+  top:56px;
+  bottom:0px;
+  background:#fff;
+  border-left:1px solid #F4F4F4;
+  border-right:1px solid #F4F4F4;
+}
+.desktop_navigation {} .desktop_details {
+  position:absolute;
+  top:0;
+  bottom:0;
+}
+.details_pane {
+  width:560px;
+  margin:0 !important;
+  box-sizing:content-box;
+}
+.navigation_pane {
+  width:320px;
+  box-sizing:content-box;
+}
+.details_pane .paragraph_outer {
+  margin:0;
+  padding-left:0;
+}
+.left_to_right #this .desktop_details {
+  right:0;
+}
+.vertical_line {
+  width:9px;
+  background-color:#EBEBEB;
+}
+.left_to_right #this .vertical_line {
+  right:580px;
+}
+.heading_text,
+.item {
+  width:230px;
+  box-sizing:padding-box;
+}
+.item .item_text {
+  width:210px;
+}
+.heading_text {
+  padding:25px 0 3px 0px;
+  margin-top:2px;
+  cursor:pointer;
+  font:bold 16px arial;
+}
+.aa_item_items_desktop:first-child .heading_text {
+  margin-top:0;
+  padding-top:0px;
+}
+.item {
+  padding:15px;
+  margin:3px 0;
+  background-color:#DEE1E3;
+  cursor:pointer;
+  font:14px arial;
+  position:relative;
+}
+.item:hover {} .aa_lmc_selectedItem .item {
+  background:#00BAC1;
+  color:#fff;
+}
+.aa_lmc_selectedItem .item_text:after, .aa_lmc_selectedItem .item_text:before {
+  content:'';
+  position:absolute;
+  top:50%;
+  margin-top:-10px;
+  right:16px;
+  height:12px;
+  width:3px;
+  border-radius:1px;
+  background:#fff;
+  -webkit-transform:rotate(-45deg);
+}
+.aa_lmc_selectedItem .item_text:after {
+  -webkit-transform:rotate(45deg);
+  margin-top:-3px;
+}
+.with_scrollbar {
+  padding-top:20px;
+}
+.with_scrollbar.details_pane::-webkit-scrollbar-track {
+  background:#EBEBEB;
+}
+.with_scrollbar::-webkit-scrollbar {
+  width:9px;
+}
+.with_scrollbar::-webkit-scrollbar-thumb {
+  background:#46C9CE;
+}
+.item_contents {
+  padding:0 !important;
+}
+.item_topbar {
+  background:transparent;
+  height:35px;
+  width:520px;
+  opacity:1;
+  position:static;
+}
+.item_topbar .item_title {
+  left:0px;
+  top:2px;
+  font:normal 22px arial !important;
+  position:static;
+}
+.left_to_right #this .item_topbar .item_title {
+  text-align:left !important;
+}
+.left_to_right #this .item_text {
+  padding-right:2px;
+}
+.lmc_desktop_main_details .lmc_item {
+  font:14px arial;
+  color:#1E64B5;
+  margin:5px 0 20px 0;
+  cursor:pointer;
+}
+.lmc_desktop_main_details .lmc_item.no_image {
+  margin-bottom:3px;
+}
+.lmc_desktop_main_details .heading_text_in_main_content {
+  font:bold 18px arial;
+  margin:20px 0 10px 0;
+}
+.main_item_list {
+  width:500px;
+}
+.lmc_desktop_main_details .heading_text_in_main_content:first-item {
+  margin-top:0;
+}
+.lmc_desktop_main_details .lmc_item:hover .item_text {
+  text-decoration:underline;
+}
+.paragraph_in_main_menu {
+  background:transparent;
+  border:none;
+}
+.paragraph_in_main_menu .paragraph_text,
+.paragraph_in_main_menu .paragraph_html {
+  padding:5px 0 0 0 !important;
+}
+.navigation_pane>div {
+  padding:20px;
+}
+
+
+.right_to_left #this .with_scrollbar {
+  direction:rtl;
+}
+.right_to_left #this .desktop_top_title_text {
+  text-align:right;
+}
+.right_to_left #this .heading_text {
+  text-align:right;
+}
+.right_to_left #this .item_text {
+  padding-left:2px;
+  text-align:right;
+}
+.right_to_left #this .item_topbar {
+  margin-right:10px;
+  width:inherit;
+}
+.right_to_left #this .item_topbar .item_title {
+  text-align:right !important;
+}
+.right_to_left #this .aa_lmc_selectedItem .item_text:after, .right_to_left #this .aa_lmc_selectedItem .item_text:before {
+  right:inherit;
+  left:20px;
+  margin-top:-9px;
+}
+.right_to_left #this .aa_lmc_selectedItem .item_text:before {
+  margin-top:-2px;
+}
+.right_to_left #this .lmc_desktop_main_details .lmc_item {} .right_to_left #this .details_pane {
+  left:0px;
+  padding-left:30px;
+}
+.right_to_left #this .navigation_pane {
+  width:305px;
+}
+.right_to_left #this .vertical_line {
+  right:296px;
+}
+.right_to_left #this .lmc_desktop_main_details .fld_items_cntr {
+    margin-right:10px;
+}]]></css>                  <css id="desktop mobile look"><![CDATA[#this {
+  background-color:#354052;
+}
+.mobile_frame {
+  border:1px solid #333;
+  border-radius:5px;
+  background-color:rgb(114, 147, 166);
+  padding:15px;
+  margin:10px 0;
+}]]></css>                  <css id="replies"><![CDATA[#this {
+  margin:10px;
+}
+.reply_button {
+  width:100%;
+  cursor:pointer;
+  color:white;
+  background:#47BAC1;
+  font:14px arial;
+  line-height:22px;
+  box-sizing:border-box;
+  display:inline-block;
+  padding:10px 5px 11px 10px;
+  border:none;
+}
+.reply_button:hover {
+  background:#6CA8AC;
+}
+.reply_send {
+  width:100%;
+  cursor:pointer;
+  color:white;
+  background:#47BAC1;
+  font:14px arial;
+  line-height:22px;
+  box-sizing:border-box;
+  display:inline-block;
+  padding:5px 5px 6px 10px;
+  border:none;
+}
+.reply_textbox {
+  width:100%;
+  height:150px;
+  border-top:none;
+  padding:5px;
+  font:14px arial;
+}
+.reply_username_textbox {
+  width:100%;
+  padding:5px;
+  margin:0;
+  border:1px solid #A9A9A9;
+  font:14px arial;
+}
+.reply_username_textbox.placeholder {
+  color:#aaa;
+}
+.lmc_reply_box {
+  margin-bottom:33px;
+}
+.lmc_reply_box>div:first-child {
+  border:1px solid #CBD6DC;
+}
+.lmc_reply_text {
+  padding:15px 10px;
+  background:#E6E9ED;
+  border:1px solid #BDCCD4;
+  color:#808080;
+}
+.lmc_reply_time, .lmc_reply_username {
+  color:#808080;
+  float: right;
+  padding-top:4px;
+  font:12px arial;
+}
+
+.lmc_reply_time {
+  padding-right:3px;
+}
+.lmc_reply_username {
+  padding-right:5px;
+}
+.lmc_reply_box_agent {
+  background-color:#fff;
+}
+.right_to_left #this {
+  direction:rtl;
+}
+.right_to_left #this .lmc_reply_time {
+  left:4px;
+  text-align:left;
+}]]></css>                  <css id="print"><![CDATA[body {
+  padding:10px;
+  margin:10px;
+}
+.paragraph_property_sheet table {
+  width:500px;
+  border:1px solid black;
+  border-collapse:collapse;
+}
+.paragraph_property_sheet table td {
+  padding:3px;
+  border:1px solid black;
+  border-collapse:collapse;
+}]]></css>                </styleProps>              </style>            </xml>          </Value>        </DataResource>        <ApplicationFeature t="cobrowse.CoBrowseJoinNotification">          <AgentLog t="cobrowse.AgentLog" Message="Joined the room (%device% , %browser%)"/>        </ApplicationFeature>        <DataResource t="jbart_resource.Data" ResourceID="Room" ValueType="xml" AutoSaveSampleData="">          <Value t="xml.Xml">            <room createdByTemplate="https://storage.googleapis.com/letmesee1/1gfk837tc4/rooms/ekn0kj.xml" agent="Agent1" agentEmail="" createdByAgent="Agent1" customerName="Customer 116" createdDate="1396420306766" modifiedDate="1396451846510" id="63bl9k" url="http://jb-letmesee.appspot.com/LetMeSee/4pv11pglut.html?roomid=63bl9k" tinyUrl="http://tinyurl.com/pbvo9f9" phone="0526401769" eMail="" agentPhone="" sendSmsToAgent="" sendEmailToAgent="" smsTitle="sellx2" actual="972526401769">              <items>                <item type="heading" name="Matembezi - Tanzania safari" id="1"/>                <item name="15 &amp; 16 July - Tarangire Balloon Camp" id="722" Image="http://www.safarinow.com/db/id/1163210/gt322093.jpg" imageWidth="288" imageHeight="191" replies=""/>                <item type="heading" name="Azarzar family to Tanzania " id="312"/>                <item type="heading" name="Your trip" id="321"/>                <item name="14 July - Kia lodge" id="758" Image="http://moivaro.com/wp-content/uploads/2014/01/klein-KIA-15.jpg" imageWidth="1500" imageHeight="996" replies="">                  <paragraph type="text" text="Hi man,&#xa;Are you looking for a nice car?&#xa;&#xa;You can find it easily enough here..." image="" id="903"/>                  <paragraph type="rich text" text="" image="" id="904">                    <html><![CDATA[Hi man (rich text)<div class=""><br class=""></div><div class="">How you doing? any chance of you giving me a lift?</div>]]></html>                  </paragraph>                  <paragraph type="image" text="" image="http://moivaro.com/wp-content/uploads/2014/01/klein-KIA-3.jpg" html="" id="901" imageWidth="1500" imageHeight="1004"/>                  <paragraph type="image" text="" image="http://moivaro.com/wp-content/uploads/2014/01/klein-KIA-12.jpg" html="" id="797" imageWidth="1500" imageHeight="998"/>                  <paragraph type="image" text="" image="//storage.googleapis.com/letmesee1/4pv11pglut/files/5116d52b4949407ab80147137cbf1c26_home_pic3.jpg" id="902" imageWidth="243" imageHeight="244"/>                </item>                <item name="17 July - Kisima Ngeda" id="151" Image="http://www.anasasafari.com/wp-content/gallery/kisima-ngeda/thumbs/thumbs_img_2551.jpg" imageWidth="150" imageHeight="150"/>                <item name="18 July - Exploreans Ngorongoro " id="145" Image="http://ngorongorolodge.exploreans.com/var/ezwebin_site/storage/images/home/exploreans/exploreans-hotels-and-resorts/tanzania/exploreans-ngorongoro-lodge/menu-hotel/photogallery/16/73969-1-eng-GB/16_photogallerybig.jpg" imageWidth="800" imageHeight="535" replies="">                  <paragraph type="text" text="In Conan Doyle's early rough plot outlines, Sherlock Holmes' sidekick was named &quot;Ormond Sacker&quot;[2][3] before Conan Doyle finally settled on &quot;John Watson&quot;.&#xa;In the words of William L. De Andrea,&#xa;&quot;Watson also serves the important function of catalyst for Holmes' mental processes... From the writer's point of view, Doyle knew the importance of having someone to whom the detective can make enigmatic remarks, a consciousness that's privy to facts in the case without being in on the conclusions drawn from them until the proper time. Any character who performs these functions in a mystery story has come to be known as a 'Watson'.&quot;&#xa;In 1929, English crime writer and critic Ronald Knox stated as one of his rules for fledgling writers of detective fiction that,&#xa;&quot;The stupid friend of the detective, the Watson, must not conceal from the reader any thoughts which pass through his mind; his intelligence must be slightly, but very slightly, below that of the average reader.&quot;" image="" id="1" zoomByClick="">                    <html><![CDATA[<div style="font:16px arial">In Conan Doyle's early rough plot outlines, Sherlock Holmes' sidekick was named "Ormond Sacker"[2][3] before Conan Doyle finally settled on "John Watson".
+In the words of William L. De Andrea,
+"Watson also serves the important function of catalyst for Holmes' mental processes... From the writer's point of view, Doyle knew the importance of having someone to whom the detective can make enigmatic remarks, a consciousness that's privy to facts in the case without being in on the conclusions drawn from them until the proper time. Any character who performs these functions in a mystery story has come to be known as a 'Watson'."
+In 1929, English crime writer and critic Ronald Knox stated as one of his rules for fledgling writers of detective fiction that,
+"The stupid friend of the detective, the Watson, must not conceal from the reader any thoughts which pass through his mind; his intelligence must be slightly, but very slightly, below that of the average reader."</div>]]></html>                  </paragraph>                  <paragraph type="html" text="" image="" id="2" zoomByClick="">                    <html><![CDATA[I want to say something to you...<div><br></div><div>How are you doing?</div><div><br></div>]]></html>                  </paragraph>                </item>                <item name="item title here" id="w838" Image="" imageWidth="" imageHeight=""/>              </items>              <style>                <general mainImageHeight="200" marginForImageInItem="40" mobileViewInDesktop="false" rtl="false"/>              </style>              <sms text="Hi Customer 116,&#xa;Here are your LetMeSee items:&#xa;http://tinyurl.com/pbvo9f9"/>            </room>          </Value>        </DataResource>        <ApplicationFeature t="cobrowse.CoBrowseSendRecieveCurrentSize"/>        <ApplicationFeature t="appfeature.DeployedHtmlLoader">          <LoaderHtml t="app_loader.Circle"/>          <Loader t="app_loader.Circle"/>        </ApplicationFeature>        <ApplicationFeature t="appfeature.SendEmailOnRuntimeError"/>        <DataResource t="jbart_resource.Data" ResourceID="RoomVisitorStats" ValueType="xml" AutoSaveSampleData="">          <Value t="xml.Xml">            <xml _created="12/01/2014 14:31" _lastModified="12/01/2014 14:34" _type="cobrowse_visitor_stats" createdDate="1389529906645" id="1389529907792_65" instance="0B0Iu_SoHeTmkSEc3QWJTTm9aMlE" vid="force" visitorJoinCount="1" visitorTimeMin="2" lastEventTime="1389530078173">              <item id="main page" timeSec="5" name="" value=""/>              <item id="5" timeSec="3" name="" value=""/>              <item id="6" timeSec="6" name="" value=""/>              <item id="13" timeSec="12" name="" value=""/>              <item id="17" timeSec="2" name="" value=""/>              <item id="7" timeSec="1" name="" value=""/>            </xml>          </Value>        </DataResource>        <DataResource t="jbart_resource.Data" ResourceID="Temp" ValueType="xml" AutoSaveSampleData="">          <Value t="xml.Xml">            <xml/>          </Value>        </DataResource>        <ApplicationFeature t="lmc.LMCDescriptionOfUIState"/>        <ApplicationFeature t="appfeature.Responsive"/>        <DataResource t="jbart_resource.Data" ResourceID="UIState" ValueType="xml" AutoSaveSampleData="">          <Value t="xml.Xml">            <xml/>          </Value>        </DataResource>        <ApplicationFeature t="lmc.NotifyAgentWhenVisitorJoins"/>        <DataResource t="jbart_resource.Data" ResourceID="Project" ValueType="xml" AutoSaveSampleData="">          <Value t="xml.Xml">            <xml deploy_WidgetBaseUrl="//dl.dropboxusercontent.com/u/24056024/jbartlib/apps" _version="dev" id="sh0mlhm5pt" key="4msa9do9cl" replies="true" newsFeed="true" name="studio"/>          </Value>        </DataResource>        <DataResource t="jbart_resource.Data" ResourceID="SampleData" ValueType="xml" AutoSaveSampleData="">          <Value t="xml.Xml">            <room _type="cobrowse_room" isTemplate="true" name="Template">              <items/>              <style>                <general mainImageHeight="200" marginForImageInItem="40" mobileViewInDesktop="true" rtl=""/>              </style>            </room>          </Value>        </DataResource>        <DataResource t="jbart_resource.Data" ResourceID="RoomAgentInfo" ValueType="xml" AutoSaveSampleData="">          <Value t="xml.Xml">            <agentinfo id="8i1vcp" text="" customerStatus="" modifiedDate="1394367871735">              <props Reservation="100" Trip="טיול נחמד"/>              <history>                <item field="customer status" value="mik" agent="Agent1" time="1394367361620"/>                <item field="customer status" value="yaniv" agent="Agent1" time="1394367673102"/>                <item field="customer status" agent="Agent1" time="1394367677536"/>                <item field="Reservation" value="100" agent="Agent1" time="1394367798143"/>                <item field="Trip" value="טיול נחמד" agent="Agent1" time="1394367873793"/>              </history>            </agentinfo>          </Value>        </DataResource>        <DataResource t="jbart_resource.Data" ResourceID="RoomHeaders" ValueType="xml" AutoSaveSampleData="">          <Value t="xml.Xml">            <headers/>          </Value>        </DataResource>        <DataResource t="jbart_resource.Data" ResourceID="FullRooms" ValueType="xml" AutoSaveSampleData="">          <Value t="xml.Xml">            <rooms/>          </Value>        </DataResource>        <DataResource t="jbart_resource.Data" ResourceID="ProjectSettings" ValueType="xml" AutoSaveSampleData="">          <Value t="xml.Xml">            <xml/>          </Value>        </DataResource>        <ApplicationFeature t="lmc.LMCSyncPreviewWithEditor"/>        <ApplicationFeature t="lmc.LMCUIUpdates"/>        <DataResource t="jbart_resource.Data" ResourceID="User" ValueType="xml" AutoSaveSampleData="">          <Value t="xml.Xml">            <xml name="Agent1"/>          </Value>        </DataResource>        <DataResource t="jbart_resource.Data" ResourceID="EmbedConfig" ValueType="xml" AutoSaveSampleData="">          <Value t="xml.Xml">            <xml type="room_feed" project="sh0mlhm5pt" room="58hqh5" key="4msa9do9cl"/>          </Value>        </DataResource>        <DataResource t="jbart_resource.Data" ResourceID="SiteSettings" ValueType="xml" AutoSaveSampleData="">          <Value t="xml.Xml">            <xml/>          </Value>        </DataResource>        <DataResource t="jbart_resource.Data" ResourceID="CatalogIndex" ValueType="xml" AutoSaveSampleData="">          <Value t="xml.Xml">            <xml/>          </Value>        </DataResource>      </xtml>    </Component>    <Component id="main" type="jbart.MyWidgetPage">      <xtml t="control.Layout" ID="main" Title="main">        <Layout t="ui.CustomCss" base="layout.Default">          <Style t="layout.Default"/>          <Css><![CDATA[#this {
+  position:absolute;
+left: 0;
+right: 0;
+top: 0;
+bottom: 0;  
+}]]></Css>        </Layout>        <FieldAspect t="field_aspect.PagePreviewSize" TightPreview="true" ShowSettings="true">          <Size t="preview_device.AppleIPhone4IPhone3"/>          <Style t="visual_container.MobileSkin"/>        </FieldAspect>        <Field t="control.Page" ID="_Link_to_page" Title="mobile or desktop">          <Page t="data.FirstSucceeding">            <Item t="sample.Mobile">              <Condition t="yesno.InStudio"/>            </Item>            <Item t="data.IfThenElse">              <If t="mobile.IsMobilePhone"/>              <Then t="sample.Mobile"/>              <Else t="lmc.VisitorDesktop"/>            </Item>          </Page>        </Field>        <FieldAspect t="async.AsyncActionBeforeLoad" LoadingText="" TextForError="The room in unavailable, please contact your agent." ShowLoadingTextInStudio="false">          <LoadingStyle t="ui.CustomStyle" base="loading_style.Default">            <Html><![CDATA[<div>
+<div id="ajaxart_loading_inner" class="visitor">
+    <div id="lmc_vloading_image"></div>
+    <div id="lmc_vloading_text"></div>
+    <div id="lmc_vloading_progress" style="width:50%"></div>
+    <div id="lmc_vloading_error"></div>
+    <div id="lmc_vloading_footer_text"></div>
+  </div>
+</div>]]></Html>            <Css><![CDATA[]]></Css>            <Javascript><![CDATA[function(elem) { 
+  if (ajaxart.jbart_studio)
+    aa_load_js_css('//jb-letmesee.appspot.com/letmesee_loading.css?v='+new Date().getTime(),'css');
+  if (window.jbSlowNetwork)
+    elem.$el.find('#lmc_vloading_error').text('Slow Network...').show();
+}]]></Javascript>          </LoadingStyle>          <Action t="async.RunAsyncActions" StopOnError="true">            <Action t="lmc.InitLetMeSee" FromEmbed="" ShowErrorsWithoutRejecting="true"/>          </Action>        </FieldAspect>        <FieldAspect t="field_feature.CssClass" AddClassTo="content" ConditionForClass="%$Settings/styleProps/@rtl%" ClassName="right_to_left"/>      </xtml>    </Component>    <Component id="Mobile" type="jbart.MyWidgetPage">      <xtml t="control.Layout" ID="Mobile" Title="Mobile">        <FieldAspect t="field_aspect.FieldData" FieldData="%$Data%"/>        <Layout t="ui.CustomCss" base="layout.Default">          <Style t="layout.Default"/>          <Css><![CDATA[#this {
+}]]></Css>        </Layout>        <Field t="lmc.MobileView" DoNotShowDetails="false"/>        <Field t="control.Page" ID="_Link_to_page2" Title="notification">          <Page t="lmc.LetMeSeeVisitorMobileNotification"/>        </Field>        <FieldAspect t="field_aspect.PagePreviewSize" ShowSettings="">          <Size t="preview_device.SamsungGalaxyS3S4"/>          <Style t="visual_container.MobileSkin"/>        </FieldAspect>        <Field t="control.Page" ID="_Link_to_page4" Title="viral item">          <Page t="lmc.LetMeSeeViralItem"/>        </Field>        <FieldAspect t="field_feature.CssClass" AddClassTo="content" ConditionForClass="%$Room/style/general/@lmcClass% != ''" ClassName="lmc_%$Room/style/general/@lmcClass%"/>      </xtml>    </Component>    <Component id="CloseLMCToolbar" type="action.Action">      <xtml t="action.RunActions">        <Action t="action.WriteValue" Value="">          <To t="data.SessionStorage" Key="LMCToolbar"/>        </Action>        <Action t="field.RefreshField" FireOnUpdate="" FieldID="LMCToolbar" Scope="screen"/>      </xtml>    </Component>    <Component id="LargeEditableText" type="editable_text.Style">      <xtml t="ui.CustomStyle">        <Css><![CDATA[#this {
+  border: 1px solid #BDC7D8;
+  font-size: 22px;
+  padding: 0 6px;
+  height: 38px;
+  width: 294px;
+  background: #fff;
+  box-sizing: border-box;
+}
+#this:focus {
+  border-color: rgba(82, 168, 236, 0.8);
+  outline: 0;
+  outline: thin dotted 9;
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075),0 0 8px rgba(82, 168, 236, 0.6);
+}
+#this.placeholder {
+  color: #8B8B8B;
+  height: 38px;
+  padding: 0 6px;
+}
+#this.aa_error {
+  background: #fbebeb;
+  border: 1px solid #feb2b2;
+  color: #ec643d;
+}
+]]></Css>        <Html><![CDATA[<input/>]]></Html>        <Javascript><![CDATA[function(textbox) {
+  aa_jbart_textbox(textbox);
+}]]></Javascript>      </xtml>    </Component>    <Component id="RefreshPreviewFromSettings" type="action.Action">      <xtml t="lmc.RefreshLMCPreview" ChangedXml="%%"/>    </Component>    <Component id="Admin" type="jbart.MyWidgetPage" compress="false">      <xtml t="control.Layout" ID="Admin" Title="Admin">        <Layout t="layout.Default"/>        <Field t="control.Page" ID="_Link_to_page3" Title="Agent page">          <Page t="control.ChoosePage">            <PageID t="data.IfThenElse" If="%$IsMobile%" Else="lmc.AgentDesktop" Then="lmc.AgentMobilePhone">              <ForCompress t="lmc.AgentDesktop"/>              <ForCompress t="lmc.AgentMobilePhone"/>            </PageID>          </Page>        </Field>        <FieldAspect t="async.AsyncActionBeforeLoad" LoadingText="Initializing..." TextForError="The room in unavailable, please change the url and try again." ShowLoadingTextInStudio="false">          <LoadingStyle t="lmc.LMCLoadingStyle" IsManager=""/>          <Action t="async.RunAsyncActions" StopOnError="true">            <Action t="lmc.InitLetMeSee"/>            <ProgressStyle t="async_ui.ChangeCursorForProgress"/>          </Action>        </FieldAspect>        <FieldAspect t="field_aspect.PagePreviewSize">          <Style t="visual_container.MobileSkin"/>          <Size t="preview_device.CustomSize" Width="1293" Height="800" IsDesktop=""/>        </FieldAspect>        <FieldAspect t="field_aspect.Variable" VarName="IsMobile">          <Value t="yesno.OR">            <Item t="mobile.IsMobilePhone"/>            <Item t="text.ItemsEqual" Item2="true">              <Item1 t="ui.UrlParameter" Param="mobileLook"/>            </Item>          </Value>        </FieldAspect>        <FieldAspect t="field_feature.HandleEvent">          <Event t="field_feature.Load"/>          <Action t="action.RunActions">            <Action t="lmc.LMCAutoRefreshAfterHours"/>            <Action t="lmc.LMCNotificationOnLogEntry"/>          </Action>        </FieldAspect>      </xtml>    </Component>    <Component id="Embed" type="jbart.MyWidgetPage" compress="false">      <xtml t="control.Layout" ID="Embed" Title="Embed">        <Layout t="layout.Default"/>        <Field t="control.Page" ID="_Link_to_page1" Title="Link to page">          <Page t="lmc.Embed"/>        </Field>        <FieldAspect t="async.AsyncActionBeforeLoad" ShowLoadingTextInStudio="false">          <LoadingStyle t="ui.CustomStyle" base="lmc.LMCLoadingStyle">            <Html><![CDATA[<div>
+<img src="//jbartlib.appspot.com/images/studio/loading.gif" />
+</div>]]></Html>            <Css><![CDATA[]]></Css>            <Javascript><![CDATA[function render(loadingObject) {
+  loadingObject.$el.find('#activity').text(loadingObject.text);
+}]]></Javascript>          </LoadingStyle>          <Action t="lmc.InitLetMeSee" FromEmbed="true" ShowErrorsWithoutRejecting=""/>        </FieldAspect>        <FieldAspect t="field_aspect.PagePreviewSize">          <Style t="visual_container.MobileSkin"/>          <Size t="preview_device.CustomSize" IsDesktop="" Width="1039" Height="450"/>        </FieldAspect>        <FieldAspect t="field_feature.CssClass" AddClassTo="content" ClassName="lmc_manager">          <ConditionForClass t="yesno.And">            <Item t="bart_url.UrlAttributeEquals" Attribute="manager" To="true"/>          </ConditionForClass>        </FieldAspect>      </xtml>    </Component>    <Component id="GetOrCreate" type="jbart.MyWidgetPage">      <xtml t="control.Layout" ID="GetOrCreate" Title="GetOrCreate">        <Layout t="layout.Default"/>        <FieldAspect t="async.AsyncActionBeforeLoad" ShowLoadingTextInStudio="">          <LoadingStyle t="loading_style.Default" Height="100px"/>          <Action t="lmc.IntegrationInitGetOrCreate"/>        </FieldAspect>        <Field t="control.Layout" ID="_Vertical_Layout" Title="Room found">          <Layout t="layout.Vertical" Spacing="0"/>          <FieldAspect t="field_feature.Hidden" DataForCondition="Item data" WhenHidden="Do not render" ShowCondition="%$EmbedConfig/@found%"/>          <Field t="control.Layout" ID="_Vertical_Layout4" Title="load">            <Layout t="layout.Vertical" Spacing=""/>            <FieldAspect t="async.AsyncActionBeforeLoad" ShowLoadingTextInStudio="">              <LoadingStyle t="loading_style.Default" Height="100px"/>              <Action t="lmc.SetCurrentRoom" LoadOnly="true" RoomID="%$EmbedConfig/@roomid%"/>            </FieldAspect>            <Field t="control.Layout" ID="_Group" Title="Horizontal">              <Field t="control.TabControl" ID="_Tab_Control" Title="Tab Control">                <Style t="tabs.LMCDialogTabs" HeightMargin="95" MaxHeight="0" MinHeight="200"/>                <Field t="control.Layout" ID="_Group1" Title="Room">                  <Field t="control.Page" ID="_Link_to_page6" Title="Room">                    <Page t="lmc.TabOfRoom" ReadOnly="false"/>                  </Field>                  <Layout t="layout.Default"/>                </Field>                <Field t="control.Layout" ID="_Group2" Title="Activity">                  <Field t="control.Page" ID="_Link_to_page6" Title="Activity">                    <Page t="lmc.RoomActivity"/>                  </Field>                  <Layout t="layout.Default"/>                </Field>                <Field t="control.Layout" ID="_Group3" Title="Invite">                  <Field t="control.Page" ID="_Link_to_page6" Title="Activity">                    <Page t="lmc.TabOfInvite"/>                  </Field>                  <Layout t="layout.Default"/>                </Field>                <FieldAspect t="field_feature.Css">                  <Css><![CDATA[#this { width: 550px; }
+#wrapper { }
+]]></Css>                </FieldAspect>                <FieldAspect t="fld_aspect.TabControlProperties" RefreshTabsOnSelect="true" KeepHiddenTabInTheDOM="false"/>              </Field>              <Layout t="layout.Horizontal" Spacing="77"/>              <Field t="control.Layout" ID="Content_Preview" Title="Content Preview">                <Layout t="ui.CustomCss" base="layout.Default">                  <Style t="layout.Default"/>                  <Css><![CDATA[#this {}]]></Css>                </Layout>                <FieldAspect t="field_feature.Css">                  <Css><![CDATA[#this>.aa_visual_container {
+  top:0;
+  bottom:0;
+  position:absolute !important;
+  overflow-y:auto;
+  overflow-x:hidden;
+  z-index:5;
+  border:1px solid #CCD7DD;
+  transition:right 0.5s;
+}
+#this>.aa_visual_container::-webkit-scrollbar {
+  width:8px;
+  height:8px;
+}
+#this>.aa_visual_container::-webkit-scrollbar-thumb {
+  background:#BBB;
+}
+#this>.aa_visual_container::-webkit-scrollbar-track {
+  background:transparent;
+}]]></Css>                </FieldAspect>                <FieldAspect t="field_aspect.VisualContainer" ID="cobrowse_main_cntr" HeightByCss="true" DoNotPutWidthInElement="">                  <Style t="ui.CustomCss" base="visual_container.SimpleSkin">                    <Style t="visual_container.SimpleSkin"/>                    <Css><![CDATA[#this {}]]></Css>                  </Style>                  <Width t="img.FixedWidth" Width="450"/>                </FieldAspect>                <Field t="control.Page" ID="_Link_to_page1" Title="Mobile">                  <Page t="sample.Mobile"/>                </Field>              </Field>            </Field>            <Field t="control.Button" ID="_Button1" Title="Open in LetMeSee" HideTitle="true">              <Style t="btn.LMCHyperlink"/>              <FieldAspect t="field_feature.Css">                <Css><![CDATA[#this {
+  margin:10px 0;
+}
+#wrapper {}]]></Css>              </FieldAspect>              <Action t="operation.Link" OpenInANewTab="true">                <Link t="data.Pipeline">                  <Item value="https://jb-letmesee.appspot.com/SalesForce?state=%$StateEncoded%"/>                  <Var name="StateEncoded" t="text.UrlEncoding" Data="?site=%$EmbedConfig/@site%?roomid=%$EmbedConfig/@roomid%"/>                </Link>              </Action>            </Field>          </Field>        </Field>        <Field t="control.Layout" ID="_Vertical_Layout1" Title="Room not found">          <Layout t="layout.Vertical" Spacing="0"/>          <FieldAspect t="field_feature.Hidden" DataForCondition="Item data" WhenHidden="Do not render" ShowCondition="%$EmbedConfig/@found% != 'true'"/>          <Field t="control.TabControl" ID="create_room_tabs" Title="Tab Control">            <Style t="tabs.HiddenTabs"/>            <Field t="control.Layout" ID="_Vertical_Layout2" Title="Create button">              <Layout t="layout.Vertical" Spacing="0"/>              <Field t="control.Button" ID="_Button" Title="Create customer room" HideTitle="true">                <Action t="action.RunActions">                  <Action t="xml.ReplaceXmlElement" Element="%$Temp/!NewRoom/room%">                    <NewElement t="xml.Xml" DynamicContent="true">                      <xml id="%$EmbedConfig/@roomid%" customerName="%$EmbedConfig/@name%" phone="%$EmbedConfig/@phone%" customerCompany="%$EmbedConfig/@company%"/>                    </NewElement>                  </Action>                  <Action t="operation.ChangeTab" TabControl="create_room_tabs" MoveTo="next tab"/>                </Action>                <Style t="btn.LMCButton" Width="140px"/>              </Field>              <Field t="fld.Field" ID="debug" Title="Debug">                <FieldType t="fld_type.EditableText">                  <Style t="editable_text.JBartMultiLine" Width="550px" Height="84px"/>                </FieldType>                <FieldData t="data.Pipeline">                  <Item t="xml.XmlToText" Data="%$EmbedConfig%" PrettyPrint="true"/>                </FieldData>                <FieldAspect t="field_feature.Layout" dragProperty="#this margin">                  <Css><![CDATA[#this { margin-top: 8px; margin-left: 0; }
+#wrapper { }
+]]></Css>                </FieldAspect>                <FieldAspect t="field_feature.Hidden" DataForCondition="Item data" WhenHidden="Do not render" ShowCondition="false"/>              </Field>              <Field t="fld.Field" ID="debug1" Title="Debug1">                <FieldType t="fld_type.EditableText">                  <Style t="editable_text.JBartMultiLine" Width="550px" Height="84px"/>                </FieldType>                <FieldData t="data.Pipeline">                  <Item t="xml.XmlToText" Data="%$SiteSettings%" PrettyPrint="true"/>                </FieldData>                <FieldAspect t="field_feature.Layout" dragProperty="#this margin">                  <Css><![CDATA[#this { margin-top: 8px; margin-left: 0; }
+#wrapper { }
+]]></Css>                </FieldAspect>                <FieldAspect t="field_feature.Hidden" DataForCondition="Item data" WhenHidden="Do not render"/>              </Field>              <Field t="fld.Field" ID="debug2" Title="Debug11">                <FieldType t="fld_type.EditableText">                  <Style t="editable_text.JBartMultiLine" Width="550px" Height="84px"/>                </FieldType>                <FieldData t="data.Pipeline">                  <Item t="xml.XmlToText" Data="%$ProjectSettings%" PrettyPrint="true"/>                </FieldData>                <FieldAspect t="field_feature.Layout" dragProperty="#this margin">                  <Css><![CDATA[#this { margin-top: 8px; margin-left: 0; }
+#wrapper { }
+]]></Css>                </FieldAspect>                <FieldAspect t="field_feature.Hidden" DataForCondition="Item data" WhenHidden="Do not render"/>              </Field>            </Field>            <Field t="control.Layout" ID="_Vertical_Layout3" Title="Wizard">              <Layout t="layout.Vertical" Spacing="0"/>              <Field t="control.Page" ID="_Link_to_page5" Title="Link to page">                <Page t="lmc.CreateNewRoomWizard" IsMobile="">                  <DoAfterCreate t="action.RunActions">                    <Action t="action.WriteValue" To="%$EmbedConfig/@found%" Value="true"/>                    <Action t="field.RefreshField" FireOnUpdate="" FieldID="GetOrCreate" Scope="screen"/>                  </DoAfterCreate>                </Page>              </Field>              <FieldAspect t="field_feature.Css">                <Css><![CDATA[#this { width: 500px; }
+#wrapper { }
+]]></Css>              </FieldAspect>            </Field>          </Field>        </Field>      </xtml>    </Component>  </xtml>  <compress black_list="datefilter.DateFilterControl,field.TextFilterControlidentifier"/>  <embed with_data="true" as="save file" dir="C:\Dropbox\Public\jbartlib\apps\LetMeSee\dev\" editor="true" editorExtraComponents="gstudio_googledrive.CreateNewLMCInstance,gstudio_googledrive.GoogleDriveAppHomePage"/>  <EnhanceGStudio t="action.RunActions">    <Action t="object.SetProperty" Object="%$_JBartStudio%" Property="MorePages" Value="lmc.VisitorDesktop,lmc.AgentMobilePhone"/>    <Action t="object.SetMethod" Object="%$_JBartStudio%" Method="RefreshPreviewFromSettings">      <Xtml t="lmc.RefreshLMCPreview" ChangedXml="%%"/>    </Action>    <Action t="object.SetProperty" Object="%$_JBartStudio%" Property="CoBrowse_MoreMenuItems">      <Value t="field.Fields">        <Field t="control.Button" Title="Refresh and keep ui state">          <Style t="gstudio.StudioMenuItem"/>          <Action t="cobrowse.RunActionAndKeepUIState">            <Action t="action.RunActions">              <Action t="xml.AddXmlChildren" Parent="%$Room/!items%">                <Children t="xml.Xml">                  <item name="try me"/>                </Children>              </Action>              <Action t="field.RefreshField" FieldID="items_cntr" Scope="screen"/>            </Action>          </Action>        </Field>        <Field t="control.Button" Title="Simulate agent notification">          <Style t="gstudio.StudioMenuItem"/>          <Action t="lmc.LMCShowAgentNotification">            <Data t="data.Pipeline">              <Item value="%$Room/items/item%"/>              <Item t="object.Object" Text="%@name%">                <Property name="Event" t="object.Object" command="itemShown">                  <SingleProperty name="args" t="object.Object">                    <TextProperty name="itemid" value="%@id%"/>                  </SingleProperty>                </Property>              </Item>              <Aggregator t="data.RandomPick"/>            </Data>          </Action>        </Field>        <Field t="control.Button" Title="Simulate Restart Dialog">          <Style t="gstudio.StudioMenuItem"/>          <Action t="object.RunMethod" Object="%$_AppContext%" Method="OpenRestartPopup"/>        </Field>      </Value>    </Action>    <Action t="object.SetProperty" Object="%$_JBartStudio%" Property="SampleSettingFiles">      <Value t="data.List">        <Item t="instance_editor.SampleSettings" Name="Motorhome" File="lmc_motorhome.xml"/>        <Item t="instance_editor.SampleSettings" Name="Matembezi" File="lmc_matembezi.xml"/>        <Item t="instance_editor.SampleSettings" Name="MLA" File="lmc_mla.xml"/>        <Item t="instance_editor.SampleSettings" Name="Sample Data" File="lmc_sample_data.xml"/>      </Value>    </Action>  </EnhanceGStudio></file>

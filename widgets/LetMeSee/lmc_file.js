@@ -20,6 +20,11 @@ function aa_lmc_getFileObj(context,name) {
 
 function aa_lmc_loadAppFile(context,fileObj) {
 	if (fileObj.saving) return;
+	if (window.location.href.match(/playground=true/)) {
+		console.log('playground - lmc files are not saved');
+		return;
+	}
+
 	var deferred = $.Deferred();
 
 	var prefix = fileObj.projectID || aa_lmc_projectID(context);

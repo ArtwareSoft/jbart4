@@ -35,7 +35,7 @@
         <Item value="%$GCs%" />
         <Item value="ajaxart.load_xtml_content('',aa_parsexml('%$XtmlInOneLine%'));&#xa;" />
         <Item value="var jBartWidget_%$ID% = '%$WidgetInOneLine%'; " />
-        <Item value="jBartWidgets.%$ID% = jBart.activator(jBartWidget_%$ID%);" /> 
+        <Item value="jBartWidgets['%$ID%'] = jBart.activator(window['jBartWidget_%$ID%']);" /> 
         <Item value="}());" />
       </WidgetJS>
       <OnSuccess t="xtml.UseParam" Param="OnSuccess"/>
@@ -85,7 +85,7 @@
             <Item value="%$GCs%" />
             <Item value="ajaxart.load_xtml_content('',aa_parsexml('%$XtmlInOneLine%'));&#xa;" />
             <Item value="var jBartWidget_%$ID% = '%$WidgetInOneLine%'; " />
-            <Item value="jBartWidgets.%$ID% = jBart.activator(jBartWidget_%$ID%);" /> 
+            <Item value="jBartWidgets['%$ID%'] = jBart.activator(window['jBartWidget_%$ID%']);" /> 
             <Item value="}());" />
           </WidgetJS>
           <OnSuccess t="xtml.UseParam" Param="OnSuccess"/>

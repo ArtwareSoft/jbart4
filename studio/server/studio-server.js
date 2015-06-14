@@ -63,7 +63,7 @@ function serve(req, res) {
 http.createServer(serve).listen(port); 
 
 console.log('Running jbart studio server on port ' + port + '...');
-console.log('Visit http://localhost' + ((port == 80) ? '' : ':' + port) + '/studio/gstudio.html to open studio');
+console.log('Visit http://localhost' + ((port == 80) ? '' : ':' + port) + '/studio/studio.html to open studio');
 
 extend(op_get_handlers, {   
     'ls': function(req,res,path,user_machine) {
@@ -508,44 +508,46 @@ extend(op_get_handlers, {
   }
 });
 
-extend(op_post_handlers, {   
-    'saveAndCompressJS': function(req, res,body,path,user_machine) {
-        var path = getURLParam(req,'filename');
-        if (!path) {
-          res.end('<xml type="error" reason="empty file name" />');
-          return;
+extend(op_post_handlers, {
+    'saveAndCompressJS': function(req, res,body,path,user_machine) {path = path.replace('^/widgets/','../' + widgets_base_dir);
+      var path = getURLParam(req,'filename');
+      var minifiedPath = getURLParam(req,'minfilename') || path.replace(/[.]js$/,'.min.js');
+      path = path.replace(/^\/widgets\//,widgets_base_dir);
+      minifiedPath = minifiedPath.replace(/^\/widgets\//,widgets_base_dir);
+
+      if (!path) {
+        res.end('<xml type="error" reason="empty file name" />');
+        return;
+      }
+      var dir = pathNS.dirname(path);
+      if (!fs.existsSync(dir)) fs.mkdirSync(dir);
+
+      fs.writeFile(path, body || '' , function (err) {
+        if (!err) {
+          var grunt = require('grunt');
+          grunt.task.init = function() {};// hack to avoid loading a Gruntfile, http://stackoverflow.com/questions/16564064/running-grunt-task-with-api-without-command-line
+
+          grunt.initConfig({
+            uglify: {
+              widget: {
+                src: path,
+                dest: minifiedPath
+              }
+            }
+          });
+
+          // Load tasks from npm
+          grunt.loadNpmTasks('grunt-contrib-uglify');
+
+          // Finally run the tasks, with options and a callback when we're done
+          grunt.tasks(['uglify'], {}, function() {
+            res.end('<xml type="success">' + path + '</xml>');
+          });
+        } else {
+          res.end(error(0,consolelog,'Can not write to file ' +path + '. error: ' + err,user_machine));          
         }
-        var dir = pathNS.dirname(path);
-        if (!fs.existsSync(dir)) fs.mkdirSync(dir);          
-
-        var tmpPath = path + '_tmp';
-        fs.writeFile(tmpPath, body || '' , function (err) {
-          if (err) 
-            res.end(error(0,consolelog,'Can not write to file ' +tmpPath + '. error: ' + err,user_machine));
-          else
-            res.end('<xml type="success"/>');
-        });
-        var baseDir = process.cwd().replace(/\\/g,'/');
-        var command = 'java -jar ' + baseDir + "/../ant/yuicompressor-2.4.2.jar --type js -o " + path + " " + tmpPath;
-
-        var op = child.exec(command);
-        var out = '',err= '';
-        op.stdout.on('data', function (data) { out += data; });
-        op.stderr.on('data', function (data) { err += data; });
-        op.on('exit', function (code) {
-          if (code) {
-             out = out.split('>echo off').pop();
-             res.end('<xml type="error" desc="Can not run command "' + command + '" errcode="' + code + '"><file name="stdout"><![CDATA[' + out + ']]></file>'
-             + '<file name="stderr"><![CDATA[' + err + ']]></file></xml>');
-          } else {
-             fs.unlink(tmpPath);
-
-             out = out.split('>echo off').pop();
-             var outFile = getURLParam(req,'resultsAsFiles') ? out : '<file name="stdout"><![CDATA[' + out + ']]></file>';
-             res.end('<xml type="success">' + outFile + '<file name="stderr"><![CDATA[' + err + ']]></file></xml>');
-          }
-        });
-    }
+      });
+    },
 });
 
 if (client) {

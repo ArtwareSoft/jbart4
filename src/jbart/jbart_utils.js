@@ -258,7 +258,36 @@ function jbart_init() {
 			});
 		};
 	})(jQuery);
-	
+
+	(function(jQuery) {
+		jQuery.fn.jbart = function(params)
+		{
+			return this.each(function() {
+				var elem = this;
+				jBart.ready(function() {
+					if (params && params.url)
+					 	$.ajax({
+					  		url: params.url,
+					  		dataType: 'text',
+					  		success: function(widgetSource) {
+					  			jBart.appendWidget(elem,{ widget_src: widgetSource });
+					  		}
+					  	});
+					else {	// if only one widget is loaded, just use it
+						var widgets = [];
+						for (var i in jBartWidgets)
+							if (jBartWidgets.hasOwnProperty(i) && i != 'vars')
+								widgets.push(i);
+						if (widgets.length > 1)
+							console.error('jbart - more than one widget was loaded, please specify widget id');
+						else if (widgets.length == 1 && window['jBartWidget_' + i])
+							jBart.appendWidget(elem,{ widget_src: window['jBartWidget_' + i] });
+					}
+				});
+			});
+		};
+	})(jQuery);
+
 	var activate = function() {
 		// auto inject jBart widget to jBartWidget elems
 		jQuery().ready( function() {
@@ -2570,27 +2599,6 @@ function aa_runFromNodeJS(widgetXml,profileStr,data) {
 	var input = data ? [data] : [];
 	return aa_text(input,aa_parsexml(profileStr),'',context);
 }
-
-
-
-(function(jQuery) {
-	jQuery.fn.jbart = function(params)
-	{
-		return this.each(function() {
-			var elem = this;
-			jBart.ready(function() {
-				if (params.url)
-				 	$.ajax({
-				  		url: params.url,
-				  		dataType: 'text',
-				  		success: function(widgetSource) {
-				  			jBart.appendWidget(elem,{ widget_src: widgetSource });
-				  		}
-				  	});
-			});
-		});
-	};
-})(jQuery);
 
 function aa_loadZippedXtml(zipped) {
 	var zip  = new JSZip();

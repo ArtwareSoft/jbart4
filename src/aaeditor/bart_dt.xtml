@@ -213,7 +213,7 @@
 <script type="text/javascript" src="%$WidgetJs%"></script>
   <div id="%$WidgetId%_placeholder"></div>
   <script type="text/javascript">
-    jBartWidgets.%$WidgetId%.show(document.getElementById('%$WidgetId%_placeholder'),{%$MoreParams%});
+    jBartWidgets['%$WidgetId%'].show(document.getElementById('%$WidgetId%_placeholder'),{%$MoreParams%});
   </script>
   <div id="ajaxart_log" style="display:none"></div>
 </div>]]>
@@ -286,6 +286,11 @@
   <Component id="SaveWidgetCompressedJBart" type="action.Action">
     <Param name="OnSuccess" type="action.Action" script="true" />
     <Param name="FullPackage" type="data.Boolean" />
+    <Param name="JsFileFormat" type="enum" Options="jbart_xx.js,xx-jbart.js" >
+      <Default t="data.IfThenElse" If="%$_WidgetXml/embed/@format% == 'jbart_xx.js'" Then="jbart_xx.js" Else="xx-jbart.js" />
+    </Param>
+    <Param name="WidgetSrcAsJsFile" type="data.Boolean" Default="%$_WidgetXml/embed/@widgetSrcAsJsFile%">
+    </Param>
     <xtml t="action.RunActions">
       <Var name="All" t="bart_dt.JavascriptForCompress" FullPackage="%$FullPackage%" Clean="true"  />
       <Var name="AllForEditor" t="bart_dt.JavascriptForCompress" ForEditor="true" FullPackage="false" Clean="true" Condition="%$_WidgetXml/embed/@editor%" />
@@ -296,7 +301,7 @@
       <Var name="PackageFileName" value="c:/dropbox/public/jbart/jbartAll.js" />
       <Var name="WidgetID" t="text.Split" Separator="/" Text="%$_WidgetXml/@id%" Part="Last"/>
       <Var name="SettingsJS" t="text.FirstSucceeding">
-        <Item t="bart_dt.XmlInOneLine" Xml="%$Settings%" Prefix="window.jBartWidget_%$WidgetID%_Settings = jbart_data('" Suffix="','single');">
+        <Item t="bart_dt.XmlInOneLine" Xml="%$Settings%" Prefix="window['jBartWidget_%$WidgetID%_Settings'] = jbart_data('" Suffix="','single');">
           <Condition t="yesno.NotEmpty" Value="%$Settings%" />
         </Item>
       </Var>
@@ -311,7 +316,7 @@
                 </Action>
               </Then>
               <Else t="action.RunActions">
-                <Action t="bart_dt.SaveAndCompressJSFile" FilePath="%$_WidgetXml/embed/@dir%jbart_%$WidgetId%.js">
+                <Action t="bart_dt.SaveAndCompressJSFile" FilePath="/widgets/%$_WidgetXml/@id%/dist/%$WidgetId%-jbart.js" MinifiedFilePath="/widgets/%$_WidgetXml/@id%/dist/%$WidgetId%-jbart.min.js" Condition="%$JsFileFormat% == 'xx-jbart.js'">
                   <Contents t="text.Concat" Separator="&#xa;">
                     <Item value="(function(){" />
                     <Item value="%$All%;" />
@@ -319,17 +324,15 @@
                     <Item value="}());" />
                   </Contents>
                 </Action>
-                <Action t="async.SaveFileInLocalComputer" FilePath="%$_WidgetXml/embed/@dir%jbart_%$WidgetId%_src.js" AlsoCreateDirectory="true">
-                  <FileContents t="text.Concat" Separator="&#xa;">
+                <Action t="bart_dt.SaveAndCompressJSFile" FilePath="%$_WidgetXml/embed/@dir%jbart_%$WidgetId%_src.js" MinifiedFilePath="%$_WidgetXml/embed/@dir%jbart_%$WidgetId%.js" Condition="%$JsFileFormat% == 'jbart_xx.js'">
+                  <Contents t="text.Concat" Separator="&#xa;">
                     <Item value="(function(){" />
-                    <Item value="try {" />
                     <Item value="%$All%;" />
                     <Item value="%$WidgetAsJavascript%" />
-                    <Item value="} catch(e) { window.jbErrorException = e; }" />                   
                     <Item value="}());" />
-                  </FileContents>
+                  </Contents>
                 </Action>
-                <Action t="async.SaveFileInLocalComputer" FilePath="%$_WidgetXml/embed/@dir%jbart_%$WidgetId%_widget.js" AlsoCreateDirectory="true">
+                <Action t="async.SaveFileInLocalComputer" FilePath="%$_WidgetXml/embed/@dir%jbart_%$WidgetId%_widget.js" AlsoCreateDirectory="true" Condition="%$WidgetSrcAsJsFile%">
                   <FileContents t="text.Concat" Separator="&#xa;">
                     <Item value="(function(){" />
                     <Item value="%$WidgetAsJavascript%" />
@@ -384,8 +387,8 @@
   <Component id="WidgetAsJavascript" type="data.Data">
     <Param name="NodeJS" type="data.Boolean" />
     <xtml t="data.IfThenElse" If="%$NodeJS%">
-      <Else value="window.jBartWidget_%$WidgetId% = '%$WidgetInOneLine%'; jBartWidgets.%$WidgetId% = jBart.activator(jBartWidget_%$WidgetId%); %$JsToAdd%" />
-      <Then value="window.jBartWidget_%$WidgetId% = '%$WidgetInOneLine%'; GLOBAL.jbartRunFromNodeJS = function(profile,data) { return aa_runFromNodeJS(jBartWidget_%$WidgetId%,profile,data); }" />
+      <Else value="window['jBartWidget_%$WidgetId%'] = '%$WidgetInOneLine%'; jBartWidgets['%$WidgetId%'] = jBart.activator(window['jBartWidget_%$WidgetId%']); %$JsToAdd%" />
+      <Then value="window['jBartWidget_%$WidgetId%'] = '%$WidgetInOneLine%'; GLOBAL.jbartRunFromNodeJS = function(profile,data) { return aa_runFromNodeJS(jBartWidget_%$WidgetId%,profile,data); }" />
       <Var name="WidgetInOneLine" t="bart_dt.XmlInOneLine" >
         <Xml t="data.IfThenElse" If="%$_WidgetXml/embed/@with_data%" Then="%$_WidgetXml%">
           <Else t="xml.WithChanges">
@@ -919,8 +922,9 @@
 
   <Component id="SaveAndCompressJSFile" type="action.Action">
     <Param name="FilePath" />
+    <Param name="MinifiedFilePath" />
     <Param name="Contents" />
-    <xtml t="http.HttpCall" Url="/?op=saveAndCompressJS&amp;filename=%$FilePath%">
+    <xtml t="http.HttpCall" Url="/?op=saveAndCompressJS&amp;filename=%$FilePath%&amp;minfilename=%$MinifiedPath%">
           <Aspect t="http.RawPost" RawData="%$Contents%" />
     </xtml>
   </Component>

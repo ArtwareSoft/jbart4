@@ -242,8 +242,7 @@ extend(op_post_handlers, {
           return res.end(error(0,body,'Can not parse json request',user_machine));
         var consolelog = '';
         var path = clientReq.Path || '';
-        if (path.indexOf('/widgets/') == 0)
-          path = path.replace('/widgets/','../' + widgets_base_dir);
+        path = path.replace(/^\/widgets\//,'../' + widgets_base_dir);
         // if (! path.match(/[dD]ata[sS]etup/))
         //   return res.end(error(0,consolelog,'Path does not contain "DataSetup" : ' + clientReq.Path));
 
@@ -382,7 +381,7 @@ function _path(path) { return path.replace(/[\\\/]/g,'/'); }
 
 function getURLParam(req,name) {
   try {
-    return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(req.url)||[,""])[1].replace(/\+/g, '%20'))||null;
+    return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(req.url)||[,""])[1].replace(/\+/g, '%20'))||"";
   } catch(e) {}
 }
 
@@ -565,7 +564,47 @@ extend(op_get_handlers, {
 });
 
 extend(op_post_handlers, {   
-    'saveAndCompressJS': function(req, res,body,path,user_machine) {
+    'saveAndCompressJS': function(req, res,body,path,user_machine) {path = path.replace('^/widgets/','../' + widgets_base_dir);
+      var path = getURLParam(req,'filename');
+      var minifiedPath = getURLParam(req,'minfilename') || path.replace(/[.]js$/,'.min.js');
+      path = path.replace(/^\/widgets\//,'../' + widgets_base_dir);
+      minifiedPath = minifiedPath.replace(/^\/widgets\//,'../' + widgets_base_dir);
+
+      if (!path) {
+        res.end('<xml type="error" reason="empty file name" />');
+        return;
+      }
+      var dir = pathNS.dirname(path);
+      if (!fs.existsSync(dir)) fs.mkdirSync(dir);
+
+      fs.writeFile(path, body || '' , function (err) {
+        if (!err) {
+          var grunt = require('grunt');
+          grunt.task.init = function() {};// hack to avoid loading a Gruntfile, http://stackoverflow.com/questions/16564064/running-grunt-task-with-api-without-command-line
+
+          grunt.initConfig({
+            uglify: {
+              widget: {
+                src: path,
+                dest: minifiedPath
+              }
+            }
+          });
+
+          // Load tasks from npm
+          grunt.loadNpmTasks('grunt-contrib-uglify');
+
+          // Finally run the tasks, with options and a callback when we're done
+          grunt.tasks(['uglify'], {}, function() {
+            res.end('<xml type="success">' + path + '</xml>');
+            console.log("Done");
+          });
+        } else {
+          res.end(error(0,consolelog,'Can not write to file ' +path + '. error: ' + err,user_machine));          
+        }
+      });
+    },
+    'saveAndCompressJS1': function(req, res,body,path,user_machine) {
         var path = getURLParam(req,'filename');
         if (!path) {
           res.end('<xml type="error" reason="empty file name" />');

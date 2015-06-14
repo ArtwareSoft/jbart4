@@ -20,10 +20,6 @@ function aa_lmc_getFileObj(context,name) {
 
 function aa_lmc_loadAppFile(context,fileObj) {
 	if (fileObj.saving) return;
-	if (window.location.href.match(/playground=true/)) {
-		console.log('playground - lmc files are not saved');
-		return;
-	}
 
 	var deferred = $.Deferred();
 
@@ -67,7 +63,12 @@ function aa_lmc_runSaveDelayedAction(context,fileObj) {
 
 function aa_lmc_saveAppFile(context,fileObj)
 {
-	var deferred = $.Deferred();	
+	var deferred = $.Deferred();
+	if (window.location.href.match(/playground=true/)) {
+		console.log('playground - lmc files are not saved');
+		return;
+	}
+	
 	if (fileObj.clone && fileObj.clone == ajaxart.xml2text(fileObj.xml) ) return deferred.resolve().promise();
 
 	if (fileObj.saving && fileObj.timeOfSaving < new Date().getTime() - 60000)

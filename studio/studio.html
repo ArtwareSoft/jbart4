@@ -16,6 +16,10 @@
   body.jbstudio_select *, body.jbstudio_select:hover { cursor: url('images/studio/cursor_select.png') , auto !important;}
 </style>
 <script type="text/javascript">
+  var module = window.location.href.match(/\?widget=([^#$]*)/);
+  if (module && ! module[1].match(/apps\//))
+    document.write('<script type="text/javascript" src="../widgets/' + module[1] + '/load_modules.js"><' + '/script>');
+
   ajaxart.jbart_studio = true;
   $(document).ready(function() {
      ajaxart.ready(function() {

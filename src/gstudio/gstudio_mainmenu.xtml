@@ -1,265 +1,1 @@
-<xtml ns="gstudio"><Component id="MainMenu" type="field.Fields" hidden="true">  <xtml t="google_drive.MainMenu" Title="Main Menu">    <Field t="google_drive.MainMenuButton" ID="gmenu_File" Title="File">      <Field t="control.Button" ID="File" Title="New">        <Style t="gstudio.StudioMenuItem"/>        <Action t="gstudio.OpenNewWidgetPopup"/>      </Field>      <Field t="control.Button" ID="Open" Title="Open..." HideTitle="true">        <Style t="gstudio.StudioMenuItem"/>        <Action t="async.RunAsyncActions">          <Action t="object.RunMethod" Object="%$_JBartStudio%" Method="LoadWidgetList"/>          <Action t="gstudio_select.OpenStudioSelectPopup" ItemDesscription="%@description%" PopupTitle="Open Widget">            <Items value="%$_JBartStudio/WidgetList/*%"/>            <DoOnSelect t="operation.Link" OpenInANewTab="true" Link="?widget=%@id%"/>            <ItemName t="data.Pipeline">              <Item value="%$Folder%%@name%"/>              <Var name="Folder" t="data.IfThenElse">                <If t="yesno.Contains" AllText="%@id%">                  <Text value="/"/>                </If>                <Then t="data.Pipeline">                  <Item t="text.RemoveSuffix" Data="%@id%" Separator="/"/>                  <Item value="%% / "/>                </Then>              </Var>            </ItemName>          </Action>        </Action>      </Field>      <Field t="control.Button" ID="File" Title="Save">        <Style t="gstudio.StudioMenuItem"/>        <Image t="gstudio.StudioSmallImage" PositionInSprite="48,0"/>        <Action t="gstudio.Save" AlsoDeploy="false"/>        <Disabled t="yesno.Expression" Expression="%$_JBartStudio/DisableSave%"/>      </Field>      <Field t="control.Button" ID="File" Title="Save and deploy">        <Style t="gstudio.StudioMenuItem"/>        <Action t="gstudio.Save" AlsoDeploy="true"/>      </Field>      <Field t="control.Button" ID="" Title="Widget Settings..." HideTitle="true">        <Style t="gstudio.StudioMenuItem"/>        <Action t="gstudio_popup.ShowWidgetProperties"/>      </Field>      <Field t="control.Button" ID="" Title="Xtml Components..." HideTitle="true">        <Style t="gstudio.StudioMenuItem"/>        <Action t="gstudio.EditXtmlComponentsDialog"/>      </Field>      <Field t="control.Button" ID="" Title="Plugins..." HideTitle="true">        <Style t="gstudio.StudioMenuItem"/>        <Action t="gstudio.ShowPluginsPopup"/>      </Field>      <Field t="control.SeparatingLine" ID="SeparatingLine" Title="SeparatingLine">        <Style t="gstudio.StudioMenuSeparator"/>      </Field>      <Field t="control.Button" ID="Open" Title="Rename..." HideTitle="true">        <Style t="gstudio.StudioMenuItem"/>        <Action t="google_drive.RenameMainItem" MainItemName="%$_WidgetXml/@name%" RenamePopupTitle="Rename Widget"/>      </Field>      <Field t="control.Button" ID="Open" Title="Delete" HideTitle="true">        <Style t="gstudio.StudioMenuItem"/>        <Action t="popup_confirmation.OpenConfirmationPopup" Title="Delete Widget" Question="Are you sure you want to delete '%$_JBartStudio/WidgetXml/@name%'?" LabelForYes="Delete" LabelForNo="Cancel">          <Style t="popup_confirmation.GoogleDriveConfirmation"/>          <Action t="async.RunAsyncActions">            <Action t="notification_box.ShowNotification" NotificationBox="GStudio_NotificationBox" Text="Deleting..." Duration="2000" Status="saving"/>            <Action t="object.RunMethod" Object="%$_JBartStudio%" Method="Delete"/>            <Action t="notification_box.ShowNotification" NotificationBox="GStudio_NotificationBox" Text="Node Deleted" Duration="2000" Status="info"/>            <Action t="object.RunMethod" Object="%$_JBartStudio%" Method="StrongRefresh"/>          </Action>        </Action>      </Field>      <Field t="control.SeparatingLine" ID="SeparatingLine" Title="SeparatingLine">        <Style t="gstudio.StudioMenuSeparator"/>      </Field>      <Field t="control.Button" ID="Publish_Widget1" Title="Generate Sample Html ..." HideTitle="true">        <Condition t="gstudio.IsLocalhost"/>        <Style t="gstudio.StudioMenuItem"/>        <Action t="popup.OpenPopup" PopupTitle="Sample Html">          <Var name="LastIdPart" t="text.Split" Part="Last" Text="%$_WidgetXml/@id%" Separator="/"/>          <Style t="gstudio.GoogleDrivePopup"/>          <Contents t="field.InnerPage">            <Layout t="ui.CustomCss" base="layout.Default">              <Style t="layout.Default"/>              <Css><![CDATA[#this { width: 500px; height: 100px; }
-
-
-]]></Css>            </Layout>            <Field t="control.Layout" ID="_DeployAsHtml" Title="Group">              <Layout t="layout.Vertical" Spacing="9px"/>              <Field t="control.Label" ID="-Label" Title="Label">                <Style t="ui.CustomCss" base="uitext.Message">                  <Style t="uitext.Message"/>                  <Css><![CDATA[#this {
-
-
-  border:1px solid #d6e9c6;
-
-
-  background-color:rgb(223, 240, 216);
-
-
-  color:#468847;
-
-
-  padding:8px 35px 8px 14px;
-
-
-  border-radius:3px;
-
-
-}
-
-
-
-
-
-a {
-
-
-  color:#468847;
-
-
-}]]></Css>                </Style>                <Text t="data.Pipeline">                  <Item value="File &lt;b&gt;%$_WidgetXml/@id%/%$LastIdPart%.html&lt;/b&gt; created. &lt;a href=&quot;/widgets/%$_WidgetXml/@id%/%$LastIdPart%.html&quot; target=&quot;_blank&quot;&gt;Open it&lt;/a&gt;"/>                </Text>              </Field>              <FieldAspect t="async.AsyncActionBeforeLoad" LoadingText="Creating File ..." ShowLoadingTextInStudio="">                <LoadingStyle t="loading_style.Default"/>                <Action t="async.SaveFileInLocalComputer" FilePath="/widgets/%$_WidgetXml/@id%/%$LastIdPart%.html" AlsoCreateDirectory="false">                  <FileContents t="data.Pipeline">                    <Item t="xml.CData" DynamicContent="true"><![CDATA[<!DOCTYPE html><html>
-
-
-<head>
-
-
-%$DynamicIncludes%
-
-
-  <script type="text/javascript" src="/jbart/dist/jbart.min.js"></script>
-
-
-<!--  <script type="text/javascript" src="/jbart/bower_components/moment/moment.js"></script> : Unmark if used -->
-
-
-<!--  <script type="text/javascript" src="/jbart/bower_components/jscolor/jscolor.js"></script> : Unmark if used -->
-
-
-</head>
-
-
-<body>
-
-
-  <script>
-
-
-    $("body").jbart({ url: '%$_WidgetXml/@id%.xml'});
-
-
-   </script>
-
-
-</body>
-
-
-</html>
-
-
-]]></Item>                    <Var name="DynamicIncludes" t="data.IfThenElse" If="%$_WidgetXml/deploy/@ie8%" Then="&#x9;&lt;!--[if (!IE)|(gt IE 8)]&gt;&lt;!--&gt;&lt;script src=&quot;//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js&quot;&gt;/script&gt;!--&lt;![endif]--&gt;&#xa;&#x9;&lt;!--[if lte IE 8]&gt;&lt;script src=&quot;//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js&quot;&gt;&lt;/script&gt;&lt;![endif]--&gt;&#xa;&#x9;&lt;script type=&quot;text/javascript&quot; src=&quot;../../bower_components/poly/array.js&quot;&gt;&lt;/script&gt;&#xa;" Else="  &lt;script type=&quot;text/javascript&quot; src=&quot;/jbart/bower_components/jquery/dist/jquery.js&quot;&gt;&lt;/script&gt;"/>                  </FileContents>                </Action>              </FieldAspect>              <Field t="control.Label" Text="To configure Sample Html settings enter File / Widget Settings">                <Style t="uitext.PlainText"/>                <FieldAspect t="field_feature.Layout">                  <Css><![CDATA[#this { margin-top: 43px; }
-
-
-#wrapper { }
-
-
-]]></Css>                </FieldAspect>              </Field>              <FieldAspect t="field_feature.Layout">                <Css><![CDATA[#this {
-
-
-
-
-
-}
-
-
-
-
-
-#wrapper {}]]></Css>              </FieldAspect>            </Field>          </Contents>          <Feature t="popup_feature.PopupData">            <Value t="data.Pipeline">              <Item t="xml.Xml">                <xml generated="false"/>              </Item>            </Value>          </Feature>        </Action>      </Field>      <Field t="control.Button" ID="Open" Title="Deploy Settings..." HideTitle="true">        <Style t="gstudio.StudioMenuItem"/>        <Action t="operation.RunXtmlAction">          <Var name="GalleryNode" value="%$CurrentNode%"/>          <Action t="bart_dt.EmbedXtmlItem"/>        </Action>        <Condition t="gstudio.IsInternal"/>      </Field>      <Field t="control.Button" ID="Publish_Widget" Title="Deploy to cloud (jbartdb)..." HideTitle="true">        <Condition t="gstudio.IsLocalhost"/>        <Style t="gstudio.StudioMenuItem"/>        <Action t="gstudio.ShareWidget" Server="//jbartdb.appspot.com"/>      </Field>      <Field t="control.Button" ID="Publish_Widget" Title="Deploy Widget..." HideTitle="true">        <Condition t="gstudio.IsInternal"/>        <Style t="gstudio.StudioMenuItem"/>        <Action t="gstudio_deploy.OpenDeployPopup"/>      </Field>      <Field t="control.Button" ID="Share Widget" Title="Share..." HideTitle="true" Tooltip="Share widget to internet studio">        <Condition t="gstudio.IsInternal"/>        <Style t="gstudio.StudioMenuItem"/>        <Action t="jbart_studio.SaveProjectToJBartDB" UploadingText="Sharing Widget...">          <Var name="JBartDBServer" value="http://jbartdb.appspot.com"/>          <OnSuccess t="action.RunActions">            <Action t="notification_box.ShowNotification" NotificationBox="GStudio_NotificationBox" Text="Widget shared" Status="saved"/>            <Action t="uiaction.GoToPage" Url="http://jbartdb.appspot.com/file/studio.html?widget=%$_WidgetXml/@id%"/>          </OnSuccess>        </Action>      </Field>      <Field t="control.Button" ID="Upload Studio" Title="Upload Studio..." HideTitle="true">        <Condition t="gstudio.IsInternal"/>        <Style t="gstudio.StudioMenuItem"/>        <Action t="action.RunActions">          <Action t="notification_box.ShowNotification" NotificationBox="GStudio_NotificationBox" Text="Uploading Studio ..." Status="saving"/>          <Action t="action.RunOnNextTimer">            <Action t="jbart_studio.UploadCurrentStudio" Server="http://jbartdb.appspot.com" AddVersionSuffix="false" WriteToLocalFileSystem1="true">              <OnSuccess t="action.RunActions">                <Action t="notification_box.ShowNotification" NotificationBox="GStudio_NotificationBox" Text="Studio uploaded" Status="saved"/>                <Action t="uiaction.GoToPage" Url="http://jbartdb.appspot.com/file/studio.html?widget=Blank"/>              </OnSuccess>            </Action>          </Action>        </Action>      </Field>      <Field t="control.SeparatingLine" ID="SeparatingLine" Title="SeparatingLine">        <Style t="gstudio.StudioMenuSeparator"/>      </Field>      <Field t="control.Button" ID="File" Title="Widget source xml...">        <Style t="gstudio.StudioMenuItem"/>        <Action t="xmlui.ShowXmlDialog" Title="Xtml Source of %$_WidgetXml/@name%" AutoWrite="true" AutoWriteAllowTagChange="" Xml="%$_WidgetXml%">          <Var name="Xtml" value="%$InspectObject/Xtml%"/>          <Var name="Name" t="text.FirstSucceeding">            <Item value="%$Xtml/@Title%"/>            <Item value="%$Xtml/@ID%"/>          </Var>          <OnUpdate t="action.RunActions">            <Action t="gstudio.StrongRefresh"/>            <Action t="bart_dt.RefreshDtPopups"/>          </OnUpdate>        </Action>      </Field>    </Field>    <Field t="google_drive.MainMenuButton" ID="gmenu_Edit" Title="Edit">      <Layout t="layout.Default"/>      <Field t="control.Button" ID="File" Title="Select (alt+C)">        <Image t="gstudio.StudioSmallImage" PositionInSprite="0,0"/>        <Style t="gstudio.StudioMenuItem"/>        <Action t="bart_dt.Inspect"/>      </Field>      <Field t="control.SeparatingLine" ID="SeparatingLine" Title="SeparatingLine">        <Style t="gstudio.StudioMenuSeparator"/>      </Field>      <Field t="control.Button" ID="" Title="Edit selected Xtml">        <Var name="Selected" t="gstudio.SelectedFieldXtml"/>        <Style t="gstudio.StudioMenuItem"/>        <Action t="gstudio.EditScriptXtml"/>        <Image t="gstudio.StudioSmallImage" PositionInSprite="224,0"/>      </Field>      <Field t="control.Button" ID="" Title="Edit selected in AAEditor">        <Style t="gstudio.StudioMenuItem"/>        <Action t="gstudio.EditScriptXtmlInAAEditor"/>        <Image t="gstudio.StudioSmallImage" PositionInSprite="240,0"/>      </Field>      <Field t="control.SeparatingLine" ID="SeparatingLine" Title="SeparatingLine">        <Style t="gstudio.StudioMenuSeparator"/>      </Field>      <Field t="control.Button" ID="" Title="Delete Selected (%$_JBartStudio/SelectedFieldXtml/@Title%)">        <Image t="gstudio.StudioSmallImage" PositionInSprite="256,0"/>        <Style t="gstudio.StudioMenuItem"/>        <Action t="popup_confirmation.OpenConfirmationPopup" Title="Confirm Delete" Question="Are you sure you want to delete the field %@Title%?" LabelForYes="Delete" LabelForNo="Cancel">          <Data t="gstudio.SelectedFieldXtml"/>          <Style t="popup_confirmation.GoogleDriveConfirmation"/>          <Action t="action.RunActions">            <Var name="Parent" value="%..%"/>            <Action t="xml.Delete" Data="%%"/>            <Action t="bart_dt.EditXtmlInStudioBar" Data="%$Parent%"/>          </Action>        </Action>      </Field>    </Field>    <Field t="gstudio.MainMenu_Insert"/>    <Field t="google_drive.MainMenuButton" ID="gmenu_View" Title="View">      <Field t="control.Button" ID="File" Title="Refresh">        <Style t="gstudio.StudioMenuItem"/>        <Image t="gstudio.StudioSmallImage" PositionInSprite="80,0"/>        <Action t="gstudio.Refresh"/>      </Field>      <Field t="control.Button" ID="studio_menu_strong_refresh" Title="Refresh also data">        <Style t="gstudio.StudioMenuItem"/>        <Action t="gstudio.StrongRefresh"/>      </Field>      <Field t="control.SeparatingLine" ID="SeparatingLine" Title="SeparatingLine">        <Style t="gstudio.StudioMenuSeparator"/>      </Field>      <Field t="control.Button" ID="File" Title="Show properties">        <Style t="gstudio.StudioMenuItem"/>        <Action t="gstudio_popup.ShowProperties"/>        <Image t="gstudio.StudioSmallImage" PositionInSprite="176,0">          <Condition t="popup.IsFloatingPopupOpen" Identifier="properties"/>        </Image>      </Field>      <Field t="control.Button" ID="Open" Title="Show outline" HideTitle="true">        <Style t="gstudio.StudioMenuItem"/>        <Action t="gstudio_popup.ShowOutline"/>        <Image t="gstudio.StudioSmallImage" PositionInSprite="176,0">          <Condition t="popup.IsFloatingPopupOpen" Identifier="outline"/>        </Image>      </Field>      <Field t="control.Button" ID="File" Title="Show data view">        <Style t="gstudio.StudioMenuItem"/>        <Action t="gstudio_data_view.ShowDataView"/>      </Field>      <Field t="control.Button" ID="File" Title="Show instance settings">        <Condition t="yesno.OR">          <Item t="yesno.NotEmpty">            <Value t="xtml.ComponentDefinition" ID="sample.settings"/>          </Item>          <Item t="yesno.NotEmpty">            <Value t="xtml.ComponentDefinition" ID="sample.Settings"/>          </Item>        </Condition>        <Style t="gstudio.StudioMenuItem"/>        <Action t="gstudio_popup.ShowSettingsPage">          <SettingsPage t="data.IfThenElse">            <If t="yesno.NotEmpty">              <Value t="xtml.ComponentDefinition" ID="sample.settings"/>            </If>            <Then t="sample.settings"/>            <Else t="sample.Settings"/>          </SettingsPage>        </Action>      </Field>      <Field t="control.Button" ID="File" Title="Show desired output">        <Style t="gstudio.StudioMenuItem"/>        <Action t="gstudio_popup.ShowDesiredOutput"/>      </Field>      <Field t="control.Button" ID="Open" Title="Show logs and traces (ctrl ~)" HideTitle="true">        <Style t="gstudio.StudioMenuItem"/>        <Action t="debugui.ShowDebugUi"/>      </Field>      <Field t="control.Button" ID="Open" Title="Zoom ..." HideTitle="true">        <Style t="gstudio.StudioMenuItem"/>        <Action t="popup.OpenPopup" PopupTitle="Preview Zoom">          <Style t="ui.CustomCss" base="gstudio.StudioFloatingPopup">            <Style t="gstudio.StudioFloatingPopup" MinWidth="100px" MaxWidth="" MinHeight="50px" MaxHeight="">&#xa;            </Style>            <Css><![CDATA[#this>.aa_popup_frame { background-color: #F9F9F9; 
-
-
-
-
-
-  border: 1px solid #BEBEBE; 
-
-
-
-
-
-  box-shadow: 0 0px 9px #ccc; 
-
-
-
-
-
-  min-width: 100px; max-width: ; 
-
-
-
-
-
-  min-height: 50px; 
-
-
-
-
-
-  overflow: auto; 
-
-
-
-
-
-  padding: 0 0 0 0; 
-
-
-
-
-
-  margin: 0 0 0 0; }
-
-
-
-
-
-.aa_popup_title { cursor: move; text-align: left; 
-
-
-
-
-
-  background: #fff url('_jbartImages_/studio/favicon.png') no-repeat 5px 10px; 
-
-
-
-
-
-  font: bold 13px arial; 
-
-
-
-
-
-  padding: 10px 10px 10px 27px; 
-
-
-
-
-
-  color: #6D6E71; min-height: 12px; 
-
-
-
-
-
-  border-bottom: 1px solid #BEBEBE; }
-
-
-
-
-
-#this>.jbFloatingPopupActive>.aa_popup_title { 
-
-
-
-
-
-  background-color: #fff; }
-
-
-
-
-
-.aa_popup_close { cursor: pointer; position: absolute; 
-
-
-
-
-
-  background: url('_jbartImages_/jbart_icons.png') no-repeat -60px 0px; 
-
-
-
-
-
-  width: 20px; height: 20px; right: 5px; 
-
-
-
-
-
-  top: 8px; }
-
-
-
-
-
-.aa_popup_close:hover { 
-
-
-
-
-
-  background-position: -60px -20px; }
-
-
-
-
-
-#this>.aa_popup_frame>.aa_popup_contents { 
-
-
-
-
-
-  min-width: 100px; 
-
-
-
-
-
-  min-height: 50px; 
-
-
-
-
-
-  max-height: ; 
-
-
-
-
-
-  overflow: auto; 
-
-
-
-
-
-  padding: 10px; }
-
-
-
-
-
-#this>.aa_popup_frame:focus { outline: none; }
-
-
-
-
-
-]]></Css>          </Style>          <Contents t="field.InnerPage" Title="Zoom">            <Layout t="ui.CustomCss" base="layout.Default">              <Style t="layout.Default"/>              <Css><![CDATA[#this {}]]></Css>            </Layout>            <Field t="fld.Field" ID="Zoom" Title="Zoom">              <FieldType t="fld_type.EditableNumber">                <Style t="editable_number.Slider" Width="150px"/>                <Format t="number.Format" UseDynamicSymbol="" Min="20" Max="400" Symbol="%" DataString="%Value%">                  <DisplayString t="number.ByExpression" Expression="%Value%%Symbol%"/>                </Format>              </FieldType>              <FieldData t="data.SessionStorage" Key="PreviewZoom"/>              <FieldAspect t="field_feature.HandleEvent">                <Event t="field_feature.Update"/>                <Action t="gstudio.Refresh"/>              </FieldAspect>              <FieldAspect t="field_aspect.DefaultValue" Value="100"/>            </Field>          </Contents>        </Action>      </Field>      <Field t="control.SeparatingLine" ID="SeparatingLine" Title="SeparatingLine">        <Style t="gstudio.StudioMenuSeparator"/>      </Field>      <Field t="control.Button" ID="Open" Title="To automatic tests" HideTitle="true">        <Style t="gstudio.StudioMenuItem"/>        <Action t="action.RunActions">          <Action t="object.RunMethod" Method="SetAutoTestsMode" Object="%$_JBartStudio%" Input="true"/>          <Action t="gstudio.StrongRefresh"/>        </Action>      </Field>    </Field>    <Field t="gstudio.DataMainMenu"/>    <Field1 t="instance_editor.AppMainMenu" Condition="%$_WidgetXml/@jbartapp%"/>    <Field t="data.Pipeline">      <Item value="%$_JBartStudio/MainMenuButtons%"/>    </Field>    <Field t="google_drive.MainMenuButton" ID="gmenu_Help" Title="Help">      <Field t="control.Button" ID="File" Title="About us">        <Style t="gstudio.StudioMenuItem"/>        <Action t="operation.Link" OpenInANewTab="true" Link="http://www.artwaresoft.com"/>      </Field>    </Field>  </xtml></Component><Component id="DataMainMenu" type="field.Fields" light="false">  <xtml t="google_drive.MainMenuButton" ID="gmenu_Data" Title="Data">    <Field t="data.Pipeline">      <Item value="%$_AppContext/AppXtml/DataResource%"/>      <Item t="gstudio.DataItemMenuButton"/>    </Field>    <Field t="control.SeparatingLine" ID="SeparatingLine" Title="SeparatingLine">      <Style t="gstudio.StudioMenuSeparator"/>    </Field>    <Field t="control.Button" ID="Add_Data_Resource" Title="Add Data Resource...">      <Style t="gstudio.StudioMenuItem"/>      <Action t="xml.AddXmlChildren" Parent="%$_AppContext/AppXtml%" Children="%$NewDataResource%" CloneChildren="false" AddAsFirst="">        <Var name="NewDataResource" t="xml.Xml">          <DataResource t="jbart_resource.Data">            <Value><![CDATA[<xml/>]]></Value>          </DataResource>        </Var>        <DoOnAddedChildren t="action.RunActions">          <Action t="bart_dt.EditDataResource" IsNew="true"/>        </DoOnAddedChildren>      </Action>    </Field>    <Field value="%$_JBartStudio/DataMenuButtons%" />  </xtml></Component><Component id="OpenNewWidgetPopup" type="action.Action">  <xtml t="popup.OpenPopup" PopupTitle="New Widget">    <Style t="gstudio.GoogleDrivePopup"/>    <Contents t="field.InnerPage" Title="Studio New">      <Layout t="layout.Default"/>      <Field t="control.Layout" ID="Group" Title="Group">        <Layout t="layout.Vertical" Spacing="0"/>        <Field t="control.Label" ID="Select_a_name_for_the_new_widget_" Title="Title" Text="Select a name for the new widget:">          <Style t="ui.CustomCss" base="uitext.PlainText">            <Style t="uitext.PlainText"/>            <Css><![CDATA[#this { font-size: 14px; }]]></Css>          </Style>          <FieldAspect t="field_feature.Layout">            <Css><![CDATA[#this { padding-bottom: 4px; }#wrapper { }]]></Css>          </FieldAspect>        </Field>        <FieldAspect t="field_aspect.FieldData">          <FieldData t="xml.Xml"/>        </FieldAspect>        <Field t="fld.Field" FieldData="%!@name%" ID="name" Title="Name">          <FieldType t="fld_type.EditableText">            <Style t="ui.CustomCss" base="editable_text.JBartTextbox">              <Style t="editable_text.JBartTextbox"/>              <Css><![CDATA[#this { background:url(images/css/shadow2.png) repeat-x scroll 0 0 transparent; font-size: 11px; width: 261px; height: 16px; padding-top: 3px; padding-right: 3px; padding-bottom: 3px; padding-left: 3px; margin-top: 5px; border: 1px solid #BDC7D8; }#this:focus { box-shadow:  inset 0 1px 1px 0px rgba(0, 0, 0, 0.075),  0 0 8px 0px rgba(82, 168, 236, 0.6); border-color: rgba(82, 168, 236, 0.8); outline: 0; outline: thin dotted 9; }#this.placeholder { color:#8B8B8B; }#this.aa_error { color:#ec643d; background:#fbebeb; border: 1px solid #feb2b2; }]]></Css>            </Style>          </FieldType>          <FieldAspect t="field_aspect.Mandatory"/>          <FieldAspect t="field_feature.HandleEvent">            <Event t="field_feature.EnterPressed"/>            <Action t="operation.ClickOnButton" Button="gstudio_new_create"/>          </FieldAspect>        </Field>        <Field t="control.Layout" ID="Group1" Title="Group">          <Field t="control.Button" ID="gstudio_new_create" Title="Create" HideTitle="true">            <Style t="btn.JBart"/>            <Action t="popup.CloseContainingPopup" ExitMode="OK">              <DoOnExit t="object.RunMethod" Object="%$_JBartStudio%" Method="New" Input="%@name%"/>            </Action>          </Field>          <Field t="control.Button" ID="Close" Title="Close">            <Style t="btn.JBartGrey"/>            <Action t="popup.CloseContainingPopup" ExitMode=""/>          </Field>          <Layout t="layout.HorizontalHtmlTable" Spacing="15px" VerticalAlign="top"/>          <FieldAspect t="field_feature.Css">            <Css><![CDATA[#this { margin-top: 15px; margin-left: 79px; }#wrapper { }]]></Css>          </FieldAspect>        </Field>      </Field>    </Contents>  </xtml></Component></xtml>
+<xtml ns="gstudio"><Component id="MainMenu" type="field.Fields" hidden="true">  <xtml t="google_drive.MainMenu" Title="Main Menu">    <Field t="google_drive.MainMenuButton" ID="gmenu_File" Title="File">      <Field t="control.Button" ID="File" Title="New">        <Style t="gstudio.StudioMenuItem"/>        <Action t="gstudio.OpenNewWidgetPopup"/>      </Field>      <Field t="control.Button" ID="Open" Title="Open..." HideTitle="true">        <Style t="gstudio.StudioMenuItem"/>        <Action t="async.RunAsyncActions">          <Action t="object.RunMethod" Object="%$_JBartStudio%" Method="LoadWidgetList"/>          <Action t="gstudio_select.OpenStudioSelectPopup" ItemDesscription="%@description%" PopupTitle="Open Widget">            <Items value="%$_JBartStudio/WidgetList/*%"/>            <DoOnSelect t="operation.Link" OpenInANewTab="true" Link="?widget=%@id%"/>            <ItemName t="data.Pipeline">              <Item value="%$Folder%%@name%"/>              <Var name="Folder" t="data.IfThenElse">                <If t="yesno.Contains" AllText="%@id%">                  <Text value="/"/>                </If>                <Then t="data.Pipeline">                  <Item t="text.RemoveSuffix" Data="%@id%" Separator="/"/>                  <Item value="%% / "/>                </Then>              </Var>            </ItemName>          </Action>        </Action>      </Field>      <Field t="control.Button" ID="File" Title="Save">        <Style t="gstudio.StudioMenuItem"/>        <Image t="gstudio.StudioSmallImage" PositionInSprite="48,0"/>        <Action t="gstudio.Save" AlsoDeploy="false"/>        <Disabled t="yesno.Expression" Expression="%$_JBartStudio/DisableSave%"/>      </Field>      <Field t="control.Button" ID="File" Title="Save and deploy">        <Style t="gstudio.StudioMenuItem"/>        <Action t="gstudio.Save" AlsoDeploy="true"/>      </Field>      <Field t="control.Button" ID="" Title="Widget Settings..." HideTitle="true">        <Style t="gstudio.StudioMenuItem"/>        <Action t="gstudio_popup.ShowWidgetProperties"/>      </Field>      <Field t="control.Button" ID="" Title="Xtml Components..." HideTitle="true">        <Style t="gstudio.StudioMenuItem"/>        <Action t="gstudio.EditXtmlComponentsDialog"/>      </Field>      <Field t="control.Button" ID="" Title="Plugins..." HideTitle="true">        <Style t="gstudio.StudioMenuItem"/>        <Action t="gstudio.ShowPluginsPopup"/>      </Field>      <Field t="control.SeparatingLine" ID="SeparatingLine" Title="SeparatingLine">        <Style t="gstudio.StudioMenuSeparator"/>      </Field>      <Field t="control.Button" ID="Open" Title="Rename..." HideTitle="true">        <Style t="gstudio.StudioMenuItem"/>        <Action t="google_drive.RenameMainItem" MainItemName="%$_WidgetXml/@name%" RenamePopupTitle="Rename Widget"/>      </Field>      <Field t="control.Button" ID="Open" Title="Delete" HideTitle="true">        <Style t="gstudio.StudioMenuItem"/>        <Action t="popup_confirmation.OpenConfirmationPopup" Title="Delete Widget" Question="Are you sure you want to delete '%$_JBartStudio/WidgetXml/@name%'?" LabelForYes="Delete" LabelForNo="Cancel">          <Style t="popup_confirmation.GoogleDriveConfirmation"/>          <Action t="async.RunAsyncActions">            <Action t="notification_box.ShowNotification" NotificationBox="GStudio_NotificationBox" Text="Deleting..." Duration="2000" Status="saving"/>            <Action t="object.RunMethod" Object="%$_JBartStudio%" Method="Delete"/>            <Action t="notification_box.ShowNotification" NotificationBox="GStudio_NotificationBox" Text="Node Deleted" Duration="2000" Status="info"/>            <Action t="object.RunMethod" Object="%$_JBartStudio%" Method="StrongRefresh"/>          </Action>        </Action>      </Field>      <Field t="control.SeparatingLine" ID="SeparatingLine" Title="SeparatingLine">        <Style t="gstudio.StudioMenuSeparator"/>      </Field>      <Field t="control.Button" ID="Publish_Widget1" Title="Generate Sample Html ..." HideTitle="true">        <Condition t="gstudio.IsLocalhost"/>        <Style t="gstudio.StudioMenuItem"/>        <Action t="popup.OpenPopup" PopupTitle="Sample Html">          <Var name="LastIdPart" t="text.Split" Part="Last" Text="%$_WidgetXml/@id%" Separator="/"/>          <Style t="gstudio.GoogleDrivePopup"/>          <Contents t="field.InnerPage">            <Layout t="ui.CustomCss" base="layout.Default">              <Style t="layout.Default"/>              <Css><![CDATA[#this { width: 500px; height: 100px; }]]></Css>            </Layout>            <Field t="control.Layout" ID="_DeployAsHtml" Title="Group">              <Layout t="layout.Vertical" Spacing="9px"/>              <Field t="control.Label" ID="-Label" Title="Label">                <Style t="ui.CustomCss" base="uitext.Message">                  <Style t="uitext.Message"/>                  <Css><![CDATA[#this {  border:1px solid #d6e9c6;  background-color:rgb(223, 240, 216);  color:#468847;  padding:8px 35px 8px 14px;  border-radius:3px;}a {  color:#468847;}]]></Css>                </Style>                <Text t="data.Pipeline">                  <Item value="File &lt;b&gt;%$_WidgetXml/@id%/%$LastIdPart%.html&lt;/b&gt; created. &lt;a href=&quot;/widgets/%$_WidgetXml/@id%/%$LastIdPart%.html&quot; target=&quot;_blank&quot;&gt;Open it&lt;/a&gt;"/>                </Text>              </Field>              <FieldAspect t="async.AsyncActionBeforeLoad" LoadingText="Creating File ..." ShowLoadingTextInStudio="">                <LoadingStyle t="loading_style.Default"/>                <Action t="async.SaveFileInLocalComputer" FilePath="/widgets/%$_WidgetXml/@id%/%$LastIdPart%.html" AlsoCreateDirectory="false">                  <FileContents t="data.Pipeline">                    <Item t="xml.CData" DynamicContent="true"><![CDATA[<!DOCTYPE html><html><head>%$DynamicIncludes%  <script type="text/javascript" src="/jbart/dist/jbart.min.js"></script>  <!--  Load external libs from /jbart/bower_components, e.g moment --></head><body>  <script>    $("body").jbart({ url: '%$_WidgetXml/@id%.xml'});   </script></body></html>]]></Item>                    <Var name="DynamicIncludes" t="data.IfThenElse" If="%$_WidgetXml/deploy/@ie8%" Then="&#x9;&lt;!--[if (!IE)|(gt IE 8)]&gt;&lt;!--&gt;&lt;script src=&quot;//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js&quot;&gt;/script&gt;!--&lt;![endif]--&gt;&#xa;&#x9;&lt;!--[if lte IE 8]&gt;&lt;script src=&quot;//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js&quot;&gt;&lt;/script&gt;&lt;![endif]--&gt;&#xa;&#x9;&lt;script type=&quot;text/javascript&quot; src=&quot;../../bower_components/poly/array.js&quot;&gt;&lt;/script&gt;&#xa;" Else="  &lt;script type=&quot;text/javascript&quot; src=&quot;/jbart/bower_components/jquery/dist/jquery.js&quot;&gt;&lt;/script&gt;"/>                  </FileContents>                </Action>              </FieldAspect>              <Field t="control.Label" Text="To configure Sample Html settings enter File / Widget Settings">                <Style t="uitext.PlainText"/>                <FieldAspect t="field_feature.Layout">                  <Css><![CDATA[#this { margin-top: 43px; }#wrapper { }]]></Css>                </FieldAspect>              </Field>              <FieldAspect t="field_feature.Layout">                <Css><![CDATA[#this {}#wrapper {}]]></Css>              </FieldAspect>            </Field>          </Contents>          <Feature t="popup_feature.PopupData">            <Value t="data.Pipeline">              <Item t="xml.Xml">                <xml generated="false"/>              </Item>            </Value>          </Feature>        </Action>      </Field>      <Field t="control.Button" ID="Open" Title="Deploy Settings..." HideTitle="true">        <Style t="gstudio.StudioMenuItem"/>        <Action t="operation.RunXtmlAction">          <Var name="GalleryNode" value="%$CurrentNode%"/>          <Action t="bart_dt.EmbedXtmlItem"/>        </Action>        <Condition t="gstudio.IsInternal"/>      </Field>      <Field t="control.Button" ID="Publish_Widget" Title="Deploy to cloud (jbartdb)..." HideTitle="true">        <Condition t="gstudio.IsLocalhost"/>        <Style t="gstudio.StudioMenuItem"/>        <Action t="gstudio.ShareWidget" Server="//jbartdb.appspot.com"/>      </Field>      <Field t="control.Button" ID="Publish_Widget" Title="Deploy Widget..." HideTitle="true">        <Condition t="gstudio.IsInternal"/>        <Style t="gstudio.StudioMenuItem"/>        <Action t="gstudio_deploy.OpenDeployPopup"/>      </Field>      <Field t="control.Button" ID="Share Widget" Title="Share..." HideTitle="true" Tooltip="Share widget to internet studio">        <Condition t="gstudio.IsInternal"/>        <Style t="gstudio.StudioMenuItem"/>        <Action t="jbart_studio.SaveProjectToJBartDB" UploadingText="Sharing Widget...">          <Var name="JBartDBServer" value="http://jbartdb.appspot.com"/>          <OnSuccess t="action.RunActions">            <Action t="notification_box.ShowNotification" NotificationBox="GStudio_NotificationBox" Text="Widget shared" Status="saved"/>            <Action t="uiaction.GoToPage" Url="http://jbartdb.appspot.com/file/studio.html?widget=%$_WidgetXml/@id%"/>          </OnSuccess>        </Action>      </Field>      <Field t="control.Button" ID="Upload Studio" Title="Upload Studio..." HideTitle="true">        <Condition t="gstudio.IsInternal"/>        <Style t="gstudio.StudioMenuItem"/>        <Action t="action.RunActions">          <Action t="notification_box.ShowNotification" NotificationBox="GStudio_NotificationBox" Text="Uploading Studio ..." Status="saving"/>          <Action t="action.RunOnNextTimer">            <Action t="jbart_studio.UploadCurrentStudio" Server="http://jbartdb.appspot.com" AddVersionSuffix="false" WriteToLocalFileSystem1="true">              <OnSuccess t="action.RunActions">                <Action t="notification_box.ShowNotification" NotificationBox="GStudio_NotificationBox" Text="Studio uploaded" Status="saved"/>                <Action t="uiaction.GoToPage" Url="http://jbartdb.appspot.com/file/studio.html?widget=Blank"/>              </OnSuccess>            </Action>          </Action>        </Action>      </Field>      <Field t="control.SeparatingLine" ID="SeparatingLine" Title="SeparatingLine">        <Style t="gstudio.StudioMenuSeparator"/>      </Field>      <Field t="control.Button" ID="File" Title="Widget source xml...">        <Style t="gstudio.StudioMenuItem"/>        <Action t="xmlui.ShowXmlDialog" Title="Xtml Source of %$_WidgetXml/@name%" AutoWrite="true" AutoWriteAllowTagChange="" Xml="%$_WidgetXml%">          <Var name="Xtml" value="%$InspectObject/Xtml%"/>          <Var name="Name" t="text.FirstSucceeding">            <Item value="%$Xtml/@Title%"/>            <Item value="%$Xtml/@ID%"/>          </Var>          <OnUpdate t="action.RunActions">            <Action t="gstudio.StrongRefresh"/>            <Action t="bart_dt.RefreshDtPopups"/>          </OnUpdate>        </Action>      </Field>    </Field>    <Field t="google_drive.MainMenuButton" ID="gmenu_Edit" Title="Edit">      <Layout t="layout.Default"/>      <Field t="control.Button" ID="File" Title="Select (alt+C)">        <Image t="gstudio.StudioSmallImage" PositionInSprite="0,0"/>        <Style t="gstudio.StudioMenuItem"/>        <Action t="bart_dt.Inspect"/>      </Field>      <Field t="control.SeparatingLine" ID="SeparatingLine" Title="SeparatingLine">        <Style t="gstudio.StudioMenuSeparator"/>      </Field>      <Field t="control.Button" ID="" Title="Edit selected Xtml">        <Var name="Selected" t="gstudio.SelectedFieldXtml"/>        <Style t="gstudio.StudioMenuItem"/>        <Action t="gstudio.EditScriptXtml"/>        <Image t="gstudio.StudioSmallImage" PositionInSprite="224,0"/>      </Field>      <Field t="control.Button" ID="" Title="Edit selected in AAEditor">        <Style t="gstudio.StudioMenuItem"/>        <Action t="gstudio.EditScriptXtmlInAAEditor"/>        <Image t="gstudio.StudioSmallImage" PositionInSprite="240,0"/>      </Field>      <Field t="control.SeparatingLine" ID="SeparatingLine" Title="SeparatingLine">        <Style t="gstudio.StudioMenuSeparator"/>      </Field>      <Field t="control.Button" ID="" Title="Delete Selected (%$_JBartStudio/SelectedFieldXtml/@Title%)">        <Image t="gstudio.StudioSmallImage" PositionInSprite="256,0"/>        <Style t="gstudio.StudioMenuItem"/>        <Action t="popup_confirmation.OpenConfirmationPopup" Title="Confirm Delete" Question="Are you sure you want to delete the field %@Title%?" LabelForYes="Delete" LabelForNo="Cancel">          <Data t="gstudio.SelectedFieldXtml"/>          <Style t="popup_confirmation.GoogleDriveConfirmation"/>          <Action t="action.RunActions">            <Var name="Parent" value="%..%"/>            <Action t="xml.Delete" Data="%%"/>            <Action t="bart_dt.EditXtmlInStudioBar" Data="%$Parent%"/>          </Action>        </Action>      </Field>    </Field>    <Field t="gstudio.MainMenu_Insert"/>    <Field t="google_drive.MainMenuButton" ID="gmenu_View" Title="View">      <Field t="control.Button" ID="File" Title="Refresh">        <Style t="gstudio.StudioMenuItem"/>        <Image t="gstudio.StudioSmallImage" PositionInSprite="80,0"/>        <Action t="gstudio.Refresh"/>      </Field>      <Field t="control.Button" ID="studio_menu_strong_refresh" Title="Refresh also data">        <Style t="gstudio.StudioMenuItem"/>        <Action t="gstudio.StrongRefresh"/>      </Field>      <Field t="control.SeparatingLine" ID="SeparatingLine" Title="SeparatingLine">        <Style t="gstudio.StudioMenuSeparator"/>      </Field>      <Field t="control.Button" ID="File" Title="Show properties">        <Style t="gstudio.StudioMenuItem"/>        <Action t="gstudio_popup.ShowProperties"/>        <Image t="gstudio.StudioSmallImage" PositionInSprite="176,0">          <Condition t="popup.IsFloatingPopupOpen" Identifier="properties"/>        </Image>      </Field>      <Field t="control.Button" ID="Open" Title="Show outline" HideTitle="true">        <Style t="gstudio.StudioMenuItem"/>        <Action t="gstudio_popup.ShowOutline"/>        <Image t="gstudio.StudioSmallImage" PositionInSprite="176,0">          <Condition t="popup.IsFloatingPopupOpen" Identifier="outline"/>        </Image>      </Field>      <Field t="control.Button" ID="File" Title="Show data view">        <Style t="gstudio.StudioMenuItem"/>        <Action t="gstudio_data_view.ShowDataView"/>      </Field>      <Field t="control.Button" ID="File" Title="Show instance settings">        <Condition t="yesno.OR">          <Item t="yesno.NotEmpty">            <Value t="xtml.ComponentDefinition" ID="sample.settings"/>          </Item>          <Item t="yesno.NotEmpty">            <Value t="xtml.ComponentDefinition" ID="sample.Settings"/>          </Item>        </Condition>        <Style t="gstudio.StudioMenuItem"/>        <Action t="gstudio_popup.ShowSettingsPage">          <SettingsPage t="data.IfThenElse">            <If t="yesno.NotEmpty">              <Value t="xtml.ComponentDefinition" ID="sample.settings"/>            </If>            <Then t="sample.settings"/>            <Else t="sample.Settings"/>          </SettingsPage>        </Action>      </Field>      <Field t="control.Button" ID="File" Title="Show desired output">        <Style t="gstudio.StudioMenuItem"/>        <Action t="gstudio_popup.ShowDesiredOutput"/>      </Field>      <Field t="control.Button" ID="Open" Title="Show logs and traces (ctrl ~)" HideTitle="true">        <Style t="gstudio.StudioMenuItem"/>        <Action t="debugui.ShowDebugUi"/>      </Field>      <Field t="control.Button" ID="Open" Title="Zoom ..." HideTitle="true">        <Style t="gstudio.StudioMenuItem"/>        <Action t="popup.OpenPopup" PopupTitle="Preview Zoom">          <Style t="ui.CustomCss" base="gstudio.StudioFloatingPopup">            <Style t="gstudio.StudioFloatingPopup" MinWidth="100px" MaxWidth="" MinHeight="50px" MaxHeight="">&#xa;            </Style>            <Css><![CDATA[#this>.aa_popup_frame { background-color: #F9F9F9;   border: 1px solid #BEBEBE;   box-shadow: 0 0px 9px #ccc;   min-width: 100px; max-width: ;   min-height: 50px;   overflow: auto;   padding: 0 0 0 0;   margin: 0 0 0 0; }.aa_popup_title { cursor: move; text-align: left;   background: #fff url('_jbartImages_/studio/favicon.png') no-repeat 5px 10px;   font: bold 13px arial;   padding: 10px 10px 10px 27px;   color: #6D6E71; min-height: 12px;   border-bottom: 1px solid #BEBEBE; }#this>.jbFloatingPopupActive>.aa_popup_title {   background-color: #fff; }.aa_popup_close { cursor: pointer; position: absolute;   background: url('_jbartImages_/jbart_icons.png') no-repeat -60px 0px;   width: 20px; height: 20px; right: 5px;   top: 8px; }.aa_popup_close:hover {   background-position: -60px -20px; }#this>.aa_popup_frame>.aa_popup_contents {   min-width: 100px;   min-height: 50px;   max-height: ;   overflow: auto;   padding: 10px; }#this>.aa_popup_frame:focus { outline: none; }]]></Css>          </Style>          <Contents t="field.InnerPage" Title="Zoom">            <Layout t="ui.CustomCss" base="layout.Default">              <Style t="layout.Default"/>              <Css><![CDATA[#this {}]]></Css>            </Layout>            <Field t="fld.Field" ID="Zoom" Title="Zoom">              <FieldType t="fld_type.EditableNumber">                <Style t="editable_number.Slider" Width="150px"/>                <Format t="number.Format" UseDynamicSymbol="" Min="20" Max="400" Symbol="%" DataString="%Value%">                  <DisplayString t="number.ByExpression" Expression="%Value%%Symbol%"/>                </Format>              </FieldType>              <FieldData t="data.SessionStorage" Key="PreviewZoom"/>              <FieldAspect t="field_feature.HandleEvent">                <Event t="field_feature.Update"/>                <Action t="gstudio.Refresh"/>              </FieldAspect>              <FieldAspect t="field_aspect.DefaultValue" Value="100"/>            </Field>          </Contents>        </Action>      </Field>      <Field t="control.SeparatingLine" ID="SeparatingLine" Title="SeparatingLine">        <Style t="gstudio.StudioMenuSeparator"/>      </Field>      <Field t="control.Button" ID="Open" Title="To automatic tests" HideTitle="true">        <Style t="gstudio.StudioMenuItem"/>        <Action t="action.RunActions">          <Action t="object.RunMethod" Method="SetAutoTestsMode" Object="%$_JBartStudio%" Input="true"/>          <Action t="gstudio.StrongRefresh"/>        </Action>      </Field>    </Field>    <Field t="gstudio.DataMainMenu"/>    <Field1 t="instance_editor.AppMainMenu" Condition="%$_WidgetXml/@jbartapp%"/>    <Field t="data.Pipeline">      <Item value="%$_JBartStudio/MainMenuButtons%"/>    </Field>    <Field t="google_drive.MainMenuButton" ID="gmenu_Help" Title="Help">      <Field t="control.Button" ID="File" Title="About us">        <Style t="gstudio.StudioMenuItem"/>        <Action t="operation.Link" OpenInANewTab="true" Link="http://www.artwaresoft.com"/>      </Field>    </Field>  </xtml></Component><Component id="DataMainMenu" type="field.Fields" light="false">  <xtml t="google_drive.MainMenuButton" ID="gmenu_Data" Title="Data">    <Field t="data.Pipeline">      <Item value="%$_AppContext/AppXtml/DataResource%"/>      <Item t="gstudio.DataItemMenuButton"/>    </Field>    <Field t="control.SeparatingLine" ID="SeparatingLine" Title="SeparatingLine">      <Style t="gstudio.StudioMenuSeparator"/>    </Field>    <Field t="control.Button" ID="Add_Data_Resource" Title="Add Data Resource...">      <Style t="gstudio.StudioMenuItem"/>      <Action t="xml.AddXmlChildren" Parent="%$_AppContext/AppXtml%" Children="%$NewDataResource%" CloneChildren="false" AddAsFirst="">        <Var name="NewDataResource" t="xml.Xml">          <DataResource t="jbart_resource.Data">            <Value><![CDATA[<xml/>]]></Value>          </DataResource>        </Var>        <DoOnAddedChildren t="action.RunActions">          <Action t="bart_dt.EditDataResource" IsNew="true"/>        </DoOnAddedChildren>      </Action>    </Field>    <Field value="%$_JBartStudio/DataMenuButtons%" />  </xtml></Component><Component id="OpenNewWidgetPopup" type="action.Action">  <xtml t="popup.OpenPopup" PopupTitle="New Widget">    <Style t="gstudio.GoogleDrivePopup"/>    <Contents t="field.InnerPage" Title="Studio New">      <Layout t="layout.Default"/>      <Field t="control.Layout" ID="Group" Title="Group">        <Layout t="layout.Vertical" Spacing="0"/>        <Field t="control.Label" ID="Select_a_name_for_the_new_widget_" Title="Title" Text="Select a name for the new widget:">          <Style t="ui.CustomCss" base="uitext.PlainText">            <Style t="uitext.PlainText"/>            <Css><![CDATA[#this { font-size: 14px; }]]></Css>          </Style>          <FieldAspect t="field_feature.Layout">            <Css><![CDATA[#this { padding-bottom: 4px; }#wrapper { }]]></Css>          </FieldAspect>        </Field>        <FieldAspect t="field_aspect.FieldData">          <FieldData t="xml.Xml"/>        </FieldAspect>        <Field t="fld.Field" FieldData="%!@name%" ID="name" Title="Name">          <FieldType t="fld_type.EditableText">            <Style t="ui.CustomCss" base="editable_text.JBartTextbox">              <Style t="editable_text.JBartTextbox"/>              <Css><![CDATA[#this { background:url(images/css/shadow2.png) repeat-x scroll 0 0 transparent; font-size: 11px; width: 261px; height: 16px; padding-top: 3px; padding-right: 3px; padding-bottom: 3px; padding-left: 3px; margin-top: 5px; border: 1px solid #BDC7D8; }#this:focus { box-shadow:  inset 0 1px 1px 0px rgba(0, 0, 0, 0.075),  0 0 8px 0px rgba(82, 168, 236, 0.6); border-color: rgba(82, 168, 236, 0.8); outline: 0; outline: thin dotted 9; }#this.placeholder { color:#8B8B8B; }#this.aa_error { color:#ec643d; background:#fbebeb; border: 1px solid #feb2b2; }]]></Css>            </Style>          </FieldType>          <FieldAspect t="field_aspect.Mandatory"/>          <FieldAspect t="field_feature.HandleEvent">            <Event t="field_feature.EnterPressed"/>            <Action t="operation.ClickOnButton" Button="gstudio_new_create"/>          </FieldAspect>        </Field>        <Field t="control.Layout" ID="Group1" Title="Group">          <Field t="control.Button" ID="gstudio_new_create" Title="Create" HideTitle="true">            <Style t="btn.JBart"/>            <Action t="popup.CloseContainingPopup" ExitMode="OK">              <DoOnExit t="object.RunMethod" Object="%$_JBartStudio%" Method="New" Input="%@name%"/>            </Action>          </Field>          <Field t="control.Button" ID="Close" Title="Close">            <Style t="btn.JBartGrey"/>            <Action t="popup.CloseContainingPopup" ExitMode=""/>          </Field>          <Layout t="layout.HorizontalHtmlTable" Spacing="15px" VerticalAlign="top"/>          <FieldAspect t="field_feature.Css">            <Css><![CDATA[#this { margin-top: 15px; margin-left: 79px; }#wrapper { }]]></Css>          </FieldAspect>        </Field>      </Field>    </Contents>  </xtml></Component></xtml>

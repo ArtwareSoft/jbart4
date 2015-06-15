@@ -289,7 +289,7 @@
             <Action t="xtml.UseParam" Param="RunOnComponent"/>
           </DoOnAddedChildren>
         </Action>
-        <Action t="field.RefreshFieldByElement" Element="%$FieldCellElement%" Break="true"/>
+        <Action t="field.RefreshFieldByElement" Element="%$FieldCellElement%" />
       </xtml>
     </Component>
 

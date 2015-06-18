@@ -1,5 +1,5 @@
 # jbart
-A different visual Studio for javascript widget development
+A different visual studio for javascript widget development
 ### Start the studio
 
 ```shell

@@ -11,18 +11,18 @@ Open the studio with Chrome:
 (You can change the 8087 port at package.json)
 
 ### Tutorial
-Our tutorial can be found [here](http://jb-letmesee.appspot.com/LetMeSee/p80kd9kkn6.html?roomid=94fn83)
+A tutorial can be found [here](http://jb-letmesee.appspot.com/LetMeSee/p80kd9kkn6.html?roomid=94fn83) it also explains more about the installation.
 
 ###jBart is Strong
-At the tutorial we first dive into a real application called "Let Me See" [http://localhost:8087/studio/studio.html?widget=LetMeSee..](http://localhost:8087/studio/studio.html?widget=LetMeSee#?gpage=main?playground=true?view=room?roomid=ph5n8s) and then build a simple app step by step.
+At the tutorial we first dive into a real application called "Let Me See" and then build a simple app step by step.
 
 ###App development within jBart
-Click [here]([http://localhost:8087/studio/studio.html?widget=LetMeSee..](http://localhost:8087/studio/studio.html?widget=LetMeSee#?gpage=main?playground=true?view=room?roomid=ph5n8s) to play with it.
+Click [here](http://localhost:8087/studio/studio.html?widget=LetMeSee#?gpage=main?playground=true?view=room?roomid=ph5n8s) to play with it. (after starting the studio)
 
 ![](http://storage.googleapis.com/letmesee1/p80kd9kkn6/files/6b4cb7b3ee0c4ca88a713a966106dd79_1.jpg)
 
 
-###Click inspect and edit element
+###Click inspect and edit any element
 ![](http://storage.googleapis.com/letmesee1/p80kd9kkn6/files/dfa5d8988c3a4088b0ec98069e3a62a2_1.jpg)
 
 ###Floating Outline & Properties Windows

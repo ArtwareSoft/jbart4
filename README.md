@@ -10,10 +10,7 @@ Open the studio with Chrome:
 [http://localhost:8087/studio/studio.html](http://localhost:8087/studio/studio.html)  
 (You can change the 8087 port at package.json)
 
-### Play With The Tutorial
-A tutorial can be found [here](http://jb-letmesee.appspot.com/LetMeSee/p80kd9kkn6.html?roomid=94fn83). It also explains more about the installation.
-
-At the tutorial we dive into a real application called "Let Me See" and then build a simple app from scratch.
+Open the [tutorial](http://jb-letmesee.appspot.com/LetMeSee/p80kd9kkn6.html?roomid=94fn83)
 
 ##Screenshots
 

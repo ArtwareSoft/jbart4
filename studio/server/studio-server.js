@@ -34,7 +34,7 @@ function serve(req, res) {
     var file_type = path.split('.').pop();
     var op = getURLParam(req,'op');
 
-    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader("Access-Control-Allow-Origin", "*:*");
     if (req.url.indexOf('/LetMeSee/') == 0)
       return LetMeSeeProxy(req,res);
 

@@ -13,15 +13,15 @@ GLOBAL.op_get_handlers = {};
 GLOBAL.op_post_handlers = {};
 GLOBAL.file_type_handlers = {};
 
-var port = process.env.npm_package_config_port;
+var port = 8087;
 var widgets_base_dir = process.env.npm_package_config_widgets_base_dir;
 var client;
 
 _os = /^win/.test(process.platform) ? 'windows' : '';
 http_dir = '';
-tmp_dir = 'c:\\temp';
+tmp_dir = _os == 'windows' ? 'c:\\temp' : '/tmp';
 log_level = 3;
-log_file = 'c:\\temp\\log\\log.dat';
+log_file = _os == 'windows' ? 'c:\\temp\\log\\log.dat' : '/tmp/log.dat';
 
 // Http server
 function serve(req, res) {

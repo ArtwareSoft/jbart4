@@ -1,4 +1,4 @@
-ajaxart.load_plugin("", "../widgets/letmesee/lmc_manager.xtml");
+ajaxart.load_plugin("", "../widgets/LetMeSee/lmc_manager.xtml");
 
 aa_gcs("lmc_manager", {
 	LoadSiteSettingsFromManager: function(profile, data, context) {

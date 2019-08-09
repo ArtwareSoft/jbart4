@@ -1,4 +1,4 @@
-ajaxart.load_plugin("","../widgets/letmesee/lmc_client.xtml");
+ajaxart.load_plugin("","../widgets/LetMeSee/lmc_client.xtml");
 
 aa_gcs("lmc_client",{
 	CreateLMCSite: function(profile,data,context) {

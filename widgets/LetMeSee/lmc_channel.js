@@ -1,4 +1,4 @@
-ajaxart.load_plugin("","../widgets/letmesee/lmc_channel.xtml");
+ajaxart.load_plugin("","../widgets/LetMeSee/lmc_channel.xtml");
 
 // TODO: make sendEvent a function and not a method
 

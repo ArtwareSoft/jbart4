@@ -1,3 +1,3 @@
-ajaxart.load_plugin("","../widgets/letmesee/lmc_benefit.xtml");
+ajaxart.load_plugin("","../widgets/LetMeSee/lmc_benefit.xtml");
 
 

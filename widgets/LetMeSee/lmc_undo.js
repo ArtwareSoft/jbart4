@@ -1,4 +1,4 @@
-ajaxart.load_plugin("","../widgets/letmesee/lmc_undo.xtml");
+ajaxart.load_plugin("","../widgets/LetMeSee/lmc_undo.xtml");
 
 aa_gcs("lmc_undo",{
 	LMCUndo: function(profile,data,context) {

@@ -1,17 +1,17 @@
-ajaxart.load_plugin("","../widgets/letmesee/letmesee.xtml");
-ajaxart.load_plugin("","../widgets/letmesee/lmc_agent.xtml");
-ajaxart.load_plugin("","../widgets/letmesee/lmc_content.xtml");
-ajaxart.load_plugin("","../widgets/letmesee/lmc_desktop.xtml");
-ajaxart.load_plugin("","../widgets/letmesee/lmc_mobile.xtml");
-ajaxart.load_plugin("","../widgets/letmesee/lmc_details.xtml");
-ajaxart.load_plugin("","../widgets/letmesee/lmc_editor.xtml");
-ajaxart.load_plugin("","../widgets/letmesee/lmc_agent_desktop.xtml");
-ajaxart.load_plugin("","../widgets/letmesee/lmc_style_editor.xtml");
-ajaxart.load_plugin("","../widgets/letmesee/lmc_rooms.xtml");
-ajaxart.load_plugin("","../widgets/letmesee/lmc_news.xtml");
-ajaxart.load_plugin("","../widgets/letmesee/lmc_embed.xtml");
-ajaxart.load_plugin("","../widgets/letmesee/lmc_agent_phone.xtml");
-ajaxart.load_plugin("","../widgets/letmesee/lmc_crm.xtml");
+ajaxart.load_plugin("","../widgets/LetMeSee/letmesee.xtml");
+ajaxart.load_plugin("","../widgets/LetMeSee/lmc_agent.xtml");
+ajaxart.load_plugin("","../widgets/LetMeSee/lmc_content.xtml");
+ajaxart.load_plugin("","../widgets/LetMeSee/lmc_desktop.xtml");
+ajaxart.load_plugin("","../widgets/LetMeSee/lmc_mobile.xtml");
+ajaxart.load_plugin("","../widgets/LetMeSee/lmc_details.xtml");
+ajaxart.load_plugin("","../widgets/LetMeSee/lmc_editor.xtml");
+ajaxart.load_plugin("","../widgets/LetMeSee/lmc_agent_desktop.xtml");
+ajaxart.load_plugin("","../widgets/LetMeSee/lmc_style_editor.xtml");
+ajaxart.load_plugin("","../widgets/LetMeSee/lmc_rooms.xtml");
+ajaxart.load_plugin("","../widgets/LetMeSee/lmc_news.xtml");
+ajaxart.load_plugin("","../widgets/LetMeSee/lmc_embed.xtml");
+ajaxart.load_plugin("","../widgets/LetMeSee/lmc_agent_phone.xtml");
+ajaxart.load_plugin("","../widgets/LetMeSee/lmc_crm.xtml");
 
 aa_gcs("lmc",	{
 	CallMeButtonClicked: function(profile,data,context) {
